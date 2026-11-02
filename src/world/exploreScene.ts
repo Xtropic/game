@@ -6,6 +6,9 @@ import { TILE, WorldMap, type MapEntity, type MapFile } from "./map";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
 import { LOOKS, personSheet, type Facing } from "../art/people";
+import { BattleScene } from "../battle/battleScene";
+import { BATTLES, SKILLS } from "../battle/data";
+import type { Texture } from "pixi.js";
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
@@ -22,7 +25,9 @@ export class ExploreScene implements Scene {
   private game!: Game;
   private zoom = 1;
   private player = { x: 0, y: 0, facing: "down" as Facing, step: 0, moving: false, sprite: new Sprite() };
-  private sheets = { rhea: personSheet(LOOKS.rhea), elder: personSheet(LOOKS.elder) };
+  private sheets: Record<string, Record<Facing, Texture[]>> = {};
+  private sheet(look: string): Record<Facing, Texture[]> { return (this.sheets[look] ??= personSheet(LOOKS[look] ?? LOOKS.elder)); }
+  private pendingBattle: MapEntity | null = null;
   private npcs: { e: MapEntity; sprite: Sprite }[] = [];
   private dialog: { box: Graphics; text: Text; name: Text; open: boolean } ;
   private toast = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4" } });
@@ -42,10 +47,11 @@ export class ExploreScene implements Scene {
     const ground = new Sprite(pixelTexture(bakeMap(this.map)));
     this.world.addChild(ground);
     for (const e of this.map.file.entities) if (e.kind === "npc") {
-      const sheet = this.sheets[(e.props?.look as "elder") ?? "elder"] ?? this.sheets.elder;
-      const s = new Sprite(sheet.down[0]); s.x = e.x * TILE + 2; s.y = e.y * TILE - 2; this.world.addChild(s); this.npcs.push({ e, sprite: s });
+      if (e.props?.hideIf && game.flags[String(e.props.hideIf)]) continue;
+      const sheet = this.sheet(String(e.props?.look ?? "elder"));
+      const s = new Sprite(sheet[e.props?.facing === "up" ? "up" : "down"][0]); s.x = e.x * TILE + 2; s.y = e.y * TILE - 2; this.world.addChild(s); this.npcs.push({ e, sprite: s });
     }
-    this.player.sprite.texture = this.sheets.rhea[this.player.facing][0];
+    this.player.sprite.texture = this.sheet("rhea")[this.player.facing][0];
     this.world.addChild(this.player.sprite);
     this.view.addChild(this.world, this.hud);
     this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = false;
@@ -70,14 +76,34 @@ export class ExploreScene implements Scene {
 
   save(slot: "auto" | "1"): void {
     const s = this.snapshot();
-    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: {} });
+    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags } });
   }
 
   private say(name: string, text: string): void {
     this.dialog.open = true; this.dialog.name.text = name; this.dialog.text.text = text;
     this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = true;
   }
-  private closeDialog(): void { this.dialog.open = false; this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = false; }
+  private closeDialog(): void {
+    this.dialog.open = false; this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = false;
+    const e = this.pendingBattle; this.pendingBattle = null;
+    if (e) this.startBattle(String(e.props?.battle), e);
+  }
+
+  /** Puts a battle over the map; on a win, sets the entity's hideIf flag, removes it, and says its after line. */
+  startBattle(id: string, e?: MapEntity): void {
+    const def = BATTLES[id]; if (!def) throw new Error(`no battle ${id}`);
+    this.game.scenes.push(new BattleScene(def, SKILLS, {
+      onDone: () => {
+        this.game.flags[`won.${id}`] = true;
+        if (e) {
+          const i = this.npcs.findIndex((n) => n.e === e);
+          if (i >= 0) { this.npcs[i].sprite.destroy(); this.npcs.splice(i, 1); }
+          if (e.props?.after) this.say("", String(e.props.after));
+        }
+        this.save("auto");
+      },
+    }));
+  }
 
   /** The entity on the tile the player is facing, if any. */
   private facingEntity(): MapEntity | undefined {
@@ -99,7 +125,11 @@ export class ExploreScene implements Scene {
     if (this.dialog.open) { if (inp.wasPressed("confirm") || inp.wasPressed("cancel")) this.closeDialog(); this.player.moving = false; return; }
     if (inp.wasPressed("confirm")) {
       const e = this.facingEntity();
-      if (e?.kind === "npc") { this.say(e.id === "maren" ? "Elder Maren" : e.id, String(e.props?.line ?? "...")); return; }
+      if (e?.kind === "npc") {
+        this.say(String(e.props?.name ?? (e.id === "maren" ? "Elder Maren" : e.id)), String(e.props?.line ?? "..."));
+        if (e.props?.battle) this.pendingBattle = e;
+        return;
+      }
       if (e?.kind === "sign") { this.say("", String(e.props?.text ?? "")); return; }
     }
     if (inp.wasPressed("menu")) { this.save("1"); this.toast.text = "Saved"; this.toastTime = 1.5; }
@@ -119,7 +149,7 @@ export class ExploreScene implements Scene {
 
   render(): void {
     const p = this.player;
-    p.sprite.texture = this.sheets.rhea[p.facing][p.moving ? Math.floor(p.step) % 4 : 0];
+    p.sprite.texture = this.sheet("rhea")[p.facing][p.moving ? Math.floor(p.step) % 4 : 0];
     p.sprite.x = Math.round(p.x); p.sprite.y = Math.round(p.y);
     // depth: things lower on screen draw in front
     const kids = [p.sprite, ...this.npcs.map((n) => n.sprite)].sort((s1, s2) => s1.y - s2.y);

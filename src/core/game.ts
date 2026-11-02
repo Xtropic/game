@@ -12,6 +12,8 @@ export class Game {
   readonly scenes = new SceneStack(this);
   readonly stage = new Container();
   playSeconds = 0;
+  /** Story and world state that goes into save files. */
+  flags: Record<string, boolean | number | string> = {};
   private acc = 0;
 
   get width(): number { return this.app.screen.width; }

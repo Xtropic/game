@@ -2,7 +2,19 @@
   "id": "larkfold-square",
   "name": "Larkfold, the square",
   "music": "larkfold",
-  "legend": { ".": "grass", "=": "path", "#": "flag", "W": "wall", "R": "roof", "~": "water", "T": "tree", "f": "fence", "D": "door", "*": "flowers", "^": "cliff" },
+  "legend": {
+    ".": "grass",
+    "=": "path",
+    "#": "flag",
+    "W": "wall",
+    "R": "roof",
+    "~": "water",
+    "T": "tree",
+    "f": "fence",
+    "D": "door",
+    "*": "flowers",
+    "^": "cliff"
+  },
   "rows": [
     "^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
     "^TT....RRRRR.......TT....TT^",
@@ -21,8 +33,44 @@
     "^^^^^^^^^^=^^^^^^^^^^^^^^^^^"
   ],
   "entities": [
-    { "id": "start", "kind": "spawn", "x": 10, "y": 8 },
-    { "id": "maren", "kind": "npc", "x": 17, "y": 9, "props": { "look": "elder", "line": "The well's low again. Fetch Finch from the drying house, would you?" } },
-    { "id": "sign-trail", "kind": "sign", "x": 11, "y": 13, "props": { "text": "Down the mountain: the trail to Kerrow." } }
+    {
+      "id": "start",
+      "kind": "spawn",
+      "x": 10,
+      "y": 8
+    },
+    {
+      "id": "maren",
+      "kind": "npc",
+      "x": 17,
+      "y": 9,
+      "props": {
+        "look": "elder",
+        "line": "The well's low again. Fetch Finch from the drying house, would you?"
+      }
+    },
+    {
+      "id": "warden",
+      "kind": "npc",
+      "x": 10,
+      "y": 12,
+      "props": {
+        "look": "warden",
+        "name": "Warden",
+        "line": "Grey coat, Guild lantern. \"Trail's closed. Nobody goes down the mountain tonight. Turn around.\"",
+        "battle": "trail-wardens",
+        "hideIf": "won.trail-wardens",
+        "after": "The grey coats are gone. The trail down the mountain is open."
+      }
+    },
+    {
+      "id": "sign-trail",
+      "kind": "sign",
+      "x": 11,
+      "y": 13,
+      "props": {
+        "text": "Down the mountain: the trail to Kerrow."
+      }
+    }
   ]
 }
