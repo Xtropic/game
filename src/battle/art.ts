@@ -40,17 +40,18 @@ export function backdrop(id: string): HTMLCanvasElement {
 }
 
 // ---------------- HD figures ----------------
-interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm"; scarf?: string; weapon: "staff" | "dart" | "spear" | "bow"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
+interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm"; scarf?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
   rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#7a5444", coatS: "#5a3c30", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8402c", weapon: "staff", lash: true },
   tamsin: { skin: "#e3b896", skinS: "#c0916f", hair: "#1e1915", hairL: "#4e463e", coat: "#4f6b5c", coatS: "#3a5246", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
   warden: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#7c8389", coatS: "#5c6268", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "spear", lantern: true, long: true },
+  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#d8d2c6", hairL: "#f2eee6", coat: "#6d5f4e", coatS: "#504538", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
   archer: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#6f7a72", coatS: "#525c55", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "bow", long: true },
 };
 /** Height of each look above its feet, in stage units: where to put intent badges and the turn marker. */
-export const LOOK_TOP: Record<string, number> = { rhea: 51, tamsin: 51, warden: 51, archer: 51, ash: 32, reedcat: 22 };
+export const LOOK_TOP: Record<string, number> = { maren: 51, rhea: 51, tamsin: 51, warden: 51, archer: 51, ash: 32, reedcat: 22 };
 
-export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; }
+export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; /** 0..1 mouth opening while speaking */ talk?: number; }
 
 function inkPath(g: CanvasRenderingContext2D, fill: string, lw = 0.28) { g.fillStyle = fill; g.fill(); g.lineWidth = lw; g.strokeStyle = INK; g.stroke(); }
 function limb(g: CanvasRenderingContext2D, pts: number[], w: number, col: string) {
@@ -130,8 +131,10 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   for (const bx of [hx + 1.85, hx - 1.75]) { g.beginPath(); g.moveTo(bx - 1, eyeY - 2.5 + (angry ? -0.3 : 0)); g.quadraticCurveTo(bx, eyeY - 2.9, bx + 1, eyeY - 2.4 + (angry ? 0.5 : -0.1)); g.stroke(); }
   g.lineWidth = 0.3; g.strokeStyle = shadeHex(P0.skinS, -0.25); g.beginPath(); g.moveTo(hx + 0.15, eyeY + 1.2); g.lineTo(hx + 0.4, eyeY + 1.8); g.lineTo(hx - 0.05, eyeY + 1.95); g.stroke();
   g.lineWidth = 0.35; g.strokeStyle = "#7a3a30"; g.beginPath();
-  if (o.lunge || o.brace || o.shout || o.cast) { g.ellipse(hx + 0.1, eyeY + 3.05, 0.6, 0.45, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); } else { g.moveTo(hx - 0.5, eyeY + 3.05); g.quadraticCurveTo(hx + 0.1, eyeY + 3.25, hx + 0.7, eyeY + 3); }
+  if (o.talk && o.talk > 0.05) { const op = 0.15 + o.talk * 0.55; g.ellipse(hx + 0.1, eyeY + 3.05 + op * 0.3, 0.55 + (1 - o.talk) * 0.1, op * 0.55, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); }
+  else if (o.lunge || o.brace || o.shout || o.cast) { g.ellipse(hx + 0.1, eyeY + 3.05, 0.6, 0.45, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); } else { g.moveTo(hx - 0.5, eyeY + 3.05); g.quadraticCurveTo(hx + 0.1, eyeY + 3.25, hx + 0.7, eyeY + 3); }
   g.stroke();
+  if (id === "maren") { g.lineWidth = 0.18; g.strokeStyle = "rgba(90,60,50,.45)"; for (const d of [1, -1]) { const bx = hx + d * 1.8; g.beginPath(); g.moveTo(bx + d * 1.1, eyeY + 0.1); g.lineTo(bx + d * 1.6, eyeY + 0.5); g.stroke(); } g.beginPath(); g.moveTo(hx - 0.9, eyeY + 2.4); g.quadraticCurveTo(hx - 1.4, eyeY + 3, hx - 1.1, eyeY + 3.6); g.moveTo(hx + 1.1, eyeY + 2.4); g.quadraticCurveTo(hx + 1.6, eyeY + 3, hx + 1.3, eyeY + 3.6); g.stroke(); }
   if (id === "rhea" || id === "tamsin") { ell(g, hx + 2.3, eyeY + 1.9, 0.7, 0.28, "rgba(220,120,110,.12)"); ell(g, hx - 2.2, eyeY + 1.9, 0.7, 0.28, "rgba(220,120,110,.12)"); }
   if (P0.style === "helm") {
     g.beginPath(); g.moveTo(hx - 5, hy - 1); g.bezierCurveTo(hx - 5.2, hy - 7.6, hx + 5.4, hy - 7.6, hx + 5.2, hy - 1); g.lineTo(hx + 6.4, hy - 0.4); g.lineTo(hx - 5.8, hy - 0.4); g.closePath(); inkPath(g, "#8e959b");

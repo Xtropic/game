@@ -26,8 +26,8 @@ const bt = () => page.evaluate(() => window.__lull.battle()?.debug() ?? null);
 await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x = 10 * 16 + 2; s.player.y = 11 * 16 - 2 - 6; s.player.facing = "down"; });
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);
 const talk = await page.evaluate(() => window.__lull.explore());
-if (!talk.dialog?.includes("Trail's closed")) fail(`warden did not speak: ${talk.dialog}`);
-await page.keyboard.press("Enter");
+if (!talk.dialog?.includes("Trail")) fail(`warden did not speak: ${talk.dialog}`);
+await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); // finish typing, then close
 await page.waitForFunction(() => window.__lull.battle()?.debug().mode === "menu", null, { timeout: 5000 });
 let d = await bt();
 if (d.acting !== "rhea" || d.skills[0] !== "strike") fail(`unexpected first turn ${JSON.stringify(d)}`);

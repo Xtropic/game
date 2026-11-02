@@ -40,6 +40,9 @@ await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x 
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);
 const talk = await at(); if (!talk.dialog || !talk.dialog.includes("well")) fail(`no dialogue from Maren: ${talk.dialog}`);
 await page.screenshot({ path: "test-results/dialogue.png" });
+// first press finishes typing the line out, the second closes it
+await page.keyboard.press("Enter"); await page.waitForTimeout(100);
+if (!(await at()).dialog) fail("dialogue closed before the line was shown in full");
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);
 if ((await at()).dialog) fail("dialogue did not close");
 

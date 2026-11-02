@@ -2,6 +2,7 @@ import { Application, Container } from "pixi.js";
 import { Input } from "./input";
 import { SceneStack } from "./scene";
 import { SaveStore, browserKV } from "./save";
+import { Voices } from "../audio/voice";
 
 export const STEP = 1 / 60; // fixed logic step in seconds
 
@@ -11,6 +12,7 @@ export class Game {
   readonly saves = new SaveStore(browserKV());
   readonly scenes = new SceneStack(this);
   readonly stage = new Container();
+  readonly voices = new Voices();
   playSeconds = 0;
   /** Story and world state that goes into save files. */
   flags: Record<string, boolean | number | string> = {};

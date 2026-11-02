@@ -1,5 +1,5 @@
 // Exploring a map: pixel-art world at 320 x 180 scaled by a whole number, with the dialogue box drawn in HD on top.
-import { Container, Graphics, Sprite, Text } from "pixi.js";
+import { Container, Sprite, Text } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { TILE, WorldMap, type MapEntity, type MapFile } from "./map";
@@ -9,6 +9,8 @@ import { LOOKS, personSheet, type Facing } from "../art/people";
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import type { Texture } from "pixi.js";
+import { DialogueBox } from "../ui/dialogueBox";
+import { entityLines, type Line } from "./lines";
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
@@ -29,7 +31,8 @@ export class ExploreScene implements Scene {
   private sheet(look: string): Record<Facing, Texture[]> { return (this.sheets[look] ??= personSheet(LOOKS[look] ?? LOOKS.elder)); }
   private pendingBattle: MapEntity | null = null;
   private npcs: { e: MapEntity; sprite: Sprite }[] = [];
-  private dialog: { box: Graphics; text: Text; name: Text; open: boolean } ;
+  private dialog!: DialogueBox;
+  private queue: Line[] = [];
   private toast = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4" } });
   private toastTime = 0;
 
@@ -39,7 +42,6 @@ export class ExploreScene implements Scene {
     this.player.x = start?.x ?? sp.x * TILE + 2;
     this.player.y = start?.y ?? sp.y * TILE - 2;
     this.player.facing = start?.facing ?? "down";
-    this.dialog = { box: new Graphics(), text: new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 18, fill: "#efe6d2", wordWrap: true, wordWrapWidth: 600, lineHeight: 26 } }), name: new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#e0c070", fontWeight: "bold" } }), open: false };
   }
 
   enter(game: Game): void {
@@ -54,8 +56,8 @@ export class ExploreScene implements Scene {
     this.player.sprite.texture = this.sheet("rhea")[this.player.facing][0];
     this.world.addChild(this.player.sprite);
     this.view.addChild(this.world, this.hud);
-    this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = false;
-    this.hud.addChild(this.dialog.box, this.dialog.name, this.dialog.text, this.toast);
+    this.dialog = new DialogueBox(game.voices);
+    this.hud.addChild(this.dialog.view, this.toast);
     this.save("auto");
   }
 
@@ -64,11 +66,7 @@ export class ExploreScene implements Scene {
   resize(w: number, h: number): void {
     this.zoom = Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H)));
     this.world.scale.set(this.zoom);
-    const bw = Math.min(w - 32, 760), bh = 120;
-    this.dialog.box.clear().roundRect(0, 0, bw, bh, 10).fill({ color: 0x14100c, alpha: 0.92 }).stroke({ color: 0x6b5236, width: 2 });
-    this.dialog.box.x = (w - bw) / 2; this.dialog.box.y = h - bh - 16;
-    this.dialog.name.x = this.dialog.box.x + 18; this.dialog.name.y = this.dialog.box.y + 12;
-    this.dialog.text.x = this.dialog.box.x + 18; this.dialog.text.y = this.dialog.box.y + 36; this.dialog.text.style.wordWrapWidth = bw - 36;
+    this.dialog.resize(w, h);
     this.toast.x = 16; this.toast.y = 12;
   }
 
@@ -79,12 +77,11 @@ export class ExploreScene implements Scene {
     this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags } });
   }
 
-  private say(name: string, text: string): void {
-    this.dialog.open = true; this.dialog.name.text = name; this.dialog.text.text = text;
-    this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = true;
-  }
+  /** Shows lines one after another; the next shows when the player closes the current one. */
+  private say(...lines: Line[]): void { this.queue.push(...lines); if (!this.dialog.open) this.next(); }
+  private next(): boolean { const l = this.queue.shift(); if (l) { this.dialog.show(l); return true; } return false; }
   private closeDialog(): void {
-    this.dialog.open = false; this.dialog.box.visible = this.dialog.text.visible = this.dialog.name.visible = false;
+    if (this.next()) return;
     const e = this.pendingBattle; this.pendingBattle = null;
     if (e) this.startBattle(String(e.props?.battle), e);
   }
@@ -98,7 +95,8 @@ export class ExploreScene implements Scene {
         if (e) {
           const i = this.npcs.findIndex((n) => n.e === e);
           if (i >= 0) { this.npcs[i].sprite.destroy(); this.npcs.splice(i, 1); }
-          if (e.props?.after) this.say("", String(e.props.after));
+          const after = entityLines(e).find((l) => l.who === "narrator" && l.text === String(e.props?.after));
+          if (after) this.say(after);
         }
         this.save("auto");
       },
@@ -122,15 +120,20 @@ export class ExploreScene implements Scene {
   update(dt: number): void {
     const inp = this.game.input;
     if (this.toastTime > 0) { this.toastTime -= dt; if (this.toastTime <= 0) this.toast.text = ""; }
-    if (this.dialog.open) { if (inp.wasPressed("confirm") || inp.wasPressed("cancel")) this.closeDialog(); this.player.moving = false; return; }
+    if (this.dialog.open) {
+      this.dialog.update(dt);
+      if ((inp.wasPressed("confirm") || inp.wasPressed("cancel")) && this.dialog.advance()) this.closeDialog();
+      this.player.moving = false; return;
+    }
     if (inp.wasPressed("confirm")) {
       const e = this.facingEntity();
       if (e?.kind === "npc") {
-        this.say(String(e.props?.name ?? (e.id === "maren" ? "Elder Maren" : e.id)), String(e.props?.line ?? "..."));
+        const said = entityLines(e).filter((l) => l.who !== "narrator");
+        this.say(...(said.length ? said : [{ who: e.id, name: e.id, text: "..." }]));
         if (e.props?.battle) this.pendingBattle = e;
         return;
       }
-      if (e?.kind === "sign") { this.say("", String(e.props?.text ?? "")); return; }
+      if (e?.kind === "sign") { this.say(...entityLines(e)); return; }
     }
     if (inp.wasPressed("menu")) { this.save("1"); this.toast.text = "Saved"; this.toastTime = 1.5; }
     const a = inp.axis();
@@ -148,6 +151,7 @@ export class ExploreScene implements Scene {
   }
 
   render(): void {
+    this.dialog.render();
     const p = this.player;
     p.sprite.texture = this.sheet("rhea")[p.facing][p.moving ? Math.floor(p.step) % 4 : 0];
     p.sprite.x = Math.round(p.x); p.sprite.y = Math.round(p.y);
@@ -163,5 +167,5 @@ export class ExploreScene implements Scene {
   }
 
   /** Read-only view for tests and debugging. */
-  debug() { return { x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.open ? this.dialog.text.text : null, zoom: this.zoom }; }
+  debug() { return { x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, speaking: this.dialog.speaking, zoom: this.zoom }; }
 }

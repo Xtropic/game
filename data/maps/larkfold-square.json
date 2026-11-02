@@ -46,7 +46,9 @@
       "y": 9,
       "props": {
         "look": "elder",
-        "line": "The well's low again. Fetch Finch from the drying house, would you?"
+        "line": "The well's low again. Fetch Finch from the drying house, would you?",
+        "voice": "maren",
+        "name": "Elder Maren"
       }
     },
     {
@@ -57,10 +59,11 @@
       "props": {
         "look": "warden",
         "name": "Warden",
-        "line": "Grey coat, Guild lantern. \"Trail's closed. Nobody goes down the mountain tonight. Turn around.\"",
+        "line": "Trail's closed by order of the Guild. Nobody goes down the mountain tonight. Turn around.",
         "battle": "trail-wardens",
         "hideIf": "won.trail-wardens",
-        "after": "The grey coats are gone. The trail down the mountain is open."
+        "after": "The grey coats are gone. The trail down the mountain is open.",
+        "voice": "warden"
       }
     },
     {
