@@ -43,4 +43,4 @@ Every spoken line in `data/maps` is recorded ahead of time with the Kokoro-82M v
 
 ## Portraits
 
-Until painted art exists, each speaker's portrait is a close-up of their HD battle figure, with the mouth following the voice. To use painted art, add images to `public/portraits` and list them in `public/portraits/index.json`, for example `{ "rhea": ["rhea.png", "rhea-open.png"] }`: a closed-mouth image, then an optional open-mouth image shown while the voice is loud.
+Painted anime portraits for the main cast (Rhea, Corran, Finch, Tamsin, Elder Maren, Elder Rook, Captain Halloran, Dr Lisle) are in `public/portraits`, made with Figma's image AI; the originals are in the Figma file "The Lull - portraits". They are listed in `public/portraits/index.json`, for example `{ "rhea": ["rhea.jpg"] }`, with an optional second, open-mouth image shown while the voice is loud; without one, a soft light swells with the voice. Characters with no painted portrait use a close-up of their HD battle figure.

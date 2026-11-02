@@ -1,7 +1,8 @@
 // Dialogue portraits: a close-up bust of the same HD cel-shaded figure used in battle, so a character looks
 // the same in both places. The mouth follows the recorded voice, eyes blink, the bust breathes.
 // Painted art replaces the drawn bust per character: list it in public/portraits/index.json as
-// { "rhea": ["rhea.png", "rhea-open.png"] } (closed mouth, then optional open mouth for speech).
+// { "rhea": ["rhea.jpg", "rhea-open.jpg"] } (closed mouth, then optional open mouth for speech; without
+// one, a soft light swells with the voice). The cast's painted portraits come from Figma's image AI.
 import { CAST, drawFig, setScale } from "../battle/art";
 
 const BG: Record<string, [string, string]> = {
@@ -37,6 +38,11 @@ export function drawPortrait(g: CanvasRenderingContext2D, id: string, size: numb
     const im = talk > 0.35 && art[1] ? art[1] : art[0], sc = Math.max(size / im.width, size / im.height) * (1.02 + Math.sin(t * 1.6) * 0.004);
     g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
     g.drawImage(im, (size - im.width * sc) / 2, (size - im.height * sc) / 2, im.width * sc, im.height * sc);
+    if (talk > 0.02 && !art[1]) { // no open-mouth frame: a soft warm light swells with the voice instead
+      const gl = g.createRadialGradient(size * 0.5, size * 1.05, size * 0.1, size * 0.5, size * 1.05, size * 0.9);
+      gl.addColorStop(0, `rgba(255,214,150,${0.16 * talk})`); gl.addColorStop(1, "rgba(255,214,150,0)");
+      g.save(); g.globalCompositeOperation = "lighter"; g.fillStyle = gl; g.fillRect(0, 0, size, size); g.restore();
+    }
     return;
   }
   if (!(id in CAST)) return;
