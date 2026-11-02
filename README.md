@@ -1,3 +1,23 @@
 # The Lull
 
-A story-driven RPG. Work in progress.
+A story-driven RPG built in TypeScript with PixiJS. The world is drawn as pixel art at 320 x 180; battles and dialogue are drawn in HD on top.
+
+## Run it
+
+    npm install
+    npm run dev        # play at the address Vite prints
+    npm test           # unit tests
+    npm run build      # production build in dist/
+    npm run e2e        # plays the built game in a browser (needs Playwright)
+
+## Layout
+
+- `src/core` - game loop (fixed 60 Hz logic), input actions, scene stack, saves
+- `src/world` - maps, collision, the explore scene
+- `src/art` - pixel-art helpers, the tile set, character sprite sheets
+- `data/maps` - maps as rows of characters plus a legend and entities
+- `tests/unit` - Vitest rule tests; `tests/e2e` - browser play test
+
+## Controls
+
+Arrows or WASD to move, Shift to run, Enter / Space / E to talk, M to save.
