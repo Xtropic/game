@@ -9,6 +9,7 @@ export interface Look { hair: string; hairLight: string; skin: string; skinShade
 
 export const LOOKS: Record<string, Look> = {
   rhea: { hair: "#3a2418", hairLight: "#5c3a26", skin: "#e2b48c", skinShade: "#b8865f", coat: "#6b4a3a", coatShade: "#4f3428", accent: "#c0452f", legs: "#3b2e26", boots: "#221a15" },
+  warden: { hair: "#2b2b2b", hairLight: "#8e959b", skin: "#e0b896", skinShade: "#b88e6c", coat: "#7c8389", coatShade: "#5c6268", accent: "#3a3d40", legs: "#3a3d40", boots: "#1e1e1e" },
   elder: { hair: "#dcd6ca", hairLight: "#b9b2a4", skin: "#d7ad88", skinShade: "#ae8462", coat: "#6d5f4e", coatShade: "#504538", accent: "#7a5a48", legs: "#3e352c", boots: "#2a221c" },
 };
 

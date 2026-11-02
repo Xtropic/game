@@ -1,0 +1,13 @@
+{
+  "strike":  { "name": "Strike",     "note": "Melee, timed",                        "kind": "melee",  "dmg": [7, 10] },
+  "sing":    { "name": "Foal song",  "note": "Calm a wild kith, or steady Ash",     "kind": "song" },
+  "rally":   { "name": "Rally",      "note": "Heal an ally 9",                      "kind": "heal",   "amt": 9, "ally": true },
+  "sling":   { "name": "Sling",      "note": "Ranged, timed",                       "kind": "ranged", "dmg": [5, 8], "proj": "stone" },
+  "smoke":   { "name": "Smoke pot",  "note": "Blinds: cancels its next move",       "kind": "stun" },
+  "guard":   { "name": "Guard",      "note": "Take hits for an ally this round",    "kind": "guard",  "ally": true },
+  "call":    { "name": "Call Ash",   "note": "He charges the whole front line",     "kind": "call",   "dmg": [7, 10] },
+  "follow":  { "name": "Horn butt",  "note": "Follows a good hit",                  "kind": "melee",  "dmg": [3, 5] },
+  "bow":     { "name": "Bow",        "note": "Ranged",                              "kind": "ranged", "dmg": [6, 9], "proj": "arrow", "icon": "arrow" },
+  "pounce":  { "name": "Pounce",     "note": "Leaps at the back row",               "kind": "pounce", "dmg": [6, 10], "icon": "paw" },
+  "wstrike": { "name": "Strike",     "note": "Melee",                               "kind": "melee",  "dmg": [5, 9], "icon": "sword" }
+}
