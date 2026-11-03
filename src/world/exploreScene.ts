@@ -75,7 +75,7 @@ export class ExploreScene implements Scene {
 
   save(slot: "auto" | "1"): void {
     const s = this.snapshot();
-    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags }, party: { ...this.game.party } });
+    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags }, party: { ...this.game.party }, gear: { ...this.game.gear }, coin: this.game.coin });
   }
 
   /** Shows lines one after another; the next shows when the player closes the current one. */
@@ -92,6 +92,7 @@ export class ExploreScene implements Scene {
     const def = BATTLES[id]; if (!def) throw new Error(`no battle ${id}`);
     this.game.scenes.push(new BattleScene(def, SKILLS, {
       levels: this.game.levels(),
+      gear: this.game.gear,
       onDone: (_r, s) => {
         this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought

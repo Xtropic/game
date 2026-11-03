@@ -1,0 +1,60 @@
+{
+  "types": {
+    "knife":  { "name": "Knife",  "drive": "finesse" }, "blade": { "name": "Blade", "drive": "might" },
+    "sabre":  { "name": "Sabre",  "drive": "might" },   "staff": { "name": "Staff", "drive": "might" },
+    "sling":  { "name": "Sling",  "drive": "finesse" }, "bow":   { "name": "Bow",   "drive": "finesse" },
+    "spear":  { "name": "Spear",  "drive": "might" },   "lance": { "name": "Lance", "drive": "might" },
+    "shield": { "name": "Shield", "drive": "might" },   "hook":  { "name": "Hook",  "drive": "might" },
+    "twin":   { "name": "Twin blades", "drive": "finesse" }, "rope": { "name": "Weighted rope", "drive": "finesse" },
+    "tools":  { "name": "Tools",  "drive": "might" },   "cane":  { "name": "Cane",  "drive": "wits" }
+  },
+  "tiers": [
+    { "name": "Worn",       "power": 1.00, "forge": 0, "cost": 0 },
+    { "name": "Mended",     "power": 1.12, "forge": 1, "cost": 60 },
+    { "name": "Tempered",   "power": 1.26, "forge": 2, "cost": 180 },
+    { "name": "Masterwork", "power": 1.42, "forge": 3, "cost": 450 },
+    { "name": "Named",      "power": 1.60, "forge": 3, "cost": 900 }
+  ],
+  "keepsakes": {
+    "rhea":    { "name": "Mother's tray knife", "type": "knife", "branches": [{ "id": "shepherd", "name": "Shepherd's Hook", "note": "Guards and calms" }, { "id": "reaper", "name": "Reaper's Edge", "note": "Damage and fear" }], "techniques": ["Trim", "Turn Aside", "Larkfold Cut", "Last Light"] },
+    "tamsin":  { "name": "Trail sling", "type": "sling", "branches": [{ "id": "stormcord", "name": "Stormcord", "note": "Volleys" }, { "id": "plumb", "name": "Plumb Line", "note": "One heavy shot" }], "techniques": ["Skip Stone", "Ricochet", "Ridge Volley", "Long Shot"] },
+    "corran":  { "name": "Warden sabre", "type": "sabre", "branches": [{ "id": "oath", "name": "Broken Oath", "note": "Defends the helpless" }, { "id": "gate", "name": "Gatekeeper", "note": "Holds the line" }], "techniques": ["Drill Cut", "Parry", "Hask", "The Gate"] },
+    "finch":   { "name": "Hatchery lance", "type": "lance", "branches": [{ "id": "ninety", "name": "Ninety", "note": "Cold precision" }, { "id": "smoke", "name": "Smoke's Run", "note": "Charges with his loftbuck" }], "techniques": ["Tray Turn", "Couched Charge", "Number's End", "Name"] },
+    "ketti":   { "name": "Boiler-room knife", "type": "knife", "branches": [{ "id": "mother", "name": "Little Mother", "note": "Protects the young" }, { "id": "ember", "name": "Ember", "note": "Burns" }], "techniques": ["Jab", "Shield the Small", "Fire Escape", "Walk Out"] },
+    "posy":    { "name": "Brood hook", "type": "hook", "branches": [{ "id": "turner", "name": "Tray Turner", "note": "Disarms and drags" }, { "id": "grudge", "name": "Grudge", "note": "Hits the strong harder" }], "techniques": ["Hook", "Drag", "Brood Room", "Fifteen"] },
+    "brannoc": { "name": "Pit shield", "type": "shield", "branches": [{ "id": "keeper", "name": "Keeper", "note": "Covers everyone" }, { "id": "ram", "name": "Ram", "note": "Shield charges" }], "techniques": ["Brace", "Cover", "Eleven Rings", "The Long Night"] },
+    "ferris":  { "name": "Scout's shortbow", "type": "bow", "branches": [{ "id": "whisper", "name": "Whisper", "note": "First strikes" }, { "id": "briar", "name": "Briar", "note": "Pins and slows" }], "techniques": ["Snap Shot", "Pin", "Treed", "Clean Kill"] },
+    "tess":    { "name": "Shuttle staff", "type": "staff", "branches": [{ "id": "loom", "name": "Loom Song", "note": "Song carries further" }, { "id": "picket", "name": "Picket", "note": "Holds a line" }], "techniques": ["Rap", "Shift Bell", "Strike Song", "Three Fingers"] },
+    "ume":     { "name": "Terrace cane", "type": "cane", "branches": [{ "id": "moss", "name": "Moss Staff", "note": "Heals" }, { "id": "elder", "name": "Elder's Word", "note": "Steadies nerve" }], "techniques": ["Rap", "Set a Lull", "Old Way", "Seventy Winters"] },
+    "teo":     { "name": "Weighted climbing rope", "type": "rope", "branches": [{ "id": "anchor", "name": "Anchor", "note": "Pulls foes down" }, { "id": "slope", "name": "Slope", "note": "Knocks back" }], "techniques": ["Lash", "Snare", "Night Slope", "Hold Fast"] },
+    "arvo":    { "name": "Drevka lance", "type": "lance", "branches": [{ "id": "son", "name": "Son's Lance", "note": "Charges" }, { "id": "name", "name": "My Name", "note": "Duels" }], "techniques": ["Thrust", "Iron Ride", "Owed", "Gerd's Son"] },
+    "nadra":   { "name": "Falconer's bow", "type": "bow", "branches": [{ "id": "garden", "name": "Garden", "note": "Mercy shots" }, { "id": "sun", "name": "Sun", "note": "Burning arrows" }], "techniques": ["Loose", "Call the Wing", "Desert Arc", "Prince's Garden"] },
+    "kesh":    { "name": "Twin blades", "type": "twin", "branches": [{ "id": "raw", "name": "Through the Raw", "note": "Endures" }, { "id": "contract", "name": "Contract", "note": "Hits fast" }], "techniques": ["Cross Cut", "Flurry", "Tarsis", "Paid in Full"] },
+    "isel":    { "name": "Wind staff", "type": "staff", "branches": [{ "id": "spire", "name": "Spire Song", "note": "Song effects" }, { "id": "gale", "name": "Gale", "note": "Knocks back" }], "techniques": ["Sweep", "High Note", "Cloud Sea", "Song That Went Down"] },
+    "tavi":    { "name": "Herd spear", "type": "spear", "branches": [{ "id": "herd", "name": "Herd Guard", "note": "Protects kith" }, { "id": "plain", "name": "Open Plain", "note": "Charges" }], "techniques": ["Thrust", "Herd Call", "Plateau Run", "Last Herd"] },
+    "oakes":   { "name": "Warden spear", "type": "spear", "branches": [{ "id": "torn", "name": "Torn Badge", "note": "Defends" }, { "id": "drill", "name": "Old Drill", "note": "Attacks" }], "techniques": ["Thrust", "Set Spear", "Spared", "Second Chance"] },
+    "lyle":    { "name": "Warden longbow", "type": "bow", "branches": [{ "id": "hood", "name": "Hood Down", "note": "Aims true" }, { "id": "volley", "name": "Volley", "note": "Hits many" }], "techniques": ["Loose", "Aimed Shot", "Finch Lives", "Longbow"] },
+    "sela":    { "name": "Pen crook", "type": "staff", "branches": [{ "id": "pen", "name": "Pen Keeper", "note": "Kith bond" }, { "id": "scout", "name": "Scout's Crook", "note": "Speed" }], "techniques": ["Tap", "Herd", "Bought Out", "Second Child"] },
+    "bee":     { "name": "Post satchel and sling", "type": "sling", "branches": [{ "id": "moon", "name": "Moon Letter", "note": "Luck" }, { "id": "post", "name": "Fast Post", "note": "Speed" }], "techniques": ["Flick", "Deliver", "Wing Post", "Dear Moon"] }
+  },
+  "fittings": {
+    "edge-warden-steel": { "slot": "work", "name": "Warden steel edge", "mods": { "might": 3 }, "note": "The best metal in Ostrel. It came off a dead Warden." },
+    "edge-drevka-iron":  { "slot": "work", "name": "Drevka iron edge", "mods": { "might": 2, "grit": 1 } },
+    "edge-salt-glass":   { "slot": "work", "name": "Salt House glass edge", "mods": { "finesse": 3 }, "note": "Sharp enough to cut light." },
+    "cord-silk":         { "slot": "work", "name": "Mill silk cord", "mods": { "finesse": 2 }, "timing": 1.08 },
+    "cord-gut":          { "slot": "work", "name": "Loftbuck gut string", "mods": { "might": 1, "finesse": 1 } },
+    "head-hatchery":     { "slot": "work", "name": "Hatchery tray-iron head", "mods": { "might": 2 }, "vsWardens": 1.15 },
+    "boss-mine":         { "slot": "work", "name": "Mine-cart boss", "mods": { "grit": 2, "nerve": 1 } },
+    "grip-wrapped":      { "slot": "work", "name": "Wrapped grip", "mods": { "finesse": 1 }, "timing": 1.05 },
+    "charm-moss":        { "slot": "charm", "name": "Duskwort sprig", "mods": { "heart": 2 } },
+    "charm-ring":        { "slot": "charm", "name": "Ring on a cord", "mods": { "nerve": 2 }, "note": "Rhea's. Hers alone." },
+    "charm-song-bead":   { "slot": "charm", "name": "Spire song-bead", "mods": { "heart": 1, "presence": 1 }, "bond": 1.25 },
+    "charm-ribbon":      { "slot": "charm", "name": "Fair ribbon", "mods": { "presence": 2 } },
+    "charm-tooth":       { "slot": "charm", "name": "Ironback tooth", "mods": { "grit": 1, "nerve": 1 } },
+    "charm-card":        { "slot": "charm", "name": "Lantern card", "mods": { "wits": 2 } },
+    "charm-coin":        { "slot": "charm", "name": "Tarsis contract coin", "mods": { "might": 1, "presence": 1 } },
+    "charm-number":      { "slot": "charm", "name": "Unpicked indenture number", "mods": { "nerve": 3, "heart": -1 }, "note": "Kept so as not to forget." },
+    "charm-feather":     { "slot": "charm", "name": "Storm-crested feather", "mods": { "finesse": 2 }, "timing": 1.05 },
+    "charm-bell":        { "slot": "charm", "name": "Drove bell", "mods": { "presence": 1, "nerve": 1 }, "bond": 1.15 }
+  }
+}
