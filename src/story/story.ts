@@ -26,6 +26,8 @@ export type Step =
   | { set?: Flags; add?: Record<string, number> }
   | { stage: string }
   | { follow: string[] }
+  /** The party travelling with the hero: join and leave change it; alone sends them off for a while; regroup brings them back. */
+  | { join: string } | { leave: string } | { alone: true } | { regroup: true }
   | { toast: string }
   | { fade: string }
   | { goto: { map: string; x: number; y: number; facing?: "up" | "down" | "left" | "right" } }
@@ -40,11 +42,12 @@ export interface StepTrigger { map: string; at: [number, number]; when?: Cond; d
 export interface Zone { map: string; area: [number, number, number, number]; when?: Cond; do: Step[]; }
 export interface Look { map?: string; tile: string; when?: Cond; do: Step[]; }
 export interface Song { when?: Cond; near?: string; range?: number; do: Step[]; }
-export interface Hazard { map: string; when?: Cond; kind: "steam"; sources: [number, number][]; spreadEvery: number; spreadBy: number; max: number; on: string; burn: number; fail: Step[]; }
+export interface Hazard { map: string; when?: Cond; kind: "steam" | "fire"; sources: [number, number][]; spreadEvery: number; spreadBy: number; max: number; on: string; burn: number; fail: Step[]; }
 
 export interface Story {
   id: string;
   title: string;
+  /** Where a new game begins. Only the first story file's counts; later acts begin from a script. */
   start: { map: string; x: number; y: number; facing: "up" | "down" | "left" | "right"; stage: string; hero: string; set?: Flags };
   cast: Record<string, string>;
   objectives: Record<string, string>;
@@ -131,6 +134,13 @@ export class StoryRunner {
     if ("if" in st) { this.front(holds(st.if, this.host.where()) ? st.then : st.else ?? []); return; }
     if ("stage" in st) { f.stage = st.stage; this.host.changed(); return; }
     if ("follow" in st) { this.host.follow(st.follow); return; }
+    if ("join" in st || "leave" in st) {
+      const id = "join" in st ? st.join : st.leave, list = partyOf(f).filter((x) => x !== id);
+      if ("join" in st) list.push(id);
+      f.party = list.join(","); f[`party.${id}`] = "join" in st; this.host.follow(list); this.host.changed(); return;
+    }
+    if ("alone" in st) { this.host.follow([]); return; }
+    if ("regroup" in st) { this.host.follow(partyOf(f)); return; }
     if ("toast" in st) { this.host.toast(st.toast); return; }
     if ("fade" in st) { this.block(); this.host.fade(st.fade, this.resume); return; }
     if ("goto" in st) { this.block(); const g = st.goto; this.host.goto(g.map, g.x, g.y, g.facing, this.resume); return; }
@@ -146,6 +156,23 @@ export class StoryRunner {
     }
     throw new Error(`unknown story step ${JSON.stringify(st)}`);
   }
+}
+
+/** Who is travelling with the hero, from the save. */
+export const partyOf = (f: Flags): string[] => String(f.party ?? "").split(",").filter(Boolean);
+
+/** Joins story files (prologue, act I, ...) into one story. Triggers from later acts are checked first, so an
+ *  act can give an old door something new to do without the earlier act's catch-all getting there first. */
+export function mergeStories(parts: Story[]): Story {
+  const [first] = parts, later = [...parts].reverse();
+  const out: Story = { ...first, cast: {}, objectives: {}, scripts: {}, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [] };
+  for (const p of parts) {
+    for (const k of Object.keys(p.scripts)) if (k in out.scripts) throw new Error(`script ${k} is in two story files`);
+    Object.assign(out.cast, p.cast); Object.assign(out.objectives, p.objectives); Object.assign(out.scripts, p.scripts);
+    out.actors.push(...p.actors); out.hazards.push(...p.hazards);
+  }
+  for (const p of later) { out.steps.push(...p.steps); out.zones.push(...p.zones); out.looks.push(...p.looks); out.songs.push(...p.songs); }
+  return out;
 }
 
 /** Every spoken line in a story, with who says it: lines, and choices a character says aloud. For voice recording. */
@@ -189,6 +216,6 @@ export function checkStory(s: Story, maps: Set<string>, battles: Set<string>): s
   s.songs.forEach((g, i) => walk(g.do, `song ${i}`));
   s.hazards.forEach((h, i) => walk(h.fail, `hazard ${i}`));
   for (const [k, sc] of Object.entries(s.scripts)) walk(sc, `script ${k}`);
-  if (!maps.has(s.start.map)) errs.push(`start: no map ${s.start.map}`);
+  if (s.start && !maps.has(s.start.map)) errs.push(`start: no map ${s.start.map}`);
   return errs;
 }

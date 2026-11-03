@@ -33,7 +33,7 @@ export type SkillBook = Record<string, SkillDef>;
 /** A fighter. `cast` links a character's attributes (data/cast/attributes.json); without one (kith), it counts
  *  as an average person. `hp` may be left out for cast members: it then comes from grit and level. */
 export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp?: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; cast?: string; level?: number; }
-export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; }
+export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; /** Banner when the fight is won, and when the party is driven back. */ won?: string; lost?: string; }
 
 export interface Intent { skill: string; target: string; }
 export interface Unit extends UnitDef {

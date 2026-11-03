@@ -4,7 +4,10 @@
 import { Container, Graphics, Sprite, Text, type Texture } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
-import { TILE, WorldMap, type MapFile } from "./map";
+import { TILE, WILD, WorldMap, type MapFile } from "./map";
+import { REGIONS } from "./content";
+import { encounter } from "../battle/encounters";
+import type { BattleDef } from "../battle/rules";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
 import { LOOKS, SMALL, beastSheet, isBeast, noteTexture, personSheet, type Facing } from "../art/people";
@@ -18,6 +21,9 @@ export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
 const BOX = { w: 10, h: 6, ox: 1, oy: 11 }; // player's collision box at the feet, relative to the sprite's top-left
 const FOLLOW_GAP = 16; // pixels of trail between each follower
+const WORLD_PACE = 1.6; // the world map is walked faster: one tile there is a stretch of country
+/** Tiles of wild ground walked between chance meetings on the world map: at least, plus up to. */
+const ENCOUNTER_EVERY: [number, number] = [22, 26];
 
 export interface ExploreState { map: string; x: number; y: number; facing: Facing; }
 
@@ -34,6 +40,44 @@ const LIGHT: Record<string, { color: number; alpha: number }> = {
 const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery"]);
 
 interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
+
+/** Which script starts the act after each ending. */
+const NEXT_ACT: Record<string, string> = { prologue: "act1Start" };
+
+/** What the player's choices have done by the end of an act. */
+export function ledger(id: string, f: Record<string, unknown>): string[] {
+  const hold = Number(f.hold ?? 50), yes = (k: string) => !!f[`recruited.${k}`];
+  if (id === "act1") {
+    return [
+      "Act I: The Commons",
+      "",
+      `Rhea's rank: ${String(f.rank || "Recruit")}`,
+      `Millbridge: ${f.millbridge === "truth" ? "told the truth. It joins slowly, but it won't turn." : f.millbridge === "elders" ? "told the elders' story. It joined at once, and it will remember." : "-"}`,
+      `With Rhea: ${["Tamsin", "Ash", "Brannoc", yes("ferris") && "Ferris", yes("ketti") && "Ketti"].filter(Boolean).join(", ")}`,
+      `At the camp: ${[yes("sela") && "Sela", yes("oren") && "Oren Tull", yes("oda") && "Oda, with three greenling trays"].filter(Boolean).join(", ") || "no one from home"}`,
+      `Corran's hold: ${hold} of 100`,
+      "",
+      "Act II starts here: Rhea takes command, and founds Thornwick.",
+      "",
+      "Press Enter to play again from the prologue",
+    ];
+  }
+  const refusal: Record<string, string> = { duty: "for the three hundred in the lowlands", cold: "coldly, asking if he trusted a Warden over the elders", stay: "asking him to stay and fight with her" };
+  return [
+    f.evening === "on" ? "You don't hear Finch knock." : "Finch looks up when you come in.",
+    "",
+    `Corran's hold: ${hold} of 100. ${hold >= 55 ? "He is holding on." : hold >= 40 ? "It's slipping." : "He is already sliding."}`,
+    `Lull rings: ${Number(f["rings.corran"] ?? 0)}`,
+    `Finch's trust in Rhea: ${Number(f.finchTrust ?? 50)} of 100`,
+    `Rhea refused ${refusal[String(f.refusal)] ?? "-"}`,
+    `Sela: ${f.sela ? "bought out. A future companion." : "left in the cart."}`,
+    `Mother's notes: ${Number(f.notes ?? 0)} of 4 found`,
+    "",
+    "These choices carry into every interlude.",
+    "",
+    "Press Enter to go on to Act I: The Commons",
+  ];
+}
 
 export class ExploreScene implements Scene, StoryHost {
   readonly id = "explore";
@@ -73,6 +117,17 @@ export class ExploreScene implements Scene, StoryHost {
   private noteTex = noteTexture();
   /** After arriving somewhere, movement waits until the keys are let go, so holding a key doesn't walk straight back out. */
   private settle = false;
+  private screen = { w: 0, h: 0 };
+  /** Whole-number zoom; the world map is shown one step further out, so more of the country is in view. */
+  private zoomFor(w: number, h: number): number { const z = Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H))); return this.map?.file.world ? Math.max(1, z - 1) : z; }
+  private regionNow: string | null = null;
+  private untilEncounter = 0;
+  private fog = new Graphics();
+  private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
+  private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
+  private bannerTime = 0;
+  /** Random numbers for chance meetings; tests can replace it to make them predictable. */
+  rng: () => number = Math.random;
 
   constructor(private story: Story, private maps: Record<string, MapFile>, private start?: Partial<ExploreState>) {}
 
@@ -88,10 +143,11 @@ export class ExploreScene implements Scene, StoryHost {
     this.game = game;
     this.runner = new StoryRunner(this.story, this);
     if (!this.flags.stage) this.beginStory();
-    this.world.addChild(this.ground, this.steamLayer, this.people, this.overlay);
+    this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.objective, this.chapter, this.meter, this.toastLabel, this.dialog.view, this.cover, this.caption);
+    this.hud.addChild(this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.cover, this.caption);
+    this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
     this.dialog.view.on("pointertap", (e) => this.tapDialog(e.global.x, e.global.y));
@@ -99,7 +155,7 @@ export class ExploreScene implements Scene, StoryHost {
     const sp = this.story.start;
     this.load(s.map && this.maps[s.map] ? s.map : sp.map, s.x, s.y, s.facing ?? sp.facing);
     const fl = String(this.flags.follow ?? ""); if (fl) this.follow(fl.split(","));
-    if (this.flags.ended) this.end("prologue"); else this.save("auto");
+    if (this.flags.ended) this.end(this.flags.ended === true ? "prologue" : String(this.flags.ended)); else this.save("auto");
   }
 
   private beginStory(): void {
@@ -122,7 +178,11 @@ export class ExploreScene implements Scene, StoryHost {
     this.ground.texture?.destroy(true);
     this.ground.texture = pixelTexture(bakeMap(this.map, { burnt: id === "larkfold" && !!this.flags.ash }));
     this.trail = []; this.steam.clear(); this.hp = 100; this.zonesIn.clear(); this.settle = true;
+    this.regionNow = this.currentRegion();
+    if (this.regionNow && this.game?.flags && REGIONS[this.regionNow]?.kind === "hidden") this.enterRegion(this.regionNow); // arriving straight into a hidden land finds it
+    if (this.untilEncounter <= 0) this.untilEncounter = this.encounterGap();
     this.lastTile = this.tileKey();
+    if (this.screen.w) { this.zoom = this.zoomFor(this.screen.w, this.screen.h); this.world.scale.set(this.zoom); }
     for (const f of this.followers) { f.sprite.x = this.player.x; f.sprite.y = this.player.y; }
     this.refresh();
   }
@@ -142,13 +202,62 @@ export class ExploreScene implements Scene, StoryHost {
     if (!this.player.sprite.parent) this.people.addChild(this.player.sprite);
     const stage = String(this.flags.stage ?? "");
     this.objective.text = this.story.objectives[stage] ?? "";
-    this.chapter.text = String(this.flags.chapter ?? this.story.title);
+    this.chapter.text = String(this.flags.chapter ?? this.story.title) + (this.flags.rank ? `  ·  ${this.flags.rank}` : "");
     if (this.game.width) this.chapter.x = this.game.width - this.chapter.width - 16;
     const light = LIGHT[String(this.flags.light ?? "day")] ?? LIGHT.day;
     const indoor = INDOORS.has(this.map.file.id) && this.flags.light !== "evening" && this.flags.light !== "steam";
     this.overlay.clear();
     if (!indoor && light.alpha > 0) this.overlay.rect(0, 0, this.map.width * TILE, this.map.height * TILE).fill({ color: light.color, alpha: light.alpha });
+    this.drawFog();
     this.drawMeter();
+  }
+
+  // ---- the world map: regions, hidden lands, places, chance meetings ----
+
+  private currentRegion(): string | null { const [tx, ty] = this.feetTile(); return this.map.regionAt(tx, ty); }
+  private encounterGap(): number { return ENCOUNTER_EVERY[0] + Math.floor(this.rng() * ENCOUNTER_EVERY[1]); }
+
+  /** Hidden lands are under mist until someone walks into them. */
+  private drawFog(): void {
+    this.fog.clear();
+    if (!this.map.file.world) return;
+    const t = this.game.playSeconds;
+    for (let ty = 0; ty < this.map.height; ty++) for (let tx = 0; tx < this.map.width; tx++) {
+      const r = this.map.regionAt(tx, ty);
+      if (!r || REGIONS[r]?.kind !== "hidden" || this.flags[`found.${r}`]) continue;
+      this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0xc8d0da, alpha: 0.86 + 0.06 * Math.sin(tx * 0.7 + ty * 0.5 + t) });
+    }
+  }
+
+  /** Names the region, and finds it if it's one of the hidden lands. */
+  private enterRegion(r: string): void {
+    const info = REGIONS[r]; if (!info) return;
+    if (info.kind === "hidden" && !this.flags[`found.${r}`]) { this.flags[`found.${r}`] = true; this.drawFog(); this.showBanner(`You have found ${info.name}\n${info.biome}`); this.save("auto"); }
+    else this.showBanner(`${info.name}\n${info.biome}`);
+  }
+
+  private showBanner(text: string): void { this.banner.text = text; this.bannerTime = 3.2; }
+
+  /** On the world map, each new tile: a new region, a hidden land found, a place underfoot, or a chance meeting. */
+  private worldStep(tx: number, ty: number): boolean {
+    const r = this.map.regionAt(tx, ty);
+    if (r && r !== this.regionNow) { this.regionNow = r; this.enterRegion(r); }
+    const place = this.map.placeAt(tx, ty);
+    if (place) { this.toast(`${place.name}. There is nothing for Rhea there yet.`); return true; }
+    const k = this.map.kindAt(tx, ty);
+    if (k && (WILD.has(k) || k === "road") && !this.flags.noWild && r) {
+      this.untilEncounter -= k === "road" ? 0.5 : 1;
+      if (this.untilEncounter <= 0) { this.untilEncounter = this.encounterGap(); this.meet(r, k); return true; }
+    }
+    return false;
+  }
+
+  /** A chance meeting: a fight drawn from the region and the ground, with whoever is travelling with the hero. */
+  meet(region: string, ground: Parameters<typeof encounter>[1]): void {
+    const party = this.followers.map((f) => ({ id: f.id, name: this.story.cast[f.id] ?? f.id }));
+    const def = encounter(region, ground, this.hero(), party, this.rng);
+    if (def.units.every((u) => u.side === "foe")) return;
+    this.startBattle(def);
   }
 
   private placeActor(sprite: Sprite, a: Actor): void {
@@ -168,13 +277,15 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   resize(w: number, h: number): void {
-    this.zoom = Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H)));
+    this.screen = { w, h };
+    this.zoom = this.zoomFor(w, h);
     this.world.scale.set(this.zoom);
     this.dialog.resize(w, h);
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
     this.meter.x = w - 160; this.meter.y = 34;
     this.toastLabel.x = 16; this.toastLabel.y = 56;
+    this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
     if (this.ended) { this.ended.x = w / 2; this.ended.y = h / 2; }
@@ -210,27 +321,23 @@ export class ExploreScene implements Scene, StoryHost {
 
   battle(id: string, done: () => void): void { this.startBattle(id, done); }
 
-  end(_id: string): void {
-    const f = this.flags, hold = Number(f.hold ?? 50);
-    const refusal: Record<string, string> = { duty: "for the three hundred in the lowlands", cold: "coldly, asking if he trusted a Warden over the elders", stay: "asking him to stay and fight with her" };
-    const t = new Text({ text: [
-      f.evening === "on" ? "You don't hear Finch knock." : "Finch looks up when you come in.",
-      "",
-      `Corran's hold: ${hold} of 100. ${hold >= 55 ? "He is holding on." : hold >= 40 ? "It's slipping." : "He is already sliding."}`,
-      `Lull rings: ${Number(f["rings.corran"] ?? 0)}`,
-      `Finch's trust in Rhea: ${Number(f.finchTrust ?? 50)} of 100`,
-      `Rhea refused ${refusal[String(f.refusal)] ?? "-"}`,
-      `Sela: ${f.sela ? "bought out. A future companion." : "left in the cart."}`,
-      `Mother's notes: ${Number(f.notes ?? 0)} of 4 found`,
-      "",
-      "Act I starts here: Rhea joins the Commons Army as a Recruit, and these choices carry into every interlude.",
-      "",
-      "Press Enter to play again",
-    ].join("\n"), style: { fontFamily: "Georgia, serif", fontSize: 18, fill: "#efe6d2", align: "center", lineHeight: 28, wordWrap: true, wordWrapWidth: Math.min(700, this.game.width - 40) } });
+  /** Where an act ends: a ledger of what the player's choices have done so far, then on to what comes next. */
+  end(id: string): void {
+    const t = new Text({ text: ledger(id, this.flags).join("\n"), style: { fontFamily: "Georgia, serif", fontSize: 18, fill: "#efe6d2", align: "center", lineHeight: 28, wordWrap: true, wordWrapWidth: Math.min(700, this.game.width - 40) } });
     t.anchor.set(0.5); t.x = this.game.width / 2; t.y = this.game.height / 2;
     this.cover.alpha = 0.92; this.ended = t; this.hud.addChild(t);
-    f.ended = true;
+    this.flags.ended = id;
     this.save("auto");
+  }
+
+  /** After an act's ledger: the next act, or (after the last one written) a new game. */
+  private carryOn(): void {
+    const id = String(this.flags.ended);
+    this.ended?.destroy(); this.ended = null; this.cover.alpha = 0;
+    this.flags.ended = false;
+    const next = NEXT_ACT[id];
+    if (next && this.story.scripts[next]) { this.runner.run([{ run: next }]); return; }
+    this.restart();
   }
 
   /** Starts a new run of the story from the top. */
@@ -244,14 +351,15 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Puts a battle over the map; on a win, records it, shares out experience, and continues the story. */
-  startBattle(id: string, onWin?: () => void): void {
-    const def = BATTLES[id]; if (!def) throw new Error(`no battle ${id}`);
+  startBattle(which: string | BattleDef, onWin?: () => void): void {
+    const def = typeof which === "string" ? BATTLES[which] : which; if (!def) throw new Error(`no battle ${String(which)}`);
+    const id = def.id;
     this.game.scenes.push(new BattleScene(def, SKILLS, {
       levels: this.game.levels(),
       gear: this.game.gear,
       kith: this.game.kith,
       onDone: (_r, s) => {
-        this.game.flags[`won.${id}`] = true;
+        if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
         const ups = s.units.filter((u) => u.side === "ally" && u.cast).flatMap((u) => this.game.giveXp(u.cast!, xp, u.name));
@@ -319,6 +427,7 @@ export class ExploreScene implements Scene, StoryHost {
       this.lastTile = key;
       const st = this.story.steps.find((s) => s.map === w.map && s.at[0] === tx && s.at[1] === ty && holds(s.when, w));
       if (st) { this.runner.run(st.do); return; }
+      if (this.map.file.world && this.worldStep(tx, ty)) return;
     }
     this.story.zones.forEach((z, i) => {
       if (z.map !== w.map) return;
@@ -352,7 +461,8 @@ export class ExploreScene implements Scene, StoryHost {
       }
     }
     const t = this.game.playSeconds;
-    for (const c of this.steam) { const [x, y] = c.split(",").map(Number); this.steamLayer.rect(x * TILE, y * TILE, TILE, TILE).fill({ color: 0xeef2f4, alpha: 0.5 + 0.15 * Math.sin(t * 3 + x + y) }); }
+    const fire = hz.kind === "fire";
+    for (const c of this.steam) { const [x, y] = c.split(",").map(Number); const fl = Math.sin(t * (fire ? 9 : 3) + x * 1.7 + y); this.steamLayer.rect(x * TILE, y * TILE, TILE, TILE).fill(fire ? { color: fl > 0.3 ? 0xf2a040 : 0xd0501a, alpha: 0.55 + 0.2 * fl } : { color: 0xeef2f4, alpha: 0.5 + 0.15 * fl }); }
     const [tx, ty] = this.feetTile();
     if (this.steam.has(`${tx},${ty}`)) {
       this.hp -= hz.burn * dt; this.drawMeter();
@@ -363,6 +473,7 @@ export class ExploreScene implements Scene, StoryHost {
   update(dt: number): void {
     const inp = this.game.input;
     if (this.toastTime > 0) { this.toastTime -= dt; if (this.toastTime <= 0) this.toastLabel.text = ""; }
+    if (this.bannerTime > 0) { this.bannerTime -= dt; this.banner.alpha = Math.min(1, this.bannerTime / 0.6); if (this.bannerTime <= 0) this.banner.text = ""; }
     this.player.moving = false;
     if (this.fading) {
       const f = this.fading; f.t += dt;
@@ -372,7 +483,7 @@ export class ExploreScene implements Scene, StoryHost {
       if (f.t >= 2.5) { this.fading = null; this.cover.alpha = 0; this.caption.alpha = 0; }
       return;
     }
-    if (this.ended) { if (inp.wasPressed("confirm")) this.restart(); return; }
+    if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
       if (this.dialog.choosing) {
@@ -395,7 +506,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.player.moving = a.x !== 0 || a.y !== 0;
     if (!this.player.moving) return;
     if (a.x) this.player.facing = a.x > 0 ? "right" : "left"; else this.player.facing = a.y > 0 ? "down" : "up";
-    const len = Math.hypot(a.x, a.y), sp = (inp.isHeld("run") ? RUN : WALK) * dt;
+    const len = Math.hypot(a.x, a.y), sp = (inp.isHeld("run") ? RUN : WALK) * dt * (this.map.file.world ? WORLD_PACE : 1);
     const bx = this.player.x + BOX.ox, by = this.player.y + BOX.oy;
     const moved = this.map.move(bx, by, BOX.w, BOX.h, (a.x / len) * sp, (a.y / len) * sp);
     let nx = moved.x, ny = moved.y;
@@ -441,11 +552,18 @@ export class ExploreScene implements Scene, StoryHost {
     const cx = mw <= vw ? (mw - vw) / 2 : Math.max(0, Math.min(mw - vw, p.x + 6 - vw / 2));
     const cy = mh <= vh ? (mh - vh) / 2 : Math.max(0, Math.min(mh - vh, p.y + 9 - vh / 2));
     this.world.x = -Math.round(cx) * this.zoom; this.world.y = -Math.round(cy) * this.zoom;
+    // on the world map, name the nearest place within two tiles
+    this.placeLabel.text = "";
+    if (this.map.file.world) {
+      const fx = p.x + 6, fy = p.y + 12;
+      const near = (this.map.file.places ?? []).map((pl) => ({ pl, d: Math.hypot(pl.x * TILE + 8 - fx, pl.y * TILE + 8 - fy) })).filter((x) => x.d < TILE * 2.2).sort((a, b) => a.d - b.d)[0];
+      if (near) { this.placeLabel.text = near.pl.name; this.placeLabel.x = (near.pl.x * TILE + 8 - Math.round(cx)) * this.zoom; this.placeLabel.y = (near.pl.y * TILE - 2 - Math.round(cy)) * this.zoom; }
+    }
   }
 
   /** Read-only view for tests and debugging. */
   debug() {
     return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
-      stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp };
+      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp };
   }
 }

@@ -32,6 +32,18 @@ CAST = {
     "halloran": (V(("am_onyx", .5), ("bm_george", .5)), 0.9, -1.5),
     "lisle": (V(("bf_alice", .5), ("af_heart", .5)), 0.98, 0),
     "warden": (V(("am_fenrir", 1)), 1.0, -1),
+    # Act I
+    "kane": (V(("am_michael", .6), ("bm_lewis", .4)), 1.02, 0),
+    "brannoc": (V(("am_onyx", .7), ("am_santa", .3)), 0.88, -2.5),
+    "innkeeper": (V(("bm_george", .5), ("am_eric", .5)), 0.95, -1),
+    "ferris": (V(("am_liam", 1)), 1.08, 0.5),
+    "cartwarden": (V(("am_fenrir", .6), ("bm_george", .4)), 0.95, -1.5),
+    "reeve": (V(("af_sarah", 1)), 0.95, -1),
+    "oren": (V(("bm_george", .4), ("am_adam", .6)), 0.88, -2.5),
+    "woman": (V(("af_nicole", 1)), 1.0, 0),
+    "ketti": (V(("af_sky", 1)), 1.05, 2.5),
+    "nurse": (V(("af_river", 1)), 0.98, 0),
+    "soldier": (V(("am_eric", 1)), 1.0, 0),
 }
 
 def clean(t): return re.sub(r"\s+", " ", re.sub("[“”\"]", "", t)).strip()

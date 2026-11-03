@@ -13,7 +13,7 @@ import {
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
 } from "./rules";
 import {
-  CH, CW, HUD_FONT, LOOK_TOP, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
+  CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
 } from "./art";
 
@@ -149,7 +149,7 @@ export class BattleScene implements Scene {
 
   // ---------------- positions ----------------
   private pos(u: Unit): [number, number] { const v = this.vis.get(u.id)!; return [u.at[0] + v.ox + v.kx, u.at[1] + v.oy - v.hop]; }
-  private top(u: Unit): number { return this.pos(u)[1] - (LOOK_TOP[u.look] ?? 40); }
+  private top(u: Unit): number { return this.pos(u)[1] - (LOOK_TOP[lookKind(u.look)] ?? 40); }
   private dirOf(u: Unit): number { return u.side === "ally" ? 1 : -1; }
 
   // ---------------- coroutines ----------------
@@ -353,7 +353,7 @@ export class BattleScene implements Scene {
     const won = this.s.phase === "won";
     yield 0.9;
     if (won) for (const u of this.s.units) if (u.side === "ally" && alive(u)) this.vis.get(u.id)!.pose = "cheer";
-    this.say(won ? (this.s.routed ? "They break and run" : "The trail goes quiet") : "Driven back up the trail", won);
+    this.say(won ? (this.s.routed ? "They break and run" : this.def.won ?? "The trail goes quiet") : this.def.lost ?? "Driven back up the trail", won);
     this.mode = "over";
   }
 
@@ -452,7 +452,8 @@ export class BattleScene implements Scene {
     const order = s.units.filter((u) => !this.vis.get(u.id)!.out).sort((a, b) => this.pos(a)[1] - this.pos(b)[1]);
     for (const u of order) {
       const v = this.vis.get(u.id)!, [x, y] = this.pos(u);
-      const flip = u.look === "ash" ? v.flee : u.look === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
+      const lk = lookKind(u.look);
+      const flip = lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
       const pose = { t: T + x * 0.1, run: v.pose === "run" ? v.run : 0, lunge: v.pose === "lunge", brace: v.pose === "brace" || v.pose === "guard" || (this.qte?.mode === "brace" && this.qte.target === u.id), bow: v.pose === "aim" && u.look === "archer" ? 1 : undefined, cast: v.pose === "cast" || v.pose === "aim" && u.look !== "archer" || v.pose === "cheer", shout: v.pose === "cheer", flash: v.flash, flip, fall: v.fall };
       withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose, this.builds[u.id]));
     }

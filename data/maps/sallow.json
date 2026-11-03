@@ -1,0 +1,24 @@
+{
+ "id": "sallow",
+ "name": "The Sallow hatchery",
+ "music": "hatchery",
+ "legend": {"B": "brick", ".": "cobble", "d": "door", "x": "crate", "H": "hay", "F": "fire", ",": "grass", "T": "tree", "e": "exit", "b": "boiler"},
+ "rows": [
+  "BBBBBBBBBBBBBBBBBBBBBBBBBB",
+  "BBBBBBBbBBBBdBBBBbBBBBBBBB",
+  "B........................B",
+  "B..xx..............xx....B",
+  "B........................B",
+  "B...H..........FF....H...B",
+  "B........................B",
+  "B......F.................B",
+  "B..xx...............xx...B",
+  "B........................B",
+  "B........................B",
+  "BBBBBBBBBBB....BBBBBBBBBBB",
+  ",,,,,,,,,,,....,,,,,,,,,,,",
+  ",,,,,,,,,,,....,,,,,,,,,,,",
+  "TTTTTTTTTTTeeeeTTTTTTTTTTT"
+ ],
+ "entities": [{"id": "start", "kind": "spawn", "x": 12, "y": 13}]
+}

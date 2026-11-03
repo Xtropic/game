@@ -22,7 +22,7 @@ A story-driven RPG built in TypeScript with PixiJS. The world is drawn as pixel 
 - `src/ui`, `src/audio` - dialogue box with talking portraits, recorded voice playback
 - `public/vo` - recorded voice lines (generated, see below); `public/portraits` - painted portrait art, when it exists
 - `tools/voice` - records every spoken line in the data
-- `tests/unit` - Vitest rule tests; `tests/e2e` - browser play tests (explore, a full battle, and the whole prologue)
+- `tests/unit` - Vitest rule tests; `tests/e2e` - browser play tests (explore, a full battle, the whole prologue, and Act I)
 
 ## Controls
 
@@ -37,6 +37,12 @@ The trail battle comes on the night of the greenling run, partway through the pr
 `data/story/prologue.json` holds the whole prologue, ported from the prototype: day one in Larkfold (Finch, Smoke and the foal song, the brood caves, Corran on the roof), the deaths in Millbridge, Corran begging Rhea to leave, the night run and the trail fight, the burning, and Corran's first interlude in Vantry (the carts, the hatchery steam, Dr Lisle's lulls, the tin), ending on a summary of the choices made.
 
 The story is data, not code. `actors` say who stands where and when (`when` takes a stage, flags, the hero or the map), `steps` are doors and other tiles that do something when walked onto, `zones` fire on entering an area, `looks` answer Enter on a kind of tile, `songs` answer Q, `hazards` are things like the hatchery steam, and `scripts` hold the shared scenes. A script is a list of steps: `say`, `choose` (options can be said aloud with `by`), `if`, `set`/`add` flags, `stage`, `follow`, `fade`, `goto`, `battle`, `run`, `hero`, `chapter` and `end`. Stage, choices, Corran's hold, his lull rings and the rest live in the save's flags. `npm test` checks every script, map, battle and speaker a story names exists, and plays the prologue's scripts through; `tests/e2e/prologue.mjs` plays all of it in a browser.
+
+## The world map and Act I
+
+`data/maps/ostrel.json` is the world map of Ostrel, 96 x 64 tiles, made by `python3 tools/world/gen.py` from a plan of the 25 regions (a seed point, a biome and a size each): highland terraces in the cloud, the mountain wall and its passes, the river Kerrow from the Cloudline to the sea, the Millcities' canals, deserts in the south-east, and roads between 18 places found by a cheapest-path search. A second layer of rows says which region each tile is in. The world map is walked faster than other maps and shown one zoom step further out. Walking into a new region names it; the five hidden lands are under mist until someone walks in, and stay found. Off the road, wild kith of the region come out now and then (reedcats and loftbucks for now, in the region's coat colours and at its danger level), and Guild patrols walk the roads of Guild country (`src/battle/encounters.ts`); the foal song can calm a wild kith until it leaves. Places are entered by walking onto them; the story says what each one holds and when.
+
+`data/story/act1.json` is Act I, "The Commons", and follows straight on from the prologue's ending: a year of following the carts, the empty Larkfold cart at Ferrow Cross, Sergeant Brannoc, enlisting with Marshal Kane, the cart warden at Hob's Bend (Sela is in the cart if Corran paid for her), Millbridge's question about the brood (the truth wins Oren Tull; the elders' story wins the town at once), the Sallow hatchery and Ketti, and the first harvest at Larkfold, where nothing comes (Oda is in the spring caves). Rhea goes from Recruit to Sergeant to Lieutenant. Ferris joins if Rhea sings his reedcat down from under his tree. Story files are merged in order; doors and other triggers in later acts are checked first, so an act can give an old place something new to do. `join`, `leave`, `alone` and `regroup` steps manage who travels with the hero.
 
 ## Voices
 

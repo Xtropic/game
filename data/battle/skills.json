@@ -9,5 +9,7 @@
   "follow":  { "name": "Horn butt",  "note": "Follows a good hit",                  "kind": "melee",  "dmg": [3, 5] },
   "bow":     { "name": "Bow",        "note": "Ranged",                              "kind": "ranged", "dmg": [6, 9], "proj": "arrow", "icon": "arrow" },
   "pounce":  { "name": "Pounce",     "note": "Leaps at the back row",               "kind": "pounce", "dmg": [6, 10], "icon": "paw" },
-  "wstrike": { "name": "Strike",     "note": "Melee",                               "kind": "melee",  "dmg": [5, 9], "icon": "sword" }
+  "wstrike": { "name": "Strike",     "note": "Melee",                               "kind": "melee",  "dmg": [5, 9], "icon": "sword" },
+  "horns":   { "name": "Horn charge", "note": "Melee",                              "kind": "melee",  "dmg": [6, 9], "icon": "paw" },
+  "knife":   { "name": "Knife",      "note": "Melee, timed, quick",                 "kind": "melee",  "dmg": [5, 9] }
 }

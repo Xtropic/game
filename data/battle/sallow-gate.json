@@ -1,0 +1,142 @@
+{
+ "id": "sallow-gate",
+ "name": "The Sallow gate",
+ "backdrop": "fire",
+ "intro": [
+  "Wardens at the gate of the Sallow hatchery, and the brood house burning behind them.",
+  "Brannoc can guard an ally. Tamsin's smoke blinds."
+ ],
+ "won": "The gate is open",
+ "lost": "Driven back from the gate",
+ "units": [
+  {
+   "id": "rhea",
+   "name": "Rhea",
+   "look": "rhea",
+   "side": "ally",
+   "row": "front",
+   "cast": "rhea",
+   "skills": [
+    "strike",
+    "sing",
+    "rally"
+   ],
+   "at": [
+    86,
+    94
+   ]
+  },
+  {
+   "id": "ash",
+   "name": "Ash",
+   "look": "ash",
+   "side": "ally",
+   "row": "front",
+   "hp": 30,
+   "skills": [],
+   "kith": true,
+   "bonded": "rhea",
+   "at": [
+    62,
+    124
+   ]
+  },
+  {
+   "id": "brannoc",
+   "name": "Brannoc",
+   "look": "brannoc",
+   "side": "ally",
+   "row": "front",
+   "cast": "brannoc",
+   "skills": [
+    "strike",
+    "guard"
+   ],
+   "at": [
+    100,
+    122
+   ]
+  },
+  {
+   "id": "tam",
+   "name": "Tamsin",
+   "look": "tamsin",
+   "side": "ally",
+   "row": "back",
+   "cast": "tamsin",
+   "skills": [
+    "sling",
+    "smoke"
+   ],
+   "at": [
+    42,
+    104
+   ]
+  },
+  {
+   "id": "w1",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 4,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    168,
+    92
+   ]
+  },
+  {
+   "id": "rc",
+   "name": "Warden tracker",
+   "look": "reedcat:#d8d6d0",
+   "side": "foe",
+   "row": "front",
+   "hp": 22,
+   "kith": true,
+   "level": 4,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    160,
+    126
+   ]
+  },
+  {
+   "id": "w2",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 4,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    194,
+    110
+   ]
+  },
+  {
+   "id": "wa",
+   "name": "Warden archer",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 4,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    226,
+    98
+   ]
+  }
+ ]
+}

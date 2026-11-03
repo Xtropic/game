@@ -19,9 +19,21 @@ export const LOOKS: Record<string, Look> = {
   finch: { hair: "#7a5326", hairLight: "#9c6d38", skin: "#e8c39c", skinShade: "#c09772", coat: "#b88b3b", coatShade: "#946d2c", accent: "#6a4a2a", legs: "#4a3a2a", boots: "#2a2018" },
   kid: { hair: "#4a3020", hairLight: "#6a4630", skin: "#e0bb94", skinShade: "#b8916c", coat: "#7d6aa0", coatShade: "#5f4f80", accent: "#c9b98a", legs: "#3e352c", boots: "#2a221c" },
   kid2: { hair: "#c0904a", hairLight: "#d8aa62", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#a05a4a", coatShade: "#7e4538", accent: "#e0d0a8", legs: "#3e352c", boots: "#2a221c" },
+  // Act I
+  brannoc: { hair: "#4a3a2a", hairLight: "#6a5a48", skin: "#c89a78", skinShade: "#a07858", coat: "#5a4a3a", coatShade: "#42362a", accent: "#6a7a4a", legs: "#3a3028", boots: "#221a14" },
+  kane: { hair: "#2a2420", hairLight: "#4a4038", skin: "#d8b08a", skinShade: "#b08866", coat: "#6a2a2a", coatShade: "#4e1e1e", accent: "#c9a86a", legs: "#2e2a26", boots: "#1a1614" },
+  ketti: { hair: "#8a3a1e", hairLight: "#b4562e", skin: "#f0cfb2", skinShade: "#d2a88a", coat: "#6a5a3a", coatShade: "#4e4228", accent: "#9a8a6a", legs: "#3a3228", boots: "#241c16" },
+  ferris: { hair: "#6a4a2a", hairLight: "#8a6a3a", skin: "#e2b894", skinShade: "#ba9270", coat: "#5a6a3a", coatShade: "#44522c", accent: "#8a7a4a", legs: "#3a3a2a", boots: "#24221a" },
+  oren: { hair: "#8a8278", hairLight: "#aaa298", skin: "#d0a884", skinShade: "#a88262", coat: "#7a6e60", coatShade: "#5e5448", accent: "#c8c0b0", legs: "#4a4238", boots: "#2a241e" },
+  folk: { hair: "#5a3a2a", hairLight: "#7a5a42", skin: "#dcb090", skinShade: "#b48a6c", coat: "#7a6a4a", coatShade: "#5e5038", accent: "#d8ccb0", legs: "#4a3e30", boots: "#2a221a" },
+  folk2: { hair: "#c8b890", hairLight: "#e0d4b0", skin: "#e8c4a4", skinShade: "#c09c80", coat: "#4a6a7a", coatShade: "#38525e", accent: "#a84a3a", legs: "#3a3a3a", boots: "#222" },
+  reeve: { hair: "#3a3a3a", hairLight: "#5a5a5a", skin: "#d4aa86", skinShade: "#ac8464", coat: "#2a3a5a", coatShade: "#1e2a44", accent: "#c9a86a", legs: "#2a2a30", boots: "#18181c" },
+  soldier: { hair: "#4a3020", hairLight: "#6a4630", skin: "#d8b08c", skinShade: "#b08866", coat: "#6a4a3a", coatShade: "#4e362a", accent: "#7a2a2a", legs: "#3a3028", boots: "#221a14" },
+  cartwarden: { hair: "#2b2b2b", hairLight: "#8e959b", skin: "#e0b896", skinShade: "#b88e6c", coat: "#6a7076", coatShade: "#4c5258", accent: "#8a2a24", legs: "#34373a", boots: "#1a1a1a" },
+  kid3: { hair: "#2a1a10", hairLight: "#4a3020", skin: "#c8a07a", skinShade: "#a07c5a", coat: "#8a8a7a", coatShade: "#6a6a5c", accent: "#5a5a50", legs: "#3e352c", boots: "#2a221c" },
 };
 /** Children are drawn shorter: the same body with fewer torso and leg rows. */
-export const SMALL = new Set(["finch", "kid", "kid2"]);
+export const SMALL = new Set(["finch", "kid", "kid2", "kid3", "ketti"]);
 
 // 12 wide; o outline, h/H hair, s/S skin, e eye, c/C coat, r accent, l legs, b boots
 const BODY: Record<Facing, string[]> = {

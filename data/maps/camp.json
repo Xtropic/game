@@ -1,0 +1,24 @@
+{
+ "id": "camp",
+ "name": "The Commons camp",
+ "music": "camp",
+ "legend": {"T": "tree", ",": "grass", ".": "path", "A": "tent", "F": "campfire", "H": "hay", "x": "crate", "e": "exit"},
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,TTT",
+  "T,,AA,,,AA,,,,AAAA,,,,,,,,TT",
+  "T,,AA,,,AA,,,,AAAA,,,,,,,,,T",
+  "T,,,,,,,,,,,,,,..,,,,,,,,,,T",
+  "T,,,,,,,,,,,,,,..,,,,,,,,,,T",
+  "T,,AA,,F,,AA,,,..,,,,,F,,,,T",
+  "T,,AA,,,,,AA,,,..,,,,,,,,T,T",
+  "T,,,,,,,,,,,,,,..,,,,,,,,,,T",
+  "e..............,,,,,,,,,,,,T",
+  "e..............,,,,,,,,,,,,T",
+  "T,,AA,,,AA,,,HH,,,,,,,,,,,,T",
+  "T,,AA,,,AA,,,HH,,,,xx,,,,,,T",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "TTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [{"id": "start", "kind": "spawn", "x": 1, "y": 9}]
+}
