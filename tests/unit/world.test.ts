@@ -39,6 +39,13 @@ describe("the world map of Ostrel", () => {
     expect([...walkable].sort()).toEqual(Object.keys(REGIONS).sort());
   });
 
+  it("every region has at least two villages, towns or cities", () => {
+    const settled = new Set(["village", "town", "city", "port", "castle", "palace", "fort", "college"]);
+    const count = new Map<string, number>();
+    for (const p of MAPS.ostrel.places!) if (settled.has(p.icon)) { const r = world.regionAt(p.x, p.y)!; count.set(r, (count.get(r) ?? 0) + 1); }
+    for (const r of Object.keys(REGIONS)) expect(count.get(r) ?? 0, r).toBeGreaterThanOrEqual(2);
+  });
+
   it("each place stands in the region it belongs to", () => {
     const at = (id: string) => { const p = MAPS.ostrel.places!.find((x) => x.id === id)!; return world.regionAt(p.x, p.y); };
     expect(at("larkfold")).toBe("cloudline");

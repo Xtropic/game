@@ -32,7 +32,7 @@ REGIONS = [
     ("drevka", 80, 20, "highland", 1.1), ("cloudline", 19, 21, "terraces", 1.25), ("cloud-forest", 34, 21, "cloudwood", 0.9),
     ("vael", 5, 12, "spires", 0.55), ("kerrow-gorge", 47, 27, "gorge", 0.7), ("old-drove-road", 61, 27, "uplands", 0.95),
     ("millbridge", 36, 35, "river", 0.8), ("hollin", 21, 36, "orchards", 1.0), ("corvane", 61, 37, "hilltowns", 0.9),
-    ("millcities", 46, 42, "mills", 0.95), ("low-water", 44, 44, "mills", 0.25), ("guild", 53, 50, "hatchery", 0.85),
+    ("millcities", 46, 42, "mills", 0.95), ("low-water", 44, 44, "mills", 0.65), ("guild", 53, 50, "hatchery", 0.85),
     ("crown", 38, 53, "parks", 1.0), ("college", 27, 46, "lowland", 0.8), ("fens", 14, 50, "fen", 0.95),
     ("ashby", 12, 59, "coast", 0.7), ("salt-house", 30, 61, "saltmarsh", 0.6), ("tarsis", 74, 39, "steppe", 1.0),
     ("wandering-herd", 89, 33, "plateau", 0.9), ("ember", 72, 54, "desert", 1.0), ("deep-desert", 88, 55, "dunes", 0.9),
@@ -159,6 +159,72 @@ PLACES = [
     ("kingsmere", "Kingsmere", 38, 54, "castle"), ("ashby", "Port Ashby", 12, 58, "port"), ("tarsis", "Tarsis", 74, 40, "fort"),
     ("ember", "The Ember Courts", 72, 55, "palace"), ("umes", "Ume's terraces", 14, 24, "village"), ("thornwick", "Thornwick", 27, 25, "ruins"),
 ]
+# every region has at least two settlements: the story's places above, then these, set down where there is room
+SETTLED = {"village", "town", "city", "port", "castle", "palace", "fort", "college"}
+HIDDEN = {"vael", "low-water", "osk", "salt-house", "wandering-herd"}
+EXTRA = {
+    "guild": [("coldhatch", "Coldhatch", "village")],
+    "crown": [("queensford", "Queensford", "town")],
+    "millcities": [("cinderwick", "Cinderwick", "city"), ("lockside", "Lockside", "town")],
+    "millbridge": [("weirbank", "Weirbank", "village")],
+    "cloudline": [("highmoss", "Highmoss", "village")],
+    "corvane": [("tallyhill", "Tallyhill", "town")],
+    "hollin": [("applegarth", "Applegarth", "village")],
+    "college": [("lanthorn", "Lanthorn", "town")],
+    "drevka": [("grazehold", "Grazehold", "village")],
+    "ember": [("duskwell", "Duskwell", "town")],
+    "tarsis": [("dry-hollow", "Dry Hollow", "village")],
+    "ashby": [("gullstair", "Gullstair", "village")],
+    "lorne": [("frostmere", "Frostmere", "town")],
+    "vael": [("highspire", "Highspire", "village"), ("ropeway", "Ropeway", "village")],
+    "low-water": [("candle-galleries", "The Candle Galleries", "village"), ("lockkeepers-deep", "Lockkeeper's Deep", "village")],
+    "osk": [("cinder-landing", "Cinder Landing", "village"), ("pumice", "Pumice", "village")],
+    "salt-house": [("salt-house", "The Salt House", "town"), ("brinepans", "Brinepans", "village")],
+    "wandering-herd": [("summer-fold", "Summer Fold", "village"), ("stone-rings", "Stone Rings", "village")],
+    "cloud-forest": [("dripstone", "Dripstone", "village"), ("mistfold", "Mistfold", "village")],
+    "high-passes": [("cairn-hostel", "Cairn Hostel", "village"), ("snowgate", "Snowgate", "fort")],
+    "kerrow-gorge": [("kerrow", "Kerrow", "village"), ("ropebridge", "Ropebridge", "village")],
+    "fens": [("peatmoor", "Peatmoor", "village"), ("reedhythe", "Reedhythe", "village")],
+    "deep-desert": [("last-well", "Last Well", "village"), ("glassdune", "Glassdune", "village")],
+    "storm-roost": [("stormwatch", "Stormwatch", "fort"), ("roost-foot", "Roost Foot", "village")],
+    "old-drove-road": [("drovers-halt", "Drovers' Halt", "village"), ("longbarrow", "Longbarrow", "village")],
+}
+UNBUILDABLE = ("sea", "cloud", "spire", "river", "canal", "shoal", "mount", "bridge")
+def edge_dist(x, y, ri, cap=4):
+    for d in range(1, cap + 1):
+        for dx in range(-d, d + 1):
+            for dy in (-d, d):
+                for ax, ay in ((x + dx, y + dy), (x + dy, y + dx)):
+                    if not (0 <= ax < W and 0 <= ay < H) or region[ay][ax] != ri: return d
+    return cap + 1
+NEW_ROADS = []
+# only build where Rhea can walk to (before roads cut passes): flood from Larkfold
+BLOCK = ("sea", "cloud", "spire", "river", "canal", "mount")
+reach, todo = {(22, 21)}, [(22, 21)]
+while todo:
+    x, y = todo.pop()
+    for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+        if 0 <= nx < W and 0 <= ny < H and (nx, ny) not in reach and grid[ny][nx] not in BLOCK: reach.add((nx, ny)); todo.append((nx, ny))
+for rid, extra in EXTRA.items():
+    ri = RI[rid]
+    room = 3 if sum(row.count(ri) for row in region) > 40 else 2   # the Low Water galleries are small
+    have = sum(1 for p in PLACES if p[4] in SETTLED and region[p[3]][p[2]] == ri)
+    for pid, name, icon in extra:
+        best, at = -1e9, None
+        for y in range(2, H - 3):
+            for x in range(2, W - 2):
+                if region[y][x] != ri or grid[y][x] in UNBUILDABLE or grid[y + 1][x] in UNBUILDABLE or (x, y) not in reach or (x, y + 1) not in reach: continue
+                near = min(math.hypot(x - p[2], y - p[3]) for p in PLACES)
+                if near < room: continue
+                score = min(near, 9) + 1.5 * edge_dist(x, y, ri) + noise(x, y)
+                if score > best: best, at = score, (x, y)
+        assert at, f"no room for {name} in {rid}"
+        # roads: hidden lands keep to themselves (a road only to a neighbour in the same land); the rest join the nearest place
+        same = [p for p in PLACES if region[p[3]][p[2]] == ri]
+        pool = same if rid in HIDDEN else PLACES
+        if pool: NEW_ROADS.append((pid, min(pool, key=lambda p: math.hypot(p[2] - at[0], p[3] - at[1]))[0]))
+        PLACES.append((pid, name, at[0], at[1], icon)); have += 1
+    assert have >= 2, f"{rid} has {have} settlements"
 for _, _, x, y, _ in PLACES:
     for dx in (-1, 0, 1):
         for dy in (-1, 0, 1):
@@ -188,7 +254,7 @@ def path(a, b):
 P = {p[0]: (p[2], p[3]) for p in PLACES}
 ROADS = [("larkfold", "thornwick"), ("thornwick", "ferrow"), ("ferrow", "millbridge"), ("millbridge", "bend"), ("bend", "sallow"), ("sallow", "vantry"),
          ("bend", "camp"), ("bend", "corvane"), ("millbridge", "hollin"), ("hollin", "college"), ("college", "kingsmere"), ("kingsmere", "vantry"),
-         ("college", "ashby"), ("corvane", "tarsis"), ("tarsis", "ember"), ("camp", "kestrel-fort"), ("ferrow", "holm"), ("larkfold", "umes")]
+         ("college", "ashby"), ("corvane", "tarsis"), ("tarsis", "ember"), ("camp", "kestrel-fort"), ("ferrow", "holm"), ("larkfold", "umes")] + NEW_ROADS
 for a, b in ROADS:
     for x, y in path(P[a], P[b]):
         k = grid[y][x]
