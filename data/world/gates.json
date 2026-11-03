@@ -1,7 +1,120 @@
 {
-  "note": "Which parts of Ostrel Rhea can walk into. Regions in 'open' are open from the start; any other region opens when the story sets the flag open.<region>. 'routes' are road journeys the story needs: the road tiles between those places stay walkable even where they cross a closed region. 'why' is what Rhea is told when she walks up to a closed border.",
-  "open": ["cloudline", "millbridge", "millcities", "old-drove-road", "kerrow-gorge", "vael"],
-  "routes": [["larkfold", "thornwick"], ["thornwick", "ferrow"], ["ferrow", "millbridge"], ["millbridge", "bend"], ["bend", "sallow"], ["bend", "camp"], ["larkfold", "umes"]],
+  "note": "Which parts of Ostrel Rhea can reach. The map is closed except for the places that matter right now: story places for the current stage, places where a recruit can be found, and rare finds that are there to be found at that point. Each open place opens the ground within 'reach' tiles of it, and the road from Larkfold to it. 'from' and 'until' are stages (in 'order'), 'when' is a story condition. A region can still be opened whole with the flag open.<region>. 'why' is what Rhea is told at the edge of the open ground.",
+  "reach": 3,
+  "hub": "larkfold",
+  "order": [
+    "d1",
+    "d1b",
+    "d2",
+    "d3",
+    "d4",
+    "n1",
+    "n2",
+    "n3",
+    "n3b",
+    "n4",
+    "n5",
+    "n6",
+    "i1",
+    "i1b",
+    "i2",
+    "i2b",
+    "i3",
+    "i4",
+    "a1",
+    "a1b",
+    "a2",
+    "a3",
+    "a3b",
+    "a3c",
+    "a4",
+    "a5",
+    "a6",
+    "a6b",
+    "a7",
+    "a7b",
+    "a7c"
+  ],
+  "places": {
+    "larkfold": {
+      "kind": "story",
+      "note": "Home. Always reachable; the harvest brings Rhea back in a7."
+    },
+    "thornwick": {
+      "kind": "story",
+      "from": "a1",
+      "note": "On the road down to Ferrow. The future base: seen in passing in Act I."
+    },
+    "ferrow": {
+      "kind": "story",
+      "from": "a1",
+      "note": "The Larkfold cart, and Brannoc."
+    },
+    "camp": {
+      "kind": "recruit",
+      "from": "a2",
+      "recruits": [
+        "ferris"
+      ],
+      "note": "The Commons camp. Ferris is treed by his reedcat here."
+    },
+    "millbridge": {
+      "kind": "story",
+      "from": "a3",
+      "recruits": [
+        "oren"
+      ],
+      "note": "On the road to Hob's Bend; won over in a5. Oren joins here."
+    },
+    "bend": {
+      "kind": "story",
+      "from": "a3",
+      "note": "The indenture cart."
+    },
+    "sallow": {
+      "kind": "story",
+      "from": "a6",
+      "note": "Kane's attack on the hatchery. Ruins afterwards."
+    }
+  },
+  "finds": [
+    {
+      "id": "duskwort",
+      "place": "thornwick",
+      "x": 25,
+      "y": 23,
+      "from": "a1",
+      "fitting": "charm-moss",
+      "text": "Duskwort, growing wild on the old monastery terraces. Healers dry a sprig to keep their hands steady."
+    },
+    {
+      "id": "drovebell",
+      "place": "camp",
+      "x": 57,
+      "y": 24,
+      "from": "a2",
+      "fitting": "charm-bell",
+      "text": "A drove bell, lost in the grass above the camp. Kith settle to the sound of it."
+    },
+    {
+      "id": "indenture",
+      "place": "bend",
+      "x": 42,
+      "y": 39,
+      "from": "a3c",
+      "fitting": "charm-number",
+      "text": "A brass indenture number, thrown from the cart. Nobody was ever stamped with it."
+    },
+    {
+      "id": "trayiron",
+      "place": "sallow",
+      "x": 52,
+      "y": 42,
+      "from": "a7",
+      "fitting": "head-hatchery",
+      "text": "A tray-iron from the burnt brood house, cooled in the ditch. Heavy enough to forge into something."
+    }
+  ],
   "why": {
     "guild": "Guild checkpoints ring Vantry. Without indenture papers, Rhea would be taken at the first one.",
     "crown": "Crown foresters patrol the royal parks. Anyone without a pass is turned back, or worse.",
@@ -21,6 +134,12 @@
     "low-water": "The canal stair is locked and chained.",
     "osk": "The shoals are under deep water. The tide won't drop for a long time yet.",
     "salt-house": "The salt marshes are a maze of sucking mud. Rhea would need someone who knows the way.",
-    "wandering-herd": "The eastern plateau is bare and endless. Rhea has no reason to go there yet."
+    "wandering-herd": "The eastern plateau is bare and endless. Rhea has no reason to go there yet.",
+    "cloudline": "The terrace clans don't want strangers on their slopes. Rhea keeps to the road.",
+    "millbridge": "Farmland and fences. Rhea has no business off the road here yet.",
+    "millcities": "The mill roads are full of Guild clerks checking papers. Better to keep to the road.",
+    "old-drove-road": "The drovers' grazing. Nothing out there for Rhea yet.",
+    "kerrow-gorge": "The gorge drops away into mist. There's no path down that Rhea knows.",
+    "vael": "The spire paths belong to the Spire Folk. Nobody climbs them without being asked."
   }
 }

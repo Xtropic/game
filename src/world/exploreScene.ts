@@ -10,8 +10,9 @@ import { encounter } from "../battle/encounters";
 import type { BattleDef } from "../battle/rules";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
-import { closedAt, closedWhy } from "./gates";
-import { LOOKS, SMALL, beastSheet, isBeast, noteTexture, personSheet, type Facing } from "../art/people";
+import { closedAt, closedWhy, findsNow, openPlaces } from "./gates";
+import { FITTINGS } from "../gear/weapons";
+import { LOOKS, SMALL, beastSheet, isBeast, glintTexture, noteTexture, personSheet, type Facing } from "../art/people";
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
@@ -118,6 +119,7 @@ export class ExploreScene implements Scene, StoryHost {
   private steamT = 0;
   private hp = 100;
   private noteTex = noteTexture();
+  private glintTex = glintTexture();
   /** After arriving somewhere, movement waits until the keys are let go, so holding a key doesn't walk straight back out. */
   private settle = false;
   private screen = { w: 0, h: 0 };
@@ -195,11 +197,11 @@ export class ExploreScene implements Scene, StoryHost {
   refresh(): void {
     for (const s of this.shown) s.sprite.destroy();
     this.shown = [];
-    for (const a of this.story.actors) {
+    for (const a of [...this.story.actors, ...this.findActors()]) {
       if (a.map !== this.map.file.id || !holds(a.when, this.where())) continue;
       if (this.followers.some((f) => f.id === a.id)) continue;
-      const frames = this.sheet(a.look);
-      const sprite = new Sprite(a.look === "note" ? this.noteTex : frames.down[0]);
+      const frames = this.sheet(a.look === "glint" ? "elder" : a.look);
+      const sprite = new Sprite(a.look === "note" ? this.noteTex : a.look === "glint" ? this.glintTex : frames.down[0]);
       this.placeActor(sprite, a);
       this.people.addChild(sprite); this.shown.push({ a, sprite, frames });
     }
@@ -218,6 +220,20 @@ export class ExploreScene implements Scene, StoryHost {
 
   // ---- the world map: regions, hidden lands, places, chance meetings ----
 
+  /** Rare finds lying on the world map right now, as things to pick up. */
+  private findActors(): Actor[] {
+    if (!this.map.file.world) return [];
+    return findsNow(this.flags).map((f) => ({
+      id: `find.${f.id}`, map: this.map.file.id, x: f.x, y: f.y, look: "glint", pickup: true,
+      talk: [{ set: { [`found.${f.id}`]: true }, add: { [`have.${f.fitting}`]: 1 } }, { say: "", text: f.text }, { toast: `Found: ${FITTINGS[f.fitting]?.name ?? f.fitting}. A fitting for the forge.` }],
+    }));
+  }
+
+  /** What decides the open ground: the places open now, regions opened whole, finds still lying about. */
+  private accessKey(): string {
+    return [...openPlaces(this.flags), ...Object.keys(this.flags).filter((f) => f.startsWith("open.") && this.flags[f]), ...findsNow(this.flags).map((f) => f.id)].join();
+  }
+
   private currentRegion(): string | null { const [tx, ty] = this.feetTile(); return this.map.regionAt(tx, ty); }
   private encounterGap(): number { return ENCOUNTER_EVERY[0] + Math.floor(this.rng() * ENCOUNTER_EVERY[1]); }
 
@@ -228,7 +244,7 @@ export class ExploreScene implements Scene, StoryHost {
     const t = this.game.playSeconds;
     for (let ty = 0; ty < this.map.height; ty++) for (let tx = 0; tx < this.map.width; tx++) {
       const r = this.map.regionAt(tx, ty);
-      if (r && closedAt(this.map, tx, ty, this.flags)) { this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0x0c1014, alpha: 0.42 }); continue; }
+      if (r && this.map.kindAt(tx, ty) !== "sea" && closedAt(this.map, tx, ty, this.flags)) { this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0x0c1014, alpha: 0.42 }); continue; }
       if (!r || REGIONS[r]?.kind !== "hidden" || this.flags[`found.${r}`]) continue;
       this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0xc8d0da, alpha: 0.86 + 0.06 * Math.sin(tx * 0.7 + ty * 0.5 + t) });
     }
@@ -238,7 +254,7 @@ export class ExploreScene implements Scene, StoryHost {
   private bumpBorder(ax: number, ay: number): void {
     const cx = this.player.x + BOX.ox + BOX.w / 2 + Math.sign(ax) * (BOX.w / 2 + 2), cy = this.player.y + BOX.oy + BOX.h / 2 + Math.sign(ay) * (BOX.h / 2 + 2);
     const tx = Math.floor(cx / TILE), ty = Math.floor(cy / TILE), r = this.map.regionAt(tx, ty);
-    if (!r || !closedAt(this.map, tx, ty, this.flags)) return;
+    if (!closedAt(this.map, tx, ty, this.flags)) return;
     const why = closedWhy(r);
     if (this.toastTime <= 0 || this.toastLabel.text !== why) this.toast(why);
   }
@@ -486,7 +502,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   update(dt: number): void {
     const inp = this.game.input;
-    if (this.map.file.world) { const k = Object.keys(this.flags).filter((f) => f.startsWith("open.") && this.flags[f]).join(); if (k !== this.openKey) { this.openKey = k; this.drawFog(); } }
+    if (this.map.file.world) { const k = this.accessKey(); if (k !== this.openKey) { this.openKey = k; this.drawFog(); } }
     if (this.toastTime > 0) { this.toastTime -= dt; if (this.toastTime <= 0) this.toastLabel.text = ""; }
     if (this.bannerTime > 0) { this.bannerTime -= dt; this.banner.alpha = Math.min(1, this.bannerTime / 0.6); if (this.bannerTime <= 0) this.banner.text = ""; }
     this.player.moving = false;

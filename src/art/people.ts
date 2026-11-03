@@ -108,6 +108,13 @@ export function beastSheet(kind: string): Record<Facing, Texture[]> {
 export const isBeast = (look: string): boolean => look in BEAST;
 export const beastSmall = (look: string): boolean => !!BEAST[look]?.small;
 
+/** Something small glinting in the grass: a rare find. */
+export function glintTexture(): Texture {
+  const [cv, g] = makeCanvas(12, 18);
+  drawRows(g, ["", "", "", "", "", "", "", "", ".....w......", ".....w......", "...wwywww...", ".....w......", "....oyo.....", "...oyyyo....", "....oyo.....", ".....o......"], { o: "#4a3a1c", w: "#fffbe8", y: "#f0c850" }, 0, 0);
+  return pixelTexture(cv);
+}
+
 /** A folded page lying on the ground, for the mother's notes. */
 export function noteTexture(): Texture {
   const [cv, g] = makeCanvas(12, 18);

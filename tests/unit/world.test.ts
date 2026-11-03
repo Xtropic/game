@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { MAPS, REGIONS } from "../../src/world/content";
 import { TILE_DEFS, WILD, WorldMap } from "../../src/world/map";
-import { closedAt, closedWhy } from "../../src/world/gates";
+import { GATES, closedAt, closedWhy, findsNow } from "../../src/world/gates";
+import { FITTINGS } from "../../src/gear/weapons";
+import type { Flags } from "../../src/story/story";
 import { DANGER, encounter, partyUnits, sceneryFor, wildKinds } from "../../src/battle/encounters";
 import { seeded } from "../../src/battle/rules";
 
@@ -40,20 +42,45 @@ describe("the world map of Ostrel", () => {
     expect([...walkable].sort()).toEqual(Object.keys(REGIONS).sort());
   });
 
-  it("closes most of the map until the story opens it, but keeps Act I's places and roads open", () => {
+  it("opens only the places that matter at each stage of the story", () => {
     const gated = new WorldMap(MAPS.ostrel);
-    const flags: Record<string, unknown> = {};
+    const flags: Flags = { stage: "d1" };
+    gated.closed = (tx, ty) => closedAt(gated, tx, ty, flags);
+    const reachable = () => {
+      const ok = reach(gated, 22, 21);
+      return new Set(MAPS.ostrel.places!.filter((p) => ok.has(`${p.x},${p.y}`)).map((p) => p.id));
+    };
+    // the prologue: only home
+    expect([...reachable()]).toEqual(["larkfold"]);
+    // Act I opens its places one stage at a time
+    flags.stage = "a1"; expect([...reachable()].sort()).toEqual(["ferrow", "larkfold", "thornwick"]);
+    flags.stage = "a3"; const a3 = reachable();
+    for (const id of ["camp", "millbridge", "bend"]) expect(a3.has(id), id).toBe(true);
+    expect(a3.has("sallow")).toBe(false);
+    flags.stage = "a6"; expect(reachable().has("sallow")).toBe(true);
+    // the villages and towns that aren't in the story yet stay shut, even beside the open roads
+    for (const id of ["umes", "vantry", "weirbank", "lockside", "dripstone", "kerrow", "corvane", "hollin", "college", "salt-house"]) expect(reachable().has(id), id).toBe(false);
+    // every open place, recruit and find in the gates file is somewhere on the map
+    for (const id of Object.keys(GATES.places)) expect(MAPS.ostrel.places!.some((p) => p.id === id), id).toBe(true);
+    // the story can still open a whole region with a flag
+    flags["open.corvane"] = true; expect(reachable().has("corvane")).toBe(true);
+    expect(closedWhy("guild")).toMatch(/checkpoint/);
+  });
+
+  it("puts each rare find where Rhea can reach it, and only from its stage until she picks it up", () => {
+    const gated = new WorldMap(MAPS.ostrel);
+    const flags: Flags = { stage: "a7" };
     gated.closed = (tx, ty) => closedAt(gated, tx, ty, flags);
     const ok = reach(gated, 22, 21);
-    const at = (id: string) => { const p = MAPS.ostrel.places!.find((x) => x.id === id)!; return ok.has(`${p.x},${p.y}`); };
-    for (const id of ["larkfold", "thornwick", "umes", "ferrow", "millbridge", "bend", "sallow", "camp"]) expect(at(id), id).toBe(true);
-    for (const id of ["vantry", "kingsmere", "corvane", "hollin", "college", "holm", "tarsis", "ember", "ashby", "kestrel-fort", "salt-house"]) expect(at(id), id).toBe(false);
-    const open = MAPS.ostrel.places!.filter((p) => ok.has(`${p.x},${p.y}`)).length;
-    expect(open).toBeLessThan(MAPS.ostrel.places!.length / 2);
-    // the story opens a region with a flag
-    flags["open.corvane"] = true;
-    expect(reach(gated, 22, 21).has(`${MAPS.ostrel.places!.find((p) => p.id === "corvane")!.x},${MAPS.ostrel.places!.find((p) => p.id === "corvane")!.y}`)).toBe(true);
-    expect(closedWhy("guild")).toMatch(/checkpoint/);
+    for (const f of GATES.finds) {
+      expect(FITTINGS[f.fitting], f.fitting).toBeDefined();
+      expect(gated.solidAt(f.x, f.y), f.id).toBe(false);
+      expect(ok.has(`${f.x},${f.y}`), f.id).toBe(true);
+    }
+    expect(findsNow({ stage: "a1" }).map((f) => f.id)).toEqual(["duskwort"]);
+    expect(findsNow({ stage: "a3c" }).map((f) => f.id)).toContain("indenture");
+    expect(findsNow({ stage: "a3" }).map((f) => f.id)).not.toContain("indenture");
+    expect(findsNow({ stage: "a7", "found.trayiron": true }).map((f) => f.id)).not.toContain("trayiron");
   });
 
   it("every region has at least two villages, towns or cities", () => {

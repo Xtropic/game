@@ -28,6 +28,9 @@ for (const f of readdirSync(stories).filter((f) => f.endsWith(".json"))) {
   for (const h of s.hazards) walk(h.fail);
   for (const sc of Object.values(s.scripts)) walk(sc);
 }
+// rare finds on the world map (data/world/gates.json) are read by the narrator when picked up
+const gates = JSON.parse(readFileSync(new URL("../../data/world/gates.json", import.meta.url), "utf8"));
+for (const f of gates.finds ?? []) lines.push({ who: "narrator", text: f.text });
 const seen = new Set();
 const out = lines.filter((l) => { const k = `${l.who}|${l.text}`; if (seen.has(k)) return false; seen.add(k); return true; });
 writeFileSync(new URL("lines.json", import.meta.url), JSON.stringify(out, null, 1));
