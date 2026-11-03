@@ -20,7 +20,8 @@
 
 import { NEUTRAL, attrsAt, party, person, type Attrs } from "../cast/attributes";
 import { gearTiming, weaponPower, withGear, type Loadout } from "../gear/weapons";
-import { kithAttrs, type Kith } from "../kith/kith";
+import { kithAttrs, type Kith, type Temperament } from "../kith/kith";
+import { songReach } from "../kith/befriend";
 
 export type Side = "ally" | "foe";
 export type Row = "front" | "back";
@@ -32,7 +33,9 @@ export type SkillBook = Record<string, SkillDef>;
 
 /** A fighter. `cast` links a character's attributes (data/cast/attributes.json); without one (kith), it counts
  *  as an average person. `hp` may be left out for cast members: it then comes from grit and level. */
-export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp?: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; cast?: string; level?: number; }
+export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp?: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; cast?: string; level?: number;
+  /** A wild kith's kind and temperament: the song reaches each temperament differently, and a calmed one may be won over. */
+  species?: string; temperament?: Temperament; }
 export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; /** Banner when the fight is won, and when the party is driven back. */ won?: string; lost?: string; }
 
 export interface Intent { skill: string; target: string; }
@@ -48,6 +51,8 @@ export interface Unit extends UnitDef {
   guardedBy: string | null;
   covered: boolean; // a bonded kith has already covered its partner this round
   calm: number; // 0..100, wild kith only
+  calmed: boolean; // calmed by the song: stopped fighting, and stays at the edge of the field
+  soothe: number; // perfect notes sung to it
   gone: boolean; // left the field (fled, calmed, bolted)
   steady: boolean;
   intent: Intent | null;
@@ -113,7 +118,7 @@ export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: 
     const max = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
     const left = u.side === "ally" && health[u.id] !== undefined ? Math.min(1, Math.max(0, health[u.id])) : 1;
     const hp = Math.max(1, Math.round(max * left));
-    return { ...u, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
+    return { ...u, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, calmed: false, soothe: 0, gone: false, steady: false, intent: null };
   });
   const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, early: [], firstStrike: false };
   planIntents(s, book, rng);
@@ -258,11 +263,13 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
         t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
         ev.push({ t: "steady", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} sings. ${t.name} steadies.`);
       } else {
-        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)))); addBond(s, perfects * 8, ev);
+        const reach = songReach(t.temperament, t.hp / t.maxHp);
+        if (reach === 0) { ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left: false }); s.log.push(`The ${t.name.toLowerCase()} tosses its head. It won't listen while it thinks it's winning.`); break; }
+        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)) * reach)); t.soothe += perfects; addBond(s, perfects * 8, ev);
         const left = t.calm >= 100;
-        if (left) { t.intent = null; t.gone = true; s.resolve = Math.max(0, s.resolve - 15); }
+        if (left) { t.intent = null; t.gone = true; t.calmed = true; s.resolve = Math.max(0, s.resolve - 15); }
         ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left });
-        s.log.push(left ? `The ${t.name.toLowerCase()} stops, listening. It slinks away into the dark.` : `${u.name} sings. The ${t.name.toLowerCase()}'s ears go back, then forward.`);
+        s.log.push(left ? (t.species ? `The ${t.name.toLowerCase()} stops, listening. It backs off to the edge of the field, and stays there.` : `The ${t.name.toLowerCase()} stops, listening. It slinks away into the dark.`) : `${u.name} sings. The ${t.name.toLowerCase()}'s ears go back, then forward.`);
       }
       break;
     }

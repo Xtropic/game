@@ -12,7 +12,8 @@ import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
 import { REGIONS } from "./content";
 import { encounter } from "../battle/encounters";
-import type { BattleDef } from "../battle/rules";
+import type { BattleDef, BattleState } from "../battle/rules";
+import { OFFERS, lingerLine, trustChance } from "../kith/befriend";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
 import { arrival, closedAt, findsNow, wayAt, wayBlocker, wayOpen, wayWhy } from "./gates";
@@ -28,7 +29,7 @@ import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
-import { StoryRunner, holds, type Actor, type Story, type StoryHost, type Where } from "../story/story";
+import { StoryRunner, holds, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
@@ -428,10 +429,39 @@ export class ExploreScene implements Scene, StoryHost {
         for (const u of s.units) if (u.side === "ally" && u.kith && this.game.kith[u.id]) ups.push(...this.game.kithFought(u.id, s.deeds[u.id], xp));
         this.refresh();
         onWin?.();
-        this.runner.run(ups.map((text) => ({ say: "", text })));
+        this.runner.run([...ups.map((text) => ({ say: "", text })), ...this.befriendSteps(s)]);
         this.save("auto");
       },
     }));
+  }
+
+  /** After a fight, a wild kith the song calmed may still be at the edge of the field: Rhea can offer it food,
+   *  and its temperament and the food decide whether it trusts her. One per fight. */
+  private befriendSteps(s: BattleState): Step[] {
+    const k = s.units.find((u) => u.side === "foe" && u.calmed && u.species);
+    if (!k || this.flags.hero !== "rhea" || s.phase !== "won") return [];
+    const heart = s.units.find((u) => u.id === "rhea")?.stats?.heart ?? 10, roll = this.rng();
+    const n = Object.keys(this.game.kith).filter((id) => id.startsWith(`wild-${k.species}`)).length;
+    const gift: KithGift = { species: k.species!, level: k.level ?? 3, id: `wild-${k.species}-${n + 1}`, temperament: k.temperament };
+    const name = k.name.toLowerCase();
+    return [
+      { say: "", text: lingerLine(k.species!) },
+      { choose: `Offer the ${name} something?`, options: [
+        ...OFFERS.map((food) => ({ label: `Hold out ${food}`, do: roll < trustChance(k.species!, k.temperament, food, heart, k.soothe)
+          ? [{ say: "", text: `You crouch and hold out the ${food}, and keep still. The ${name} comes, one step at a time, and takes it from your hand.` }, { say: "", text: "When you stand to go, it follows." }, { kith: gift }]
+          : [{ say: "", text: `You hold out the ${food}. The ${name} sniffs the air, and turns away into the ${"long grass"}.` }] })),
+        { label: "Let it go", do: [{ say: "", text: `You leave the ${name} be. It watches you out of sight.` }] },
+      ] },
+    ];
+  }
+
+  /** A kith joins the company. */
+  addKith(g: KithGift): void {
+    if (this.game.kith[g.id]) return;
+    const region = this.regionNow;
+    const k = wildKith(g.species, g.level, this.rng, g.id, region ?? undefined); if (g.name) k.name = g.name; k.lull = false;
+    if (g.temperament) k.temperament = g.temperament as Temperament;
+    this.game.kith[g.id] = k;
   }
 
   /** What's left of each ally's health from earlier fights (0..1, by battle unit id). */
