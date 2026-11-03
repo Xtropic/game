@@ -51,7 +51,7 @@ const expect = async (what, ok) => { const s = await ex(); if (!ok(s)) fail(`${w
 
 // ---- day one ----
 await expect("starts on day one in Larkfold, with a pilgrim at the spring", (s) => s.map === "larkfold" && s.stage === "d0");
-await put(24, 14, "right"); await tap("Enter"); await choose(0);
+await put(24, 14, "right"); await tap("Enter"); await play();
 await expect("the pilgrim's first greenling set", (s) => s.stage === "d1");
 await put(13, 2, "right"); await tap("Enter"); await choose(0);
 await expect("asked to sing", (s) => s.stage === "d1b");

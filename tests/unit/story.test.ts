@@ -45,7 +45,7 @@ describe("story", () => {
   });
 
   it("plays day one: Finch, the song, the caves, the roof, then nine days pass", () => {
-    const f = fresh(), { h, log, map } = host(f, [0, 0, 1, 3]);
+    const f = fresh(), { h, log, map } = host(f, [0, 0, 0, 1, 3]);
     const r = new StoryRunner(STORY, h);
     expect(f.stage).toBe("d0");
     r.run([{ run: "pilgrimFit" }]); expect(f.stage).toBe("d1");
@@ -138,8 +138,12 @@ describe("story", () => {
     expect(f.why).toBe("burn"); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a2b");
     r.run([{ run: "kane" }]); expect(log.at(-1)).toContain("nurses' tent"); // see the camp first
     r.run([{ run: "tourNurse" }, { run: "tourYard" }, { run: "tourKith" }]); expect(f.nurseFriend).toBe(true);
-    r.run([{ run: "kane" }]); expect(log).toContain("battle spar-brannoc"); expect(f.stage).toBe("a2c");
-    r.run([{ run: "nightWatch" }]); expect(f.ferrisWhy).toBe(true); expect(f.stage).toBe("a2d");
+    r.run([{ run: "kane" }]); expect(f.stage).toBe("a2e"); expect(log).not.toContain("battle spar-brannoc"); // a day ends in her tent, not on the spot
+    r.run([{ run: "tent" }]); expect(f.stage).toBe("a2f"); expect(f.light).toBe("day");
+    r.run([{ run: "sparDawn" }]); expect(log).toContain("battle spar-brannoc"); expect(f.stage).toBe("a2g");
+    r.run([{ run: "tent" }]); expect(f.stage).toBe("a2c"); expect(f.light).toBe("night");
+    r.run([{ run: "nightWatch" }]); expect(f.ferrisWhy).toBe(true); expect(f.stage).toBe("a2h");
+    r.run([{ run: "tent" }]); expect(f.stage).toBe("a2d");
     r.run([{ run: "kane" }]); expect(f.stage).toBe("a3"); expect(f.rank).toBe("Recruit");
     r.run([{ run: "cartFight" }]); expect(f["won.cart-warden"]).toBe(true); expect(f.stage).toBe("a3b");
     r.run([{ run: "openCart" }]); expect(f.stage).toBe("a3c"); // Sela is in this cart: talk to her first
@@ -156,7 +160,8 @@ describe("story", () => {
   it("Millbridge: the truth wins Oren, the elders' story wins the town at once", () => {
     const truth: Flags = { ...fresh(), stage: "a5" }, t = host(truth, [0]);
     new StoryRunner(STORY, t.h).run([{ run: "reeve" }]);
-    expect(truth.millbridge).toBe("truth"); expect(truth["recruited.oren"]).toBe(true); expect(truth.stage).toBe("a5b"); expect(t.map()).toBe("camp");
+    expect(truth.millbridge).toBe("truth"); expect(truth["recruited.oren"]).toBe(true); expect(truth.stage).toBe("a4b"); // walk back to camp first
+    new StoryRunner(STORY, t.h).run([{ run: "tent" }]); expect(truth.stage).toBe("a5b");
     expect(t.log.some((l) => l.startsWith("varro:"))).toBe(true);
     // the quiet month: Kane has nothing until Rhea has spent time with Tamsin
     const r2 = new StoryRunner(STORY, t.h); r2.run([{ run: "kane" }]); expect(truth.stage).toBe("a5b");
@@ -171,10 +176,11 @@ describe("story", () => {
     const r = new StoryRunner(STORY, h);
     r.run([{ run: "sallowGate" }]); expect(f.stage).toBe("a6b"); expect(f.sallowBurning).toBe(true);
     r.run([{ run: "ketti" }]);
-    expect(f["recruited.ketti"]).toBe(true); expect(f.party).toBe("tamsin,ash,ketti"); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a6c"); expect(map()).toBe("camp");
+    expect(f["recruited.ketti"]).toBe(true); expect(f.party).toBe("tamsin,ash,ketti"); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a6c"); expect(map()).not.toBe("camp"); // she walks back herself
     r.run([{ run: "brannocDown" }]); expect(f.stage).toBe("a6d");
     r.run([{ run: "sectionVote" }]); expect(f.rank).toBe("Sergeant"); expect(log).toContain("kane: \"That's the section's answer, then. Sergeant Caddow.\"");
-    expect(f.stage).toBe("a7"); expect(log.at(-1)).toBe("goto land-vale 59,18"); expect(log).toContain("follow "); // she climbs alone
+    expect(f.stage).toBe("a6e");
+    r.run([{ run: "tent" }]); expect(f.stage).toBe("a7"); expect(log).toContain("follow "); // she climbs alone
     r.run([{ run: "harvest" }]); expect(map()).toBe("larkfold"); expect(f.stage).toBe("a7b");
     r.run([{ run: "harvestSong" }]); expect(f.stage).toBe("a7c");
     r.run([{ run: "oda" }]); expect(f["recruited.oda"]).toBe(true);

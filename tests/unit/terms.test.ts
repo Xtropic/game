@@ -17,3 +17,19 @@ describe("notes on new words", () => {
   });
   it("notes are short and plain", () => { for (const t of TERMS) expect(t.note.length, t.id).toBeLessThan(200); });
 });
+
+describe("backstory comes through the story", () => {
+  const scripts = STORY.scripts as Record<string, { say?: string; text?: string }[]>;
+  it("a new game opens with a person speaking, not a narrator explaining", () => {
+    const lines = scripts.opening.filter((s) => s.text);
+    expect(lines.length).toBeGreaterThan(0);
+    for (const l of lines) expect(l.say, l.text).not.toBe("");
+  });
+  // the scene where each word first turns up has a character saying it, so the player hears it in context
+  const firstScene: Record<string, string> = { lull: "pilgrimFit", raw: "pilgrimFit", rings: "pilgrimFit", guild: "pilgrimFit", greenling: "pilgrimFit", warden: "pilgrimFit", larkfold: "pilgrimFit", cloudpath: "pilgrimFit", kith: "smokeComes", lorne: "beg", commons: "meetBrannoc", reeve: "townMeeting", sorting: "afterCarts" };
+  for (const [id, scene] of Object.entries(firstScene)) it(`${id} is spoken in ${scene}`, () => {
+    const term = TERMS.find((t) => t.id === id)!;
+    const said = storyLines({ ...STORY, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [], scripts: { [scene]: STORY.scripts[scene] } } as typeof STORY).filter((l) => l.who !== "" && l.who !== "narrator" && term.match.test(l.text));
+    expect(said.length, `${id} in ${scene}`).toBeGreaterThan(0);
+  });
+});

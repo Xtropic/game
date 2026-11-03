@@ -89,7 +89,7 @@ export class ExploreScene implements Scene, StoryHost {
   private lineDone: (() => void) | null = null;
   private choiceDone: ((i: number) => void) | null = null;
   private runner!: StoryRunner;
-  private toastLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.8 } } });
+  private toastLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4", wordWrap: true, wordWrapWidth: 520, dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.8 } } });
   private toastTime = 0;
   private openKey = "";
   private objective = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 14, fill: "#e8dcc0", wordWrap: true, wordWrapWidth: 420, dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.9 } } });
@@ -320,7 +320,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
     this.meter.x = w - 160; this.meter.y = 34;
-    this.toastLabel.x = 16; this.toastLabel.y = 56;
+    this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
@@ -342,15 +342,15 @@ export class ExploreScene implements Scene, StoryHost {
 
   line(who: string, name: string, text: string, done: () => void): void {
     this.lineDone = done;
-    // the first time a word the player can't know turns up, say what it means
+    // the story itself explains new words as they come up; Rhea's notebook (J) quietly keeps a note of each one
     const t = newTerm(text, (id) => !!this.flags[`learned.${id}`]);
     if (t) this.flags[`learned.${t.id}`] = true;
-    this.dialog.show({ who, name, text }, t);
+    this.dialog.show({ who, name, text });
   }
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
-  toast(t: string): void { this.toastLabel.text = t; this.toastTime = 2.6; if (t.startsWith("Found")) sfx.pickup(); }
+  toast(t: string): void { this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
   changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.refresh(); }
 
   /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */
@@ -598,7 +598,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   update(dt: number): void {
-    // a new game opens with a few lines on where you are and who you are
+    // a new game opens with someone calling Rhea over, and a hint on the controls
     if (!this.flags.opened && this.flags.stage === this.story.start.stage && this.story.scripts.opening && !this.runner.busy) { this.flags.opened = true; this.runner.run([{ run: "opening" }]); }
     const inp = this.game.input;
     if (this.map.file.world) { const k = this.accessKey(); if (k !== this.openKey) { this.openKey = k; this.drawFog(); } }

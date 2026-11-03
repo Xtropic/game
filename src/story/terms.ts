@@ -6,7 +6,7 @@ export interface Term { id: string; name: string; match: RegExp; note: string; }
 export const TERMS: Term[] = [
   { id: "lull", name: "Lull", match: /\blulls?\b/i, note: "A small leech-like creature worn on the side of the neck. While it feeds, it numbs pain. The Guild sells them, and each one dies after about a month, so you need another." },
   { id: "raw", name: "The raw", match: /\bthe raw\b/i, note: "The sickness that comes when a lull drops off and isn't replaced: shaking, sweats and pain, for days." },
-  { id: "rings", name: "Rings", match: /\b(round scars|lull rings?|rings on (his|her|the|your) neck|ring scars?)\b/i, note: "Each lull leaves a small round scar on the neck when it falls off. People can tell how long someone has worn lulls by counting them." },
+  { id: "rings", name: "Rings", match: /\b(round scars|lull rings?|rings on (his|her|the|your) neck|ring scars?|leaves its ring|(eight|nine|ten|eleven|twelve|\d+) rings)\b/i, note: "Each lull leaves a small round scar on the neck when it falls off. People can tell how long someone has worn lulls by counting them." },
   { id: "greenling", name: "Greenling", match: /\bgreenlings?\b/i, note: "A lull bred in Larkfold's warm caves to be weaker than a Guild lull. Wearing weaker and weaker ones lets someone come off lulls without the raw." },
   { id: "guild", name: "The Guild", match: /\bGuild\b/, note: "The trading house that breeds and sells lulls. It owns the lull shops, the carts on the roads and the hatcheries." },
   { id: "warden", name: "Wardens", match: /\bWardens?\b/, note: "The Guild's armed guards, in grey coats." },

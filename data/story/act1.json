@@ -47,7 +47,9 @@
    "quietOren": "tender",
    "sallowOrders": "dread",
    "brannocDown": "grief",
-   "sectionVote": "hope"
+   "sectionVote": "hope",
+   "sparDawn": "camp",
+   "tent": "camp"
   },
   "stages": {
    "a3": "tension",
@@ -92,15 +94,21 @@
   "a5": "Go to Millbridge with Lieutenant Varro. The town meets in the square.",
   "a6": "Join Kane's attack on the Sallow hatchery, south-east of Hob's Bend.",
   "a6b": "The brood house is burning. Get to its door through the yard.",
-  "a7": "The first harvest since the raid. Go home to Larkfold.",
+  "a7": "The first harvest since the raid. Leave the camp by the west track and go home to Larkfold.",
   "a7b": "Sing on the terraces (Q).",
   "a7c": "Go back down to the others, by the south gate. The spring caves are still there.",
   "a2b": "Look round the camp: the nurses' tent, the drill yard and the kith lines. Then go back to Kane.",
   "a2c": "Night watch on the east picket, at the top of the camp. Ferris is already there.",
   "a2d": "Kane has sent for Brannoc's section.",
   "a5b": "A quiet month at the camp. Spend time with your people. Kane will send for you when there's work.",
-  "a6c": "Brannoc is asking for you in the nurses' tent.",
-  "a6d": "The section meets at the fire tonight. Sit with them."
+  "a6c": "Walk back to the Commons camp. Brannoc was carried ahead to the nurses' tent, and he's asking for you.",
+  "a6d": "The section meets at the fire tonight. Sit with them.",
+  "a2e": "Turn in for the night. Your tent is the one in the top-left corner of the camp, by the west fence.",
+  "a2f": "Dawn. Brannoc is waiting for you in the drill yard.",
+  "a2g": "Three weeks of drill ahead. When you're ready, turn in at your tent.",
+  "a2h": "Your watch is over. Go back to your tent and sleep.",
+  "a4b": "Walk back to the Commons camp, east on the Old Drove Road, and turn in at your tent.",
+  "a6e": "Go to bed, Sergeant. Your tent is in the top-left corner of the camp."
  },
  "actors": [
   {
@@ -188,7 +196,11 @@
      "a6b",
      "a7",
      "a7b",
-     "a7c"
+     "a7c",
+     "a2e",
+     "a2g",
+     "a2h",
+     "a4b"
     ]
    },
    "talk": [
@@ -691,6 +703,21 @@
    "talk": [
     {
      "run": "sectionVote"
+    }
+   ]
+  },
+  {
+   "id": "brannoc-dawn",
+   "map": "camp",
+   "x": 8,
+   "y": 9,
+   "look": "brannoc",
+   "when": {
+    "stage": "a2f"
+   },
+   "talk": [
+    {
+     "run": "sparDawn"
     }
    ]
   }
@@ -1369,6 +1396,29 @@
      "run": "ketti"
     }
    ]
+  },
+  {
+   "map": "camp",
+   "area": [
+    3,
+    4,
+    4,
+    4
+   ],
+   "when": {
+    "stage": [
+     "a2e",
+     "a2g",
+     "a2h",
+     "a4b",
+     "a6e"
+    ]
+   },
+   "do": [
+    {
+     "run": "tent"
+    }
+   ]
   }
  ],
  "looks": [
@@ -1581,16 +1631,16 @@
     }
    },
    {
-    "say": "",
-    "text": "For most of a year Rhea has followed the indenture carts down every road out of the highlands. Tamsin and Ash have followed her."
+    "say": "tamsin",
+    "text": "\"Another road, Rhea. That's ten since the carts took Finch. We've worn out two pairs of boots each.\""
    },
    {
-    "say": "",
-    "text": "Last week a carter swore he saw the Larkfold cart at Ferrow Cross, the coaching inn at the foot of the mountain road."
+    "say": "rhea",
+    "text": "\"A carter swore he saw the Larkfold cart at Ferrow Cross. The coaching inn, at the bottom of the mountain road.\""
    },
    {
     "say": "tamsin",
-    "text": "\"Same as the last ten times, Rhea. If it's not there, we eat, we sleep, and we try the next road.\""
+    "text": "\"Same as the last ten times, then. If it's not there, we eat, we sleep, and we try the next road.\""
    },
    {
     "stage": "a1"
@@ -1640,7 +1690,7 @@
    },
    {
     "say": "brannoc",
-    "text": "\"Brannoc. Sergeant, Commons Army. I came down for the same cart. We heard about it too late as well.\""
+    "text": "\"Brannoc. Sergeant, Commons Army. Miners, farmers, kids we've pulled out of hatcheries. Anyone the Guild has had its hands on. I came down for the same cart. We heard about it too late as well.\""
    },
    {
     "say": "brannoc",
@@ -2075,7 +2125,11 @@
   "townMeeting": [
    {
     "say": "",
-    "text": "Reeve Aske rings the market bell, and the square fills. Lieutenant Varro of the Commons stands on the well steps in a green coat, and the crowd looks at her and then, mostly, at Rhea."
+    "text": "A grey-haired woman rings the market bell, and the square fills. Lieutenant Varro of the Commons stands on the well steps in a green coat, and the crowd looks at her and then, mostly, at Rhea."
+   },
+   {
+    "say": "reeve",
+    "text": "\"I'm Aske, reeve of this town, which means these people voted me in and can vote me out. Say your piece, Lieutenant. They'll decide.\""
    },
    {
     "say": "varro",
@@ -2172,21 +2226,11 @@
     "text": "\"Thank you, Caddow. Whatever they decide, that took nerve.\""
    },
    {
-    "fade": "The rains come. A month of quiet at the camp."
+    "say": "varro",
+    "text": "\"We start back for the camp tonight. Get some rest when we're there. The rains are coming, and it'll be quiet for a while.\""
    },
    {
-    "alone": true
-   },
-   {
-    "stage": "a5b"
-   },
-   {
-    "goto": {
-     "map": "camp",
-     "x": 2,
-     "y": 9,
-     "facing": "right"
-    }
+    "stage": "a4b"
    }
   ],
   "sallowGate": [
@@ -2279,7 +2323,7 @@
        },
        {
         "say": "",
-        "text": "The girl lets the nurse take them, one finger at a time. Then she walks off into the dark and doesn't come back. In the morning she's gone from the camp."
+        "text": "The girl lets the nurse take them, one finger at a time. Then she walks off into the dark and doesn't come back."
        },
        {
         "set": {
@@ -2298,13 +2342,14 @@
    },
    {
     "say": "",
-    "text": "By dawn the Sallow hatchery is ash and the Guild has lost two hundred and six indentures. Kane reads the number out at the camp fire, and the camp cheers until it's hoarse."
+    "text": "By dawn the Sallow hatchery is ash, and two hundred and six children are sitting in the road wrapped in Commons blankets."
+   },
+   {
+    "say": "",
+    "text": "The nurses lift Brannoc onto a stretcher and carry him ahead, up the road to the camp. He doesn't let go of Rhea's sleeve until they make him."
    },
    {
     "leave": "brannoc"
-   },
-   {
-    "fade": "The next morning."
    },
    {
     "set": {
@@ -2313,14 +2358,6 @@
    },
    {
     "stage": "a6c"
-   },
-   {
-    "goto": {
-     "map": "camp",
-     "x": 2,
-     "y": 9,
-     "facing": "right"
-    }
    }
   ],
   "harvest": [
@@ -2583,50 +2620,15 @@
    },
    {
     "say": "kane",
-    "text": "\"Good. Brannoc wants to see what you can do with that staff. Don't let him be gentle with you.\""
+    "text": "\"Good. Get some sleep. Your tent's the one in the top corner, by the west fence. Brannoc wants to see what you can do with that staff, at dawn. Don't let him be gentle with you.\""
    },
    {
-    "fade": "The first week."
+    "set": {
+     "light": "dusk"
+    }
    },
    {
-    "say": "",
-    "text": "Brannoc meets you in the drill yard at dawn with two practice staves and no expression at all."
-   },
-   {
-    "say": "brannoc",
-    "text": "\"Watch my shoulders, not my hands. When the ring closes, that's when you move. Hit when I'm open. Brace when I'm not.\""
-   },
-   {
-    "battle": "spar-brannoc",
-    "win": [
-     {
-      "say": "brannoc",
-      "text": "\"Huh. You've done this before.\""
-     },
-     {
-      "say": "rhea",
-      "text": "\"I've set a lot of bones. You learn where people break.\""
-     },
-     {
-      "say": "brannoc",
-      "text": "\"Don't say that in front of the recruits.\""
-     },
-     {
-      "fade": "The weeks go by. Drill, latrines, cold porridge, the drove road with a sack of stones."
-     },
-     {
-      "set": {
-       "light": "night"
-      }
-     },
-     {
-      "say": "",
-      "text": "At the end of the third week, Brannoc puts you on night watch on the east picket, with Ferris."
-     },
-     {
-      "stage": "a2c"
-     }
-    ]
+    "stage": "a2e"
    }
   ],
   "nightWatch": [
@@ -2685,15 +2687,11 @@
     "text": "\"Fox kith. If it were Wardens you'd hear the harness. You'll learn the sounds.\""
    },
    {
-    "fade": "Another week. Then Kane sends for Brannoc's section."
+    "say": "ferris",
+    "text": "\"That's us. The next pair's coming up. Go and get your head down, Caddow.\""
    },
    {
-    "set": {
-     "light": "day"
-    }
-   },
-   {
-    "stage": "a2d"
+    "stage": "a2h"
    }
   ],
   "cartOrders": [
@@ -2973,35 +2971,165 @@
     "toast": "Promoted: Sergeant. Your section voted for you."
    },
    {
-    "fade": "Autumn. The first harvest since the raid."
-   },
-   {
-    "set": {
-     "light": "dusk"
-    }
-   },
-   {
-    "alone": true
-   },
-   {
-    "set": {
-     "noWild": true
-    }
-   },
-   {
     "say": "tamsin",
-    "text": "\"It's harvest, Rhea. You'll want to go up alone. We'll be here when you come down.\""
+    "text": "\"Sergeant Caddow. Go to bed before they make you give a speech.\""
    },
    {
-    "stage": "a7"
+    "stage": "a6e"
+   }
+  ],
+  "sparDawn": [
+   {
+    "say": "",
+    "text": "Brannoc is waiting in the drill yard with two practice staves and no expression at all."
    },
    {
-    "goto": {
-     "map": "land-vale",
-     "x": 59,
-     "y": 18,
-     "facing": "down"
-    }
+    "say": "brannoc",
+    "text": "\"Watch my shoulders, not my hands. When the ring closes, that's when you move. Hit when I'm open. Brace when I'm not.\""
+   },
+   {
+    "battle": "spar-brannoc",
+    "win": [
+     {
+      "say": "brannoc",
+      "text": "\"Huh. You've done this before.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"I've set a lot of bones. You learn where people break.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"Don't say that in front of the recruits.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"Right. Three weeks of drill, latrines, cold porridge and the drove road with a sack of stones on your back. Then you can stand a night watch. Go and get your breakfast, Caddow.\""
+     },
+     {
+      "stage": "a2g"
+     }
+    ]
+   }
+  ],
+  "tent": [
+   {
+    "if": {
+     "stage": "a2e"
+    },
+    "then": [
+     {
+      "fade": "The next morning."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "stage": "a2f"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "a2g"
+      },
+      "then": [
+       {
+        "fade": "Three weeks go by."
+       },
+       {
+        "set": {
+         "light": "night"
+        }
+       },
+       {
+        "stage": "a2c"
+       },
+       {
+        "say": "",
+        "text": "Brannoc's chalked the watch list on a board outside your tent: east picket tonight, Caddow and Ferris."
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "stage": "a2h"
+        },
+        "then": [
+         {
+          "fade": "Another week."
+         },
+         {
+          "set": {
+           "light": "day"
+          }
+         },
+         {
+          "stage": "a2d"
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "stage": "a4b"
+          },
+          "then": [
+           {
+            "fade": "The rains come. A month of quiet at the camp."
+           },
+           {
+            "set": {
+             "light": "day"
+            }
+           },
+           {
+            "stage": "a5b"
+           },
+           {
+            "alone": true
+           }
+          ],
+          "else": [
+           {
+            "if": {
+             "stage": "a6e"
+            },
+            "then": [
+             {
+              "fade": "Autumn. The first harvest since the raid."
+             },
+             {
+              "set": {
+               "light": "dusk",
+               "noWild": true
+              }
+             },
+             {
+              "stage": "a7"
+             },
+             {
+              "alone": true
+             },
+             {
+              "say": "",
+              "text": "There's a note pinned to the tent pole, in Tamsin's square hand: \"It's harvest. You'll want to go up to Larkfold alone. We'll be here when you come down.\""
+             }
+            ],
+            "else": [
+             {
+              "toast": "Your tent. It's not time to sleep yet."
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   ]
  }

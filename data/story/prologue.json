@@ -1526,8 +1526,8 @@
     "text": "\"It's always the song. Teach me it properly. I'm on the trays tonight, come down to the caves.\""
    },
    {
-    "say": "",
-    "text": "Kith remember the voices that raised them for as long as they live."
+    "say": "finch",
+    "text": "\"He still knows your voice. He was a day old when you first sang it to him. Kith never forget whoever sang to them first.\""
    },
    {
     "set": {
@@ -1618,7 +1618,15 @@
      },
      {
       "say": "",
-      "text": "Corran is lying on the warm tiles, watching the stars come out over the cloud. Your husband of three years. Eight years ago he was a Guild Warden. He has never said why he left."
+      "text": "Corran is lying on the warm tiles, watching the stars come out over the cloud."
+     },
+     {
+      "say": "corran",
+      "text": "\"Three years married, and I still wake some nights thinking I'm back in a Guild barracks, in a grey coat, waiting for the bugle.\""
+     },
+     {
+      "say": "corran",
+      "text": "\"Eight years since I was a Warden. You'd think it would wear off.\""
      }
     ]
    },
@@ -1902,13 +1910,13 @@
     "then": [
      {
       "say": "corran",
-      "text": "\"You know what Hask was. I told you on the roof. Take Finch. We go tonight, over the passes into Lorne. Please.\""
+      "text": "\"You know what Hask was. I told you on the roof. Take Finch. We go tonight, over the passes into Lorne. The Guild has no say in Lorne. Please.\""
      }
     ],
     "else": [
      {
       "say": "corran",
-      "text": "\"I was at Hask, Rhea. They hanged the adults in the square and put the children on carts. Take Finch. We go tonight, over the passes into Lorne. Please.\""
+      "text": "\"I was at Hask, Rhea. They hanged the adults in the square and put the children on carts. Take Finch. We go tonight, over the passes into Lorne. The Guild has no say in Lorne. Please.\""
      }
     ]
    },
@@ -2236,7 +2244,11 @@
      },
      {
       "say": "",
-      "text": "He laughs, signs Finch's paper over to you, and writes \"sorting house, not brood\" against the girl's number."
+      "text": "He laughs and signs Finch's paper over to you. Then he writes against the girl's number."
+     },
+     {
+      "say": "halloran",
+      "text": "\"Sorting house, not brood. She'll count trays and copy ledgers. Nobody puts her in a breeding room.\""
      }
     ],
     "else": [
@@ -2506,15 +2518,64 @@
   "pilgrimFit": [
    {
     "say": "",
-    "text": "A woman sits on the rim of the warm spring with her boots off and her collar open. Eight small round scars climb the side of her neck, one above the other."
+    "text": "A woman sits on the rim of the warm spring with her boots off, a strip of dark cloth in her lap. Eight small round scars climb the side of her neck, one above the other."
    },
    {
     "say": "maren",
-    "text": "\"This is Hessa, from Millbridge. Tamsin brought her up the cloud path last night, blindfolded for the last mile. Same as everyone.\""
+    "text": "\"Rhea, this is Hessa, from Millbridge. Tamsin brought her up last night.\""
    },
    {
     "say": "hessa",
-    "text": "\"Eight months on Guild lulls. A new one every month from the Guild shop, and the price goes up every time. When one dies and drops off, the raw comes in a day. I couldn't face it again.\""
+    "text": "\"With that over my eyes for the last mile. So you're the doctor. Where am I?\""
+   },
+   {
+    "choose": "Hessa wants to know where she is.",
+    "options": [
+     {
+      "label": "\"Larkfold. Come and look over the wall.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "",
+        "text": "Below the terrace wall there is nothing but cloud, white and flat, all the way to the edge of the sky."
+       },
+       {
+        "say": "hessa",
+        "text": "\"We're above the clouds. In Millbridge they say there's nothing up the mountain but rock.\""
+       },
+       {
+        "say": "maren",
+        "text": "\"Good. Let them keep saying it.\""
+       }
+      ]
+     },
+     {
+      "label": "\"Somewhere safe. Better you don't know more.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "hessa",
+        "text": "\"The blindfold, and now this. You're careful people.\""
+       },
+       {
+        "say": "maren",
+        "text": "\"We have to be. She's in Larkfold, Rhea, she can know that much. She just can't ever find the way back.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "rhea",
+    "text": "\"Let me see your neck. Eight rings. Eight months?\""
+   },
+   {
+    "say": "hessa",
+    "text": "\"One ring for every lull. You buy one at the Guild shop, it bites on, and for a month there's no pain at all. My back's been broken since the mill. Then it dies and drops off and leaves its ring, and in a day the raw comes.\""
+   },
+   {
+    "say": "hessa",
+    "text": "\"Shaking. Sweating. Every nerve on fire, for days. So you go back to the shop, and the price has gone up again. It always goes up.\""
    },
    {
     "say": "maren",
@@ -2525,8 +2586,12 @@
     "text": "You lift a greenling from the moss with two fingers. It's the size of a thumbnail, grey-green, and it curls towards the warmth of your hand."
    },
    {
+    "say": "hessa",
+    "text": "\"That's a lull.\""
+   },
+   {
     "say": "rhea",
-    "text": "\"This one's wild-bred, and weaker than a Guild lull on purpose. Every fortnight you come down one strength, until you don't need one at all.\""
+    "text": "\"It's a greenling. We breed them here, in the warm caves, and each strength is weaker than the last. Every fortnight you step down one strength, until you don't need one at all. No raw.\""
    },
    {
     "choose": "Hessa looks at the greenling, then at you.",
@@ -2564,12 +2629,24 @@
     "text": "The greenling settles at the back of her neck. Her shoulders come down slowly, like a held breath let go."
    },
    {
-    "say": "maren",
-    "text": "\"Three hundred people in Millbridge are on our greenlings now. The Guild calls it breeding without a licence. They hang people for it.\""
+    "say": "hessa",
+    "text": "\"If it's that simple, why has the Guild never done it?\""
    },
    {
     "say": "maren",
-    "text": "\"So we stay hidden, we stay careful, and only Larkfold folk walk the cloud path. Now go and find your brother. He's been shouting for you all morning.\""
+    "text": "\"Because then nobody would need the Guild shop. Breeding lulls without a Guild licence is a hanging matter. Three hundred people in Millbridge are on our greenlings now.\""
+   },
+   {
+    "say": "hessa",
+    "text": "\"Hanging. Who'd come all the way up here to hang you?\""
+   },
+   {
+    "say": "maren",
+    "text": "\"Wardens. The Guild's soldiers, in grey coats. That's why you came up blindfolded, and why only Larkfold folk ever walk the cloud path.\""
+   },
+   {
+    "say": "maren",
+    "text": "\"Now go and find your brother, Rhea. Finch has been shouting for you all morning.\""
    },
    {
     "stage": "d1"
@@ -2590,7 +2667,7 @@
    },
    {
     "say": "",
-    "text": "Finch has slipped out of the caves to watch. Corran crouches beside him and points past the drying house, to the north edge of the village, where the cloud lies thick against the cliff."
+    "text": "Finch has slipped out of the caves to watch. Corran crouches beside him and points past the drying house, where the moss for the trays hangs in long racks, to the north edge of the village, where the cloud lies thick against the cliff."
    },
    {
     "say": "corran",
@@ -3032,24 +3109,11 @@
   ],
   "opening": [
    {
-    "say": "",
-    "text": "Larkfold: a village of terraces and caves, high on a mountain, above the clouds. People in the valleys below don't know it's here."
+    "say": "maren",
+    "text": "\"Rhea! Down here, by the warm spring. Somebody's come up the mountain in the night, and she needs the doctor.\""
    },
    {
-    "say": "",
-    "text": "You are Rhea, the village doctor. Your husband is Corran. Your brother Finch is twelve."
-   },
-   {
-    "say": "",
-    "text": "Down in the valley towns, people in pain buy lulls from the Guild. A lull numbs pain while it feeds on you, and once you start wearing them, stopping is agony."
-   },
-   {
-    "say": "",
-    "text": "Larkfold breeds something gentler, in its warm caves, and quietly helps people come off them. People who come up the mountain for help are brought here blindfolded, so they can't lead anyone back."
-   },
-   {
-    "say": "",
-    "text": "Walk with the arrow keys or WASD. Hold Shift to run. Enter talks and reads on. The goal for now is always at the top left of the screen."
+    "toast": "Walk with the arrow keys or WASD, hold Shift to run, and press Enter to talk. Your goal is at the top left."
    }
   ]
  }
