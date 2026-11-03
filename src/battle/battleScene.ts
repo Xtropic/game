@@ -9,7 +9,7 @@ import { Container, Graphics, Sprite, Text, Texture, type FederatedPointerEvent 
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import {
-  act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
+  act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
 } from "./rules";
 import {
@@ -190,7 +190,7 @@ export class BattleScene implements Scene {
         const c = this.choice as { skill: string; target: string };
         yield* this.allyMove(u, c.skill, c.target);
       } else if (this.s.phase === "foe") {
-        this.say("Their move", false);
+        this.say(this.s.firstStrike ? "They move first" : "Their move", false);
         yield 0.35;
         for (const f of foeQueue(this.s).slice()) {
           if (this.s.phase !== "foe") break;
@@ -309,6 +309,12 @@ export class BattleScene implements Scene {
         this.addFx({ kind: "spark", x, y: y - 16, dur: 0.3, big: e.amt >= 12 });
         tv.flash = 1; tv.kx = this.dirOf(t) * -6;
         this.shake = Math.min(3, 0.8 + e.amt * 0.12);
+        yield 0.12;
+      } else if (e.t === "dodge") {
+        const t = unit(this.s, e.target), by = unit(this.s, e.by), tv = this.vis.get(t.id)!, [x] = this.pos(t);
+        if (this.charging === by.id) { const [tx, ty] = this.pos(t); yield* this.moveTo(by.id, tx - 14, ty + 2, 0.15); this.vis.get(by.id)!.pose = "lunge"; }
+        this.addFx({ kind: "grade", x, y: this.top(t) + 4, text: "Dodged", col: "#c8f0ff", dur: 1, size: 6 });
+        this.co2.push(this.frames(0.3, (p) => { tv.kx = Math.sin(p * Math.PI) * this.dirOf(t) * -9; }));
         yield 0.12;
       } else if (e.t === "follow") {
         const kin = unit(this.s, e.by), t = unit(this.s, e.target), [tx, ty] = this.pos(t);
@@ -457,9 +463,12 @@ export class BattleScene implements Scene {
       barFX(g, x - 7, y + 3, 14, u.hp / u.maxHp, "#d06a5a", 1.4);
       if (u.kith && u.calm > 0) barFX(g, x - 7, y + 5.6, 14, u.calm / 100, "#ffe6a8", 0.9);
       if (s.phase === "ally" && u.intent) {
-        const sk = this.book[u.intent.skill], tgt = unit(s, u.intent.target);
-        intentFX(g, u.stunned ? "smoke" : sk.icon ?? "sword", x, this.top(u) - 3, u.stunned ? "#b8b8a8" : sk.kind === "ranged" ? "#9ad0ff" : "#ff9a7a");
-        if (!u.stunned && this.mode !== "busy") { const [tx] = this.pos(tgt); intentFX(g, "aim", tx + 0.01, this.top(tgt) - 3 - (tgt.id === "rhea" || tgt.id === "tam" ? 0 : 0), "#ff7a6a"); }
+        // how much the party can read depends on their sharpest wits against this foe's
+        const sk = this.book[u.intent.skill], tgt = unit(s, u.intent.target), read = intentRead(s, u);
+        if (u.stunned) intentFX(g, "smoke", x, this.top(u) - 3, "#b8b8a8");
+        else if (read === 0) intentFX(g, "unknown", x, this.top(u) - 3, "#c8b8d8");
+        else intentFX(g, sk.icon ?? "sword", x, this.top(u) - 3, sk.kind === "ranged" ? "#9ad0ff" : "#ff9a7a");
+        if (!u.stunned && read === 2 && this.mode !== "busy") { const [tx] = this.pos(tgt); intentFX(g, "aim", tx + 0.01, this.top(tgt) - 3, "#ff7a6a"); }
       }
     }
     // turn marker / target cursor

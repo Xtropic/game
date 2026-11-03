@@ -96,6 +96,12 @@ export const party = {
   shake: (a: Attrs): number => clamp(ratio(a.presence, 7), 0.7, 2),
   /** Bonus on a blinded or ambushed target: wits. 1.4 at wits 7. */
   ambush: (a: Attrs): number => clamp(1.25 + a.wits / 48, 1.25, 2),
+  /** Who acts first: quick hands and a quick mind. */
+  initiative: (a: Attrs): number => a.finesse * 0.6 + a.wits * 0.4,
+  /** Chance to slip a blow entirely: the target's finesse against the attacker's. 6% between equals. */
+  dodge: (target: Attrs, by: Attrs): number => clamp(0.06 + ((target.finesse - by.finesse) / (target.finesse + by.finesse + 24)) * 0.6, 0.02, 0.25),
+  /** How much of a foe's next move the party can read: 2 = move and target, 1 = the move only, 0 = nothing. */
+  read: (partyWits: number, foe: Attrs): 0 | 1 | 2 => (partyWits >= foe.wits - 1 ? 2 : partyWits >= foe.wits - 5 ? 1 : 0),
 };
 
 /** Army battles: what an officer brings to the unit they lead. */

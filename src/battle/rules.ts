@@ -10,6 +10,13 @@
 //   once a round, and answer a Call when the bond meter is full. Kith never die in party fights; they bolt.
 // - The foal song takes three timed notes: it calms a wild kith (it leaves) or steadies an ally kith (next hit x1.5).
 // - A blinded (smoked) foe loses its next move, and hits on it land as an ambush (x1.4).
+//
+// Attributes added for balance, so might and grit aren't all that matters:
+// - Initiative (finesse and wits) sets the order each side acts in. A foe much quicker than the whole party
+//   strikes first, before the party's turns.
+// - Dodge (finesse against the attacker's finesse) can slip a blow entirely.
+// - Read (the party's best wits against each foe's wits) decides how much of a foe's next move shows:
+//   move and target, the move only, or nothing.
 
 import { NEUTRAL, attrsAt, party, person, type Attrs } from "../cast/attributes";
 import { gearTiming, weaponPower, withGear, type Loadout } from "../gear/weapons";
@@ -59,6 +66,9 @@ export interface BattleState {
   log: string[];
   /** What each unit did, for what a kith learns from the fight: strike, cover, struck, call. */
   deeds: Record<string, Record<string, number>>;
+  /** Foes quick enough to strike before the party this round, and whether they are doing so now. */
+  early: string[];
+  firstStrike: boolean;
 }
 
 export type BattleEvent =
@@ -73,6 +83,7 @@ export type BattleEvent =
   | { t: "steady"; by: string; target: string; amt: number }
   | { t: "call"; by: string; kith: string }
   | { t: "stumble"; id: string }
+  | { t: "dodge"; by: string; target: string }
   | { t: "bondReady" }
   | { t: "rout"; ids: string[] }
   | { t: "end"; result: "won" | "lost" };
@@ -101,8 +112,9 @@ export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: 
     const hp = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
     return { ...u, hp, maxHp: hp, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
   });
-  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {} };
+  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, early: [], firstStrike: false };
   planIntents(s, book, rng);
+  startRound(s);
   return s;
 }
 
@@ -113,8 +125,22 @@ export const timingOf = (u: Unit): number => party.timing(statsOf(u)) * u.gearTi
 export const unit = (s: BattleState, id: string): Unit => { const u = s.units.find((x) => x.id === id); if (!u) throw new Error(`no unit ${id}`); return u; };
 export const alive = (u: Unit): boolean => u.hp > 0 && !u.gone;
 export const sideOf = (s: BattleState, side: Side): Unit[] => s.units.filter((u) => u.side === side);
-/** Units that take their own turns: bonded kith act off their partner's turns instead. */
-export const fighters = (s: BattleState, side: Side): Unit[] => sideOf(s, side).filter((u) => alive(u) && !u.bonded);
+export const initiativeOf = (u: Unit): number => party.initiative(statsOf(u));
+const quickestFirst = (us: Unit[]): Unit[] => us.map((u, i) => ({ u, i })).sort((a, b) => initiativeOf(b.u) - initiativeOf(a.u) || a.i - b.i).map((x) => x.u);
+/** Units that take their own turns, quickest first: bonded kith act off their partner's turns instead. */
+export const fighters = (s: BattleState, side: Side): Unit[] => quickestFirst(sideOf(s, side).filter((u) => alive(u) && !u.bonded));
+/** How much of a foe's next move the party can see (party.read). */
+export const intentRead = (s: BattleState, f: Unit): 0 | 1 | 2 => party.read(Math.max(0, ...fighters(s, "ally").map((u) => statsOf(u).wits)), statsOf(f));
+/** How far ahead a foe must be on initiative to strike before the whole party. */
+export const FIRST_STRIKE_MARGIN = 3;
+
+/** Sets who strikes first this round: foes clearly quicker than every ally go before the party. */
+function startRound(s: BattleState): void {
+  const best = Math.max(0, ...fighters(s, "ally").map(initiativeOf));
+  s.early = fighters(s, "foe").filter((f) => !f.stunned && f.intent && initiativeOf(f) >= best + FIRST_STRIKE_MARGIN).map((f) => f.id);
+  s.firstStrike = s.early.length > 0;
+  if (s.firstStrike) { s.phase = "foe"; s.log.push(`${s.early.map((id) => unit(s, id).name).join(" and ")} ${s.early.length > 1 ? "are" : "is"} quicker.`); }
+}
 export const kithOf = (s: BattleState, u: Unit): Unit | undefined => s.units.find((k) => k.bonded === u.id && alive(k));
 const frontUp = (s: BattleState, side: Side) => sideOf(s, side).some((u) => alive(u) && u.row === "front");
 
@@ -173,11 +199,12 @@ function damage(book: SkillBook, u: Unit, k: string, t: Unit, g: Grade, rng: Rng
 function deed(s: BattleState, id: string, kind: string): void { const d = (s.deeds[id] ??= {}); d[kind] = (d[kind] ?? 0) + 1; }
 
 /** Deals damage, applying a kith's cover or a guard. Returns the unit actually hit. */
-function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[], ev: BattleEvent[]): Unit {
+function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[], ev: BattleEvent[], rng: Rng): Unit {
   let t = target, redirected: "cover" | "guard" | undefined;
   const k = t.side === "ally" && !t.bonded ? kithOf(s, t) : undefined;
   if (k && !k.covered && by.side === "foe") { k.covered = true; t = k; redirected = "cover"; s.log.push(`${k.name} shoulders in front of ${target.name} and takes the blow.`); }
   else if (t.guardedBy) { const gd = unit(s, t.guardedBy); if (alive(gd)) { t = gd; redirected = "guard"; s.log.push(`${gd.name} takes the blow for ${target.name}.`); } }
+  if (!t.stunned && rng() < party.dodge(statsOf(t), statsOf(by))) { ev.push({ t: "dodge", by: by.id, target: t.id }); s.log.push(`${t.name} slips ${by.name}'s blow.`); return t; }
   t.hp = Math.max(0, t.hp - amt);
   deed(s, by.id, "strike"); deed(s, t.id, redirected === "cover" ? "cover" : "struck");
   ev.push({ t: "hit", by: by.id, target: t.id, amt, tags, redirected, was: redirected ? target.id : undefined });
@@ -208,13 +235,13 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
     case "melee": case "ranged": case "pounce": {
       if (ally) {
         const d = damage(book, u, k, t, g, rng);
-        const landed = hit(s, u, t, d.amt, d.tags, ev);
+        const landed = hit(s, u, t, d.amt, d.tags, ev, rng);
         addBond(s, g === "perfect" ? 25 : g === "good" ? 10 : 0, ev);
         const kin = isGood(g) && alive(landed) && sk.kind === "melee" ? kithOf(s, u) : undefined;
-        if (kin) { ev.push({ t: "follow", by: kin.id, target: landed.id }); const f = damage(book, kin, "follow", landed, "none", rng); hit(s, kin, landed, f.amt, ["Follow-up", ...f.tags], ev); }
+        if (kin) { ev.push({ t: "follow", by: kin.id, target: landed.id }); const f = damage(book, kin, "follow", landed, "none", rng); hit(s, kin, landed, f.amt, ["Follow-up", ...f.tags], ev, rng); }
       } else {
         const brace = braceMult(g) * (g === "perfect" || g === "good" ? party.brace(statsOf(t)) : 1);
-        hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * brace * party.power(statsOf(u), statsOf(t), sk.kind === "ranged" ? "ranged" : "melee"))), [], ev);
+        hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * brace * party.power(statsOf(u), statsOf(t), sk.kind === "ranged" ? "ranged" : "melee"))), [], ev, rng);
         addBond(s, g === "perfect" ? 20 : g === "good" ? 8 : 0, ev);
       }
       break;
@@ -240,14 +267,15 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
       const kin = kithOf(s, u); if (!kin) break;
       s.bond = 0; deed(s, kin.id, "call"); ev.push({ t: "call", by: u.id, kith: kin.id }); s.log.push(`${u.name} calls. ${kin.name} comes.`);
       const line = targetsFor(s, book, u, "call");
-      line.forEach((t2, i) => { if (!alive(t2)) return; const d = damage(book, kin, "call", t2, g, rng); hit(s, kin, t2, d.amt, i === 0 ? ["Call", ...d.tags] : d.tags, ev); });
+      line.forEach((t2, i) => { if (!alive(t2)) return; const d = damage(book, kin, "call", t2, g, rng); hit(s, kin, t2, d.amt, i === 0 ? ["Call", ...d.tags] : d.tags, ev, rng); });
       break;
     }
   }
 }
 
 /** Foes that will still act this foe phase, in order. */
-export const foeQueue = (s: BattleState): Unit[] => sideOf(s, "foe").filter(alive);
+/** The foes still to act this phase, quickest first: only the quick ones during a first strike. */
+export const foeQueue = (s: BattleState): Unit[] => fighters(s, "foe").filter((f) => (s.firstStrike ? s.early.includes(f.id) : !s.early.includes(f.id)));
 
 /** What a foe is about to do: refreshes a stale intent (dead or gone target). null = no move. */
 export function foeMove(s: BattleState, book: SkillBook, foeId: string, rng: Rng): Intent | "stunned" | null {
@@ -271,12 +299,17 @@ export function foeAct(s: BattleState, book: SkillBook, foeId: string, grade: Gr
   return ev;
 }
 
-/** After every foe has acted: guards and covers reset, next round's intents are shown. */
+/**
+ * After the foes have acted. After a first strike, the party takes its turns. After the rest, the round
+ * ends: guards and covers reset, next round's intents are shown, and the quick foes strike first again.
+ */
 export function endRound(s: BattleState, book: SkillBook, rng: Rng): void {
   if (s.phase === "won" || s.phase === "lost") return;
+  if (s.firstStrike) { s.firstStrike = false; s.phase = "ally"; s.turn = 0; return; }
   for (const u of s.units) { u.guardedBy = null; u.covered = false; }
   s.round++; s.turn = 0; s.phase = "ally"; s.log.push(`Round ${s.round}.`);
   planIntents(s, book, rng);
+  startRound(s);
 }
 
 export function checkEnd(s: BattleState, ev: BattleEvent[]): boolean {
