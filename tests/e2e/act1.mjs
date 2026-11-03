@@ -62,26 +62,30 @@ async function fight(name) {
 // ---- the prologue ends; a year later ----
 await scene("s.end('prologue')"); await page.waitForTimeout(100);
 await tap("Enter", 200); await read();
-await expect("Act I starts below Larkfold", (s) => s.map === "ostrel" && s.stage === "a1" && s.region === "cloudline" && s.followers.join() === "tamsin,ash");
+await expect("Act I starts below Larkfold", (s) => s.map === "land-cloudline" && s.stage === "a1" && s.region === "cloudline" && s.followers.join() === "tamsin,ash");
 await page.evaluate(() => { window.__lull.game.flags.noWild = true; });
 await page.screenshot({ path: "test-results/act1-world.png" });
 
-// a hidden land: walk the ridge west out of the Cloudline into the mist, and Vael is found
-await travel("ostrel", 11, 16, "left"); await walk("ArrowLeft", 1100); await walk("ArrowUp", 500); await walk("ArrowLeft", 500);
-if (!(await flags())["found.vael"]) fail(`walking into Vael did not find it: ${JSON.stringify(await ex())}`);
+// the mountain road leaves the Cloudline at its south edge and comes into the vale
+await travel("land-cloudline", 38, 37, "down"); await walk("ArrowDown", 700);
+await expect("down the mountain road into the vale", (s) => s.map === "land-vale");
+// the road south to the Millcities is shut, with a Guild checkpoint across it
+await travel("land-vale", 46, 45, "down"); await walk("ArrowDown", 600);
+{ const s = await ex(); if (s.map !== "land-vale") fail(`walked through a shut way into ${s.map}`); }
+if (!/checkpoint/.test(await page.evaluate(() => window.__lull.game.scenes.top.toastLabel.text))) fail("no reason given at the shut way");
 
 // ---- Ferrow Cross ----
-await travel("ostrel", 30, 31, "right"); await walk("ArrowRight", 400);
+await travel("land-vale", 14, 14, "right"); await walk("ArrowRight", 400);
 await expect("into Ferrow Cross", (s) => s.map === "ferrow");
 await put(8, 8, "left"); await tap("Enter"); await read();
 await expect("the cart is empty", (s) => s.stage === "a1b");
 await put(19, 8, "right"); await tap("Enter"); await choose(0);
 await expect("Brannoc walks with them", (s) => s.stage === "a2" && s.followers.join() === "tamsin,ash,brannoc");
 await put(11, 12, "down"); await walk("ArrowDown", 400);
-await expect("back out on the world map", (s) => s.map === "ostrel");
+await expect("back out on the world map", (s) => s.map === "land-vale");
 
 // ---- the Commons camp ----
-await travel("ostrel", 58, 26, "right"); await walk("ArrowRight", 400);
+await travel("land-vale", 59, 17, "right"); await walk("ArrowRight", 400);
 await expect("into the camp", (s) => s.map === "camp");
 await put(15, 5, "up"); await tap("Enter"); await choose(0);
 await expect("enlisted as a Recruit", (s) => s.stage === "a3");
@@ -91,7 +95,7 @@ if (!(await flags())["recruited.ferris"]) fail("singing did not calm Ferris's re
 await page.screenshot({ path: "test-results/act1-camp.png" });
 
 // ---- Hob's Bend at dusk: the cart warden ----
-await travel("ostrel", 44, 36, "down"); await walk("ArrowDown", 400);
+await travel("land-vale", 43, 32, "down"); await walk("ArrowDown", 400);
 await expect("Hob's Bend", (s) => s.map === "bend");
 await put(13, 6, "down"); await page.keyboard.down("ArrowDown");
 await page.waitForFunction(() => window.__lull.explore().dialog, null, { timeout: 8000 }); await page.keyboard.up("ArrowDown");
@@ -104,14 +108,14 @@ if ((await flags()).rank !== "Sergeant") fail("not a Sergeant");
 // ---- Kane, then Millbridge ----
 await travel("camp", 15, 5, "up"); await tap("Enter"); await read();
 await expect("sent to Millbridge", (s) => s.stage === "a5");
-await travel("ostrel", 36, 35, "down"); await walk("ArrowDown", 400);
+await travel("land-vale", 27, 28, "down"); await walk("ArrowDown", 400);
 await expect("Millbridge", (s) => s.map === "millbridge");
 await put(13, 7, "up"); await tap("Enter"); await choose(0);
 await expect("Millbridge hears the truth", (s) => s.stage === "a6");
 const m = await flags(); if (m.millbridge !== "truth" || !m["recruited.oren"]) fail(`Millbridge choice not kept: ${m.millbridge}`);
 
 // ---- the Sallow hatchery ----
-await travel("ostrel", 50, 40, "down"); await walk("ArrowDown", 400);
+await travel("land-vale", 52, 40, "down"); await walk("ArrowDown", 400);
 await expect("the Sallow hatchery at night", (s) => s.map === "sallow");
 await page.keyboard.down("ArrowUp");
 await page.waitForFunction(() => window.__lull.explore().dialog, null, { timeout: 8000 }); await page.keyboard.up("ArrowUp");
@@ -119,11 +123,11 @@ await read(); await fight("sallow-gate"); await read();
 await expect("the gate is open, the brood house burning", (s) => s.stage === "a6b");
 await page.waitForTimeout(1500); await page.screenshot({ path: "test-results/act1-fire.png" });
 await put(12, 4, "up"); await walk("ArrowUp", 500); await choose(0);
-await expect("Ketti joins; harvest", (s) => s.stage === "a7" && s.map === "ostrel" && s.followers.length === 0);
+await expect("Ketti joins; harvest", (s) => s.stage === "a7" && s.map === "land-vale" && s.followers.length === 0);
 const k = await flags(); if (!k["recruited.ketti"] || k.rank !== "Lieutenant") fail(`Ketti or the promotion missing: ${k.rank}`);
 
 // ---- Larkfold, the first harvest ----
-await travel("ostrel", 22, 21, "up"); await walk("ArrowUp", 400); await read();
+await travel("land-cloudline", 22, 23, "up"); await walk("ArrowUp", 400); await read();
 await expect("home to Larkfold", (s) => s.map === "larkfold" && s.stage === "a7b");
 await tap("KeyQ"); await read();
 await expect("nothing comes", (s) => s.stage === "a7c");

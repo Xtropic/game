@@ -116,7 +116,7 @@ describe("story", () => {
     const f: Flags = { ...fresh(), stage: "i4", hero: "corran", sela: true, ash: true }, { h, log, map } = host(f, [0, 1]);
     const r = new StoryRunner(STORY, h);
     r.run([{ run: "act1Start" }]);
-    expect(f.hero).toBe("rhea"); expect(f.chapter).toBe("Act I: The Commons"); expect(f.party).toBe("tamsin,ash"); expect(map()).toBe("ostrel"); expect(f.stage).toBe("a1");
+    expect(f.hero).toBe("rhea"); expect(f.chapter).toBe("Act I: The Commons"); expect(f.party).toBe("tamsin,ash"); expect(map()).toBe("land-cloudline"); expect(f.stage).toBe("a1");
     r.run([{ run: "emptyCart" }]); expect(f.stage).toBe("a1b");
     r.run([{ run: "meetBrannoc" }]); // "Then I'll join your army."
     expect(f.party).toBe("tamsin,ash,brannoc"); expect(f["party.brannoc"]).toBe(true); expect(f.stage).toBe("a2");
@@ -149,7 +149,7 @@ describe("story", () => {
     r.run([{ run: "sallowGate" }]); expect(f.stage).toBe("a6b"); expect(f.sallowBurning).toBe(true);
     r.run([{ run: "ketti" }]);
     expect(f["recruited.ketti"]).toBe(true); expect(f.party).toBe("tamsin,ash,brannoc,ketti"); expect(f.rank).toBe("Lieutenant");
-    expect(f.stage).toBe("a7"); expect(log.at(-1)).toBe("goto ostrel 58,27"); expect(log).toContain("follow "); // she climbs alone
+    expect(f.stage).toBe("a7"); expect(log.at(-1)).toBe("goto land-vale 59,18"); expect(log).toContain("follow "); // she climbs alone
     r.run([{ run: "harvest" }]); expect(map()).toBe("larkfold"); expect(f.stage).toBe("a7b");
     r.run([{ run: "harvestSong" }]); expect(f.stage).toBe("a7c");
     r.run([{ run: "oda" }]); expect(f["recruited.oda"]).toBe(true);

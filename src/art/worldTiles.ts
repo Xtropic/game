@@ -2,8 +2,10 @@
 // far off: hills as little humps, forest as crowded crowns, mountains as peaks with snow. Each kind is painted
 // once in four variants and stamped across the map, so baking a 96 x 64 map stays quick. Coasts, riverbanks and
 // region borders are drawn on top, then the places: towns, camps, ruins, the Guild's hatcheries.
-import { TILE, type Place, type TileKind, type WorldMap } from "../world/map";
-import { dither, hash2, makeCanvas, px } from "./pixel";
+import type { Texture } from "pixi.js";
+import { TILE, type TileKind, type WorldMap } from "../world/map";
+import { dither, hash2, makeCanvas, pixelTexture, px } from "./pixel";
+import { drawPlaceArt, kit } from "./placeArt";
 
 const C = {
   sea: ["#1f3f66", "#26507c", "#2f5f8e"], shoal: ["#3f7a9a", "#5a95ae", "#7fb3c4"], foam: "#cfe4ea",
@@ -104,26 +106,27 @@ function drawRoad(g: CanvasRenderingContext2D, ox: number, oy: number, n: (dx: n
 
 const WATERY = new Set<TileKind>(["sea", "shoal", "river", "canal", "bridge", "cloud"]);
 
-/** Small pictures for the places, 16 x 16, standing on their tile. */
-function drawPlace(g: CanvasRenderingContext2D, p: Place): void {
-  const ox = p.x * TILE, oy = p.y * TILE;
-  const house = (x: number, y: number, roof: string, w = 6) => { px(g, ox + x, oy + y, C.ink, w, 5); px(g, ox + x + 1, oy + y + 1, "#ddcfae", w - 2, 3); for (let i = 0; i < 3; i++) px(g, ox + x - 1 + i, oy + y - 1 - i, roof, w + 2 - i * 2, 1); px(g, ox + x + 2, oy + y + 2, "#5e4029", 1, 2); };
-  switch (p.icon) {
-    case "ruins": for (const [x, h] of [[2, 6], [6, 9], [10, 5]] as const) { px(g, ox + x, oy + 14 - h, C.ink, 3, h); px(g, ox + x, oy + 15 - h, "#5a5450", 2, h - 1); } px(g, ox + 1, oy + 14, "#3a3430", 14, 2); px(g, ox + 8, oy + 4, "#8a8680", 1, 1); break;
-    case "inn": house(4, 8, "#8c412c", 8); px(g, ox + 13, oy + 5, C.ink, 1, 6); px(g, ox + 13, oy + 5, "#c9a86a", 2, 2); break;
-    case "camp": for (const [x, y] of [[3, 7], [9, 9]] as const) for (let i = 0; i < 5; i++) px(g, ox + x + 2 - i, oy + y + i, i === 4 ? C.ink : "#8a7a5a", i * 2 + 1, 1); px(g, ox + 7, oy + 12, "#e8823a", 2, 2); px(g, ox + 12, oy + 2, C.ink, 1, 7); px(g, ox + 13, oy + 2, "#7a2a2a", 3, 2); break;
-    case "town": house(1, 9, "#8c412c"); house(9, 10, "#b0553a"); house(5, 4, "#8c412c"); break;
-    case "sign": px(g, ox + 7, oy + 4, C.ink, 2, 11); px(g, ox + 3, oy + 4, C.ink, 10, 4); px(g, ox + 4, oy + 5, "#c4ab7e", 8, 2); break;
-    case "hatchery": px(g, ox + 2, oy + 7, C.ink, 12, 8); px(g, ox + 3, oy + 8, "#6e342a", 10, 6); px(g, ox + 10, oy + 1, C.ink, 3, 7); px(g, ox + 11, oy + 1, "#55585e", 1, 6); for (let i = 0; i < 3; i++) px(g, ox + 9 + i, oy - 1 - i, "#9a9a9a", 2, 1); px(g, ox + 5, oy + 10, "#e8823a", 2, 2); break;
-    case "city": for (const [x, y, h] of [[1, 6, 9], [5, 3, 12], [10, 5, 10]] as const) { px(g, ox + x, oy + y, C.ink, 5, h); px(g, ox + x + 1, oy + y + 1, "#6e342a", 3, h - 1); } px(g, ox + 7, oy, "#9a9a9a", 1, 3); break;
-    case "castle": px(g, ox + 2, oy + 6, C.ink, 12, 9); px(g, ox + 3, oy + 7, "#a5a7a9", 10, 7); for (let x = 2; x < 14; x += 3) px(g, ox + x, oy + 4, C.ink, 2, 2); px(g, ox + 7, oy + 10, C.ink, 2, 4); px(g, ox + 8, oy, C.ink, 1, 4); px(g, ox + 9, oy, "#c8402c", 3, 2); break;
-    case "fort": px(g, ox + 3, oy + 5, C.ink, 10, 10); px(g, ox + 4, oy + 6, "#8e9092", 8, 8); for (let x = 3; x < 13; x += 3) px(g, ox + x, oy + 3, C.ink, 2, 2); px(g, ox + 7, oy + 10, C.ink, 2, 4); break;
-    case "college": house(3, 7, "#4f6a8a", 10); px(g, ox + 7, oy + 1, C.ink, 2, 5); px(g, ox + 7, oy + 2, "#e8e0c8", 2, 2); break;
-    case "port": house(2, 6, "#8c412c"); px(g, ox + 9, oy + 10, C.ink, 6, 3); px(g, ox + 10, oy + 10, "#8e6a4b", 4, 2); px(g, ox + 12, oy + 3, C.ink, 1, 7); px(g, ox + 13, oy + 4, "#e8e0d0", 2, 4); break;
-    case "palace": px(g, ox + 2, oy + 8, C.ink, 12, 7); px(g, ox + 3, oy + 9, "#e3cc92", 10, 5); for (const x of [3, 8]) { px(g, ox + x, oy + 3, C.ink, 5, 6); px(g, ox + x + 1, oy + 4, "#d0602a", 3, 4); } break;
-    case "village": house(2, 9, "#66553f"); house(9, 7, "#66553f"); break;
-    default: px(g, ox + 5, oy + 5, C.ink, 6, 6);
+/** What stands across a shut way, 32 x 32: snow, mist, riders, a shut gate, a toll house, a Guild checkpoint... */
+const blockers = new Map<string, Texture>();
+export function blockerTexture(kind: string, side: string): Texture {
+  const key = `${kind}:${side}`; const hit = blockers.get(key); if (hit) return hit;
+  const [c, g] = makeCanvas(32, 32);
+  const k = kit(g, 0, 0), p = k.p;
+  const across = side === "north" || side === "south";
+  switch (kind) {
+    case "snow": k.heap(0, 30, 32, "#e8eef4"); k.heap(4, 22, 22, "#d8e0e8"); for (let i = 0; i < 9; i++) p(Math.floor(hash2(i, 3) * 30), Math.floor(hash2(i, 9) * 18), "#ffffff"); break;
+    case "mist": for (let i = 0; i < 6; i++) p(2 + (i % 2) * 3, 4 + i * 4, i % 2 ? "#e6edf4" : "#c6d4e2", 26, 4); break;
+    case "riders": for (const x of [4, 18]) { p(x, 18, "#55585e", 9, 6); p(x + 7, 14, "#55585e", 3, 5); p(x + 1, 24, "#2a2624", 1, 5); p(x + 7, 24, "#2a2624", 1, 5); p(x + 3, 10, "#a03a2a", 3, 8); p(x + 4, 8, "#e8c39c", 2, 2); p(x + 8, 2, "#1d1814", 1, 14); } break;
+    case "gate": k.tower(0, 6, 7, 24, "crenel", "#c8b48a"); k.tower(25, 6, 7, 24, "crenel", "#c8b48a"); p(7, 10, "#1d1814", 18, 20); p(8, 11, "#8e6a4b", 16, 19); for (let x = 10; x < 24; x += 4) p(x, 11, "#5e4029", 1, 19); p(8, 18, "#5e4029", 16, 1); break;
+    case "toll": k.house(1, 12, 11, 12, "#4f5a6a", "gable", "#ddcfae"); p(12, 20, "#1d1814", 19, 3); for (let x = 13; x < 31; x += 4) p(x, 21, "#e8e0d0", 2, 1); p(12, 20, "#1d1814", 2, 10); break;
+    case "checkpoint": p(0, 18, "#1d1814", 32, 4); for (let x = 1; x < 31; x += 6) { p(x, 19, "#c8402c", 3, 2); p(x + 3, 19, "#e8e0d0", 3, 2); } p(2, 18, "#1d1814", 2, 12); p(28, 18, "#1d1814", 2, 12); k.flag(24, 4, "#a03a2a", 14); p(8, 8, "#55585e", 4, 10); p(9, 5, "#e8c39c", 2, 3); p(13, 2, "#1d1814", 1, 16); break;
+    case "smugglers": for (const [x, y] of [[2, 20], [9, 22], [4, 14]]) { p(x, y, "#1d1814", 8, 8); p(x + 1, y + 1, "#8e6a4b", 6, 6); } p(20, 12, "#2a2624", 5, 14); p(21, 9, "#e8c39c", 3, 3); k.lamp(27, 14); break;
+    case "desert": k.heap(0, 31, 32, "#e3cc92"); k.heap(8, 24, 18, "#ecd8a2"); p(6, 26, "#f2f0ea", 6, 1); p(7, 25, "#f2f0ea", 1, 3); p(10, 25, "#f2f0ea", 1, 3); break;
+    case "walls": p(0, 4, "#1d1814", 32, 28); p(1, 5, "#7a7c80", 30, 26); for (let y = 8; y < 30; y += 4) p(1, y, "#5a5c60", 30, 1); for (let x = 0; x < 32; x += 4) p(x, 2, "#1d1814", 2, 2); p(11, 16, "#1d1814", 10, 16); p(12, 17, "#5e4029", 8, 15); break;
+    default: p(0, 18, "#1d1814", 32, 4);
   }
+  void across;
+  const t = pixelTexture(c); blockers.set(key, t); return t;
 }
 
 /** The whole world map as one canvas: ground, coasts, roads, region borders and places. */
@@ -150,6 +153,6 @@ export function bakeWorld(map: WorldMap): HTMLCanvasElement {
     if (right && right !== r && !WATERY.has(map.kindAt(tx + 1, ty)!)) for (let y = 0; y < TILE; y += 3) px(g, tx * TILE + 15, ty * TILE + y, "rgba(40,20,20,.55)", 1, 2);
     if (down && down !== r && !WATERY.has(map.kindAt(tx, ty + 1)!)) for (let x = 0; x < TILE; x += 3) px(g, tx * TILE + x, ty * TILE + 15, "rgba(40,20,20,.55)", 2, 1);
   }
-  for (const p of map.file.places ?? []) drawPlace(g, p);
+  for (const p of [...(map.file.places ?? [])].sort((a, b) => a.y - b.y)) drawPlaceArt(g, p.id, p.icon, p.x, p.y, TILE);
   return c;
 }

@@ -10,7 +10,9 @@ import { encounter } from "../battle/encounters";
 import type { BattleDef } from "../battle/rules";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
-import { closedAt, closedWhy, findsNow, openPlaces } from "./gates";
+import { arrival, closedAt, findsNow, wayAt, wayBlocker, wayOpen, wayWhy } from "./gates";
+import { MAPS } from "./content";
+import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
 import { LOOKS, SMALL, beastSheet, isBeast, glintTexture, noteTexture, personSheet, type Facing } from "../art/people";
 import { BattleScene } from "../battle/battleScene";
@@ -128,6 +130,7 @@ export class ExploreScene implements Scene, StoryHost {
   private regionNow: string | null = null;
   private untilEncounter = 0;
   private fog = new Graphics();
+  private barriers: Sprite[] = [];
   private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private bannerTime = 0;
@@ -185,6 +188,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.ground.texture = pixelTexture(bakeMap(this.map, { burnt: id === "larkfold" && !!this.flags.ash }));
     this.trail = []; this.steam.clear(); this.hp = 100; this.zonesIn.clear(); this.settle = true;
     this.regionNow = this.currentRegion();
+    if (file.world && this.game?.flags) this.showBanner(file.name);
     if (this.regionNow && this.game?.flags && REGIONS[this.regionNow]?.kind === "hidden") this.enterRegion(this.regionNow); // arriving straight into a hidden land finds it
     if (this.untilEncounter <= 0) this.untilEncounter = this.encounterGap();
     this.lastTile = this.tileKey();
@@ -223,39 +227,47 @@ export class ExploreScene implements Scene, StoryHost {
   /** Rare finds lying on the world map right now, as things to pick up. */
   private findActors(): Actor[] {
     if (!this.map.file.world) return [];
-    return findsNow(this.flags).map((f) => ({
+    return findsNow(this.flags, this.map.file.id).map((f) => ({
       id: `find.${f.id}`, map: this.map.file.id, x: f.x, y: f.y, look: "glint", pickup: true,
       talk: [{ set: { [`found.${f.id}`]: true }, add: { [`have.${f.fitting}`]: 1 } }, { say: "", text: f.text }, { toast: `Found: ${FITTINGS[f.fitting]?.name ?? f.fitting}. A fitting for the forge.` }],
     }));
   }
 
-  /** What decides the open ground: the places open now, regions opened whole, finds still lying about. */
+  /** What decides what stands across the roads: which ways are open, which finds are still lying about. */
   private accessKey(): string {
-    return [...openPlaces(this.flags), ...Object.keys(this.flags).filter((f) => f.startsWith("open.") && this.flags[f]), ...findsNow(this.flags).map((f) => f.id)].join();
+    return [...(this.map.file.ways ?? []).map((w) => (wayOpen(w.id, this.flags) ? "+" : "-") + w.id), ...findsNow(this.flags, this.map.file.id).map((f) => f.id)].join();
   }
 
   private currentRegion(): string | null { const [tx, ty] = this.feetTile(); return this.map.regionAt(tx, ty); }
   private encounterGap(): number { return ENCOUNTER_EVERY[0] + Math.floor(this.rng() * ENCOUNTER_EVERY[1]); }
 
-  /** Hidden lands are under mist until someone walks into them. */
+  /** Hidden lands are under mist until someone walks into them; a shut way has something standing across it. */
   private drawFog(): void {
     this.fog.clear();
+    for (const b of this.barriers) b.destroy();
+    this.barriers = [];
     if (!this.map.file.world) return;
+    for (const w of this.map.file.ways ?? []) {
+      if (wayOpen(w.id, this.flags)) continue;
+      const b = new Sprite(blockerTexture(wayBlocker(w.id), w.side));
+      b.x = w.x * TILE + (w.side === "east" ? -TILE : 0) - (w.side === "north" || w.side === "south" ? TILE / 2 : 0);
+      b.y = w.y * TILE + (w.side === "south" ? -TILE : 0) - (w.side === "west" || w.side === "east" ? TILE / 2 : 0);
+      this.people.addChild(b); this.barriers.push(b);
+    }
     const t = this.game.playSeconds;
     for (let ty = 0; ty < this.map.height; ty++) for (let tx = 0; tx < this.map.width; tx++) {
       const r = this.map.regionAt(tx, ty);
-      if (r && this.map.kindAt(tx, ty) !== "sea" && closedAt(this.map, tx, ty, this.flags)) { this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0x0c1014, alpha: 0.42 }); continue; }
       if (!r || REGIONS[r]?.kind !== "hidden" || this.flags[`found.${r}`]) continue;
       this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0xc8d0da, alpha: 0.86 + 0.06 * Math.sin(tx * 0.7 + ty * 0.5 + t) });
     }
   }
 
-  /** Walking into a closed region: say why Rhea can't go on. */
+  /** Walking up to a shut way: say why Rhea can't go on. */
   private bumpBorder(ax: number, ay: number): void {
     const cx = this.player.x + BOX.ox + BOX.w / 2 + Math.sign(ax) * (BOX.w / 2 + 2), cy = this.player.y + BOX.oy + BOX.h / 2 + Math.sign(ay) * (BOX.h / 2 + 2);
-    const tx = Math.floor(cx / TILE), ty = Math.floor(cy / TILE), r = this.map.regionAt(tx, ty);
+    const tx = Math.floor(cx / TILE), ty = Math.floor(cy / TILE);
     if (!closedAt(this.map, tx, ty, this.flags)) return;
-    const why = closedWhy(r);
+    const why = wayWhy(wayAt(this.map, tx, ty)!.id);
     if (this.toastTime <= 0 || this.toastLabel.text !== why) this.toast(why);
   }
 
@@ -272,6 +284,11 @@ export class ExploreScene implements Scene, StoryHost {
   private worldStep(tx: number, ty: number): boolean {
     const r = this.map.regionAt(tx, ty);
     if (r && r !== this.regionNow) { this.regionNow = r; this.enterRegion(r); }
+    const way = wayAt(this.map, tx, ty);
+    if (way && wayOpen(way.id, this.flags)) {
+      const to = arrival(MAPS, way);
+      if (to) { this.load(to.map, to.x * TILE + 2, to.y * TILE - 2, to.facing); this.save("auto"); return true; }
+    }
     const place = this.map.placeAt(tx, ty);
     if (place) { this.toast(`${place.name}. There is nothing for Rhea there yet.`); return true; }
     const k = this.map.kindAt(tx, ty);

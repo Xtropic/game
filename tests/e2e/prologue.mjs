@@ -115,7 +115,7 @@ const f = await page.evaluate(() => window.__lull.game.flags);
 if (f.evening !== "door" || f.line !== "field" || !f.sela || f.refusal !== "stay") fail(`choices not kept: ${JSON.stringify(f)}`);
 // on into Act I: a year later, on the world map below Larkfold, with Tamsin and Ash
 await tap("Enter", 200); await read();
-await expect("Act I begins on the world map", (s) => !s.ended && s.stage === "a1" && s.map === "ostrel" && s.followers.join() === "tamsin,ash");
+await expect("Act I begins on the world map", (s) => !s.ended && s.stage === "a1" && s.map === "land-cloudline" && s.followers.join() === "tamsin,ash");
 
 if (errors.length) fail("page errors: " + errors.join(" | "));
 console.log(process.exitCode ? "prologue e2e FAILED" : "prologue e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ hold: f.hold, rings: f["rings.corran"], notes: f.notes, ended: end.ended }));

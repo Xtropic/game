@@ -21,7 +21,7 @@ async function boot(): Promise<void> {
     startBattle: (id: string) => scene.startBattle(id),
     looks: () => looksSheet(),
     cast: () => castSheet(),
-    worldMap: () => bakeWorld(new WorldMap(MAPS.ostrel)).toDataURL(),
+    worldMap: (id = "land-cloudline") => bakeWorld(new WorldMap(MAPS[id])).toDataURL(),
     portrait: (id: string, size = 256, talk = 0) => { const c = document.createElement("canvas"); c.width = c.height = size; drawPortrait(c.getContext("2d")!, id, size, 0.5, talk, game.buildFor(id)); return c.toDataURL(); } };
 }
 

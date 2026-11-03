@@ -22,6 +22,9 @@ export interface MapEntity { id: string; kind: "spawn" | "npc" | "sign" | "exit"
 /** A place on the world map: a town, camp or ruin the player walks into. What happens there is up to the story. */
 export interface Place { id: string; name: string; x: number; y: number; icon: string; }
 
+/** Where a road leaves a land at its edge and comes into the next one (the land "land-<to>", at its end of the same way). */
+export interface Way { id: string; x: number; y: number; side: "north" | "south" | "west" | "east"; to: string; }
+
 export interface MapFile {
   id: string;
   name: string;
@@ -34,6 +37,7 @@ export interface MapFile {
   /** Which region each tile belongs to, as a second layer of rows with its own legend. */
   regions?: { legend: Record<string, string>; rows: string[] };
   places?: Place[];
+  ways?: Way[];
 }
 
 export const TILE_DEFS: Record<TileKind, TileDef> = {
@@ -117,7 +121,7 @@ export class WorldMap {
   private kinds: TileKind[];
   /** Solid kinds the story has opened (the lower gate, once the night run starts). */
   readonly open = new Set<TileKind>();
-  /** Extra solid tiles decided by the story (closed regions on the world map). */
+  /** Extra solid tiles decided by the story (shut ways on the world map). */
   closed: ((tx: number, ty: number) => boolean) | null = null;
   private regionIds: (string | null)[] = [];
 
