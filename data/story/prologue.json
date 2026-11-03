@@ -1,0 +1,2120 @@
+{
+ "id": "prologue",
+ "title": "Prologue · Larkfold",
+ "start": {
+  "map": "larkfold",
+  "x": 15,
+  "y": 5,
+  "facing": "up",
+  "stage": "d1",
+  "hero": "rhea",
+  "set": {
+   "hold": 50,
+   "finchTrust": 50,
+   "rings.corran": 0,
+   "notes": 0,
+   "light": "day"
+  }
+ },
+ "cast": {
+  "rhea": "Rhea",
+  "corran": "Corran",
+  "finch": "Finch",
+  "tamsin": "Tamsin",
+  "maren": "Elder Maren",
+  "rook": "Elder Rook",
+  "oda": "Oda",
+  "pell": "Pell",
+  "runner": "Runner",
+  "sela": "Sela",
+  "halloran": "Captain Halloran",
+  "lisle": "Dr Lisle",
+  "warden": "Warden"
+ },
+ "objectives": {
+  "d1": "Find Finch on the upper terrace. Take the steps north of the square.",
+  "d1b": "Smoke is stuck. Stand near him and sing (Q).",
+  "d2": "Meet Finch in the brood caves, east of the lower terrace by the spring.",
+  "d3": "It's evening. Climb the ladder on the drying house to find Corran.",
+  "d4": "Go home to sleep. Your house is the north-west door.",
+  "n1": "Nine days later. Something is wrong in the square.",
+  "n2": "Corran is back from Millbridge. He's waiting at your house.",
+  "n3": "Three nights later. Meet Tamsin at the south gate and take the greenling run.",
+  "n3b": "Follow the trail down the mountain.",
+  "n4": "The sky above the cloud is orange. Climb back to Larkfold.",
+  "n5": "Climb to the top terrace, where Finch tried to call Smoke down.",
+  "n6": "Sing (Q), or press E.",
+  "i1": "Talk to Captain Halloran.",
+  "i1b": "Six months later. The pressure bell is ringing. Go through the hatchery door.",
+  "i2": "Find Finch in the steam and get him out.",
+  "i2b": "Get Finch to the door.",
+  "i3": "Talk to Dr Lisle.",
+  "i4": "A fresh lull in a tin on the table. Finch is in the next room."
+ },
+ "actors": [
+  {
+   "id": "tamsin",
+   "map": "larkfold",
+   "x": 21,
+   "y": 9,
+   "look": "tamsin",
+   "when": {
+    "stagePrefix": "d",
+    "not": "ash"
+   },
+   "talk": [
+    {
+     "say": "tamsin",
+     "text": "\"Corran carried the last run down himself. Says the Millbridge market likes his face better than mine. Can't think why.\""
+    }
+   ]
+  },
+  {
+   "id": "oda",
+   "map": "larkfold",
+   "x": 26,
+   "y": 12,
+   "look": "elder2",
+   "when": {
+    "stagePrefix": "d",
+    "not": "ash"
+   },
+   "talk": [
+    {
+     "say": "oda",
+     "text": "\"Your mother used to sing at the trays too. Said the larvae grew calmer for it. Nonsense, of course. I miss it.\""
+    }
+   ]
+  },
+  {
+   "id": "pell",
+   "map": "larkfold",
+   "x": 12,
+   "y": 16,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "d",
+    "not": "ash"
+   },
+   "talk": [
+    {
+     "say": "pell",
+     "text": "\"I'm cutting moss for Finch's trays. He says if I cut it too thick the lulls bite harder. Is that true?\""
+    }
+   ]
+  },
+  {
+   "id": "maren",
+   "map": "larkfold",
+   "x": 16,
+   "y": 7,
+   "look": "elder",
+   "when": {
+    "stagePrefix": "d",
+    "not": "ash"
+   },
+   "talk": [
+    {
+     "say": "maren",
+     "text": "\"Three hundred in Millbridge on our greenlings now. Your mother would be proud. Mind the measures.\""
+    }
+   ]
+  },
+  {
+   "id": "finch",
+   "map": "larkfold",
+   "x": 14,
+   "y": 2,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "d1",
+     "d1b"
+    ]
+   },
+   "talk": [
+    {
+     "run": "finchTerrace"
+    }
+   ]
+  },
+  {
+   "id": "smoke",
+   "map": "larkfold",
+   "x": 22,
+   "y": 1,
+   "look": "foal",
+   "when": {
+    "stage": [
+     "d1",
+     "d1b"
+    ],
+    "not": "smokeFollows"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The foal stamps and looks at the sky. He won't come for a voice he doesn't know."
+    }
+   ]
+  },
+  {
+   "id": "maren",
+   "map": "larkfold",
+   "x": 16,
+   "y": 7,
+   "look": "elder",
+   "when": {
+    "stage": "n1"
+   },
+   "talk": [
+    {
+     "run": "news"
+    }
+   ]
+  },
+  {
+   "id": "rook",
+   "map": "larkfold",
+   "x": 14,
+   "y": 9,
+   "look": "elder",
+   "when": {
+    "stage": "n1"
+   },
+   "talk": [
+    {
+     "say": "rook",
+     "text": "\"Talk to Maren.\""
+    }
+   ]
+  },
+  {
+   "id": "runner",
+   "map": "larkfold",
+   "x": 17,
+   "y": 8,
+   "look": "tamsin",
+   "when": {
+    "stage": "n1"
+   },
+   "talk": [
+    {
+     "say": "runner",
+     "text": "\"Eleven. All on the last brood. They went to sleep and didn't wake up.\""
+    }
+   ]
+  },
+  {
+   "id": "tamsin",
+   "map": "larkfold",
+   "x": 15,
+   "y": 18,
+   "look": "tamsin",
+   "when": {
+    "stage": "n3"
+   },
+   "talk": [
+    {
+     "run": "tamsinGate"
+    }
+   ]
+  },
+  {
+   "id": "ash",
+   "map": "larkfold",
+   "x": 18,
+   "y": 18,
+   "look": "loftbuck",
+   "when": {
+    "stage": "n3"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "Ash, the old pack loftbuck, chews his lead and waits for the panniers."
+    }
+   ]
+  },
+  {
+   "id": "finch",
+   "map": "caves",
+   "x": 6,
+   "y": 3,
+   "look": "finch",
+   "when": {
+    "stage": "d2"
+   },
+   "talk": [
+    {
+     "run": "finchCaves"
+    }
+   ]
+  },
+  {
+   "id": "corran",
+   "map": "roof",
+   "x": 7,
+   "y": 2,
+   "look": "corran",
+   "when": {
+    "stage": "d3"
+   },
+   "talk": [
+    {
+     "run": "roofTalk"
+    }
+   ]
+  },
+  {
+   "id": "corran",
+   "map": "home",
+   "x": 5,
+   "y": 3,
+   "look": "corran",
+   "when": {
+    "stage": "n2"
+   },
+   "talk": [
+    {
+     "run": "beg"
+    }
+   ]
+  },
+  {
+   "id": "w1",
+   "map": "trail",
+   "x": 10,
+   "y": 11,
+   "look": "warden",
+   "when": {
+    "not": "won.trail-wardens"
+   },
+   "touch": [
+    {
+     "run": "trailFight"
+    }
+   ]
+  },
+  {
+   "id": "w2",
+   "map": "trail",
+   "x": 9,
+   "y": 12,
+   "look": "warden",
+   "when": {
+    "not": "won.trail-wardens"
+   },
+   "touch": [
+    {
+     "run": "trailFight"
+    }
+   ]
+  },
+  {
+   "id": "wa",
+   "map": "trail",
+   "x": 8,
+   "y": 13,
+   "look": "warden",
+   "when": {
+    "not": "won.trail-wardens"
+   },
+   "touch": [
+    {
+     "run": "trailFight"
+    }
+   ]
+  },
+  {
+   "id": "rc",
+   "map": "trail",
+   "x": 10,
+   "y": 12,
+   "look": "reedcat",
+   "when": {
+    "not": "won.trail-wardens"
+   },
+   "touch": [
+    {
+     "run": "trailFight"
+    }
+   ]
+  },
+  {
+   "id": "halloran",
+   "map": "yard",
+   "x": 12,
+   "y": 6,
+   "look": "halloran",
+   "talk": [
+    {
+     "run": "halloran"
+    }
+   ]
+  },
+  {
+   "id": "finch",
+   "map": "yard",
+   "x": 8,
+   "y": 4,
+   "look": "finch",
+   "talk": [
+    {
+     "if": {
+      "flag": "carts"
+     },
+     "then": [
+      {
+       "say": "finch",
+       "text": "\"You let them in.\""
+      }
+     ],
+     "else": [
+      {
+       "say": "",
+       "text": "Finch looks at you and says nothing at all."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sela",
+   "map": "yard",
+   "x": 16,
+   "y": 4,
+   "look": "kid2",
+   "talk": [
+    {
+     "say": "",
+     "text": "A Larkfold girl of seven, crying without making any sound."
+    }
+   ]
+  },
+  {
+   "id": "kid12",
+   "map": "yard",
+   "x": 12,
+   "y": 4,
+   "look": "kid",
+   "talk": [
+    {
+     "say": "",
+     "text": "A Larkfold child. They won't look at you."
+    }
+   ]
+  },
+  {
+   "id": "kid14",
+   "map": "yard",
+   "x": 14,
+   "y": 4,
+   "look": "kid2",
+   "talk": [
+    {
+     "say": "",
+     "text": "A Larkfold child. They won't look at you."
+    }
+   ]
+  },
+  {
+   "id": "finch",
+   "map": "hatchery",
+   "x": 17,
+   "y": 5,
+   "look": "finch",
+   "when": {
+    "stage": "i2"
+   },
+   "talk": [
+    {
+     "follow": [
+      "finch"
+     ]
+    },
+    {
+     "stage": "i2b"
+    },
+    {
+     "say": "finch",
+     "text": "\"I can't see. I can't—\""
+    },
+    {
+     "say": "",
+     "text": "You get him over your shoulder. Your back takes the steam."
+    }
+   ]
+  },
+  {
+   "id": "lisle",
+   "map": "surgery",
+   "x": 3,
+   "y": 3,
+   "look": "lisle",
+   "talk": [
+    {
+     "run": "lisle"
+    }
+   ]
+  },
+  {
+   "id": "n1",
+   "map": "larkfold",
+   "x": 4,
+   "y": 2,
+   "look": "note",
+   "pickup": true,
+   "when": {
+    "not": [
+     "note.n1",
+     "ash"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "set": {
+      "note.n1": true
+     },
+     "add": {
+      "notes": 1
+     }
+    },
+    {
+     "say": "",
+     "text": "Mother's notes: \"Wild lulls bite to keep their host still. The bite numbs. That is all a lull is: a mouth that doesn't want to be scratched off.\""
+    }
+   ]
+  },
+  {
+   "id": "n2",
+   "map": "larkfold",
+   "x": 28,
+   "y": 5,
+   "look": "note",
+   "pickup": true,
+   "when": {
+    "not": [
+     "note.n2",
+     "ash"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "set": {
+      "note.n2": true
+     },
+     "add": {
+      "notes": 1
+     }
+    },
+    {
+     "say": "",
+     "text": "Mother's notes: \"The Guild lines are sterile. Two parent lines, kept in the Broodhouse in Vantry. Every Guild lull in Ostrel is a child of those two. Nobody else can breed them.\""
+    }
+   ]
+  },
+  {
+   "id": "n3",
+   "map": "larkfold",
+   "x": 21,
+   "y": 15,
+   "look": "note",
+   "pickup": true,
+   "when": {
+    "not": [
+     "note.n3",
+     "ash"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "set": {
+      "note.n3": true
+     },
+     "add": {
+      "notes": 1
+     }
+    },
+    {
+     "say": "",
+     "text": "Mother's notes: \"The larvae eat only duskwort. More moss, bigger glands, stronger bite. Measure the moss and you measure the medicine.\""
+    }
+   ]
+  },
+  {
+   "id": "n4",
+   "map": "caves",
+   "x": 14,
+   "y": 1,
+   "look": "note",
+   "pickup": true,
+   "when": {
+    "not": [
+     "note.n4",
+     "ash"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "set": {
+      "note.n4": true
+     },
+     "add": {
+      "notes": 1
+     }
+    },
+    {
+     "say": "",
+     "text": "Mother's notes: \"Step a person down one strength each fortnight. Too fast and they go into the raw. Too strong a brood and the heart slows. Never guess a measure.\""
+    }
+   ]
+  }
+ ],
+ "steps": [
+  {
+   "map": "larkfold",
+   "at": [
+    6,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "home",
+      "x": 4,
+      "y": 5,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    25,
+    8
+   ],
+   "do": [
+    {
+     "toast": "Nobody's home."
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    24,
+    11
+   ],
+   "do": [
+    {
+     "toast": "Nobody's home."
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    8,
+    12
+   ],
+   "when": {
+    "stage": "d3"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "roof",
+      "x": 2,
+      "y": 3,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    8,
+    12
+   ],
+   "do": [
+    {
+     "toast": "The roof's empty."
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    27,
+    16
+   ],
+   "when": {
+    "stagePrefix": "d"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "caves",
+      "x": 7,
+      "y": 7,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    27,
+    16
+   ],
+   "do": [
+    {
+     "toast": "The caves are dark."
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    16,
+    19
+   ],
+   "when": {
+    "stage": "n3"
+   },
+   "do": [
+    {
+     "toast": "Meet Tamsin first."
+    }
+   ]
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    16,
+    19
+   ],
+   "when": {
+    "stage": "n3b"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "trail",
+      "x": 8,
+      "y": 1,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "caves",
+   "at": [
+    7,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "larkfold",
+      "x": 27,
+      "y": 17,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "home",
+   "at": [
+    4,
+    6
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "larkfold",
+      "x": 6,
+      "y": 9,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "roof",
+   "at": [
+    1,
+    4
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "larkfold",
+      "x": 9,
+      "y": 12,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "trail",
+   "at": [
+    8,
+    0
+   ],
+   "when": {
+    "stage": "n4"
+   },
+   "do": [
+    {
+     "run": "burned"
+    }
+   ]
+  },
+  {
+   "map": "trail",
+   "at": [
+    8,
+    0
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "larkfold",
+      "x": 16,
+      "y": 18,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "yard",
+   "at": [
+    5,
+    8
+   ],
+   "when": {
+    "stage": "i1b"
+   },
+   "do": [
+    {
+     "run": "enterHatchery"
+    }
+   ]
+  },
+  {
+   "map": "yard",
+   "at": [
+    5,
+    8
+   ],
+   "do": [
+    {
+     "toast": "Not now."
+    }
+   ]
+  },
+  {
+   "map": "hatchery",
+   "at": [
+    9,
+    9
+   ],
+   "when": {
+    "stage": "i2b"
+   },
+   "do": [
+    {
+     "follow": []
+    },
+    {
+     "stage": "i3"
+    },
+    {
+     "fade": "Dr Lisle's surgery, the next morning."
+    },
+    {
+     "goto": {
+      "map": "surgery",
+      "x": 4,
+      "y": 4,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "hatchery",
+   "at": [
+    9,
+    9
+   ],
+   "do": [
+    {
+     "toast": "Finch is still inside."
+    }
+   ]
+  },
+  {
+   "map": "surgery",
+   "at": [
+    4,
+    5
+   ],
+   "do": [
+    {
+     "toast": "Not yet. Finch is in the next bed."
+    }
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "map": "larkfold",
+   "area": [
+    0,
+    0,
+    31,
+    3
+   ],
+   "when": {
+    "stage": "n5"
+   },
+   "do": [
+    {
+     "stage": "n6"
+    },
+    {
+     "run": "ashTerrace"
+    }
+   ]
+  }
+ ],
+ "looks": [
+  {
+   "map": "caves",
+   "tile": "tray",
+   "do": [
+    {
+     "say": "",
+     "text": "Grey larvae the size of rice grains, feeding on chopped duskwort. In a season they'll be greenlings."
+    }
+   ]
+  },
+  {
+   "map": "caves",
+   "tile": "shelf",
+   "do": [
+    {
+     "say": "",
+     "text": "The brood book. Tonight's measures in Finch's careful, enormous letters. Every line matches your mother's table."
+    }
+   ]
+  },
+  {
+   "tile": "water",
+   "when": {
+    "map": [
+     "larkfold",
+     "caves"
+    ]
+   },
+   "do": [
+    {
+     "say": "",
+     "text": "The spring is warm as a bath. That warmth is why Larkfold exists, and why it's hidden."
+    }
+   ]
+  },
+  {
+   "tile": "cloud",
+   "when": {
+    "flag": "ash"
+   },
+   "do": [
+    {
+     "say": "",
+     "text": "Smoke from the terraces drifts out over the cloud."
+    }
+   ]
+  },
+  {
+   "tile": "cloud",
+   "do": [
+    {
+     "say": "",
+     "text": "Cloud, all the way down. Somewhere under it are the lowlands, the mills, and Millbridge."
+    }
+   ]
+  },
+  {
+   "map": "home",
+   "tile": "bed",
+   "do": [
+    {
+     "run": "sleep"
+    }
+   ]
+  },
+  {
+   "map": "yard",
+   "tile": "cart",
+   "do": [
+    {
+     "say": "",
+     "text": "An indenture cart. The children inside have been sorted by height."
+    }
+   ]
+  },
+  {
+   "map": "hatchery",
+   "tile": "boiler",
+   "do": [
+    {
+     "say": "",
+     "text": "A coal boiler, hissing."
+    }
+   ]
+  },
+  {
+   "map": "rooms",
+   "tile": "table",
+   "do": [
+    {
+     "run": "tin"
+    }
+   ]
+  },
+  {
+   "map": "rooms",
+   "tile": "innerdoor",
+   "do": [
+    {
+     "run": "finchDoor"
+    }
+   ]
+  }
+ ],
+ "songs": [
+  {
+   "when": {
+    "hero": "corran"
+   },
+   "do": [
+    {
+     "toast": "Corran doesn't sing any more."
+    }
+   ]
+  },
+  {
+   "when": {
+    "stage": [
+     "d1",
+     "d1b"
+    ],
+    "map": "larkfold"
+   },
+   "near": "smoke",
+   "range": 4.5,
+   "do": [
+    {
+     "run": "smokeComes"
+    }
+   ]
+  },
+  {
+   "when": {
+    "stage": [
+     "d1",
+     "d1b"
+    ],
+    "map": "larkfold"
+   },
+   "do": [
+    {
+     "toast": "Smoke can't hear you from here. Get closer."
+    }
+   ]
+  },
+  {
+   "when": {
+    "stage": "n6",
+    "map": "larkfold"
+   },
+   "do": [
+    {
+     "run": "singAsh"
+    }
+   ]
+  },
+  {
+   "when": {
+    "stage": "n5"
+   },
+   "do": [
+    {
+     "toast": "Not here. Climb to the top terrace."
+    }
+   ]
+  }
+ ],
+ "hazards": [
+  {
+   "map": "hatchery",
+   "when": {
+    "stage": [
+     "i2",
+     "i2b"
+    ]
+   },
+   "kind": "steam",
+   "sources": [
+    [
+     1,
+     1
+    ],
+    [
+     18,
+     1
+    ],
+    [
+     1,
+     8
+    ],
+    [
+     18,
+     8
+    ]
+   ],
+   "spreadEvery": 0.32,
+   "spreadBy": 2,
+   "max": 95,
+   "on": "wetfloor",
+   "burn": 26,
+   "fail": [
+    {
+     "run": "hatcheryFail"
+    }
+   ]
+  }
+ ],
+ "scripts": {
+  "finchTerrace": [
+   {
+    "if": {
+     "stage": "d1"
+    },
+    "then": [
+     {
+      "say": "finch",
+      "text": "\"Smoke's stuck at the far end and he won't come for me. Rhea, he won't listen to me.\""
+     },
+     {
+      "choose": "Smoke is at the east end of the terrace, refusing to move.",
+      "options": [
+       {
+        "label": "\"I'll sing for him.\"",
+        "by": "rhea",
+        "hint": "The foal song. You sang it to him every night after he was born.",
+        "do": [
+         {
+          "stage": "d1b"
+         }
+        ]
+       },
+       {
+        "label": "\"Try once more. Whistle, don't shout.\"",
+        "by": "rhea",
+        "hint": "He has to learn it himself.",
+        "do": [
+         {
+          "add": {
+           "finchTrust": 4
+          }
+         },
+         {
+          "say": "",
+          "text": "Finch whistles. Smoke looks at the sky. Finch looks at you."
+         },
+         {
+          "say": "finch",
+          "text": "\"Fine. You sing, then.\""
+         },
+         {
+          "stage": "d1b"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "finch",
+      "text": "\"Go on. Sing.\""
+     }
+    ]
+   }
+  ],
+  "smokeComes": [
+   {
+    "set": {
+     "smokeFollows": true
+    }
+   },
+   {
+    "follow": [
+     "smoke"
+    ]
+   },
+   {
+    "say": "",
+    "text": "Three notes and the foal comes clattering across the terrace, nearly knocking you flat, and pushes his head into your hip."
+   },
+   {
+    "say": "finch",
+    "text": "\"It's always the song. Teach me it properly. I'm on the trays tonight, come down to the caves.\""
+   },
+   {
+    "say": "",
+    "text": "Kith remember the voices that raised them for as long as they live. Smoke will remember this one."
+   },
+   {
+    "set": {
+     "sang": true
+    }
+   },
+   {
+    "stage": "d2"
+   }
+  ],
+  "finchCaves": [
+   {
+    "say": "finch",
+    "text": "\"Don't hover. I've done every tray.\""
+   },
+   {
+    "choose": "The brood book is open on the bench. Tonight's trays go down to Millbridge, where Corran's mother and sister are weaning.",
+    "options": [
+     {
+      "label": "Check his measures",
+      "hint": "It's his first season on the trays.",
+      "do": [
+       {
+        "set": {
+         "checked": true
+        }
+       },
+       {
+        "say": "",
+        "text": "Every line in the book matches your mother's table. He watches you check and says nothing, and you feel slightly foolish."
+       },
+       {
+        "run": "evening"
+       }
+      ]
+     },
+     {
+      "label": "Leave him to it",
+      "hint": "He'll never learn if you hover.",
+      "do": [
+       {
+        "add": {
+         "finchTrust": 5
+        }
+       },
+       {
+        "say": "finch",
+        "text": "\"Thank you.\""
+       },
+       {
+        "say": "",
+        "text": "He's humming the foal song under his breath, badly."
+       },
+       {
+        "run": "evening"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "evening": [
+   {
+    "follow": []
+   },
+   {
+    "set": {
+     "light": "dusk"
+    }
+   },
+   {
+    "stage": "d3"
+   },
+   {
+    "toast": "Smoke goes home with Finch. Evening falls."
+   }
+  ],
+  "roofTalk": [
+   {
+    "if": {
+     "not": "roof.started"
+    },
+    "then": [
+     {
+      "set": {
+       "roof.started": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Corran is lying on the warm tiles, watching the stars come out over the cloud. Your husband of three years. Eight years ago he was a Guild Warden. He has never said why he left."
+     }
+    ]
+   },
+   {
+    "choose": "Say something to Corran.",
+    "options": [
+     {
+      "label": "\"Why did you leave the Wardens?\"",
+      "by": "rhea",
+      "when": {
+       "not": "roof.hask"
+      },
+      "do": [
+       {
+        "set": {
+         "roof.hask": true,
+         "heardHask": true
+        }
+       },
+       {
+        "say": "corran",
+        "text": "\"Hask. A village on the far ridge, caught with a brood room. We hanged the adults in the square and put the children on carts. I walked away the next morning and didn't stop until I saw your terraces.\""
+       },
+       {
+        "run": "roofTalk"
+       }
+      ]
+     },
+     {
+      "label": "\"How's your mother?\"",
+      "by": "rhea",
+      "when": {
+       "not": "roof.mother"
+      },
+      "do": [
+       {
+        "set": {
+         "roof.mother": true
+        }
+       },
+       {
+        "say": "corran",
+        "text": "\"Second month on greenlings. My sister says she sleeps through the night now. First time in years.\""
+       },
+       {
+        "run": "roofTalk"
+       }
+      ]
+     },
+     {
+      "label": "\"Are you happy here?\"",
+      "by": "rhea",
+      "when": {
+       "not": "roof.happy"
+      },
+      "do": [
+       {
+        "set": {
+         "roof.happy": true
+        }
+       },
+       {
+        "say": "corran",
+        "text": "\"Most nights I can't believe they let me stay. Then you sing at the trays and I stop wondering.\""
+       },
+       {
+        "run": "roofTalk"
+       }
+      ]
+     },
+     {
+      "label": "Say goodnight",
+      "do": [
+       {
+        "if": {
+         "flag": "heardHask"
+        },
+        "then": [
+         {
+          "add": {
+           "hold": 5
+          }
+         }
+        ]
+       },
+       {
+        "stage": "d4"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sleep": [
+   {
+    "if": {
+     "stage": "d4"
+    },
+    "then": [
+     {
+      "fade": "Nine days later."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "stage": "n1"
+     },
+     {
+      "goto": {
+       "map": "larkfold",
+       "x": 6,
+       "y": 9,
+       "facing": "down"
+      }
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stagePrefix": "n"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "You can't sleep."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "It's the middle of the day."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "news": [
+   {
+    "say": "maren",
+    "text": "\"Eleven people weaning on our last brood went to sleep in Millbridge and didn't wake. Their hearts slowed and stopped. Corran's mother and his sister are two of them.\""
+   },
+   {
+    "say": "maren",
+    "text": "\"He's gone down to bury them. Took the brood book with him.\""
+   },
+   {
+    "say": "maren",
+    "text": "\"Guild agents. They tampered with the trays on the road. It's what they do.\""
+   },
+   {
+    "choose": "The square goes quiet, waiting for you, because it was your mother's recipe.",
+    "options": [
+     {
+      "label": "Believe the elders",
+      "hint": "They raised you. The Guild has done worse.",
+      "do": [
+       {
+        "set": {
+         "believed": true
+        }
+       },
+       {
+        "run": "afterNews"
+       }
+      ]
+     },
+     {
+      "label": "Ask whether anyone checked the brood book",
+      "hint": "A brood can come out too strong.",
+      "do": [
+       {
+        "set": {
+         "doubted": true
+        }
+       },
+       {
+        "say": "maren",
+        "text": "\"It went to Millbridge with Corran. When he's back, ask him. Not before.\""
+       },
+       {
+        "run": "afterNews"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "afterNews": [
+   {
+    "stage": "n2"
+   },
+   {
+    "toast": "Two days pass. Corran comes home."
+   }
+  ],
+  "beg": [
+   {
+    "say": "",
+    "text": "Corran comes back from the burial grey and soaked through, and doesn't take his coat off."
+   },
+   {
+    "if": {
+     "flag": "doubted"
+    },
+    "then": [
+     {
+      "say": "corran",
+      "text": "\"I read the brood book on the road. Every measure is your mother's. Whatever killed them, it wasn't the numbers.\""
+     }
+    ]
+   },
+   {
+    "say": "corran",
+    "text": "\"My old captain found me at the grave. Halloran. He says a Warden column has traced the greenlings up the mountain. They'll be here before the snows. Same orders as Hask.\""
+   },
+   {
+    "if": {
+     "flag": "heardHask"
+    },
+    "then": [
+     {
+      "say": "corran",
+      "text": "\"You know what Hask was. I told you on the roof. Take Finch. We go tonight, over the passes into Lorne. Please.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "corran",
+      "text": "\"I was at Hask, Rhea. They hanged the adults in the square and put the children on carts. Take Finch. We go tonight, over the passes into Lorne. Please.\""
+     }
+    ]
+   },
+   {
+    "choose": "Rhea won't leave. How she refuses is your choice, and he will carry it for twelve years.",
+    "options": [
+     {
+      "label": "\"Three hundred people are weaning on our greenlings.\"",
+      "by": "rhea",
+      "hint": "If Larkfold goes, they go into the raw with nothing.",
+      "do": [
+       {
+        "set": {
+         "refusal": "duty"
+        }
+       },
+       {
+        "add": {
+         "hold": 4
+        }
+       },
+       {
+        "run": "refused"
+       }
+      ]
+     },
+     {
+      "label": "\"You'd trust a Warden captain over our elders?\"",
+      "by": "rhea",
+      "hint": "Cold, and he hears every word.",
+      "do": [
+       {
+        "set": {
+         "refusal": "cold"
+        }
+       },
+       {
+        "add": {
+         "hold": -8
+        }
+       },
+       {
+        "run": "refused"
+       }
+      ]
+     },
+     {
+      "label": "\"This is our home. Stay and help us move the brood.\"",
+      "by": "rhea",
+      "hint": "Ask him to fight for it with you.",
+      "do": [
+       {
+        "set": {
+         "refusal": "stay"
+        }
+       },
+       {
+        "add": {
+         "hold": 8
+        }
+       },
+       {
+        "run": "refused"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "refused": [
+   {
+    "say": "corran",
+    "text": "\"...All right.\""
+   },
+   {
+    "say": "",
+    "text": "Three nights later he asks you to take the greenling run to Millbridge yourself. He says he can't face the market."
+   },
+   {
+    "fade": "Three nights later."
+   },
+   {
+    "set": {
+     "light": "night",
+     "gateOpen": true
+    }
+   },
+   {
+    "stage": "n3"
+   },
+   {
+    "goto": {
+     "map": "larkfold",
+     "x": 6,
+     "y": 9,
+     "facing": "down"
+    }
+   }
+  ],
+  "tamsinGate": [
+   {
+    "say": "tamsin",
+    "text": "\"Panniers are loaded. Maren weighed every tray herself this time. The three hundred can't skip a fortnight, whatever happened. Ash knows the trail. Quiet night for it.\""
+   },
+   {
+    "follow": [
+     "tamsin",
+     "ash"
+    ]
+   },
+   {
+    "stage": "n3b"
+   },
+   {
+    "toast": "Tamsin and Ash join you"
+   }
+  ],
+  "trailFight": [
+   {
+    "say": "",
+    "text": "Grey coats on the trail. Wardens, holding the path, with a reedcat on a chain."
+   },
+   {
+    "battle": "trail-wardens",
+    "win": [
+     {
+      "set": {
+       "light": "fire"
+      }
+     },
+     {
+      "stage": "n4"
+     },
+     {
+      "say": "",
+      "text": "Below you the trail is empty. Above you, the top of the cloud has gone orange, where Larkfold should be."
+     },
+     {
+      "say": "tamsin",
+      "text": "\"Rhea. Rhea, that's the village.\""
+     },
+     {
+      "say": "",
+      "text": "You drop the panniers and climb."
+     }
+    ]
+   }
+  ],
+  "burned": [
+   {
+    "set": {
+     "ash": true,
+     "light": "ash"
+    }
+   },
+   {
+    "follow": []
+   },
+   {
+    "stage": "n5"
+   },
+   {
+    "goto": {
+     "map": "larkfold",
+     "x": 16,
+     "y": 18,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "By dawn there is nothing to climb to. The terraces are black. Every child under fourteen is gone. Finch is gone. Smoke is gone. Corran is gone."
+   },
+   {
+    "say": "",
+    "text": "The elders are on the drying-house beam. You don't look twice."
+   }
+  ],
+  "ashTerrace": [
+   {
+    "say": "",
+    "text": "The top terrace. Hoofprints in the ash where Smoke stamped and refused to come down, a fortnight and a lifetime ago."
+   },
+   {
+    "choose": "The terrace is silent.",
+    "options": [
+     {
+      "label": "Sing the foal song",
+      "hint": "The one he always came to.",
+      "do": [
+       {
+        "run": "singAsh"
+       }
+      ]
+     },
+     {
+      "label": "Not yet",
+      "hint": "Walk the terrace first. Sing (Q) when you're ready.",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "singAsh": [
+   {
+    "say": "",
+    "text": "You sit where Finch tried to call the foal down, and you sing the first verse, because you don't know what else to do."
+   },
+   {
+    "say": "",
+    "text": "Nothing comes."
+   },
+   {
+    "fade": "Four days later, and a long way down the mountain."
+   },
+   {
+    "run": "interlude"
+   }
+  ],
+  "interlude": [
+   {
+    "hero": "corran"
+   },
+   {
+    "chapter": "Interlude I · You are Corran"
+   },
+   {
+    "set": {
+     "light": "day",
+     "showHold": true
+    }
+   },
+   {
+    "stage": "i1"
+   },
+   {
+    "goto": {
+     "map": "yard",
+     "x": 11,
+     "y": 7,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "Halloran broke every promise he made."
+   },
+   {
+    "say": "",
+    "text": "No hangings, he had said. No burning, no children taken. You led his company in quietly so that it would be an arrest, not Hask. You sent Rhea down the mountain so she wouldn't be there if it went wrong."
+   },
+   {
+    "say": "",
+    "text": "It went wrong. Now you're standing in a yard in Vantry, beside the carts."
+   }
+  ],
+  "halloran": [
+   {
+    "if": {
+     "stage": "i1"
+    },
+    "then": [
+     {
+      "say": "halloran",
+      "text": "\"You've nothing to buy a child with, Dace. But I need a man on the hatchery night watch. Nobody wants it. Take it, and I'll sign one indenture over to you. The child still works the hatchery, but on the clerk's side, out of the brood rooms, under your eye.\""
+     },
+     {
+      "choose": "Finch is by the second cart, looking straight at you. By the last cart, a girl of seven called Sela is crying without making a sound.",
+      "options": [
+       {
+        "label": "Take the watch. Ask for Finch.",
+        "hint": "The one you promised to protect.",
+        "do": [
+         {
+          "set": {
+           "sela": false
+          }
+         },
+         {
+          "run": "afterCarts"
+         }
+        ]
+       },
+       {
+        "label": "Take the vat-cleaning duty too. Ask for Finch and Sela.",
+        "hint": "A second post nobody wants. You'll sleep even less.",
+        "do": [
+         {
+          "set": {
+           "sela": true
+          }
+         },
+         {
+          "add": {
+           "hold": -5
+          }
+         },
+         {
+          "run": "afterCarts"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "halloran",
+      "text": "\"Night watch starts at dusk, Dace. Don't be late.\""
+     }
+    ]
+   }
+  ],
+  "afterCarts": [
+   {
+    "set": {
+     "carts": true
+    }
+   },
+   {
+    "if": {
+     "flag": "sela"
+    },
+    "then": [
+     {
+      "say": "halloran",
+      "text": "\"Two. You're softer than you were.\""
+     },
+     {
+      "say": "",
+      "text": "He laughs, and signs both."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Halloran signs one paper."
+     }
+    ]
+   },
+   {
+    "say": "finch",
+    "text": "\"You let them in.\""
+   },
+   {
+    "say": "",
+    "text": "There is no answer to that. From now on he calls you Warden, and nothing else."
+   },
+   {
+    "if": {
+     "flag": "sela"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Years from now, Sela will tell Rhea that a Warden once took a second post for her and never asked for anything back."
+     }
+    ]
+   },
+   {
+    "stage": "i1b"
+   }
+  ],
+  "enterHatchery": [
+   {
+    "fade": "Six months later. House Mire's hatchery, the night watch."
+   },
+   {
+    "set": {
+     "light": "steam"
+    }
+   },
+   {
+    "stage": "i2"
+   },
+   {
+    "goto": {
+     "map": "hatchery",
+     "x": 9,
+     "y": 8,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "Brood rooms are kept hot and wet by coal boilers, because larvae die in the cold. The pressure bell is ringing. Steam is pouring out of all four boilers."
+   },
+   {
+    "say": "",
+    "text": "Finch works on the clerk's side, far end, east wall. Steam burns. Don't stand in it long."
+   }
+  ],
+  "hatcheryFail": [
+   {
+    "say": "",
+    "text": "You go down on your knees in the white. Someone drags you out by the collar."
+   },
+   {
+    "say": "",
+    "text": "You go back in."
+   },
+   {
+    "follow": []
+   },
+   {
+    "stage": "i2"
+   },
+   {
+    "goto": {
+     "map": "hatchery",
+     "x": 9,
+     "y": 8,
+     "facing": "up"
+    }
+   }
+  ],
+  "lisle": [
+   {
+    "if": {
+     "stage": "i3"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Your back and both hands are scalded raw. Finch has a burn on one arm. The pain is so complete you can't sleep, can't hold a cup, can't think."
+     },
+     {
+      "say": "lisle",
+      "text": "\"House line or field line. The house line will take it all away. The field line takes the edge off. Set at the back of the neck, it reaches the spine.\""
+     },
+     {
+      "choose": "In the tin, on damp moss, two grey lulls the size of a thumbnail.",
+      "options": [
+       {
+        "label": "The house line",
+        "hint": "Take it all away.",
+        "do": [
+         {
+          "set": {
+           "line": "house",
+           "mods.corran": "lull"
+          }
+         },
+         {
+          "add": {
+           "hold": -12,
+           "rings.corran": 1
+          }
+         },
+         {
+          "run": "later"
+         }
+        ]
+       },
+       {
+        "label": "The field line",
+        "hint": "Bear what it doesn't touch.",
+        "do": [
+         {
+          "set": {
+           "line": "field",
+           "mods.corran": "lull"
+          }
+         },
+         {
+          "add": {
+           "hold": 6,
+           "rings.corran": 1
+          }
+         },
+         {
+          "run": "later"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "lisle",
+      "text": "\"Rest.\""
+     }
+    ]
+   }
+  ],
+  "later": [
+   {
+    "fade": "A month later. The burns have healed. The lull has died and dropped off, leaving a small round scar."
+   },
+   {
+    "set": {
+     "light": "evening",
+     "mods.corran": ""
+    }
+   },
+   {
+    "stage": "i4"
+   },
+   {
+    "goto": {
+     "map": "rooms",
+     "x": 2,
+     "y": 3,
+     "facing": "right"
+    }
+   },
+   {
+    "if": {
+     "eq": {
+      "line": "house"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "For a month you felt nothing. Not the burns, not your mother, not the carts."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "For a month the burns were a dull ache instead of a scream. Some nights you still lay awake thinking about the carts."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Lisle sent a fresh one round anyway, in a tin, for the evenings. Evenings are when you think about Rhea. You promised Finch you'd teach him the Guild ledgers tonight. He's in the next room."
+   }
+  ],
+  "tin": [
+   {
+    "if": {
+     "stage": "i4"
+    },
+    "then": [
+     {
+      "choose": "The tin is cool in your hand. Something moves inside it.",
+      "options": [
+       {
+        "label": "Put the fresh lull on",
+        "hint": "Just for the evenings.",
+        "do": [
+         {
+          "set": {
+           "evening": "on",
+           "mods.corran": "lull"
+          }
+         },
+         {
+          "add": {
+           "hold": -10,
+           "rings.corran": 1
+          }
+         },
+         {
+          "say": "",
+          "text": "The bite is a cold pinch at the back of your neck, then nothing at all. Much later, you notice Finch knocked twice and stopped."
+         },
+         {
+          "end": "prologue"
+         }
+        ]
+       },
+       {
+        "label": "Leave it",
+        "hint": "Walk away from the table.",
+        "do": []
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "finchDoor": [
+   {
+    "if": {
+     "stage": "i4"
+    },
+    "then": [
+     {
+      "set": {
+       "evening": "door",
+       "mods.corran": "raw"
+      }
+     },
+     {
+      "add": {
+       "hold": 10
+      }
+     },
+     {
+      "say": "",
+      "text": "Your hands shake on the ledger page, and the raw keeps you up until dawn. Finch doesn't say anything, but he stays until the last line."
+     },
+     {
+      "end": "prologue"
+     }
+    ]
+   }
+  ]
+ }
+}

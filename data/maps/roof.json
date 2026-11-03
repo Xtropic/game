@@ -1,0 +1,26 @@
+{
+ "id": "roof",
+ "name": "The drying-house roof",
+ "music": "dusk",
+ "legend": {
+  "~": "cloud",
+  "R": "roofwalk",
+  "e": "ladder"
+ },
+ "rows": [
+  "~~~~~~~~~~~~",
+  "~RRRRRRRRRR~",
+  "~RRRRRRRRRR~",
+  "~RRRRRRRRRR~",
+  "~eRRRRRRRRR~",
+  "~~~~~~~~~~~~"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 2,
+   "y": 3
+  }
+ ]
+}

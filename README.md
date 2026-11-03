@@ -13,7 +13,8 @@ A story-driven RPG built in TypeScript with PixiJS. The world is drawn as pixel 
 ## Layout
 
 - `src/core` - game loop (fixed 60 Hz logic), input actions, scene stack, saves
-- `src/world` - maps, collision, the explore scene
+- `src/world` - maps, collision, the explore scene; `src/story` - the story runner
+- `data/story` - the story as data: who stands where at each stage, what they say, choices, doors, triggers
 - `src/art` - pixel-art helpers, the tile set, character sprite sheets
 - `src/battle` - battle rules (pure, unit-tested), HD fighter art and effects, the battle scene
 - `data/maps` - maps as rows of characters plus a legend and entities
@@ -21,19 +22,25 @@ A story-driven RPG built in TypeScript with PixiJS. The world is drawn as pixel 
 - `src/ui`, `src/audio` - dialogue box with talking portraits, recorded voice playback
 - `public/vo` - recorded voice lines (generated, see below); `public/portraits` - painted portrait art, when it exists
 - `tools/voice` - records every spoken line in the data
-- `tests/unit` - Vitest rule tests; `tests/e2e` - browser play tests (explore, and a full battle)
+- `tests/unit` - Vitest rule tests; `tests/e2e` - browser play tests (explore, a full battle, and the whole prologue)
 
 ## Controls
 
-Arrows or WASD to move, Shift to run, Enter / Space / E to talk, M to save.
+Arrows or WASD to move, Shift to run, Enter / Space / E to talk or look, Q to sing, M to save. In a choice, Up/Down and Enter, or tap an option.
 
 Battles: Up/Down to pick a move, Enter to choose, then Left/Right to pick a target and Enter. When a ring closes on someone, press Space (or tap) as it meets the inner ring: on your hits for more damage, on enemy hits to brace. T turns on auto timing. Taps work for everything on a phone.
 
-To try a battle, talk to the warden standing on the trail south of the square.
+The trail battle comes on the night of the greenling run, partway through the prologue.
+
+## The prologue
+
+`data/story/prologue.json` holds the whole prologue, ported from the prototype: day one in Larkfold (Finch, Smoke and the foal song, the brood caves, Corran on the roof), the deaths in Millbridge, Corran begging Rhea to leave, the night run and the trail fight, the burning, and Corran's first interlude in Vantry (the carts, the hatchery steam, Dr Lisle's lulls, the tin), ending on a summary of the choices made.
+
+The story is data, not code. `actors` say who stands where and when (`when` takes a stage, flags, the hero or the map), `steps` are doors and other tiles that do something when walked onto, `zones` fire on entering an area, `looks` answer Enter on a kind of tile, `songs` answer Q, `hazards` are things like the hatchery steam, and `scripts` hold the shared scenes. A script is a list of steps: `say`, `choose` (options can be said aloud with `by`), `if`, `set`/`add` flags, `stage`, `follow`, `fade`, `goto`, `battle`, `run`, `hero`, `chapter` and `end`. Stage, choices, Corran's hold, his lull rings and the rest live in the save's flags. `npm test` checks every script, map, battle and speaker a story names exists, and plays the prologue's scripts through; `tests/e2e/prologue.mjs` plays all of it in a browser.
 
 ## Voices
 
-Every spoken line in `data/maps` is recorded ahead of time with the Kokoro-82M voice model, one fixed voice per character (casting in `tools/voice/gen.py`). After adding or changing a line:
+Every spoken line in `data/maps` and `data/story` (and every choice a character says aloud) is recorded ahead of time with the Kokoro-82M voice model, one fixed voice per character (casting in `tools/voice/gen.py`). After adding or changing a line:
 
     node tools/voice/extract.mjs
     pip install kokoro-onnx soundfile        # once; ffmpeg must be installed

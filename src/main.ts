@@ -3,19 +3,15 @@ import { ExploreScene } from "./world/exploreScene";
 import { BattleScene } from "./battle/battleScene";
 import { drawPortrait, loadPortraits } from "./art/portraits";
 import { looksSheet } from "./art/gallery";
-import larkfold from "../data/maps/larkfold-square.json";
-import type { MapFile } from "./world/map";
-
-const MAPS: Record<string, MapFile> = { [larkfold.id]: larkfold as MapFile };
+import { MAPS, STORY } from "./world/content";
 
 async function boot(): Promise<void> {
   const game = new Game();
   await game.init(document.getElementById("game")!);
   await Promise.all([game.voices.load(), loadPortraits()]);
   const saved = game.saves.read("auto");
-  const file = (saved && MAPS[saved.place.map]) || MAPS["larkfold-square"];
-  const scene = new ExploreScene(file, saved && MAPS[saved.place.map] ? saved.place : undefined);
-  if (saved) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; game.party = { ...saved.party }; game.gear = { ...saved.gear }; game.coin = saved.coin; game.kith = { ...game.kith, ...saved.kith }; }
+  const scene = new ExploreScene(STORY, MAPS, saved && MAPS[saved.place.map] && saved.flags.stage ? saved.place : undefined);
+  if (saved && saved.flags.stage) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; game.party = { ...saved.party }; game.gear = { ...saved.gear }; game.coin = saved.coin; game.kith = { ...game.kith, ...saved.kith }; }
   game.scenes.replace(scene);
   // Test and debugging hook; read-only views plus the input object so automated tests can play.
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), saves: () => game.saves.list(),

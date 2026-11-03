@@ -1,0 +1,28 @@
+{
+ "id": "rooms",
+ "name": "Corran's rooms, Vantry",
+ "music": "lull",
+ "legend": {
+  "#": "iwall",
+  "_": "plank",
+  "k": "table",
+  "b": "bed",
+  "f": "innerdoor"
+ },
+ "rows": [
+  "############",
+  "#__________f",
+  "#___kk_____#",
+  "#__________#",
+  "#b_________#",
+  "############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 2,
+   "y": 3
+  }
+ ]
+}

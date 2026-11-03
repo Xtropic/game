@@ -1,11 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { TILE, WorldMap, validateMap, type MapFile } from "../../src/world/map";
-import larkfold from "../../data/maps/larkfold-square.json";
+import { MAPS } from "../../src/world/content";
 
 const tiny: MapFile = { id: "t", name: "t", legend: { ".": "grass", "#": "wall" }, rows: ["#####", "#...#", "#...#", "#####"], entities: [{ id: "s", kind: "spawn", x: 1, y: 1 }] };
 
 describe("map", () => {
-  it("the shipped Larkfold map is valid", () => { expect(validateMap(larkfold as MapFile)).toEqual([]); });
+  it("every shipped map is valid", () => {
+    expect(Object.keys(MAPS).sort()).toEqual(["caves", "hatchery", "home", "larkfold", "roof", "rooms", "surgery", "trail", "yard"]);
+    for (const m of Object.values(MAPS)) expect(validateMap(m), m.id).toEqual([]);
+  });
+  it("opens a solid kind when the story says so (the lower gate)", () => {
+    const m = new WorldMap(MAPS.larkfold);
+    expect(m.solidAt(16, 19)).toBe(true);
+    m.open.add("gate");
+    expect(m.solidAt(16, 19)).toBe(false);
+  });
   it("reports ragged rows and unknown legend characters", () => {
     const errs = validateMap({ ...tiny, rows: ["####", "#.x#", "###"] });
     expect(errs.some((e) => e.includes("row 1 uses 'x'"))).toBe(true);

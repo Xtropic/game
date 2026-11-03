@@ -1,0 +1,28 @@
+{
+ "id": "surgery",
+ "name": "Dr Lisle's surgery",
+ "music": "sombre",
+ "legend": {
+  "#": "iwall",
+  "_": "plank",
+  "k": "shelf",
+  "b": "bed",
+  "e": "exit"
+ },
+ "rows": [
+  "##########",
+  "#__kk____#",
+  "#________#",
+  "#____b___#",
+  "#________#",
+  "####e#####"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 4,
+   "y": 4
+  }
+ ]
+}
