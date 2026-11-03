@@ -109,13 +109,13 @@ await expect("the surgery", (s) => s.map === "surgery" && s.stage === "i3");
 await put(4, 3, "left"); await tap("Enter"); await choose(1);
 await expect("a month later", (s) => s.map === "rooms" && s.stage === "i4");
 await put(10, 1, "right"); await tap("Enter"); await read();
-const end = await expect("the ending", (s) => s.ended);
-await page.screenshot({ path: "test-results/prologue-end.png" });
+// no act card, no end screen: the story carries straight on, the next summer, with Rhea
+const end = await expect("straight on to the next summer", (s) => !s.ended && s.stage === "a1");
 const f = await page.evaluate(() => window.__lull.game.flags);
 if (f.evening !== "door" || f.line !== "field" || !f.sela || f.refusal !== "stay") fail(`choices not kept: ${JSON.stringify(f)}`);
-// on into Act I: a year later, on the world map below Larkfold, with Tamsin and Ash
-await tap("Enter", 200); await read();
-await expect("Act I begins on the world map", (s) => !s.ended && s.stage === "a1" && s.map === "land-cloudline" && s.followers.join() === "tamsin,ash");
+await expect("on the world map below Larkfold", (s) => s.map === "land-cloudline" && s.followers.join() === "tamsin,ash");
+const hud = await page.evaluate(() => window.__lull.game.scenes.top.chapter.text);
+if (/Act|Prologue|Interlude/.test(hud)) fail(`a chapter card on screen: ${hud}`);
 
 if (errors.length) fail("page errors: " + errors.join(" | "));
 console.log(process.exitCode ? "prologue e2e FAILED" : "prologue e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ hold: f.hold, rings: f["rings.corran"], notes: f.notes, ended: end.ended }));

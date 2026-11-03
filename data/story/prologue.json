@@ -1742,9 +1742,6 @@
     "hero": "corran"
    },
    {
-    "chapter": "Interlude I · You are Corran"
-   },
-   {
     "set": {
      "light": "day",
      "showHold": true
@@ -2079,7 +2076,7 @@
           "text": "The bite is a cold pinch at the back of your neck, then nothing at all. Much later, you notice Finch knocked twice and stopped."
          },
          {
-          "end": "prologue"
+          "run": "act1Start"
          }
         ]
        },
@@ -2115,7 +2112,7 @@
       "text": "Your hands shake on the ledger page, and the raw keeps you up until dawn. Finch doesn't say anything, but he stays until the last line."
      },
      {
-      "end": "prologue"
+      "run": "act1Start"
      }
     ]
    }

@@ -102,7 +102,7 @@ describe("story", () => {
     r.run([{ run: "lisle" }]); expect(f.line).toBe("house"); expect(f.hold).toBe(33); expect(f["rings.corran"]).toBe(1); expect(f.stage).toBe("i4");
     r.run([{ run: "tin" }]); // put it on
     expect(f.evening).toBe("on"); expect(f["rings.corran"]).toBe(2); expect(f.hold).toBe(23);
-    expect(log.at(-1)).toBe("end prologue");
+    expect(log).not.toContain("end prologue"); expect(f.hero).toBe("rhea"); expect(f.stage).toBe("a1"); // no end card: straight on with Rhea
   });
 
   it("finds every spoken line, including choices said aloud, once each", () => {
@@ -116,7 +116,7 @@ describe("story", () => {
     const f: Flags = { ...fresh(), stage: "i4", hero: "corran", sela: true, ash: true }, { h, log, map } = host(f, [0, 1]);
     const r = new StoryRunner(STORY, h);
     r.run([{ run: "act1Start" }]);
-    expect(f.hero).toBe("rhea"); expect(f.chapter).toBe("Act I: The Commons"); expect(f.party).toBe("tamsin,ash"); expect(map()).toBe("land-cloudline"); expect(f.stage).toBe("a1");
+    expect(f.hero).toBe("rhea"); expect(f.chapter).toBeUndefined(); expect(f.party).toBe("tamsin,ash"); expect(map()).toBe("land-cloudline"); expect(f.stage).toBe("a1");
     r.run([{ run: "emptyCart" }]); expect(f.stage).toBe("a1b");
     r.run([{ run: "meetBrannoc" }]); // "Then I'll join your army."
     expect(f.party).toBe("tamsin,ash,brannoc"); expect(f["party.brannoc"]).toBe(true); expect(f.stage).toBe("a2");

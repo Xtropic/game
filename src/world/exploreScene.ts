@@ -47,41 +47,9 @@ const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery"]);
 interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 
 /** Which script starts the act after each ending. */
-const NEXT_ACT: Record<string, string> = { prologue: "act1Start" };
-
-/** What the player's choices have done by the end of an act. */
-export function ledger(id: string, f: Record<string, unknown>): string[] {
-  const hold = Number(f.hold ?? 50), yes = (k: string) => !!f[`recruited.${k}`];
-  if (id === "act1") {
-    return [
-      "Act I: The Commons",
-      "",
-      `Rhea's rank: ${String(f.rank || "Recruit")}`,
-      `Millbridge: ${f.millbridge === "truth" ? "told the truth. It joins slowly, but it won't turn." : f.millbridge === "elders" ? "told the elders' story. It joined at once, and it will remember." : "-"}`,
-      `With Rhea: ${["Tamsin", "Ash", "Brannoc", yes("ferris") && "Ferris", yes("ketti") && "Ketti"].filter(Boolean).join(", ")}`,
-      `At the camp: ${[yes("sela") && "Sela", yes("oren") && "Oren Tull", yes("oda") && "Oda, with three greenling trays"].filter(Boolean).join(", ") || "no one from home"}`,
-      `Corran's hold: ${hold} of 100`,
-      "",
-      "Act II starts here: Rhea takes command, and founds Thornwick.",
-      "",
-      "Press Enter to play again from the prologue",
-    ];
-  }
-  const refusal: Record<string, string> = { duty: "for the three hundred in the lowlands", cold: "coldly, asking if he trusted a Warden over the elders", stay: "asking him to stay and fight with her" };
-  return [
-    f.evening === "on" ? "You don't hear Finch knock." : "Finch looks up when you come in.",
-    "",
-    `Corran's hold: ${hold} of 100. ${hold >= 55 ? "He is holding on." : hold >= 40 ? "It's slipping." : "He is already sliding."}`,
-    `Lull rings: ${Number(f["rings.corran"] ?? 0)}`,
-    `Finch's trust in Rhea: ${Number(f.finchTrust ?? 50)} of 100`,
-    `Rhea refused ${refusal[String(f.refusal)] ?? "-"}`,
-    `Sela: ${f.sela ? "bought out. A future companion." : "left in the cart."}`,
-    `Mother's notes: ${Number(f.notes ?? 0)} of 4 found`,
-    "",
-    "These choices carry into every interlude.",
-    "",
-    "Press Enter to go on to Act I: The Commons",
-  ];
+/** Where the story written so far runs out: one quiet line, then a new game. No acts, no chapter cards. */
+export function ledger(_id: string, _f: Record<string, unknown>): string[] {
+  return ["The story goes on from here.", "This is as far as it has been written.", "", "Press Enter to begin again"];
 }
 
 export class ExploreScene implements Scene, StoryHost {
@@ -163,13 +131,15 @@ export class ExploreScene implements Scene, StoryHost {
     const sp = this.story.start;
     this.load(s.map && this.maps[s.map] ? s.map : sp.map, s.x, s.y, s.facing ?? sp.facing);
     const fl = String(this.flags.follow ?? ""); if (fl) this.follow(fl.split(","));
-    if (this.flags.ended) this.end(this.flags.ended === true ? "prologue" : String(this.flags.ended)); else this.save("auto");
+    // a save made at the old end of the prologue carries straight on into the story, as it would now
+    if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
+    else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
   }
 
   private beginStory(): void {
     const sp = this.story.start;
     for (const k of Object.keys(this.flags)) delete this.flags[k];
-    Object.assign(this.flags, sp.set ?? {}, { stage: sp.stage, hero: sp.hero, chapter: this.story.title });
+    Object.assign(this.flags, sp.set ?? {}, { stage: sp.stage, hero: sp.hero });
     this.start = { map: sp.map, x: sp.x * TILE + 2, y: sp.y * TILE - 2, facing: sp.facing };
   }
 
@@ -212,7 +182,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (!this.player.sprite.parent) this.people.addChild(this.player.sprite);
     const stage = String(this.flags.stage ?? "");
     this.objective.text = this.story.objectives[stage] ?? "";
-    this.chapter.text = String(this.flags.chapter ?? this.story.title) + (this.flags.rank ? `  ·  ${this.flags.rank}` : "");
+    this.chapter.text = this.flags.rank && this.flags.hero !== "corran" ? String(this.flags.rank) : "";
     if (this.game.width) this.chapter.x = this.game.width - this.chapter.width - 16;
     const light = LIGHT[String(this.flags.light ?? "day")] ?? LIGHT.day;
     const indoor = INDOORS.has(this.map.file.id) && this.flags.light !== "evening" && this.flags.light !== "steam";
@@ -368,7 +338,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   battle(id: string, done: () => void): void { this.startBattle(id, done); }
 
-  /** Where an act ends: a ledger of what the player's choices have done so far, then on to what comes next. */
+  /** Where the written story runs out. */
   end(id: string): void {
     const t = new Text({ text: ledger(id, this.flags).join("\n"), style: { fontFamily: "Georgia, serif", fontSize: 18, fill: "#efe6d2", align: "center", lineHeight: 28, wordWrap: true, wordWrapWidth: Math.min(700, this.game.width - 40) } });
     t.anchor.set(0.5); t.x = this.game.width / 2; t.y = this.game.height / 2;
@@ -377,15 +347,8 @@ export class ExploreScene implements Scene, StoryHost {
     this.save("auto");
   }
 
-  /** After an act's ledger: the next act, or (after the last one written) a new game. */
-  private carryOn(): void {
-    const id = String(this.flags.ended);
-    this.ended?.destroy(); this.ended = null; this.cover.alpha = 0;
-    this.flags.ended = false;
-    const next = NEXT_ACT[id];
-    if (next && this.story.scripts[next]) { this.runner.run([{ run: next }]); return; }
-    this.restart();
-  }
+  /** After the end of what's written: a new game. */
+  private carryOn(): void { this.restart(); }
 
   /** Starts a new run of the story from the top. */
   restart(): void {

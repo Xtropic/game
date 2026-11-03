@@ -60,8 +60,7 @@ async function fight(name) {
 }
 
 // ---- the prologue ends; a year later ----
-await scene("s.end('prologue')"); await page.waitForTimeout(100);
-await tap("Enter", 200); await read();
+await scene("s.runner.run([{ run: 'act1Start' }])"); await page.waitForTimeout(100); await read();
 await expect("Act I starts below Larkfold", (s) => s.map === "land-cloudline" && s.stage === "a1" && s.region === "cloudline" && s.followers.join() === "tamsin,ash");
 await page.evaluate(() => { window.__lull.game.flags.noWild = true; });
 await page.screenshot({ path: "test-results/act1-world.png" });
@@ -137,10 +136,10 @@ await put(9, 3, "right"); await tap("Enter"); await read();
 if (!(await flags())["recruited.oda"]) fail("Oda not found in the caves");
 await put(7, 7, "down"); await walk("ArrowDown", 300);
 await put(16, 17, "down"); await walk("ArrowDown", 600); await read();
-const end = await expect("the end of Act I", (s) => s.ended);
+const end = await expect("the end of what's written", (s) => s.ended);
 await page.screenshot({ path: "test-results/act1-end.png" });
 const ledger = await page.evaluate(() => window.__lull.game.scenes.top.ended?.text ?? "");
-if (!/Lieutenant/.test(ledger) || !/Oren Tull/.test(ledger) || !/Ketti/.test(ledger)) fail(`ledger: ${ledger}`);
+if (/Act|Prologue|Interlude/.test(ledger)) fail(`act wording at the end: ${ledger}`);
 const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).flags);
 if (saved.ended !== "act1") fail(`the end is not saved: ${saved.ended}`);
 
