@@ -19,7 +19,7 @@ export const BODY_SHAPE: Record<BodyKind, { w: number; h: number; limb: number; 
 export const BODIES: Record<string, BodyKind> = {
   rhea: "slim", corran: "tall", tamsin: "slim", finch: "small", halloran: "broad", lisle: "slim",
   maren: "short", rook: "heavy", oda: "short", pell: "tall", sela: "small", hessa: "slim",
-  brannoc: "huge", kane: "broad", ketti: "small", ferris: "tall", oren: "heavy",
+  brannoc: "huge", kane: "broad", varro: "tall", ketti: "small", ferris: "tall", oren: "heavy",
   warden: "average", archer: "slim", cartwarden: "broad", reeve: "tall", soldier: "average",
   elder: "short", elder2: "slim", folk: "average", folk2: "heavy",
   vil1: "heavy", vil2: "average", vil3: "tall", vil4: "broad", vil5: "slim", vil6: "short", vil7: "average",

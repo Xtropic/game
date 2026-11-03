@@ -29,6 +29,8 @@ import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
+import { newTerm } from "../story/terms";
+import { NotesPanel } from "../ui/notesPanel";
 import { StoryRunner, holds, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
 
 export const VIEW_W = 320, VIEW_H = 180;
@@ -74,6 +76,7 @@ export class ExploreScene implements Scene, StoryHost {
   private wounds = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#e8b8a0", lineHeight: 17, dropShadow: { color: "#000000", alpha: 0.9, blur: 3, distance: 1, angle: Math.PI / 2 } } });
   private joins = new JoinCards();
   private company = new CompanyPanel();
+  private notes = new NotesPanel();
   private map!: WorldMap;
   private game!: Game;
   private zoom = 1;
@@ -135,7 +138,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view);
+    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view);
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
@@ -337,7 +340,13 @@ export class ExploreScene implements Scene, StoryHost {
 
   // ---- StoryHost: what the story asks the scene to do ----
 
-  line(who: string, name: string, text: string, done: () => void): void { this.lineDone = done; this.dialog.show({ who, name, text }); }
+  line(who: string, name: string, text: string, done: () => void): void {
+    this.lineDone = done;
+    // the first time a word the player can't know turns up, say what it means
+    const t = newTerm(text, (id) => !!this.flags[`learned.${id}`]);
+    if (t) this.flags[`learned.${t.id}`] = true;
+    this.dialog.show({ who, name, text }, t);
+  }
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
@@ -368,6 +377,8 @@ export class ExploreScene implements Scene, StoryHost {
     }
     f.company = have.join(",");
   }
+
+  private toggleNotes(): void { this.notes.toggle((id) => !!this.flags[`learned.${id}`], this.screen.w, this.screen.h); }
 
   private toggleCompany(): void {
     const members = this.joinedIds().map((id) => joinerFor(id, this.game.kith, this.story.cast));
@@ -587,6 +598,8 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   update(dt: number): void {
+    // a new game opens with a few lines on where you are and who you are
+    if (!this.flags.opened && this.flags.stage === this.story.start.stage && this.story.scripts.opening && !this.runner.busy) { this.flags.opened = true; this.runner.run([{ run: "opening" }]); }
     const inp = this.game.input;
     if (this.map.file.world) { const k = this.accessKey(); if (k !== this.openKey) { this.openKey = k; this.drawFog(); } }
     if (this.toastTime > 0) { this.toastTime -= dt; if (this.toastTime <= 0) this.toastLabel.text = ""; }
@@ -603,6 +616,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.joins.update(dt);
     if (this.joins.showing) { if (this.joins.canClose && (inp.wasPressed("confirm") || inp.wasPressed("cancel"))) this.joins.close(); return; }
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
+    if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
@@ -621,6 +635,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (inp.wasPressed("confirm")) { this.interact(); return; }
     if (inp.wasPressed("sing")) { this.sing(); return; }
     if (inp.wasPressed("company")) { this.toggleCompany(); return; }
+    if (inp.wasPressed("notes")) { this.toggleNotes(); return; }
     if (inp.wasPressed("menu")) { this.save("1"); this.toast("Saved"); }
     const a = inp.axis();
     if (this.settle) { if (a.x || a.y) return; this.settle = false; }
@@ -688,7 +703,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Read-only view for tests and debugging. */
   debug() {
-    return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
+    return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
       region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

@@ -22,6 +22,8 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const errors = []; page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 await page.goto(url); await page.waitForFunction(() => window.__lull?.explore);
 await page.evaluate(() => localStorage.clear()); await page.reload(); await page.waitForFunction(() => window.__lull?.explore);
+// a new game opens with a few lines about Larkfold: read them through
+for (let i = 0; i < 60; i++) { await page.waitForTimeout(80); const d = await page.evaluate(() => window.__lull.explore()); if (!d.dialog && !d.busy && i > 3) break; if (d.dialog) await page.keyboard.press("Enter"); }
 const t0 = Date.now();
 
 const ex = () => page.evaluate(() => window.__lull.explore());
@@ -35,8 +37,9 @@ async function read(max = 40) {
     if (s.choosing || s.ended) return s;
     if (s.fading) { await page.waitForTimeout(300); continue; }
     if (s.joining) { joins++; await page.waitForTimeout(1500); await tap("Enter", 200); continue; }
-    if (s.dialog) { await tap("Enter"); await tap("Enter", 60); continue; }
-    if (!s.busy) return s;
+    // one press finishes typing, the next closes; never press into a choice that has just come up
+    if (s.dialog) { await tap("Enter"); const t = await ex(); if (t.dialog === s.dialog && !t.choosing) await tap("Enter", 60); continue; }
+    if (!s.busy) { await page.waitForTimeout(120); if (!(await ex()).joining) return s; continue; }
     await page.waitForTimeout(100);
   }
   return ex();
@@ -68,7 +71,7 @@ await expect("up the ladder to the roof", (s) => s.map === "roof");
 await put(6, 2, "right"); await tap("Enter"); await choose(0); await choose(2);
 await expect("goodnight to Corran", (s) => s.stage === "d4");
 if (await page.evaluate(() => window.__lull.game.flags.hold) !== 55) fail("hearing about Hask did not steady Corran's hold");
-await put(2, 4, "left"); await walk("ArrowLeft", 250);
+await put(2, 4, "left"); await walk("ArrowLeft", 250); await page.waitForTimeout(300);
 await put(6, 9, "up"); await walk("ArrowUp", 250);
 await expect("home", (s) => s.map === "home");
 await put(1, 2, "up"); await tap("Enter"); await read();

@@ -50,6 +50,7 @@ CAST = {
     "ketti": (V(("af_kore", 1)), 0.96, 1.5),
     "nurse": (V(("af_aoede", 1)), 0.96, 0),
     "soldier": (V(("am_michael", 1)), 1.0, 0),
+    "varro": (V(("af_nicole", 1)), 0.97, 0),
 }
 # the accent each voice was trained on (a = American, b = British)
 def lang_for(who):

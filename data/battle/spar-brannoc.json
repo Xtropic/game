@@ -1,0 +1,46 @@
+{
+ "id": "spar-brannoc",
+ "name": "Sparring with Brannoc",
+ "backdrop": "meadow",
+ "intro": [
+  "Practice staves in the drill yard. Brannoc is twice your size and moves like he isn't.",
+  "Press when the ring closes to hit harder, and to brace when he swings. Wear down his nerve and he'll call it."
+ ],
+ "won": "Brannoc calls it",
+ "lost": "Flat on your back in the mud. Again",
+ "units": [
+  {
+   "id": "rhea",
+   "name": "Rhea",
+   "look": "rhea",
+   "side": "ally",
+   "row": "front",
+   "cast": "rhea",
+   "skills": [
+    "strike",
+    "rally"
+   ],
+   "at": [
+    86,
+    94
+   ]
+  },
+  {
+   "id": "bspar",
+   "name": "Brannoc",
+   "look": "brannoc",
+   "side": "foe",
+   "row": "front",
+   "hp": 40,
+   "cast": "brannoc",
+   "level": 4,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    104
+   ]
+  }
+ ]
+}

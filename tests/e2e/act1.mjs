@@ -31,6 +31,8 @@ const scene = (fn, arg) => page.evaluate(([f, a]) => new Function("s", "g", "a",
 const put = (x, y, facing) => page.evaluate(([x, y, f]) => { const p = window.__lull.game.scenes.top.player; p.x = x * 16 + 2; p.y = y * 16 - 2; p.facing = f; }, [x, y, facing]);
 /** Goes to a map without the story (a journey across the world map, shortened). */
 const travel = async (map, x, y, facing) => { await scene("s.goto(a[0], a[1], a[2], a[3], () => {})", [map, x, y, facing]); await page.waitForTimeout(80); };
+/** Presses Enter at whoever Rhea faces; presses again if nothing opened (a press can land on a closing frame). */
+const talk = async () => { for (let i = 0; i < 3; i++) { await tap("Enter", 150); const s = await ex(); if (s.dialog || s.busy || s.fading) return; } };
 const tap = async (key, ms = 40) => { await page.keyboard.press(key); await page.waitForTimeout(ms); };
 const walk = async (key, ms) => { await page.keyboard.down(key); await page.waitForTimeout(ms); await page.keyboard.up(key); await page.waitForTimeout(60); };
 async function read(max = 60) {
@@ -39,13 +41,14 @@ async function read(max = 60) {
     if (s.choosing || s.ended) return s;
     if (s.fading) { await page.waitForTimeout(300); continue; }
     if (s.joining) { joins++; await page.waitForTimeout(1500); await tap("Enter", 200); continue; }
-    if (s.dialog) { await tap("Enter"); await tap("Enter", 60); continue; }
-    if (!s.busy && !(await page.evaluate(() => window.__lull.battle()))) return s;
+    // one press finishes typing, the next closes; never press into a choice that has just come up
+    if (s.dialog) { await tap("Enter"); const t = await ex(); if (t.dialog === s.dialog && !t.choosing) await tap("Enter", 60); continue; }
+    if (!s.busy && !(await page.evaluate(() => window.__lull.battle()))) { await page.waitForTimeout(120); if (!(await ex()).joining) return s; continue; }
     await page.waitForTimeout(100);
   }
   return ex();
 }
-async function choose(i) { const s = await read(); if (!s.choosing) { fail(`expected a choice, at ${s.stage}: ${s.dialog}`); return; } for (let k = 0; k < i; k++) await tap("ArrowDown"); await tap("Enter", 80); return read(); }
+async function choose(i) { const s = await read(); if (!s.choosing) { fail(`expected a choice, at ${s.stage}: ${s.dialog} (${new Error().stack.split("\n")[2].trim()})`); return; } for (let k = 0; k < i; k++) await tap("ArrowDown"); await tap("Enter", 80); return read(); }
 const expect = async (what, ok) => { const s = await ex(); if (!ok(s)) fail(`${what}: ${JSON.stringify({ map: s.map, stage: s.stage, dialog: s.dialog, followers: s.followers, region: s.region })}`); return s; };
 /** Fights the battle that's up, with auto timing, first move and first target each turn. */
 async function fight(name) {
@@ -89,11 +92,22 @@ await expect("back out on the world map", (s) => s.map === "land-vale");
 await travel("land-vale", 59, 17, "right"); await walk("ArrowRight", 400);
 await expect("into the camp", (s) => s.map === "camp");
 await put(15, 5, "up"); await tap("Enter"); await choose(0);
-await expect("enlisted as a Recruit", (s) => s.stage === "a3");
+await expect("enlisted as a Recruit; look round the camp", (s) => s.stage === "a2b");
 if ((await flags()).rank !== "Recruit") fail("not a Recruit");
+await put(19, 12, "right"); await talk(); await choose(0);
+await put(8, 8, "left"); await talk(); await read();
+await put(24, 8, "right"); await talk(); await read();
+const tour = await flags(); if (!tour["tour.nurse"] || !tour["tour.yard"] || !tour["tour.kith"]) fail(`the camp tour is unfinished: ${JSON.stringify(tour)}`);
 await put(23, 8, "right"); await tap("KeyQ"); await read();
 if (!(await flags())["recruited.ferris"]) fail("singing did not calm Ferris's reedcat");
 await page.screenshot({ path: "test-results/act1-camp.png" });
+await put(15, 5, "up"); await talk(); await choose(0);
+await fight("spar"); await read();
+await expect("a few weeks of training; night watch", (s) => s.stage === "a2c");
+await put(24, 4, "right"); await talk(); await choose(0);
+await expect("a week later, Kane sends for the section", (s) => s.stage === "a2d");
+await put(15, 5, "up"); await talk(); await read();
+await expect("the cart job", (s) => s.stage === "a3");
 
 // ---- Hob's Bend at dusk: the cart warden ----
 await travel("land-vale", 43, 32, "down"); await walk("ArrowDown", 400);
@@ -103,8 +117,8 @@ await page.waitForFunction(() => window.__lull.explore().dialog, null, { timeout
 await read(); await fight("cart-warden"); await read();
 await expect("the warden beaten", (s) => s.stage === "a3b");
 await put(12, 8, "down"); await tap("Enter"); await read();
-await expect("the children freed; Sergeant", (s) => s.stage === "a4");
-if ((await flags()).rank !== "Sergeant") fail("not a Sergeant");
+await expect("the children freed", (s) => s.stage === "a4");
+if ((await flags()).rank !== "Recruit") fail("promoted for one job");
 
 // ---- Kane, then Millbridge ----
 await travel("camp", 15, 5, "up"); await tap("Enter"); await read();
@@ -112,8 +126,11 @@ await expect("sent to Millbridge", (s) => s.stage === "a5");
 await travel("land-vale", 27, 28, "down"); await walk("ArrowDown", 400);
 await expect("Millbridge", (s) => s.map === "millbridge");
 await put(13, 7, "up"); await tap("Enter"); await choose(0);
-await expect("Millbridge hears the truth", (s) => s.stage === "a6");
+await expect("Millbridge hears the truth; a quiet month at camp", (s) => s.stage === "a5b" && s.map === "camp");
 const m = await flags(); if (m.millbridge !== "truth" || !m["recruited.oren"]) fail(`Millbridge choice not kept: ${m.millbridge}`);
+await put(12, 10, "right"); await talk(); await choose(0);
+await put(15, 5, "up"); await talk(); await read();
+await expect("Kane sends them to Sallow", (s) => s.stage === "a6");
 
 // ---- the Sallow hatchery ----
 await travel("land-vale", 52, 40, "down"); await walk("ArrowDown", 400);
@@ -124,8 +141,12 @@ await read(); await fight("sallow-gate"); await read();
 await expect("the gate is open, the brood house burning", (s) => s.stage === "a6b");
 await page.waitForTimeout(1500); await page.screenshot({ path: "test-results/act1-fire.png" });
 await put(12, 4, "up"); await walk("ArrowUp", 500); await choose(0);
-await expect("Ketti joins; harvest", (s) => s.stage === "a7" && s.map === "land-vale" && s.followers.length === 0);
-const k = await flags(); if (!k["recruited.ketti"] || k.rank !== "Lieutenant") fail(`Ketti or the promotion missing: ${k.rank}`);
+await expect("Ketti joins; Brannoc is hurt", (s) => s.stage === "a6c" && s.map === "camp");
+await put(19, 11, "right"); await talk(); await choose(0);
+await expect("the section will vote", (s) => s.stage === "a6d");
+await put(21, 5, "right"); await talk(); await read();
+await expect("Sergeant by the section's vote; harvest", (s) => s.stage === "a7" && s.map === "land-vale" && s.followers.length === 0);
+const k = await flags(); if (!k["recruited.ketti"] || k.rank !== "Sergeant") fail(`Ketti or the promotion missing: ${k.rank}`);
 
 // ---- Larkfold, the first harvest ----
 await travel("land-cloudline", 22, 23, "up"); await walk("ArrowUp", 400); await read();

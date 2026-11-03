@@ -34,6 +34,8 @@ export const LOOKS: Record<string, Look> = {
   hessa: { hair: "#6a4a3a", hairLight: "#8a6a52", skin: "#e2bc9a", skinShade: "#ba9476", coat: "#5a6a7a", coatShade: "#44505e", accent: "#a89a80", legs: "#3a3a3a", boots: "#222", style: "bun" },
   // Act I
   brannoc: { hair: "#6a6560", hairLight: "#8a8580", skin: "#d4a888", skinShade: "#ac8466", coat: "#5a4a38", coatShade: "#42362a", accent: "#4a3e30", legs: "#3a3028", boots: "#221a14", style: "bald", beardStyle: "full", beard: "#8a8580" },
+  // Lieutenant Varro: tall, close-cropped grey-streaked hair, the Commons green coat with a red collar
+  varro: { hair: "#4a4440", hairLight: "#8a8480", skin: "#c89a74", skinShade: "#a07656", coat: "#2e4a34", coatShade: "#223828", accent: "#a83a2a", legs: "#2a2e2a", boots: "#1a1614" },
   kane: { hair: "#3e3c3a", hairLight: "#8a8886", skin: "#d8b08a", skinShade: "#b08866", coat: "#2e4434", coatShade: "#22332a", accent: "#9a2a24", legs: "#2a2e2a", boots: "#1a1614", beardStyle: "full", beard: "#3e3c3a" },
   ketti: { hair: "#8a3a1e", hairLight: "#b4562e", skin: "#f0cfb2", skinShade: "#d2a88a", coat: "#5a5a36", coatShade: "#44442a", accent: "#9a8a6a", legs: "#3a3228", boots: "#241c16", style: "braid" },
   ferris: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#d8aa80", skinShade: "#b08460", coat: "#3e5a32", coatShade: "#2e4426", accent: "#5a6a3a", legs: "#3a3a2a", boots: "#24221a", style: "cap", cap: "#4a5a34" },

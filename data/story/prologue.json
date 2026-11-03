@@ -1,6 +1,6 @@
 {
  "id": "prologue",
- "title": "Prologue · Larkfold",
+ "title": "Prologue \u00b7 Larkfold",
  "voiced": [
   "roofTalk",
   "news",
@@ -55,7 +55,8 @@
    "ringNote": "grief",
    "cloudPath": "dread",
    "giveSignal": "dread",
-   "cloudGate": "tension"
+   "cloudGate": "tension",
+   "opening": "larkfold"
   },
   "stages": {
    "d3": "dusk",
@@ -551,7 +552,7 @@
     },
     {
      "say": "finch",
-     "text": "\"I can't see. I can't—\""
+     "text": "\"I can't see. I can't\u2014\""
     },
     {
      "say": "",
@@ -3027,6 +3028,28 @@
    },
    {
     "run": "interlude"
+   }
+  ],
+  "opening": [
+   {
+    "say": "",
+    "text": "Larkfold: a village of terraces and caves, high on a mountain, above the clouds. People in the valleys below don't know it's here."
+   },
+   {
+    "say": "",
+    "text": "You are Rhea, the village doctor. Your husband is Corran. Your brother Finch is twelve."
+   },
+   {
+    "say": "",
+    "text": "Down in the valley towns, people in pain buy lulls from the Guild. A lull numbs pain while it feeds on you, and once you start wearing them, stopping is agony."
+   },
+   {
+    "say": "",
+    "text": "Larkfold breeds something gentler, in its warm caves, and quietly helps people come off them. People who come up the mountain for help are brought here blindfolded, so they can't lead anyone back."
+   },
+   {
+    "say": "",
+    "text": "Walk with the arrow keys or WASD. Hold Shift to run. Enter talks and reads on. The goal for now is always at the top left of the screen."
    }
   ]
  }

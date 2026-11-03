@@ -19,6 +19,8 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const errors = []; page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 await page.goto(url); await page.waitForFunction(() => window.__lull?.explore);
+// a new game opens with a few lines about Larkfold: read them through
+for (let i = 0; i < 60; i++) { await page.waitForTimeout(80); const d = await page.evaluate(() => window.__lull.explore()); if (!d.dialog && !d.busy && i > 3) break; if (d.dialog) await page.keyboard.press("Enter"); }
 const at = () => page.evaluate(() => window.__lull.explore());
 const hold = async (key, ms) => { await page.keyboard.down(key); await page.waitForTimeout(ms); await page.keyboard.up(key); };
 
