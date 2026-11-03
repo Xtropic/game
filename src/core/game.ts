@@ -5,6 +5,10 @@ import { SaveStore, browserKV } from "./save";
 import { Voices } from "../audio/voice";
 import { addXp, gains, person, type Attr, type Progress } from "../cast/attributes";
 import type { Loadout } from "../gear/weapons";
+import { PEOPLE, attrsAt } from "../cast/attributes";
+import { addKithXp, kithAttrs, kithBaseline, type Kith } from "../kith/kith";
+import { learnFromBattle, readKith, starterAsh } from "../kith/upbringing";
+import { EVEN, buildOf, type Build } from "../art/build";
 
 export const STEP = 1 / 60; // fixed logic step in seconds
 
@@ -23,6 +27,28 @@ export class Game {
   /** Keepsake weapons by character id; characters not listed carry theirs at the Worn tier. */
   gear: Record<string, Loadout> = {};
   coin = 0;
+  /** Owned kith by id. Ash is with Rhea from the start. */
+  kith: Record<string, Kith> = { ash: starterAsh() };
+
+  /** Attribute mods in force for a character, from the story flags ("mods.corran" = "lull" or "raw,weaning"). */
+  modsOf(id: string): string[] { const m = this.flags[`mods.${id}`]; return typeof m === "string" && m ? m.split(",") : []; }
+
+  /** How someone looks now: their build from their current attributes, mods and lull rings. */
+  buildFor(id: string): Build {
+    const k = this.kith[id];
+    if (k) return buildOf(kithAttrs(k), { level: k.level, rings: k.lull ? 1 : 0, baseline: kithBaseline(k) });
+    if (!PEOPLE[id]) return EVEN;
+    const level = this.progress(id).level, mods = this.modsOf(id), rings = this.flags[`rings.${id}`];
+    return buildOf(attrsAt(id, level, mods), { level, mods, rings: typeof rings === "number" ? rings : undefined, baseline: attrsAt(id, PEOPLE[id].level) });
+  }
+
+  /** A kith learns from a battle it fought in and gains experience. Returns lines for its level ups. */
+  kithFought(id: string, deeds: Record<string, number> | undefined, xp: number): string[] {
+    const k = this.kith[id]; if (!k) return [];
+    learnFromBattle(k, deeds);
+    const levels = addKithXp(k, xp);
+    return levels.length ? [`${k.name} reaches level ${k.level}. ${readKith(k)[0]}`] : [];
+  }
 
   progress(id: string): Progress { return this.party[id] ?? { level: person(id)?.level ?? 1, xp: 0 }; }
   levels(): Record<string, number> { return Object.fromEntries(Object.entries(this.party).map(([k, p]) => [k, p.level])); }

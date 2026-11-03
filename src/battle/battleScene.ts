@@ -2,6 +2,9 @@
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
 import type { Loadout } from "../gear/weapons";
+import { buildOf, type Build } from "../art/build";
+import { kithBaseline, type Kith } from "../kith/kith";
+import { attrsAt, person } from "../cast/attributes";
 import { Container, Graphics, Sprite, Text, Texture, type FederatedPointerEvent } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -21,7 +24,7 @@ interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" |
 type Co = Generator<number | Qte, void, unknown>;
 
 export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; onDone?: (result: BattleResult, s: BattleState) => void; }
 
 const AUTO_KEY = "lull.autoTiming";
 const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } };
@@ -29,6 +32,7 @@ const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) ==
 export class BattleScene implements Scene {
   readonly id = "battle";
   readonly view = new Container();
+  private builds: Record<string, Build> = {};
   private game!: Game;
   s: BattleState;
   private rng: Rng;
@@ -77,7 +81,13 @@ export class BattleScene implements Scene {
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith);
+    // each fighter's look follows their attributes (cast and owned kith); the rest are drawn as designed
+    for (const u of this.s.units) {
+      const k = u.kith ? opts.kith?.[u.id] : undefined, start = u.cast ? person(u.cast)?.level : undefined;
+      if (k) this.builds[u.id] = buildOf(u.stats!, { level: u.level, rings: k.lull ? 1 : 0, baseline: kithBaseline(k) });
+      else if (u.stats && u.cast && start) this.builds[u.id] = buildOf(u.stats, { level: u.level, baseline: attrsAt(u.cast, start) });
+    }
   }
 
   enter(game: Game): void {
@@ -438,7 +448,7 @@ export class BattleScene implements Scene {
       const v = this.vis.get(u.id)!, [x, y] = this.pos(u);
       const flip = u.look === "ash" ? v.flee : u.look === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
       const pose = { t: T + x * 0.1, run: v.pose === "run" ? v.run : 0, lunge: v.pose === "lunge", brace: v.pose === "brace" || v.pose === "guard" || (this.qte?.mode === "brace" && this.qte.target === u.id), bow: v.pose === "aim" && u.look === "archer" ? 1 : undefined, cast: v.pose === "cast" || v.pose === "aim" && u.look !== "archer" || v.pose === "cheer", shout: v.pose === "cheer", flash: v.flash, flip, fall: v.fall };
-      withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose));
+      withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose, this.builds[u.id]));
     }
     // foe HP bars and intents
     for (const u of s.units) {

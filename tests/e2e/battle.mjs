@@ -70,6 +70,8 @@ if (!saved["won.trail-wardens"]) fail("win not in the autosave");
 // experience: the win levels Rhea and Tamsin up, says so, and the levels are saved
 const party = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).party);
 if (!(party.rhea?.level > 3) || !(party.tamsin?.level > 3)) fail(`no level-up saved: ${JSON.stringify(party)}`);
+const ash = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).kith?.ash);
+if (!ash || !ash.habits?.some((h) => h > 0)) fail(`Ash did not learn from the fight: ${JSON.stringify(ash)}`);
 await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); await page.waitForTimeout(100);
 const lvl = await page.evaluate(() => window.__lull.explore().dialog);
 if (!/reaches level 4/.test(lvl ?? "")) fail(`no level-up line: ${lvl}`);

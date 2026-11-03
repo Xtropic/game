@@ -3,7 +3,10 @@
 // Painted art replaces the drawn bust per character: list it in public/portraits/index.json as
 // { "rhea": ["rhea.jpg", "rhea-open.jpg"] } (closed mouth, then optional open mouth for speech; without
 // one, a soft light swells with the voice). The cast's painted portraits come from Figma's image AI.
+// Variants for how a face has changed are listed as "<id>@<variant>" (raw, ringed, hardened, heavy, lean;
+// see portraitKeys in build.ts); the most specific one that exists is shown, else the plain portrait.
 import { CAST, drawFig, setScale } from "../battle/art";
+import { EVEN, pickPortrait, portraitKeys, type Build } from "./build";
 
 const BG: Record<string, [string, string]> = {
   rhea: ["#3a2a22", "#8a5a40"],
@@ -27,13 +30,13 @@ export async function loadPortraits(base = "portraits/"): Promise<void> {
 
 export const hasPortrait = (id: string): boolean => id in CAST || id in painted;
 
-/** Draws the bust of `id` filling a size x size square. talk is 0..1 mouth opening. */
-export function drawPortrait(g: CanvasRenderingContext2D, id: string, size: number, t: number, talk: number): void {
+/** Draws the bust of `id` filling a size x size square. talk is 0..1 mouth opening; `b` is their build now. */
+export function drawPortrait(g: CanvasRenderingContext2D, id: string, size: number, t: number, talk: number, b: Build = EVEN): void {
   const [dark, light] = BG[id] ?? ["#222", "#555"];
   const bg = g.createRadialGradient(size * 0.4, size * 0.3, size * 0.05, size * 0.5, size * 0.55, size * 0.8);
   bg.addColorStop(0, light); bg.addColorStop(1, dark);
   g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = bg; g.fillRect(0, 0, size, size);
-  const art = painted[id];
+  const key = pickPortrait(portraitKeys(id, b), (k) => k in painted), art = key ? painted[key] : undefined;
   if (art) { // cover-fit, the open-mouth frame while the voice is loud, and a slight breath
     const im = talk > 0.35 && art[1] ? art[1] : art[0], sc = Math.max(size / im.width, size / im.height) * (1.02 + Math.sin(t * 1.6) * 0.004);
     g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
@@ -43,12 +46,15 @@ export function drawPortrait(g: CanvasRenderingContext2D, id: string, size: numb
       gl.addColorStop(0, `rgba(255,214,150,${0.16 * talk})`); gl.addColorStop(1, "rgba(255,214,150,0)");
       g.save(); g.globalCompositeOperation = "lighter"; g.fillStyle = gl; g.fillRect(0, 0, size, size); g.restore();
     }
+    if (b.raw && key === id) { // no painted raw variant yet: wash the colour out of the plain one
+      g.save(); g.globalCompositeOperation = "saturation"; g.fillStyle = "rgba(128,128,128,.55)"; g.fillRect(0, 0, size, size); g.restore();
+    }
     return;
   }
   if (!(id in CAST)) return;
   const K = size / 19; setScale(K);
   const breathe = Math.sin(t * 1.6) * 0.12;
-  drawFig(g, id, (size * 0.5) / K + 0.6, (size * 0.44) / K + 42.6 + breathe, { t, talk });
+  drawFig(g, id, (size * 0.5) / K + 0.6, (size * 0.44) / K + 42.6 + breathe, { t, talk }, b);
   // soft light from the upper left, and a vignette
   const v = g.createRadialGradient(size * 0.5, size * 0.45, size * 0.3, size * 0.5, size * 0.5, size * 0.78);
   v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(8,6,4,.55)");

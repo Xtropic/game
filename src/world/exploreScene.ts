@@ -57,7 +57,7 @@ export class ExploreScene implements Scene {
     this.player.sprite.texture = this.sheet("rhea")[this.player.facing][0];
     this.world.addChild(this.player.sprite);
     this.view.addChild(this.world, this.hud);
-    this.dialog = new DialogueBox(game.voices);
+    this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
     this.hud.addChild(this.dialog.view, this.toast);
     this.save("auto");
   }
@@ -75,7 +75,7 @@ export class ExploreScene implements Scene {
 
   save(slot: "auto" | "1"): void {
     const s = this.snapshot();
-    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags }, party: { ...this.game.party }, gear: { ...this.game.gear }, coin: this.game.coin });
+    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags }, party: { ...this.game.party }, gear: { ...this.game.gear }, coin: this.game.coin, kith: structuredClone(this.game.kith) });
   }
 
   /** Shows lines one after another; the next shows when the player closes the current one. */
@@ -93,11 +93,14 @@ export class ExploreScene implements Scene {
     this.game.scenes.push(new BattleScene(def, SKILLS, {
       levels: this.game.levels(),
       gear: this.game.gear,
+      kith: this.game.kith,
       onDone: (_r, s) => {
         this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
         const ups = s.units.filter((u) => u.side === "ally" && u.cast).flatMap((u) => this.game.giveXp(u.cast!, xp, u.name));
+        // owned kith that fought learn from what they did, and grow
+        for (const u of s.units) if (u.side === "ally" && u.kith && this.game.kith[u.id]) ups.push(...this.game.kithFought(u.id, s.deeds[u.id], xp));
         if (e) {
           const i = this.npcs.findIndex((n) => n.e === e);
           if (i >= 0) { this.npcs[i].sprite.destroy(); this.npcs.splice(i, 1); }
