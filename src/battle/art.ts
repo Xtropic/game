@@ -65,17 +65,17 @@ export function backdrop(id: string): HTMLCanvasElement {
 }
 
 // ---------------- HD figures ----------------
-interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm"; scarf?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
+interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
   rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#7a5444", coatS: "#5a3c30", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8402c", weapon: "staff", lash: true },
-  tamsin: { skin: "#e3b896", skinS: "#c0916f", hair: "#1e1915", hairL: "#4e463e", coat: "#4f6b5c", coatS: "#3a5246", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
+  tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#3e5a46", coatS: "#2e4434", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
   warden: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#7c8389", coatS: "#5c6268", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "spear", lantern: true, long: true },
-  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#d8d2c6", hairL: "#f2eee6", coat: "#6d5f4e", coatS: "#504538", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
+  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#e0dcd4", hairL: "#f4f0ea", coat: "#6a4a36", coatS: "#4e3628", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
   archer: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#6f7a72", coatS: "#525c55", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "bow", long: true },
   // the Commons Army: Brannoc, a huge soft-spoken ex-miner with a shield-spear; Ketti, twelve, with a knife
-  brannoc: { skin: "#c89a78", skinS: "#a07858", hair: "#4a3a2a", hairL: "#6a5a48", coat: "#5a4a3a", coatS: "#42362a", pants: "#3a3028", boot: "#221a14", eye: "#4a5a6a", style: "bun", scarf: "#6a7a4a", weapon: "spear", long: true },
-  ketti: { skin: "#f0cfb2", skinS: "#d2a88a", hair: "#8a3a1e", hairL: "#b4562e", coat: "#6a5a3a", coatS: "#4e4228", pants: "#3a3228", boot: "#241c16", eye: "#6a8a4a", style: "braid", weapon: "dart", lash: true },
-  ferris: { skin: "#e2b894", skinS: "#ba9270", hair: "#6a4a2a", hairL: "#8a6a3a", coat: "#5a6a3a", coatS: "#44522c", pants: "#3a3a2a", boot: "#24221a", eye: "#6a5a3a", style: "braid", weapon: "bow", lash: false },
+  brannoc: { skin: "#d4a888", skinS: "#ac8466", hair: "#6a6560", hairL: "#8a8580", coat: "#5a4a38", coatS: "#42362a", pants: "#3a3028", boot: "#221a14", eye: "#4a5a6a", style: "bald", beard: "#8a8580", weapon: "spear", long: true },
+  ketti: { skin: "#f0cfb2", skinS: "#d2a88a", hair: "#8a3a1e", hairL: "#b4562e", coat: "#5a5a36", coatS: "#44442a", pants: "#3a3228", boot: "#241c16", eye: "#6a8a4a", style: "braid", weapon: "dart", lash: true },
+  ferris: { skin: "#d8aa80", skinS: "#b08460", hair: "#1e1a18", hairL: "#3a3430", coat: "#3e5a32", coatS: "#2e4426", pants: "#3a3a2a", boot: "#24221a", eye: "#5a4a32", style: "cap", cap: "#4a5a34", weapon: "bow", lash: false, long: true },
   // a Guild cart warden: an officer's long grey coat and a red sash
   cartwarden: { skin: "#e6c0a0", skinS: "#c29878", hair: "#3a3a3a", hairL: "#606060", coat: "#6a7076", coatS: "#4c5258", pants: "#34373a", boot: "#1a1a1a", eye: "#5a6470", style: "helm", scarf: "#8a2a24", weapon: "spear", lantern: true, long: true },
 };
@@ -105,7 +105,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   const wx = 1 + 0.11 * b.bulk, tallY = 1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0), thick = 1 + 0.22 * b.brawn - 0.1 * b.reach;
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
   ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
-  if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha = 1 - o.fall * 0.25; }
+  if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
   g.translate(0, bob); g.rotate(lean);
   const hipY = -13, sh = -21.5;
   g.scale(0.9 * wx, 1.4 * tallY);
@@ -176,6 +176,11 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   if (o.talk && o.talk > 0.05) { const op = 0.15 + o.talk * 0.55; g.ellipse(hx + 0.1, eyeY + 3.05 + op * 0.3, 0.55 + (1 - o.talk) * 0.1, op * 0.55, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); }
   else if (o.lunge || o.brace || o.shout || o.cast) { g.ellipse(hx + 0.1, eyeY + 3.05, 0.6, 0.45, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); } else { g.moveTo(hx - 0.5, eyeY + 3.05); g.quadraticCurveTo(hx + 0.1, eyeY + 3.25, hx + 0.7, eyeY + 3); }
   g.stroke();
+  if (P0.beard) {
+    g.beginPath(); g.moveTo(hx - 3.9, hy + 0.6); g.quadraticCurveTo(hx - 3.6, hy + 4.6, hx + 0.4, hy + 6.2); g.quadraticCurveTo(hx + 4.2, hy + 4.6, hx + 4.3, hy + 0.4);
+    g.lineTo(hx + 3.4, hy + 1.4); g.quadraticCurveTo(hx + 2.4, hy + 3.4, hx + 1.4, hy + 3.2); g.quadraticCurveTo(hx + 0.2, hy + 2.6, hx - 1, hy + 3.2); g.quadraticCurveTo(hx - 2.4, hy + 3.4, hx - 3.1, hy + 1.4); g.closePath(); inkPath(g, P0.beard, 0.3);
+    g.lineWidth = 0.35; g.strokeStyle = shadeHex(P0.beard, -0.25); g.beginPath(); g.moveTo(hx - 0.4, eyeY + 3.05); g.lineTo(hx + 0.8, eyeY + 3); g.stroke();
+  }
   if (id === "maren") { g.lineWidth = 0.18; g.strokeStyle = "rgba(90,60,50,.45)"; for (const d of [1, -1]) { const bx = hx + d * 1.8; g.beginPath(); g.moveTo(bx + d * 1.1, eyeY + 0.1); g.lineTo(bx + d * 1.6, eyeY + 0.5); g.stroke(); } g.beginPath(); g.moveTo(hx - 0.9, eyeY + 2.4); g.quadraticCurveTo(hx - 1.4, eyeY + 3, hx - 1.1, eyeY + 3.6); g.moveTo(hx + 1.1, eyeY + 2.4); g.quadraticCurveTo(hx + 1.6, eyeY + 3, hx + 1.3, eyeY + 3.6); g.stroke(); }
   const blush = b.raw ? 0 : (id === "rhea" || id === "tamsin" ? 0.12 : 0) + Math.max(0, b.warmth) * 0.1;
   if (blush > 0.01) { ell(g, hx + 2.3, eyeY + 1.9, 0.7, 0.28, `rgba(220,120,110,${blush.toFixed(3)})`); ell(g, hx - 2.2, eyeY + 1.9, 0.7, 0.28, `rgba(220,120,110,${blush.toFixed(3)})`); }
@@ -184,12 +189,22 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
     g.beginPath(); g.moveTo(hx - 5, hy - 1); g.bezierCurveTo(hx - 5.2, hy - 7.6, hx + 5.4, hy - 7.6, hx + 5.2, hy - 1); g.lineTo(hx + 6.4, hy - 0.4); g.lineTo(hx - 5.8, hy - 0.4); g.closePath(); inkPath(g, "#8e959b");
     g.save(); g.clip(); g.fillStyle = "#6a7076"; g.fillRect(hx - 6, hy - 8, 4.2, 8); g.fillStyle = "rgba(255,255,255,.45)"; g.beginPath(); g.ellipse(hx + 1.6, hy - 5.2, 2.2, 0.6, -0.3, 0, 7); g.fill(); g.restore();
     g.fillStyle = "rgba(10,10,20,.25)"; g.fillRect(hx - 4, hy - 0.4, 8.6, 1.4);
+  } else if (P0.style === "bald") {
+    // a fringe of close-cropped hair round the back and sides, light on the crown
+    g.beginPath(); g.moveTo(hx - 4.6, hy + 1.6); g.quadraticCurveTo(hx - 5.2, hy - 2.4, hx - 3.4, hy - 3.2); g.lineTo(hx - 2.6, hy - 1.6); g.quadraticCurveTo(hx - 3.6, hy - 0.4, hx - 3.4, hy + 1.6); g.closePath(); inkPath(g, P0.hair, 0.3);
+    g.fillStyle = "rgba(255,255,255,.35)"; g.beginPath(); g.ellipse(hx + 0.8, hy - 4.4, 1.8, 0.7, -0.3, 0, 7); g.fill();
   } else {
     g.beginPath(); g.moveTo(hx - 4.9, hy + 1.6); g.bezierCurveTo(hx - 5.6, hy - 7.6, hx + 5.8, hy - 7.8, hx + 5, hy - 0.6);
     for (const [fx, fy] of [[4.3, -1.4], [3.7, 0.1], [2.9, -1.9], [2, -0.3], [1, -2], [0, -0.6], [-1, -2.2], [-2.2, -0.6], [-3.4, -2], [-4.2, 0.6]]) g.lineTo(hx + fx, hy + fy);
     g.closePath(); inkPath(g, P0.hair, 0.45);
     g.save(); g.clip(); g.strokeStyle = P0.hairL; g.lineWidth = 0.6; g.beginPath(); g.ellipse(hx + 0.2, hy - 3.2, 3.6, 1.6, -0.15, Math.PI * 1.1, Math.PI * 1.75); g.stroke(); g.restore();
     if (P0.style === "braid") { g.beginPath(); g.moveTo(hx - 4.4, hy - 1); g.quadraticCurveTo(hx - 5.4, hy + 3, hx - 4.6, hy + 5); g.lineTo(hx - 3.6, hy + 2); g.closePath(); inkPath(g, P0.hair, 0.35); }
+    if (P0.style === "cap") {
+      const c = P0.cap ?? "#4a5a34";
+      g.beginPath(); g.moveTo(hx - 5.2, hy - 1.4); g.bezierCurveTo(hx - 5.6, hy - 9, hx + 5.8, hy - 9.2, hx + 5.4, hy - 1.6); g.closePath(); inkPath(g, c, 0.4);
+      g.beginPath(); g.moveTo(hx - 5.3, hy - 1.2); g.lineTo(hx + 5.5, hy - 1.4); g.lineTo(hx + 5.3, hy - 3); g.lineTo(hx - 5.1, hy - 2.8); g.closePath(); inkPath(g, shadeHex(c, -0.2), 0.3);
+      g.lineWidth = 0.15; g.strokeStyle = shadeHex(c, -0.3); for (let i = -4; i <= 4; i += 1.4) { g.beginPath(); g.moveTo(hx + i, hy - 3); g.lineTo(hx + i * 0.8, hy - 7.2); g.stroke(); }
+    }
     if (P0.style === "bun") { g.beginPath(); g.moveTo(hx + 4.4, hy - 1); g.quadraticCurveTo(hx + 5, hy + 2.5, hx + 4.1, hy + 3.6); g.lineTo(hx + 3.9, hy); g.closePath(); inkPath(g, P0.hair, 0.35); }
   }
   g.restore();

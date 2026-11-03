@@ -71,7 +71,7 @@ await travel("ostrel", 11, 16, "left"); await walk("ArrowLeft", 1100); await wal
 if (!(await flags())["found.vael"]) fail(`walking into Vael did not find it: ${JSON.stringify(await ex())}`);
 
 // ---- Ferrow Cross ----
-await travel("ostrel", 31, 30, "down"); await walk("ArrowDown", 400);
+await travel("ostrel", 30, 31, "right"); await walk("ArrowRight", 400);
 await expect("into Ferrow Cross", (s) => s.map === "ferrow");
 await put(8, 8, "left"); await tap("Enter"); await read();
 await expect("the cart is empty", (s) => s.stage === "a1b");

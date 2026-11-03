@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MAPS, REGIONS } from "../../src/world/content";
 import { TILE_DEFS, WILD, WorldMap } from "../../src/world/map";
+import { closedAt, closedWhy } from "../../src/world/gates";
 import { DANGER, encounter, partyUnits, sceneryFor, wildKinds } from "../../src/battle/encounters";
 import { seeded } from "../../src/battle/rules";
 
@@ -37,6 +38,22 @@ describe("the world map of Ostrel", () => {
     const walkable = new Set<string>();
     for (const k of ok) { const [x, y] = k.split(",").map(Number); walkable.add(world.regionAt(x, y)!); }
     expect([...walkable].sort()).toEqual(Object.keys(REGIONS).sort());
+  });
+
+  it("closes most of the map until the story opens it, but keeps Act I's places and roads open", () => {
+    const gated = new WorldMap(MAPS.ostrel);
+    const flags: Record<string, unknown> = {};
+    gated.closed = (tx, ty) => closedAt(gated, tx, ty, flags);
+    const ok = reach(gated, 22, 21);
+    const at = (id: string) => { const p = MAPS.ostrel.places!.find((x) => x.id === id)!; return ok.has(`${p.x},${p.y}`); };
+    for (const id of ["larkfold", "thornwick", "umes", "ferrow", "millbridge", "bend", "sallow", "camp"]) expect(at(id), id).toBe(true);
+    for (const id of ["vantry", "kingsmere", "corvane", "hollin", "college", "holm", "tarsis", "ember", "ashby", "kestrel-fort", "salt-house"]) expect(at(id), id).toBe(false);
+    const open = MAPS.ostrel.places!.filter((p) => ok.has(`${p.x},${p.y}`)).length;
+    expect(open).toBeLessThan(MAPS.ostrel.places!.length / 2);
+    // the story opens a region with a flag
+    flags["open.corvane"] = true;
+    expect(reach(gated, 22, 21).has(`${MAPS.ostrel.places!.find((p) => p.id === "corvane")!.x},${MAPS.ostrel.places!.find((p) => p.id === "corvane")!.y}`)).toBe(true);
+    expect(closedWhy("guild")).toMatch(/checkpoint/);
   });
 
   it("every region has at least two villages, towns or cities", () => {

@@ -1,0 +1,26 @@
+{
+  "note": "Which parts of Ostrel Rhea can walk into. Regions in 'open' are open from the start; any other region opens when the story sets the flag open.<region>. 'routes' are road journeys the story needs: the road tiles between those places stay walkable even where they cross a closed region. 'why' is what Rhea is told when she walks up to a closed border.",
+  "open": ["cloudline", "millbridge", "millcities", "old-drove-road", "kerrow-gorge", "vael"],
+  "routes": [["larkfold", "thornwick"], ["thornwick", "ferrow"], ["ferrow", "millbridge"], ["millbridge", "bend"], ["bend", "sallow"], ["bend", "camp"], ["larkfold", "umes"]],
+  "why": {
+    "guild": "Guild checkpoints ring Vantry. Without indenture papers, Rhea would be taken at the first one.",
+    "crown": "Crown foresters patrol the royal parks. Anyone without a pass is turned back, or worse.",
+    "corvane": "League toll-men hold the hill roads. Nobody without a Corvane letter gets past the toll houses.",
+    "hollin": "The Free Towns have shut their gates to strangers from the north since the raids.",
+    "college": "The College lets in patients and physicians. Rhea is neither, yet.",
+    "drevka": "Drevka clan riders watch the high grazing. Strangers who come uninvited don't come back down.",
+    "ember": "Between here and the Ember Courts is a week of desert. Nobody crosses it without water, a guide and a reason.",
+    "tarsis": "Tarsis sells swords to whoever pays. Walking up to their walls unannounced is how you get sold too.",
+    "ashby": "The coast road to Port Ashby is watched by smugglers who don't like new faces.",
+    "lorne": "The road north to Lorne is closed until the snow lifts from the passes.",
+    "high-passes": "Snow chokes the passes. Nobody gets through until the thaw.",
+    "cloud-forest": "The cloud forest is thick with mist and wild kith. Without a guide, Rhea would never find her way out.",
+    "fens": "The fens are flooded. The causeways are under water.",
+    "deep-desert": "Nobody walks into the deep desert without water and a guide.",
+    "storm-roost": "Lightning walks the slopes of the Storm Roost. Not today.",
+    "low-water": "The canal stair is locked and chained.",
+    "osk": "The shoals are under deep water. The tide won't drop for a long time yet.",
+    "salt-house": "The salt marshes are a maze of sucking mud. Rhea would need someone who knows the way.",
+    "wandering-herd": "The eastern plateau is bare and endless. Rhea has no reason to go there yet."
+  }
+}

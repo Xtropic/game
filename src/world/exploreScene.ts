@@ -10,6 +10,7 @@ import { encounter } from "../battle/encounters";
 import type { BattleDef } from "../battle/rules";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
+import { closedAt, closedWhy } from "./gates";
 import { LOOKS, SMALL, beastSheet, isBeast, noteTexture, personSheet, type Facing } from "../art/people";
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
@@ -19,6 +20,7 @@ import { StoryRunner, holds, type Actor, type Story, type StoryHost, type Where 
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
+const NO_ANCHOR = { x: 0, y: 0 };
 const BOX = { w: 10, h: 6, ox: 1, oy: 11 }; // player's collision box at the feet, relative to the sprite's top-left
 const FOLLOW_GAP = 16; // pixels of trail between each follower
 const WORLD_PACE = 1.6; // the world map is walked faster: one tile there is a stretch of country
@@ -102,6 +104,7 @@ export class ExploreScene implements Scene, StoryHost {
   private runner!: StoryRunner;
   private toastLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.8 } } });
   private toastTime = 0;
+  private openKey = "";
   private objective = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 14, fill: "#e8dcc0", wordWrap: true, wordWrapWidth: 420, dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.9 } } });
   private chapter = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#c8b48a", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.9 } } });
   private meter = new Graphics();
@@ -171,6 +174,7 @@ export class ExploreScene implements Scene, StoryHost {
   private load(id: string, x?: number, y?: number, facing?: Facing): void {
     const file = this.maps[id]; if (!file) throw new Error(`no map ${id}`);
     this.map = new WorldMap(file);
+    if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
     if (this.flags.gateOpen) this.map.open.add("gate");
     const sp = this.map.spawn();
     this.player.x = x ?? sp.x * TILE + 2; this.player.y = y ?? sp.y * TILE - 2;
@@ -224,9 +228,19 @@ export class ExploreScene implements Scene, StoryHost {
     const t = this.game.playSeconds;
     for (let ty = 0; ty < this.map.height; ty++) for (let tx = 0; tx < this.map.width; tx++) {
       const r = this.map.regionAt(tx, ty);
+      if (r && closedAt(this.map, tx, ty, this.flags)) { this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0x0c1014, alpha: 0.42 }); continue; }
       if (!r || REGIONS[r]?.kind !== "hidden" || this.flags[`found.${r}`]) continue;
       this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0xc8d0da, alpha: 0.86 + 0.06 * Math.sin(tx * 0.7 + ty * 0.5 + t) });
     }
+  }
+
+  /** Walking into a closed region: say why Rhea can't go on. */
+  private bumpBorder(ax: number, ay: number): void {
+    const cx = this.player.x + BOX.ox + BOX.w / 2 + Math.sign(ax) * (BOX.w / 2 + 2), cy = this.player.y + BOX.oy + BOX.h / 2 + Math.sign(ay) * (BOX.h / 2 + 2);
+    const tx = Math.floor(cx / TILE), ty = Math.floor(cy / TILE), r = this.map.regionAt(tx, ty);
+    if (!r || !closedAt(this.map, tx, ty, this.flags)) return;
+    const why = closedWhy(r);
+    if (this.toastTime <= 0 || this.toastLabel.text !== why) this.toast(why);
   }
 
   /** Names the region, and finds it if it's one of the hidden lands. */
@@ -472,6 +486,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   update(dt: number): void {
     const inp = this.game.input;
+    if (this.map.file.world) { const k = Object.keys(this.flags).filter((f) => f.startsWith("open.") && this.flags[f]).join(); if (k !== this.openKey) { this.openKey = k; this.drawFog(); } }
     if (this.toastTime > 0) { this.toastTime -= dt; if (this.toastTime <= 0) this.toastLabel.text = ""; }
     if (this.bannerTime > 0) { this.bannerTime -= dt; this.banner.alpha = Math.min(1, this.bannerTime / 0.6); if (this.bannerTime <= 0) this.banner.text = ""; }
     this.player.moving = false;
@@ -513,6 +528,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.blockedByActor(nx, by)) nx = bx;
     if (this.blockedByActor(nx, ny)) ny = by;
     const was = { x: this.player.x, y: this.player.y };
+    if (this.map.file.world && Math.abs(nx - bx) < 0.01 && Math.abs(ny - by) < 0.01) this.bumpBorder(a.x, a.y);
     this.player.x = nx - BOX.ox; this.player.y = ny - BOX.oy;
     this.player.step += dt * (inp.isHeld("run") ? 12 : 8);
     if (this.player.x !== was.x || this.player.y !== was.y) {
@@ -529,16 +545,19 @@ export class ExploreScene implements Scene, StoryHost {
     return null;
   }
 
+  /** People stand on frame 0 and walk on 1-4; kith have two frames, repeated. */
+  private walkFrame(look: string, moving: boolean, step: number): number { return !moving ? 0 : isBeast(look) ? Math.floor(step) % 4 : 1 + (Math.floor(step) % 4); }
+
   render(): void {
     this.dialog.render();
     const p = this.player;
-    p.sprite.texture = this.sheet(this.hero())[p.facing][p.moving ? Math.floor(p.step) % 4 : 0];
+    p.sprite.texture = this.sheet(this.hero())[p.facing][this.walkFrame(this.hero(), p.moving, p.step)]; p.sprite.anchor.copyFrom(p.sprite.texture.defaultAnchor ?? NO_ANCHOR);
     p.sprite.x = Math.round(p.x); p.sprite.y = Math.round(p.y);
     this.followers.forEach((f, i) => {
       const at = this.behind(FOLLOW_GAP * (i + 1));
       const beast = isBeast(f.look);
       if (at) { f.sprite.x = Math.round(at.x) - (beast ? 2 : 0); f.sprite.y = Math.round(at.y) + (beast ? 6 : 0); f.facing = at.facing; }
-      f.sprite.texture = this.sheet(f.look)[f.facing][p.moving ? Math.floor(p.step) % 4 : 0];
+      f.sprite.texture = this.sheet(f.look)[f.facing][this.walkFrame(f.look, p.moving, p.step)]; f.sprite.anchor.copyFrom(f.sprite.texture.defaultAnchor ?? NO_ANCHOR);
     });
     // idle actors breathe: kith shift their weight now and then
     const t = this.game.playSeconds;

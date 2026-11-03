@@ -18,7 +18,7 @@ import {
 } from "./art";
 
 type PoseName = "idle" | "run" | "lunge" | "brace" | "aim" | "cast" | "guard" | "down" | "cheer";
-interface Vis { ox: number; oy: number; kx: number; hop: number; fall: number; flash: number; pose: PoseName; run: number; flee: boolean; out: boolean; }
+interface Vis { ox: number; oy: number; kx: number; hop: number; fall: number; flash: number; pose: PoseName; run: number; flee: boolean; out: boolean; fade: number; }
 interface Fx { kind: string; x: number; y: number; x2?: number; y2?: number; t: number; dur: number; text?: string; col?: string; big?: boolean; dir?: number; size?: number; proj?: string; }
 interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" | "note"; grade: Grade | null; }
 type Co = Generator<number | Qte, void, unknown>;
@@ -105,7 +105,7 @@ export class BattleScene implements Scene {
   private reset(): void {
     this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear);
     this.vis.clear(); this.fx = [];
-    for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false });
+    for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;
     this.co = this.flow();
   }
@@ -321,7 +321,9 @@ export class BattleScene implements Scene {
         yield* this.moveTo(kin.id, tx - 26, ty + 10, 0.3); this.vis.get(kin.id)!.pose = "lunge"; yield 0.14;
         this.co2.push((function* (self: BattleScene) { yield 0.35; yield* self.goHome(kin.id); })(this));
       } else if (e.t === "down") {
-        const v = this.vis.get(e.id)!; v.pose = "down"; this.co2.push(this.frames(0.38, (p) => { v.fall = p; }));
+        // the fallen drop; beaten foes then fade from the field, allies stay down where they fell
+        const v = this.vis.get(e.id)!, foe = unit(this.s, e.id).side === "foe"; v.pose = "down";
+        this.co2.push((function* (self: BattleScene): Co { yield* self.frames(0.38, (p) => { v.fall = p; }); if (!foe) return; yield 0.35; yield* self.frames(0.6, (p) => { v.fade = 1 - p; }); v.out = true; })(this));
       } else if (e.t === "bolt") {
         const u = unit(this.s, e.id), v = this.vis.get(e.id)!; v.flee = true; this.co2.push(this.moveTo(u.id, u.at[0] - 140, u.at[1], 0.8));
         this.addFx({ kind: "grade", x: this.pos(u)[0], y: this.top(u), text: `${u.name} bolts`, col: "#c8b8a8", dur: 1.1, size: 6 });
@@ -455,7 +457,9 @@ export class BattleScene implements Scene {
       const lk = lookKind(u.look);
       const flip = lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
       const pose = { t: T + x * 0.1, run: v.pose === "run" ? v.run : 0, lunge: v.pose === "lunge", brace: v.pose === "brace" || v.pose === "guard" || (this.qte?.mode === "brace" && this.qte.target === u.id), bow: v.pose === "aim" && u.look === "archer" ? 1 : undefined, cast: v.pose === "cast" || v.pose === "aim" && u.look !== "archer" || v.pose === "cheer", shout: v.pose === "cheer", flash: v.flash, flip, fall: v.fall };
+      g.save(); g.globalAlpha = v.fade;
       withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose, this.builds[u.id]));
+      g.restore();
     }
     // foe HP bars and intents
     for (const u of s.units) {

@@ -2,7 +2,7 @@ import { Game } from "./core/game";
 import { ExploreScene } from "./world/exploreScene";
 import { BattleScene } from "./battle/battleScene";
 import { drawPortrait, loadPortraits } from "./art/portraits";
-import { looksSheet } from "./art/gallery";
+import { castSheet, looksSheet } from "./art/gallery";
 import { MAPS, STORY } from "./world/content";
 import { bakeWorld } from "./art/worldTiles";
 import { WorldMap } from "./world/map";
@@ -20,6 +20,7 @@ async function boot(): Promise<void> {
     battle: () => { const top = game.scenes.top; return top instanceof BattleScene ? top : null; },
     startBattle: (id: string) => scene.startBattle(id),
     looks: () => looksSheet(),
+    cast: () => castSheet(),
     worldMap: () => bakeWorld(new WorldMap(MAPS.ostrel)).toDataURL(),
     portrait: (id: string, size = 256, talk = 0) => { const c = document.createElement("canvas"); c.width = c.height = size; drawPortrait(c.getContext("2d")!, id, size, 0.5, talk, game.buildFor(id)); return c.toDataURL(); } };
 }

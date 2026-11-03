@@ -74,7 +74,7 @@
    "map": "larkfold",
    "x": 26,
    "y": 12,
-   "look": "elder2",
+   "look": "oda",
    "when": {
     "stagePrefix": "d",
     "not": "ash"
@@ -91,7 +91,7 @@
    "map": "larkfold",
    "x": 12,
    "y": 16,
-   "look": "kid",
+   "look": "pell",
    "when": {
     "stagePrefix": "d",
     "not": "ash"
@@ -108,7 +108,7 @@
    "map": "larkfold",
    "x": 16,
    "y": 7,
-   "look": "elder",
+   "look": "maren",
    "when": {
     "stagePrefix": "d",
     "not": "ash"
@@ -163,7 +163,7 @@
    "map": "larkfold",
    "x": 16,
    "y": 7,
-   "look": "elder",
+   "look": "maren",
    "when": {
     "stage": "n1"
    },
@@ -178,7 +178,7 @@
    "map": "larkfold",
    "x": 14,
    "y": 9,
-   "look": "elder",
+   "look": "rook",
    "when": {
     "stage": "n1"
    },
@@ -384,7 +384,7 @@
    "map": "yard",
    "x": 16,
    "y": 4,
-   "look": "kid2",
+   "look": "sela",
    "talk": [
     {
      "say": "",

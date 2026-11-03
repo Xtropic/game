@@ -43,3 +43,13 @@ export function looksSheet(): string {
   people.forEach(([name, id, b], i) => { const x = 125 + i * 250; drawFig(g, id, x / K, 700 / K, { t: 0.4 }, b); label(name, x, 735); });
   return c.toDataURL("image/png");
 }
+
+/** The battle cast side by side, to check them against their portraits. Debug hook: __lull.cast(). */
+export function castSheet(): string {
+  const ids = ["rhea", "tamsin", "maren", "brannoc", "ketti", "ferris"];
+  const W = 1500, H = 420, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const g = c.getContext("2d")!; g.fillStyle = "#1b1d22"; g.fillRect(0, 0, W, H);
+  const K = 5; setScale(K);
+  ids.forEach((id, i) => { const x = 125 + i * 250; drawFig(g, id, x / K, 380 / K, { t: 0.4 }); g.font = "15px Georgia, serif"; g.fillStyle = "#e8e2d4"; g.textAlign = "center"; g.fillText(id, x, 408); });
+  return c.toDataURL("image/png");
+}

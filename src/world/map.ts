@@ -117,6 +117,8 @@ export class WorldMap {
   private kinds: TileKind[];
   /** Solid kinds the story has opened (the lower gate, once the night run starts). */
   readonly open = new Set<TileKind>();
+  /** Extra solid tiles decided by the story (closed regions on the world map). */
+  closed: ((tx: number, ty: number) => boolean) | null = null;
   private regionIds: (string | null)[] = [];
 
   constructor(readonly file: MapFile) {
@@ -142,7 +144,7 @@ export class WorldMap {
   }
 
   /** Off-map counts as solid so nothing can walk out of the world. */
-  solidAt(tx: number, ty: number): boolean { const k = this.kindAt(tx, ty); return k === null || (TILE_DEFS[k].solid && !this.open.has(k)); }
+  solidAt(tx: number, ty: number): boolean { const k = this.kindAt(tx, ty); return k === null || (TILE_DEFS[k].solid && !this.open.has(k)) || !!this.closed?.(tx, ty); }
 
   /** True if a box (pixels, top-left x,y) overlaps any solid tile. */
   boxBlocked(x: number, y: number, w: number, h: number): boolean {

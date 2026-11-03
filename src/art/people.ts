@@ -1,30 +1,40 @@
-// Pixel people for the explore view: a shared body shape recoloured per character, 4 walk frames x 4 facings.
+// Pixel people for the explore view: a shared body recoloured per character, standing plus a 4-step walk, 4 facings.
 import { drawRows, makeCanvas, pixelTexture } from "./pixel";
 import { Rectangle, Texture } from "pixi.js";
 
 export type Facing = "down" | "up" | "left" | "right";
 export const FACINGS: Facing[] = ["down", "up", "left", "right"];
 
-export interface Look { hair: string; hairLight: string; skin: string; skinShade: string; coat: string; coatShade: string; accent: string; legs: string; boots: string; }
+export interface Look {
+  hair: string; hairLight: string; skin: string; skinShade: string; coat: string; coatShade: string; accent: string; legs: string; boots: string;
+  /** Matches the portrait: short (default), braid, bun, bald or a knitted cap; a full beard or a moustache in `beard`'s colour. */
+  style?: "short" | "braid" | "bun" | "bald" | "cap"; beardStyle?: "full" | "moustache"; beard?: string; cap?: string;
+}
 
 export const LOOKS: Record<string, Look> = {
-  rhea: { hair: "#3a2418", hairLight: "#5c3a26", skin: "#e2b48c", skinShade: "#b8865f", coat: "#6b4a3a", coatShade: "#4f3428", accent: "#c0452f", legs: "#3b2e26", boots: "#221a15" },
+  rhea: { hair: "#3a2418", hairLight: "#5c3a26", skin: "#e8c0a0", skinShade: "#c09272", coat: "#6b4a3a", coatShade: "#4f3428", accent: "#b03a2a", legs: "#3b2e26", boots: "#221a15", style: "braid" },
   warden: { hair: "#2b2b2b", hairLight: "#8e959b", skin: "#e0b896", skinShade: "#b88e6c", coat: "#7c8389", coatShade: "#5c6268", accent: "#3a3d40", legs: "#3a3d40", boots: "#1e1e1e" },
   elder: { hair: "#dcd6ca", hairLight: "#b9b2a4", skin: "#d7ad88", skinShade: "#ae8462", coat: "#6d5f4e", coatShade: "#504538", accent: "#7a5a48", legs: "#3e352c", boots: "#2a221c" },
   elder2: { hair: "#9a948a", hairLight: "#bdb6aa", skin: "#d4a882", skinShade: "#a87e5e", coat: "#4a5a6a", coatShade: "#38444f", accent: "#7a6a58", legs: "#3e352c", boots: "#2a221c" },
-  corran: { hair: "#3b2d22", hairLight: "#56432f", skin: "#dcb38e", skinShade: "#b0886a", coat: "#5d6266", coatShade: "#44484b", accent: "#2f3235", legs: "#2f3235", boots: "#1c1c1c" },
-  tamsin: { hair: "#1e1915", hairLight: "#3a3029", skin: "#c99f7a", skinShade: "#a07a58", coat: "#4f6b5c", coatShade: "#3a5045", accent: "#b89a5a", legs: "#2e3a33", boots: "#1f1a16" },
-  halloran: { hair: "#a9a9a9", hairLight: "#c8c8c8", skin: "#cfa985", skinShade: "#a6805f", coat: "#4a4d51", coatShade: "#36393c", accent: "#9a8040", legs: "#2a2c2e", boots: "#151515" },
-  lisle: { hair: "#5a4632", hairLight: "#7a6046", skin: "#dcb38e", skinShade: "#b0886a", coat: "#d8d4c8", coatShade: "#b4afa2", accent: "#6a7a8a", legs: "#4a4540", boots: "#2a2622" },
-  finch: { hair: "#7a5326", hairLight: "#9c6d38", skin: "#e8c39c", skinShade: "#c09772", coat: "#b88b3b", coatShade: "#946d2c", accent: "#6a4a2a", legs: "#4a3a2a", boots: "#2a2018" },
+  corran: { hair: "#2a221c", hairLight: "#463a30", skin: "#dcb38e", skinShade: "#b0886a", coat: "#5d6266", coatShade: "#44484b", accent: "#3a3e42", legs: "#2f3235", boots: "#1c1c1c" },
+  tamsin: { hair: "#1a1512", hairLight: "#3a3029", skin: "#c99f7a", skinShade: "#a07a58", coat: "#3e5a46", coatShade: "#2e4434", accent: "#a88a5a", legs: "#2e3a33", boots: "#1f1a16", style: "bun" },
+  halloran: { hair: "#9a9a98", hairLight: "#c8c8c6", skin: "#cfa985", skinShade: "#a6805f", coat: "#26282c", coatShade: "#1a1c20", accent: "#3a3d42", legs: "#222428", boots: "#121214", beardStyle: "moustache", beard: "#8a8a88" },
+  lisle: { hair: "#6a4a32", hairLight: "#8a6648", skin: "#e8c4a4", skinShade: "#c09c80", coat: "#e4e0d8", coatShade: "#bab4a8", accent: "#d0ccc2", legs: "#4a4540", boots: "#2a2622", style: "bun" },
+  finch: { hair: "#8a5a26", hairLight: "#b07a38", skin: "#e8c39c", skinShade: "#c09772", coat: "#c09a3a", coatShade: "#9a7a2a", accent: "#e8dcc0", legs: "#4a3a2a", boots: "#2a2018" },
   kid: { hair: "#4a3020", hairLight: "#6a4630", skin: "#e0bb94", skinShade: "#b8916c", coat: "#7d6aa0", coatShade: "#5f4f80", accent: "#c9b98a", legs: "#3e352c", boots: "#2a221c" },
   kid2: { hair: "#c0904a", hairLight: "#d8aa62", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#a05a4a", coatShade: "#7e4538", accent: "#e0d0a8", legs: "#3e352c", boots: "#2a221c" },
+  // the prologue's named villagers, matched to their portraits
+  maren: { hair: "#e0dcd4", hairLight: "#f4f0ea", skin: "#e6c4a4", skinShade: "#c29c7c", coat: "#6a4a36", coatShade: "#4e3628", accent: "#5a4030", legs: "#3e352c", boots: "#2a221c", style: "bun" },
+  rook: { hair: "#c8c4bc", hairLight: "#e8e4dc", skin: "#d4a882", skinShade: "#a87e5e", coat: "#5e4632", coatShade: "#463424", accent: "#4a3a2c", legs: "#3e352c", boots: "#2a221c", style: "bald", beardStyle: "full", beard: "#e8e4dc" },
+  oda: { hair: "#e8e4dc", hairLight: "#ffffff", skin: "#a87450", skinShade: "#86583a", coat: "#5a4838", coatShade: "#44362a", accent: "#7a6a52", legs: "#3e352c", boots: "#2a221c", style: "braid" },
+  pell: { hair: "#c8a868", hairLight: "#e0c488", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#7a7870", coatShade: "#5e5c56", accent: "#8a8880", legs: "#3e3a34", boots: "#2a221c" },
+  sela: { hair: "#2a201a", hairLight: "#443428", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#6a4a30", coatShade: "#4e3624", accent: "#7a5a3a", legs: "#3e352c", boots: "#2a221c" },
   // Act I
-  brannoc: { hair: "#4a3a2a", hairLight: "#6a5a48", skin: "#c89a78", skinShade: "#a07858", coat: "#5a4a3a", coatShade: "#42362a", accent: "#6a7a4a", legs: "#3a3028", boots: "#221a14" },
-  kane: { hair: "#2a2420", hairLight: "#4a4038", skin: "#d8b08a", skinShade: "#b08866", coat: "#6a2a2a", coatShade: "#4e1e1e", accent: "#c9a86a", legs: "#2e2a26", boots: "#1a1614" },
-  ketti: { hair: "#8a3a1e", hairLight: "#b4562e", skin: "#f0cfb2", skinShade: "#d2a88a", coat: "#6a5a3a", coatShade: "#4e4228", accent: "#9a8a6a", legs: "#3a3228", boots: "#241c16" },
-  ferris: { hair: "#6a4a2a", hairLight: "#8a6a3a", skin: "#e2b894", skinShade: "#ba9270", coat: "#5a6a3a", coatShade: "#44522c", accent: "#8a7a4a", legs: "#3a3a2a", boots: "#24221a" },
-  oren: { hair: "#8a8278", hairLight: "#aaa298", skin: "#d0a884", skinShade: "#a88262", coat: "#7a6e60", coatShade: "#5e5448", accent: "#c8c0b0", legs: "#4a4238", boots: "#2a241e" },
+  brannoc: { hair: "#6a6560", hairLight: "#8a8580", skin: "#d4a888", skinShade: "#ac8466", coat: "#5a4a38", coatShade: "#42362a", accent: "#4a3e30", legs: "#3a3028", boots: "#221a14", style: "bald", beardStyle: "full", beard: "#8a8580" },
+  kane: { hair: "#3e3c3a", hairLight: "#8a8886", skin: "#d8b08a", skinShade: "#b08866", coat: "#2e4434", coatShade: "#22332a", accent: "#9a2a24", legs: "#2a2e2a", boots: "#1a1614", beardStyle: "full", beard: "#3e3c3a" },
+  ketti: { hair: "#8a3a1e", hairLight: "#b4562e", skin: "#f0cfb2", skinShade: "#d2a88a", coat: "#5a5a36", coatShade: "#44442a", accent: "#9a8a6a", legs: "#3a3228", boots: "#241c16", style: "braid" },
+  ferris: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#d8aa80", skinShade: "#b08460", coat: "#3e5a32", coatShade: "#2e4426", accent: "#5a6a3a", legs: "#3a3a2a", boots: "#24221a", style: "cap", cap: "#4a5a34" },
+  oren: { hair: "#7a746c", hairLight: "#9a948a", skin: "#d0a884", skinShade: "#a88262", coat: "#5e4a3a", coatShade: "#46382c", accent: "#2a2420", legs: "#4a4238", boots: "#2a241e", beardStyle: "full", beard: "#8a847a" },
   folk: { hair: "#5a3a2a", hairLight: "#7a5a42", skin: "#dcb090", skinShade: "#b48a6c", coat: "#7a6a4a", coatShade: "#5e5038", accent: "#d8ccb0", legs: "#4a3e30", boots: "#2a221a" },
   folk2: { hair: "#c8b890", hairLight: "#e0d4b0", skin: "#e8c4a4", skinShade: "#c09c80", coat: "#4a6a7a", coatShade: "#38525e", accent: "#a84a3a", legs: "#3a3a3a", boots: "#222" },
   reeve: { hair: "#3a3a3a", hairLight: "#5a5a5a", skin: "#d4aa86", skinShade: "#ac8464", coat: "#2a3a5a", coatShade: "#1e2a44", accent: "#c9a86a", legs: "#2a2a30", boots: "#18181c" },
@@ -33,28 +43,41 @@ export const LOOKS: Record<string, Look> = {
   kid3: { hair: "#2a1a10", hairLight: "#4a3020", skin: "#c8a07a", skinShade: "#a07c5a", coat: "#8a8a7a", coatShade: "#6a6a5c", accent: "#5a5a50", legs: "#3e352c", boots: "#2a221c" },
 };
 /** Children are drawn shorter: the same body with fewer torso and leg rows. */
-export const SMALL = new Set(["finch", "kid", "kid2", "kid3", "ketti"]);
+export const SMALL = new Set(["finch", "kid", "kid2", "kid3", "ketti", "sela"]);
 
-// 12 wide; o outline, h/H hair, s/S skin, e eye, c/C coat, r accent, l legs, b boots
-const BODY: Record<Facing, string[]> = {
-  down: ["...oooooo...", "..ohhhhhho..", ".ohhHhhHhho.", ".ohssssssho.", ".oseessesso.", ".ossssSsss..", "..oSsssSo...", ".orrrrrrro..", "occrrrrrcco.", "occcccccccso", "osccCccCccso", ".occcccccco.", "..oCccccCo..", "..oCccccCo..", "...oooooo..."],
-  up: ["...oooooo...", "..ohhhhhho..", ".ohhhhhhhho.", ".ohhhHhhhho.", ".ohhhhhhhho.", ".ohhhhhhhho.", "..ohhhhho...", ".orrrrrrro..", "occrrrrrcco.", "occcccccccso", "osccCccCccso", ".occcccccco.", "..oCccccCo..", "..oCccccCo..", "...oooooo..."],
-  right: ["...ooooo....", "..ohhhhhoo..", ".ohhHhhhhho.", ".ohhhhsssso.", ".ohhhssseso.", ".hohhssssso.", ".hoohSssso..", ".h.orrrrro..", ".hocrrRrcco.", "..occRcccso.", "..occcccc...", "..oCcccccCo.", "...oCcccCo..", "...oCcccCo..", "....ooooo..."],
-  left: [],
-};
-BODY.left = BODY.right.map((r) => [...r.padEnd(12, ".")].reverse().join(""));
-const LEGS: string[][] = [["...ol..lo...", "...ol..lo...", "...ob..bo..."], ["..ol....lo..", ".ol......lo.", ".ob......bo."], ["...ol..lo...", "...ollllo...", "...obbbbo..."], ["...ol...lo..", "..ol....lo..", "..ob....bo.."]];
+// The frames are composed by tools/art/people.py: 16 x 24, [facing][stand, walk 1-4], drawn as palette letters.
+import FRAMES from "./peopleFrames.json";
 
-/** A sheet of 4 frames x 4 facings, 12 x 18 each, as Pixi textures [facing][frame]. Small bodies sit at the bottom. */
+/** A colour moved toward black (f < 1) or white (f > 1). */
+function shade(hex: string, f: number): string {
+  const n = parseInt(hex.slice(1).padEnd(6, hex.slice(1)), 16), ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  const out = ch.map((c) => Math.round(f < 1 ? c * f : c + (255 - c) * (f - 1)));
+  return "#" + out.map((c) => Math.max(0, Math.min(255, c)).toString(16).padStart(2, "0")).join("");
+}
+function mix(a: string, b: string, t: number): string {
+  const p = (h: string) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+  const A = p(a), B = p(b);
+  return "#" + A.map((c, i) => Math.round(c + (B[i] - c) * t).toString(16).padStart(2, "0")).join("");
+}
+
+/** Where a person's old 12 x 18 top-left sits inside the 16 x 24 frame, so positions and feet line up as before. */
+export const PERSON_ANCHOR = { x: 2 / 16, y: 6 / 24 };
+
+/** A sheet of 5 frames (stand, then a 4-step walk) x 4 facings, as Pixi textures [facing][frame]. */
 export function personSheet(look: Look, small = false): Record<Facing, Texture[]> {
-  const W = 12, H = 18;
-  const shrink = (rows: string[]): string[] => small ? ["", "", "", "", ...rows.filter((_, i) => i !== 9 && i !== 11 && i !== 13)] : rows;
-  const pal: Record<string, string> = { o: "#1d1612", h: look.hair, H: look.hairLight, s: look.skin, S: look.skinShade, e: "#1a1210", c: look.coat, C: look.coatShade, r: look.accent, R: look.accent, l: look.legs, b: look.boots };
-  const [cv, g] = makeCanvas(W * 4, H * 4);
-  FACINGS.forEach((f, fi) => { for (let fr = 0; fr < 4; fr++) drawRows(g, shrink(BODY[f].concat(LEGS[fr].slice(small ? 1 : 0))), pal, fr * W, fi * H); });
+  const W = FRAMES.w, H = FRAMES.h, sets = FRAMES.sets as Record<string, Record<Facing, string[][]>>;
+  const set = sets[`${small ? "small" : "adult"}|${look.style ?? "short"}|${look.beardStyle ?? "none"}`];
+  const pal: Record<string, string> = {
+    o: mix(shade(look.coatShade, 0.45), "#1a1210", 0.5), h: look.hair, H: look.hairLight, d: shade(look.hair, 0.72), s: look.skin, S: look.skinShade,
+    n: mix(look.skinShade, "#a03a30", 0.35), e: "#1a1210", w: "#efe6dc", c: look.coat, C: look.coatShade, k: shade(look.coatShade, 0.8), r: look.accent, R: shade(look.accent, 0.72),
+    l: look.legs, L: shade(look.legs, 0.75), b: look.boots, B: shade(look.boots, 1.25),
+    f: look.beard ?? shade(look.hair, 0.9), p: look.cap ?? look.accent, P: shade(look.cap ?? look.accent, 0.75),
+  };
+  const [cv, g] = makeCanvas(W * 5, H * 4);
+  FACINGS.forEach((f, fi) => { for (let fr = 0; fr < 5; fr++) drawRows(g, set[f][fr], pal, fr * W, fi * H); });
   const base = pixelTexture(cv);
   const out = {} as Record<Facing, Texture[]>;
-  FACINGS.forEach((f, fi) => { out[f] = [0, 1, 2, 3].map((fr) => new Texture({ source: base.source, frame: new Rectangle(fr * W, fi * H, W, H) })); });
+  FACINGS.forEach((f, fi) => { out[f] = [0, 1, 2, 3, 4].map((fr) => new Texture({ source: base.source, frame: new Rectangle(fr * W, fi * H, W, H), defaultAnchor: PERSON_ANCHOR })); });
   return out;
 }
 
