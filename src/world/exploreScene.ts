@@ -12,19 +12,26 @@ import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
 import { REGIONS } from "./content";
 import { encounter } from "../battle/encounters";
-import type { BattleDef } from "../battle/rules";
+import type { BattleDef, BattleState } from "../battle/rules";
+import { OFFERS, lingerLine, trustChance } from "../kith/befriend";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
 import { arrival, closedAt, findsNow, wayAt, wayBlocker, wayOpen, wayWhy } from "./gates";
 import { MAPS } from "./content";
 import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
-import { LOOKS, SMALL, beastSheet, isBeast, glintTexture, noteTexture, personSheet, type Facing } from "../art/people";
+import { LOOKS, beastSheet, bodyOf, isBeast, glintTexture, noteTexture, personSheet, toneOf, type Facing } from "../art/people";
+import { RECRUITS } from "../cast/recruits";
+
+/** People who can join you: drawn bright so they stand out from the crowd. */
+const RECRUITABLE = new Set(RECRUITS.map((r) => r.id));
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
-import { StoryRunner, holds, type Actor, type Story, type StoryHost, type Where } from "../story/story";
+import { newTerm } from "../story/terms";
+import { NotesPanel } from "../ui/notesPanel";
+import { StoryRunner, holds, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
@@ -69,6 +76,7 @@ export class ExploreScene implements Scene, StoryHost {
   private wounds = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#e8b8a0", lineHeight: 17, dropShadow: { color: "#000000", alpha: 0.9, blur: 3, distance: 1, angle: Math.PI / 2 } } });
   private joins = new JoinCards();
   private company = new CompanyPanel();
+  private notes = new NotesPanel();
   private map!: WorldMap;
   private game!: Game;
   private zoom = 1;
@@ -81,7 +89,7 @@ export class ExploreScene implements Scene, StoryHost {
   private lineDone: (() => void) | null = null;
   private choiceDone: ((i: number) => void) | null = null;
   private runner!: StoryRunner;
-  private toastLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.8 } } });
+  private toastLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 16, fill: "#f2e3c4", wordWrap: true, wordWrapWidth: 520, dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.8 } } });
   private toastTime = 0;
   private openKey = "";
   private objective = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 14, fill: "#e8dcc0", wordWrap: true, wordWrapWidth: 420, dropShadow: { color: 0, distance: 1, blur: 2, alpha: 0.9 } } });
@@ -116,7 +124,7 @@ export class ExploreScene implements Scene, StoryHost {
   constructor(private story: Story, private maps: Record<string, MapFile>, private start?: Partial<ExploreState>) {}
 
   private sheet(look: string): Record<Facing, Texture[]> {
-    return (this.sheets[look] ??= isBeast(look) ? beastSheet(look) : personSheet(LOOKS[look] ?? LOOKS.elder, SMALL.has(look)));
+    return (this.sheets[look] ??= isBeast(look) ? beastSheet(look) : personSheet(LOOKS[look] ?? LOOKS.elder, bodyOf(look), toneOf(look, RECRUITABLE)));
   }
 
   get flags() { return this.game.flags; }
@@ -130,7 +138,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view);
+    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view);
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
@@ -312,7 +320,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
     this.meter.x = w - 160; this.meter.y = 34;
-    this.toastLabel.x = 16; this.toastLabel.y = 56;
+    this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
@@ -332,11 +340,17 @@ export class ExploreScene implements Scene, StoryHost {
 
   // ---- StoryHost: what the story asks the scene to do ----
 
-  line(who: string, name: string, text: string, done: () => void): void { this.lineDone = done; this.dialog.show({ who, name, text }); }
+  line(who: string, name: string, text: string, done: () => void): void {
+    this.lineDone = done;
+    // the story itself explains new words as they come up; Rhea's notebook (J) quietly keeps a note of each one
+    const t = newTerm(text, (id) => !!this.flags[`learned.${id}`]);
+    if (t) this.flags[`learned.${t.id}`] = true;
+    this.dialog.show({ who, name, text });
+  }
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
-  toast(t: string): void { this.toastLabel.text = t; this.toastTime = 2.6; if (t.startsWith("Found")) sfx.pickup(); }
+  toast(t: string): void { this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
   changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.refresh(); }
 
   /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */
@@ -363,6 +377,8 @@ export class ExploreScene implements Scene, StoryHost {
     }
     f.company = have.join(",");
   }
+
+  private toggleNotes(): void { this.notes.toggle((id) => !!this.flags[`learned.${id}`], this.screen.w, this.screen.h); }
 
   private toggleCompany(): void {
     const members = this.joinedIds().map((id) => joinerFor(id, this.game.kith, this.story.cast));
@@ -424,10 +440,39 @@ export class ExploreScene implements Scene, StoryHost {
         for (const u of s.units) if (u.side === "ally" && u.kith && this.game.kith[u.id]) ups.push(...this.game.kithFought(u.id, s.deeds[u.id], xp));
         this.refresh();
         onWin?.();
-        this.runner.run(ups.map((text) => ({ say: "", text })));
+        this.runner.run([...ups.map((text) => ({ say: "", text })), ...this.befriendSteps(s)]);
         this.save("auto");
       },
     }));
+  }
+
+  /** After a fight, a wild kith the song calmed may still be at the edge of the field: Rhea can offer it food,
+   *  and its temperament and the food decide whether it trusts her. One per fight. */
+  private befriendSteps(s: BattleState): Step[] {
+    const k = s.units.find((u) => u.side === "foe" && u.calmed && u.species);
+    if (!k || this.flags.hero !== "rhea" || s.phase !== "won") return [];
+    const heart = s.units.find((u) => u.id === "rhea")?.stats?.heart ?? 10, roll = this.rng();
+    const n = Object.keys(this.game.kith).filter((id) => id.startsWith(`wild-${k.species}`)).length;
+    const gift: KithGift = { species: k.species!, level: k.level ?? 3, id: `wild-${k.species}-${n + 1}`, temperament: k.temperament };
+    const name = k.name.toLowerCase();
+    return [
+      { say: "", text: lingerLine(k.species!) },
+      { choose: `Offer the ${name} something?`, options: [
+        ...OFFERS.map((food) => ({ label: `Hold out ${food}`, do: roll < trustChance(k.species!, k.temperament, food, heart, k.soothe)
+          ? [{ say: "", text: `You crouch and hold out the ${food}, and keep still. The ${name} comes, one step at a time, and takes it from your hand.` }, { say: "", text: "When you stand to go, it follows." }, { kith: gift }]
+          : [{ say: "", text: `You hold out the ${food}. The ${name} sniffs the air, and turns away into the ${"long grass"}.` }] })),
+        { label: "Let it go", do: [{ say: "", text: `You leave the ${name} be. It watches you out of sight.` }] },
+      ] },
+    ];
+  }
+
+  /** A kith joins the company. */
+  addKith(g: KithGift): void {
+    if (this.game.kith[g.id]) return;
+    const region = this.regionNow;
+    const k = wildKith(g.species, g.level, this.rng, g.id, region ?? undefined); if (g.name) k.name = g.name; k.lull = false;
+    if (g.temperament) k.temperament = g.temperament as Temperament;
+    this.game.kith[g.id] = k;
   }
 
   /** What's left of each ally's health from earlier fights (0..1, by battle unit id). */
@@ -553,6 +598,8 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   update(dt: number): void {
+    // a new game opens with someone calling Rhea over, and a hint on the controls
+    if (!this.flags.opened && this.flags.stage === this.story.start.stage && this.story.scripts.opening && !this.runner.busy) { this.flags.opened = true; this.runner.run([{ run: "opening" }]); }
     const inp = this.game.input;
     if (this.map.file.world) { const k = this.accessKey(); if (k !== this.openKey) { this.openKey = k; this.drawFog(); } }
     if (this.toastTime > 0) { this.toastTime -= dt; if (this.toastTime <= 0) this.toastLabel.text = ""; }
@@ -569,6 +616,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.joins.update(dt);
     if (this.joins.showing) { if (this.joins.canClose && (inp.wasPressed("confirm") || inp.wasPressed("cancel"))) this.joins.close(); return; }
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
+    if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
@@ -587,6 +635,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (inp.wasPressed("confirm")) { this.interact(); return; }
     if (inp.wasPressed("sing")) { this.sing(); return; }
     if (inp.wasPressed("company")) { this.toggleCompany(); return; }
+    if (inp.wasPressed("notes")) { this.toggleNotes(); return; }
     if (inp.wasPressed("menu")) { this.save("1"); this.toast("Saved"); }
     const a = inp.axis();
     if (this.settle) { if (a.x || a.y) return; this.settle = false; }
@@ -654,7 +703,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Read-only view for tests and debugging. */
   debug() {
-    return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
+    return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
       region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

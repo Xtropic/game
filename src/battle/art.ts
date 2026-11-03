@@ -3,6 +3,9 @@
 // Everything is laid out in 256 x 144 "stage units"; setScale() sets how many screen pixels one unit is.
 import { BAYER4, dither, hash2, makeCanvas, px } from "../art/pixel";
 import { EVEN, type Build } from "../art/build";
+import { BODY_SHAPE, bodyOf } from "../art/bodies";
+import { saturate } from "../art/people";
+import { RECRUITS } from "../cast/recruits";
 
 export const CW = 256, CH = 144;
 let K = 4;
@@ -80,7 +83,17 @@ export const CAST: Record<string, CastLook> = {
   cartwarden: { skin: "#e6c0a0", skinS: "#c29878", hair: "#3a3a3a", hairL: "#606060", coat: "#6a7076", coatS: "#4c5258", pants: "#34373a", boot: "#1a1a1a", eye: "#5a6470", style: "helm", scarf: "#8a2a24", weapon: "spear", lantern: true, long: true },
 };
 /** Height of each look above its feet, in stage units: where to put intent badges and the turn marker. */
-export const LOOK_TOP: Record<string, number> = { maren: 51, rhea: 51, tamsin: 51, warden: 51, archer: 51, brannoc: 54, ketti: 46, ferris: 51, cartwarden: 51, ash: 32, loftbuck: 32, reedcat: 22 };
+export const LOOK_TOP: Record<string, number> = { ash: 32, loftbuck: 32, reedcat: 22, ...Object.fromEntries(Object.keys(CAST).map((id) => [id, Math.round(51 * BODY_SHAPE[bodyOf(id)].h)])) };
+/** People who can join you are drawn in brighter colours than anyone else, in battle as on the map. */
+const VIVID = new Set([...RECRUITS.map((r) => r.id), "rhea"]);
+const COLOURS: (keyof CastLook)[] = ["hair", "hairL", "coat", "coatS", "pants", "scarf", "cap", "beard", "eye"];
+const toned: Record<string, CastLook> = {};
+function lookFor(id: string): CastLook {
+  if (toned[id]) return toned[id];
+  const c = { ...CAST[id] } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
+  for (const k of COLOURS) if (typeof c[k] === "string") c[k] = saturate(c[k] as string, amt);
+  return (toned[id] = c as unknown as CastLook);
+}
 /** A look can carry a coat colour after a colon ("reedcat:#8a8a80"): the kind, and the coat. */
 export const lookKind = (look: string): string => look.split(":")[0];
 const lookCoat = (look: string): string | undefined => look.split(":")[1];
@@ -98,11 +111,11 @@ const grey = (hex: string, amt: number): string => { const n = parseInt(hex.slic
 
 /** A person, feet at (x, y) in stage units, facing right unless flipped. `b` is the build their attributes give. */
 export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
-  const base = CAST[id], t = o.t;
+  const base = lookFor(id), t = o.t, body = BODY_SHAPE[bodyOf(id)];
   const P0 = b.raw ? { ...base, skin: shadeHex(grey(base.skin, 0.45), 0.04), skinS: grey(base.skinS, 0.45) } : base;
   const run = o.run ? Math.sin(o.run) : 0, lean = (o.run ? 0.14 : o.lunge ? 0.22 : o.brace ? -0.08 : 0) - 0.05 * b.bearing + (b.raw ? 0.09 : 0);
   const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
-  const wx = 1 + 0.11 * b.bulk, tallY = 1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0), thick = 1 + 0.22 * b.brawn - 0.1 * b.reach;
+  const wx = body.w * (1 + 0.11 * b.bulk), tallY = body.h * (1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0)), thick = body.limb * (1 + 0.22 * b.brawn - 0.1 * b.reach);
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
   ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
   if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
@@ -137,6 +150,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   }
   g.beginPath(); g.moveTo(-3.4, sh); g.quadraticCurveTo(0, sh - 1.2, 3.6, sh); g.lineTo(3.1, -15); g.lineTo(P0.long ? 5.2 : 4, P0.long ? -6 : -11.5); g.quadraticCurveTo(0, P0.long ? -5 : -10.8, P0.long ? -5 : -4, P0.long ? -6.4 : -11.5); g.lineTo(-2.9, -15); g.closePath(); inkPath(g, P0.coat);
   g.save(); g.clip(); g.fillStyle = P0.coatS; g.fillRect(-7, -24, 6, 20); g.fillStyle = "rgba(255,255,255,.12)"; g.fillRect(2.2, -22, 1.1, 8); g.restore();
+  if (body.belly > 0) { g.beginPath(); g.ellipse(1.4 + body.belly * 0.6, -16.4, 3.2 + body.belly * 0.9, 2.6 + body.belly * 0.5, 0, 0, 7); inkPath(g, P0.coat, 0.3); g.fillStyle = "rgba(255,255,255,.1)"; g.beginPath(); g.ellipse(2.4, -17.2, 1.4, 0.9, -0.3, 0, 7); g.fill(); }
   g.lineWidth = 0.9; g.strokeStyle = "#2a1d16"; g.beginPath(); g.moveTo(-2.9, -14.7); g.lineTo(3.1, -14.7); g.stroke(); ell(g, 1.6, -14.7, 0.55, 0.45, "#c9a86a");
   if (P0.rope) { g.lineWidth = 0.7; g.strokeStyle = "#a88a5a"; for (let i = 0; i < 3; i++) { g.beginPath(); g.ellipse(-0.6 + i * 0.25, -18.5, 2.6, 3.4, 0.5, 0, 7); g.stroke(); } }
   if (P0.lantern) { const lx = 3.8, ly = -12; const lg = g.createRadialGradient(lx, ly, 0.3, lx, ly, 7); lg.addColorStop(0, "rgba(255,210,120,.55)"); lg.addColorStop(1, "rgba(255,210,120,0)"); g.fillStyle = lg; g.fillRect(lx - 7, ly - 7, 14, 14); g.fillStyle = INK; g.fillRect(lx - 0.9, ly - 1.4, 1.8, 2.8); g.fillStyle = "#ffd27a"; g.fillRect(lx - 0.6, ly - 1, 1.2, 2); }

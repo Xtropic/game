@@ -37,7 +37,11 @@ export type Step =
   | { run: string }
   | { hero: string }
   | { chapter: string }
-  | { end: string };
+  | { end: string }
+  /** A kith joins: a wild one won over (by the song and food, or bait). The game makes it from its kind and level. */
+  | { kith: KithGift };
+
+export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
 export interface Actor { id: string; map: string; x: number; y: number; look: string; name?: string; when?: Cond; talk?: Step[]; touch?: Step[]; pickup?: boolean; }
 export interface StepTrigger { map: string; at: [number, number]; when?: Cond; do: Step[]; }
@@ -99,6 +103,8 @@ export interface StoryHost {
   toast(text: string): void;
   changed(): void;
   end(id: string): void;
+  /** Adds a kith to the company. */
+  addKith?(k: KithGift): void;
 }
 
 export class StoryRunner {
@@ -159,6 +165,7 @@ export class StoryRunner {
     if ("hero" in st) { f.hero = st.hero; this.host.changed(); return; }
     if ("chapter" in st) { f.chapter = st.chapter; this.host.changed(); return; }
     if ("end" in st) { this.queue = []; this.host.end(st.end); return; }
+    if ("kith" in st) { this.host.addKith?.(st.kith); f[`kith.${st.kith.id}`] = true; this.host.changed(); return; }
     if ("set" in st || "add" in st) {
       for (const [k, v] of Object.entries(st.set ?? {})) f[k] = v;
       for (const [k, v] of Object.entries(st.add ?? {})) { const n = (typeof f[k] === "number" ? (f[k] as number) : 0) + v; f[k] = BOUNDED.has(k) ? Math.max(0, Math.min(100, n)) : n; }

@@ -9,7 +9,12 @@
   "afterCart",
   "townMeeting",
   "ketti",
-  "oda"
+  "oda",
+  "cartOrders",
+  "nightWatch",
+  "brannocDown",
+  "sectionVote",
+  "quietTamsin"
  ],
  "moods": {
   "scenes": {
@@ -21,7 +26,6 @@
    "cartFight": "tension",
    "openCart": "tender",
    "selaFree": "tender",
-   "promotedSergeant": "hope",
    "afterCart": "hope",
    "townMeeting": "tension",
    "sallowGate": "tension",
@@ -29,7 +33,23 @@
    "harvest": "grief",
    "harvestSong": "grief",
    "oda": "hope",
-   "leaveLarkfold": "hope"
+   "leaveLarkfold": "hope",
+   "tourNurse": "camp",
+   "tourYard": "camp",
+   "tourKith": "camp",
+   "kaneTour": "camp",
+   "firstWeek": "camp",
+   "nightWatch": "night",
+   "cartOrders": "tension",
+   "walkBack": "hope",
+   "quietTamsin": "tender",
+   "quietSela": "tender",
+   "quietOren": "tender",
+   "sallowOrders": "dread",
+   "brannocDown": "grief",
+   "sectionVote": "hope",
+   "sparDawn": "camp",
+   "tent": "camp"
   },
   "stages": {
    "a3": "tension",
@@ -40,7 +60,13 @@
    "a6b": "fire",
    "a7": "dusk",
    "a7b": "grief",
-   "a7c": "hope"
+   "a7c": "hope",
+   "a2b": "camp",
+   "a2c": "night",
+   "a2d": "camp",
+   "a5b": "camp",
+   "a6c": "grief",
+   "a6d": "tender"
   }
  },
  "cast": {
@@ -54,7 +80,8 @@
   "woman": "A woman in the crowd",
   "ketti": "Ketti",
   "nurse": "Army nurse",
-  "soldier": "Commons soldier"
+  "soldier": "Commons soldier",
+  "varro": "Lieutenant Varro"
  },
  "objectives": {
   "a1": "Find the Larkfold cart at Ferrow Cross, down the mountain road south-east of Larkfold.",
@@ -64,12 +91,24 @@
   "a3b": "Open the cart.",
   "a3c": "See to the children from the cart.",
   "a4": "Take the children back to the Commons camp and report to Kane.",
-  "a5": "Go to Millbridge and win the town over. Find the reeve in the square.",
+  "a5": "Go to Millbridge with Lieutenant Varro. The town meets in the square.",
   "a6": "Join Kane's attack on the Sallow hatchery, south-east of Hob's Bend.",
   "a6b": "The brood house is burning. Get to its door through the yard.",
-  "a7": "The first harvest since the raid. Go home to Larkfold.",
+  "a7": "The first harvest since the raid. Leave the camp by the west track and go home to Larkfold.",
   "a7b": "Sing on the terraces (Q).",
-  "a7c": "Go back down to the others, by the south gate. The spring caves are still there."
+  "a7c": "Go back down to the others, by the south gate. The spring caves are still there.",
+  "a2b": "Look round the camp: the nurses' tent, the drill yard and the kith lines. Then go back to Kane.",
+  "a2c": "Night watch on the east picket, at the top of the camp. Ferris is already there.",
+  "a2d": "Kane has sent for Brannoc's section.",
+  "a5b": "A quiet month at the camp. Spend time with your people. Kane will send for you when there's work.",
+  "a6c": "Walk back to the Commons camp. Brannoc was carried ahead to the nurses' tent, and he's asking for you.",
+  "a6d": "The section meets at the fire tonight. Sit with them.",
+  "a2e": "Turn in for the night. Your tent is the one in the top-left corner of the camp, by the west fence.",
+  "a2f": "Dawn. Brannoc is waiting for you in the drill yard.",
+  "a2g": "Three weeks of drill ahead. When you're ready, turn in at your tent.",
+  "a2h": "Your watch is over. Go back to your tent and sleep.",
+  "a4b": "Walk back to the Commons camp, east on the Old Drove Road, and turn in at your tent.",
+  "a6e": "Go to bed, Sergeant. Your tent is in the top-left corner of the camp."
  },
  "actors": [
   {
@@ -139,7 +178,30 @@
    "look": "brannoc",
    "when": {
     "stagePrefix": "a",
-    "not": "party.brannoc"
+    "not": "party.brannoc",
+    "stage": [
+     "a1",
+     "a1b",
+     "a2",
+     "a2b",
+     "a2c",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a7",
+     "a7b",
+     "a7c",
+     "a2e",
+     "a2g",
+     "a2h",
+     "a4b"
+    ]
    },
    "talk": [
     {
@@ -160,18 +222,30 @@
    "talk": [
     {
      "if": {
-      "flag": "recruited.sela"
+      "stage": "a2b"
      },
      "then": [
       {
-       "say": "soldier",
-       "text": "\"That little one from the cart, Sela? She's taken over the kith lines. Told me I was holding a loftbuck wrong.\""
+       "run": "tourYard"
       }
      ],
      "else": [
       {
-       "say": "soldier",
-       "text": "\"Half of us were miners. The other half were hatchery children once. Nobody here wears a lull. Not one.\""
+       "if": {
+        "flag": "recruited.sela"
+       },
+       "then": [
+        {
+         "say": "soldier",
+         "text": "\"That little one from the cart, Sela? She's taken over the kith lines. Told me I was holding a loftbuck wrong.\""
+        }
+       ],
+       "else": [
+        {
+         "say": "soldier",
+         "text": "\"Half of us were miners. The other half were hatchery children once. Nobody here wears a lull. Not one.\""
+        }
+       ]
       }
      ]
     }
@@ -189,18 +263,30 @@
    "talk": [
     {
      "if": {
-      "flag": "won.cart-warden"
+      "stage": "a2b"
      },
      "then": [
       {
-       "say": "nurse",
-       "text": "\"The children from the cart are sleeping. First night in a year without a bell, one of them said.\""
+       "run": "tourNurse"
       }
      ],
      "else": [
       {
-       "say": "nurse",
-       "text": "\"Every child we take out of a hatchery comes here first. We've room for more. We always have room for more.\""
+       "if": {
+        "flag": "won.cart-warden"
+       },
+       "then": [
+        {
+         "say": "nurse",
+         "text": "\"The children from the cart are sleeping. First night in a year without a bell, one of them said.\""
+        }
+       ],
+       "else": [
+        {
+         "say": "nurse",
+         "text": "\"Every child we take out of a hatchery comes here first. We've room for more. We always have room for more.\""
+        }
+       ]
       }
      ]
     }
@@ -218,6 +304,16 @@
    },
    "talk": [
     {
+     "if": {
+      "stage": "a2b"
+     },
+     "then": [
+      {
+       "run": "tourKith"
+      }
+     ]
+    },
+    {
      "say": "ferris",
      "text": "\"Don't laugh. She's my reedcat. She's just decided I'm prey today. If you know any way to calm a kith, I'm listening.\""
     }
@@ -234,6 +330,16 @@
     "not": "recruited.ferris"
    },
    "talk": [
+    {
+     "if": {
+      "stage": "a2b"
+     },
+     "then": [
+      {
+       "run": "tourKith"
+      }
+     ]
+    },
     {
      "say": "",
      "text": "A reedcat, hackles up, tail lashing at the foot of the tree. Ferris is up in the branches. A song might settle her."
@@ -265,7 +371,7 @@
    "map": "bend",
    "x": 13,
    "y": 10,
-   "look": "kid2",
+   "look": "sela",
    "when": {
     "stage": "a3c",
     "flag": "sela"
@@ -449,7 +555,7 @@
    "map": "caves",
    "x": 10,
    "y": 3,
-   "look": "elder2",
+   "look": "oda",
    "when": {
     "stage": [
      "a7b",
@@ -460,6 +566,158 @@
    "talk": [
     {
      "run": "oda"
+    }
+   ]
+  },
+  {
+   "id": "ferris-watch",
+   "map": "camp",
+   "x": 25,
+   "y": 4,
+   "look": "ferris",
+   "when": {
+    "stage": "a2c"
+   },
+   "talk": [
+    {
+     "run": "nightWatch"
+    }
+   ]
+  },
+  {
+   "id": "varro",
+   "map": "millbridge",
+   "x": 16,
+   "y": 5,
+   "look": "varro",
+   "when": {
+    "stage": "a5"
+   },
+   "talk": [
+    {
+     "say": "varro",
+     "text": "\"The reeve is ringing the bell for us. Talk to her when you're ready, Caddow.\""
+    }
+   ]
+  },
+  {
+   "id": "tamsin-quiet",
+   "map": "camp",
+   "x": 13,
+   "y": 10,
+   "look": "tamsin",
+   "when": {
+    "stage": "a5b"
+   },
+   "talk": [
+    {
+     "if": {
+      "flag": "quiet.tamsin"
+     },
+     "then": [
+      {
+       "say": "tamsin",
+       "text": "\"Go on. Kane's been looking for you.\""
+      }
+     ],
+     "else": [
+      {
+       "run": "quietTamsin"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sela-quiet",
+   "map": "camp",
+   "x": 22,
+   "y": 3,
+   "look": "sela",
+   "when": {
+    "stage": "a5b",
+    "flag": "recruited.sela"
+   },
+   "talk": [
+    {
+     "run": "quietSela"
+    }
+   ]
+  },
+  {
+   "id": "oren-quiet",
+   "map": "camp",
+   "x": 19,
+   "y": 11,
+   "look": "oren",
+   "when": {
+    "stage": "a5b",
+    "flag": "recruited.oren"
+   },
+   "talk": [
+    {
+     "run": "quietOren"
+    }
+   ]
+  },
+  {
+   "id": "brannoc-down",
+   "map": "camp",
+   "x": 20,
+   "y": 11,
+   "look": "brannoc",
+   "when": {
+    "stage": "a6c"
+   },
+   "talk": [
+    {
+     "run": "brannocDown"
+    }
+   ]
+  },
+  {
+   "id": "brannoc-fire",
+   "map": "camp",
+   "x": 21,
+   "y": 7,
+   "look": "brannoc",
+   "when": {
+    "stage": "a6d"
+   },
+   "talk": [
+    {
+     "say": "brannoc",
+     "text": "\"I'm only here to listen. Nurse's orders: no voting, no laughing.\""
+    }
+   ]
+  },
+  {
+   "id": "tamsin-fire",
+   "map": "camp",
+   "x": 22,
+   "y": 5,
+   "look": "tamsin",
+   "when": {
+    "stage": "a6d"
+   },
+   "talk": [
+    {
+     "run": "sectionVote"
+    }
+   ]
+  },
+  {
+   "id": "brannoc-dawn",
+   "map": "camp",
+   "x": 8,
+   "y": 9,
+   "look": "brannoc",
+   "when": {
+    "stage": "a2f"
+   },
+   "talk": [
+    {
+     "run": "sparDawn"
     }
    ]
   }
@@ -1138,6 +1396,29 @@
      "run": "ketti"
     }
    ]
+  },
+  {
+   "map": "camp",
+   "area": [
+    3,
+    4,
+    4,
+    4
+   ],
+   "when": {
+    "stage": [
+     "a2e",
+     "a2g",
+     "a2h",
+     "a4b",
+     "a6e"
+    ]
+   },
+   "do": [
+    {
+     "run": "tent"
+    }
+   ]
   }
  ],
  "looks": [
@@ -1350,16 +1631,16 @@
     }
    },
    {
-    "say": "",
-    "text": "For most of a year Rhea has followed the indenture carts down every road out of the highlands. Tamsin and Ash have followed her."
+    "say": "tamsin",
+    "text": "\"Another road, Rhea. That's ten since the carts took Finch. We've worn out two pairs of boots each.\""
    },
    {
-    "say": "",
-    "text": "Last week a carter swore he saw the Larkfold cart at Ferrow Cross, the coaching inn at the foot of the mountain road."
+    "say": "rhea",
+    "text": "\"A carter swore he saw the Larkfold cart at Ferrow Cross. The coaching inn, at the bottom of the mountain road.\""
    },
    {
     "say": "tamsin",
-    "text": "\"Same as the last ten times, Rhea. If it's not there, we eat, we sleep, and we try the next road.\""
+    "text": "\"Same as the last ten times, then. If it's not there, we eat, we sleep, and we try the next road.\""
    },
    {
     "stage": "a1"
@@ -1380,7 +1661,7 @@
    },
    {
     "say": "rhea",
-    "text": "\"Where did the boy go? Nine years old then, sandy hair. He'd have been holding on to a lead rope. He'd have been asking about a loftbuck.\""
+    "text": "\"Where did the boy go? Twelve years old then, sandy hair. He'd have been holding on to a lead rope. He'd have been asking about a loftbuck.\""
    },
    {
     "say": "innkeeper",
@@ -1409,7 +1690,7 @@
    },
    {
     "say": "brannoc",
-    "text": "\"Brannoc. Sergeant, Commons Army. I came down for the same cart. We heard about it too late as well.\""
+    "text": "\"Brannoc. Sergeant, Commons Army. Miners, farmers, kids we've pulled out of hatcheries. Anyone the Guild has had its hands on. I came down for the same cart. We heard about it too late as well.\""
    },
    {
     "say": "brannoc",
@@ -1483,28 +1764,90 @@
     "else": [
      {
       "if": {
-       "stage": "a4"
+       "stage": "a2b"
       },
       "then": [
        {
-        "run": "afterCart"
+        "run": "kaneTour"
        }
       ],
       "else": [
        {
         "if": {
-         "stage": "a5"
+         "stage": "a2c"
         },
         "then": [
          {
           "say": "kane",
-          "text": "\"Millbridge, Sergeant. Go and be honest at them, or charming. Whichever works.\""
+          "text": "\"You're on the east picket tonight, Caddow. Ferris is already there.\""
          }
         ],
         "else": [
          {
-          "say": "kane",
-          "text": "\"Every hatchery we open is a few hundred children and one less wall between you and your brother. Keep going, Caddow.\""
+          "if": {
+           "stage": "a2d"
+          },
+          "then": [
+           {
+            "run": "cartOrders"
+           }
+          ],
+          "else": [
+           {
+            "if": {
+             "stage": "a4"
+            },
+            "then": [
+             {
+              "run": "afterCart"
+             }
+            ],
+            "else": [
+             {
+              "if": {
+               "stage": "a5"
+              },
+              "then": [
+               {
+                "say": "kane",
+                "text": "\"Millbridge, Caddow. Varro will do the talking. You tell them the truth about Larkfold, whatever it costs.\""
+               }
+              ],
+              "else": [
+               {
+                "if": {
+                 "stage": "a5b"
+                },
+                "then": [
+                 {
+                  "if": {
+                   "flag": "quiet.tamsin"
+                  },
+                  "then": [
+                   {
+                    "run": "sallowOrders"
+                   }
+                  ],
+                  "else": [
+                   {
+                    "say": "kane",
+                    "text": "\"Nothing for you this week. Rest while you can, Caddow. Tamsin was asking after you.\""
+                   }
+                  ]
+                 }
+                ],
+                "else": [
+                 {
+                  "say": "kane",
+                  "text": "\"Every hatchery we open is a few hundred children and one less wall between you and your brother. Keep going, Caddow.\""
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
          }
         ]
        }
@@ -1586,14 +1929,14 @@
    },
    {
     "say": "kane",
-    "text": "\"Here's your first job, Recruit. A Guild cart goes down the Millbridge road tonight, through Hob's Bend, with eight children in it bound for the Sallow hatchery.\""
+    "text": "\"You'll be in Brannoc's section. Eight of them, nine with you. They'll teach you more than I can.\""
    },
    {
     "say": "kane",
-    "text": "\"One cart warden. The Guild says a cart of children isn't worth two men's wages. Stop him, bring the children here, and you're a Sergeant.\""
+    "text": "\"Have a look round before you unpack. The nurses' tent, the drill yard, the kith lines. Then come back and tell me what you saw.\""
    },
    {
-    "stage": "a3"
+    "stage": "a2b"
    }
   ],
   "ferrisDown": [
@@ -1694,7 +2037,7 @@
       "stage": "a3c"
      },
      {
-      "run": "promotedSergeant"
+      "run": "walkBack"
      }
     ]
    }
@@ -1737,30 +2080,13 @@
     "toast": "Sela is safe. She'll go to the Commons camp."
    },
    {
-    "run": "promotedSergeant"
-   }
-  ],
-  "promotedSergeant": [
-   {
-    "say": "",
-    "text": "They walk the children back to the camp through the night. Brannoc carries two of them. Tamsin carries one and sings to her, badly."
-   },
-   {
-    "set": {
-     "rank": "Sergeant"
-    }
-   },
-   {
-    "toast": "Promoted: Sergeant. You lead a section of your own."
-   },
-   {
-    "stage": "a4"
+    "run": "walkBack"
    }
   ],
   "afterCart": [
    {
     "say": "kane",
-    "text": "\"Eight children out of a Guild cart and not a scratch on them. Sergeant Caddow.\""
+    "text": "\"Eight children out of a Guild cart and not a scratch on them. Brannoc says you held your nerve, Caddow. Good.\""
    },
    {
     "say": "kane",
@@ -1768,7 +2094,11 @@
    },
    {
     "say": "kane",
-    "text": "\"Without Millbridge's bridge and its market we can't feed this army through the winter. Go and talk to them. You're from Larkfold. They'll either hang you or listen.\""
+    "text": "\"Without Millbridge's bridge and its market we can't feed this army through the winter. Lieutenant Varro is going to speak to their town meeting.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"She wants a witness from Larkfold. Someone who was there when it burned. That's you, if you'll do it.\""
    },
    {
     "stage": "a5"
@@ -1787,7 +2117,7 @@
     "else": [
      {
       "say": "reeve",
-      "text": "\"Millbridge has made its choice, Sergeant. I hope it was the right one.\""
+      "text": "\"Millbridge has made its choice. I hope it was the right one.\""
      }
     ]
    }
@@ -1795,11 +2125,27 @@
   "townMeeting": [
    {
     "say": "",
-    "text": "Reeve Aske rings the market bell, and the square fills. Word has gone round that a woman from Larkfold is here."
+    "text": "A grey-haired woman rings the market bell, and the square fills. Lieutenant Varro of the Commons stands on the well steps in a green coat, and the crowd looks at her and then, mostly, at Rhea."
    },
    {
     "say": "reeve",
-    "text": "\"Eleven of ours died in their sleep last harvest, Sergeant Caddow. Every one of them wore a Larkfold greenling. My own sister. Tell us why.\""
+    "text": "\"I'm Aske, reeve of this town, which means these people voted me in and can vote me out. Say your piece, Lieutenant. They'll decide.\""
+   },
+   {
+    "say": "varro",
+    "text": "\"Millbridge. The Guild sells you a lull for a month and raises the price every time. It owns the shop, the cart, the hatchery and the bridge toll. The Commons asks for none of that. We ask for your bridge to stay open to us, and your market on the first of the month.\""
+   },
+   {
+    "say": "varro",
+    "text": "\"I've brought someone who can tell you what the Guild does to a village that stops buying. Caddow?\""
+   },
+   {
+    "say": "",
+    "text": "Rhea tells them about Larkfold: the Wardens on the cloud path, the drying house going up, the children in the carts. The square is quiet while she talks."
+   },
+   {
+    "say": "reeve",
+    "text": "\"Eleven of ours died in their sleep last harvest, Caddow. Every one of them wore a Larkfold greenling. My own sister. Tell us why.\""
    },
    {
     "say": "oren",
@@ -1873,14 +2219,18 @@
    },
    {
     "say": "reeve",
-    "text": "\"Then that's Millbridge's answer, Sergeant.\""
+    "text": "\"Then that's Millbridge's answer.\""
    },
    {
-    "say": "",
-    "text": "A child pushes through the crowd with a message from Kane."
+    "say": "varro",
+    "text": "\"Thank you, Caddow. Whatever they decide, that took nerve.\""
    },
    {
-    "stage": "a6"
+    "say": "varro",
+    "text": "\"We start back for the camp tonight. Get some rest when we're there. The rains are coming, and it'll be quiet for a while.\""
+   },
+   {
+    "stage": "a4b"
    }
   ],
   "sallowGate": [
@@ -1937,7 +2287,7 @@
    },
    {
     "say": "",
-    "text": "Brannoc and Tamsin go in with wet cloths over their faces and come out with four more. Nobody dies in the Sallow hatchery tonight."
+    "text": "Brannoc and Tamsin go in with wet cloths over their faces and come out with four more. Brannoc goes back for the last two alone. He comes out with both children and the brood-house roof comes down behind him, across his back. Nobody dies in the Sallow hatchery tonight. Brannoc very nearly does."
    },
    {
     "choose": "The girl stands there with the two children, daring anyone to try.",
@@ -1973,7 +2323,7 @@
        },
        {
         "say": "",
-        "text": "The girl lets the nurse take them, one finger at a time. Then she walks off into the dark and doesn't come back. In the morning she's gone from the camp."
+        "text": "The girl lets the nurse take them, one finger at a time. Then she walks off into the dark and doesn't come back."
        },
        {
         "set": {
@@ -1992,50 +2342,22 @@
    },
    {
     "say": "",
-    "text": "By dawn the Sallow hatchery is ash and the Guild has lost two hundred and six indentures. Kane reads the number out at the camp fire, and the camp cheers until it's hoarse."
+    "text": "By dawn the Sallow hatchery is ash, and two hundred and six children are sitting in the road wrapped in Commons blankets."
+   },
+   {
+    "say": "",
+    "text": "The nurses lift Brannoc onto a stretcher and carry him ahead, up the road to the camp. He doesn't let go of Rhea's sleeve until they make him."
+   },
+   {
+    "leave": "brannoc"
    },
    {
     "set": {
-     "rank": "Lieutenant"
+     "light": "day"
     }
    },
    {
-    "toast": "Promoted: Lieutenant."
-   },
-   {
-    "say": "kane",
-    "text": "\"Lieutenant Caddow. You're making a habit of this.\""
-   },
-   {
-    "fade": "Autumn. The first harvest since the raid."
-   },
-   {
-    "set": {
-     "light": "dusk"
-    }
-   },
-   {
-    "alone": true
-   },
-   {
-    "set": {
-     "noWild": true
-    }
-   },
-   {
-    "say": "tamsin",
-    "text": "\"It's harvest, Rhea. You'll want to go up alone. We'll be here when you come down.\""
-   },
-   {
-    "stage": "a7"
-   },
-   {
-    "goto": {
-     "map": "land-vale",
-     "x": 59,
-     "y": 18,
-     "facing": "down"
-    }
+    "stage": "a6c"
    }
   ],
   "harvest": [
@@ -2125,7 +2447,689 @@
     }
    },
    {
+    "say": "",
+    "text": "At the bottom of the mountain road, Brannoc is waiting with the others, his back still stiff, leaning on a spear like a walking stick."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Harvest's in. So's resting. Where are we going, Sergeant?\""
+   },
+   {
+    "join": "brannoc"
+   },
+   {
     "end": "act1"
+   }
+  ],
+  "tourNurse": [
+   {
+    "say": "",
+    "text": "The nurses' tent smells of boiled cloth and lye. A woman with her sleeves rolled up is stitching a boy's scalp by lamplight, and doing it badly."
+   },
+   {
+    "say": "nurse",
+    "text": "\"Brannoc said you were the doctor at Larkfold. Is that true, or is it one of his stories?\""
+   },
+   {
+    "choose": "The boy flinches at every stitch.",
+    "options": [
+     {
+      "label": "\"Let me.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "",
+        "text": "You wash your hands, take the needle, and close the cut in six small stitches while the boy is still deciding whether to cry."
+       },
+       {
+        "say": "nurse",
+        "text": "\"Well. You can come back any time you like.\""
+       },
+       {
+        "set": {
+         "nurseFriend": true
+        }
+       }
+      ]
+     },
+     {
+      "label": "\"It's true. You're doing fine.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "nurse",
+        "text": "\"Liar. But thank you.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "nurse",
+    "text": "\"Most of what we see isn't wounds. It's the raw. Half this camp came off Guild lulls to get here, and it takes a year to stop shaking.\""
+   },
+   {
+    "set": {
+     "tour.nurse": true
+    }
+   }
+  ],
+  "tourYard": [
+   {
+    "say": "",
+    "text": "In the drill yard a dozen people are practising with spears made of broom handles. Half of them are older than Rhea. A few are younger than Finch."
+   },
+   {
+    "say": "soldier",
+    "text": "\"You're the new one in Brannoc's section? You'll like him. He makes you run up the drove road with a sack of stones, and then he carries your sack back down.\""
+   },
+   {
+    "say": "soldier",
+    "text": "\"There's no Guild pay here, and no lulls. You get fed, you get a blanket, and you get a vote in your section. That's the Commons.\""
+   },
+   {
+    "set": {
+     "tour.yard": true
+    }
+   }
+  ],
+  "tourKith": [
+   {
+    "say": "",
+    "text": "The kith lines are a row of pens made from hurdles and rope. A dozen loftbucks, two old ironbacks, and a single reedcat up a tree with a man above her in the branches."
+   },
+   {
+    "set": {
+     "tour.kith": true
+    }
+   }
+  ],
+  "kaneTour": [
+   {
+    "if": {
+     "flag": "tour.nurse"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": "tour.yard"
+      },
+      "then": [
+       {
+        "if": {
+         "flag": "tour.kith"
+        },
+        "then": [
+         {
+          "run": "firstWeek"
+         }
+        ],
+        "else": [
+         {
+          "say": "kane",
+          "text": "\"You haven't seen the kith lines yet. Go and look. Ferris will be up a tree.\""
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "say": "kane",
+        "text": "\"Go and see the drill yard first. That's where you'll live for a while.\""
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "kane",
+      "text": "\"See the nurses' tent first. Brannoc tells me you're a doctor. They'll want to meet you.\""
+     }
+    ]
+   }
+  ],
+  "firstWeek": [
+   {
+    "say": "kane",
+    "text": "\"Well?\""
+   },
+   {
+    "choose": "What did Rhea see?",
+    "options": [
+     {
+      "label": "\"An army that's mostly children and people in the raw.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"Yes. That's what the Guild leaves behind, and that's what we're made of. They fight harder than you'd think.\""
+       }
+      ]
+     },
+     {
+      "label": "\"People who chose to be here.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"Every one. Nobody's indentured here. Remember that when you're tired of them.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "kane",
+    "text": "\"Good. Get some sleep. Your tent's the one in the top corner, by the west fence. Brannoc wants to see what you can do with that staff, at dawn. Don't let him be gentle with you.\""
+   },
+   {
+    "set": {
+     "light": "dusk"
+    }
+   },
+   {
+    "stage": "a2e"
+   }
+  ],
+  "nightWatch": [
+   {
+    "say": "",
+    "text": "Ferris has a blanket round his shoulders and a pot of something hot that he swears is tea. Down the slope, the Old Drove Road is a pale stripe in the dark."
+   },
+   {
+    "say": "ferris",
+    "text": "\"First watch? Don't stare at one place. Your eyes start making things up. Look past things, not at them.\""
+   },
+   {
+    "say": "ferris",
+    "text": "\"I drove for the Guild, you know. Four years. Carts of greenlings down to Millbridge, carts of children back. They pay the drivers by the trip, so you don't ask what's under the canvas.\""
+   },
+   {
+    "choose": "Ferris drinks his tea and doesn't look at you.",
+    "options": [
+     {
+      "label": "\"Why did you stop?\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "ferris",
+        "text": "\"One of them knocked on the boards from inside. All the way from Hob's Bend to Sallow. Same three knocks, every mile. I thought, someone's taught her that. Someone's told her to keep knocking so they know she's alive.\""
+       },
+       {
+        "say": "ferris",
+        "text": "\"I let her out at the ford and drove the empty cart into the river. Then I walked here.\""
+       },
+       {
+        "set": {
+         "ferrisWhy": true
+        }
+       }
+      ]
+     },
+     {
+      "label": "\"You know the cart roads, then.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "ferris",
+        "text": "\"Every one. They go through Hob's Bend on the full moon, because the warden's paid extra for night driving and the Guild likes to save money on lamps.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Something moves on the road below: a shape low to the ground, then gone. Ferris lifts a hand before you can stand."
+   },
+   {
+    "say": "ferris",
+    "text": "\"Fox kith. If it were Wardens you'd hear the harness. You'll learn the sounds.\""
+   },
+   {
+    "say": "ferris",
+    "text": "\"That's us. The next pair's coming up. Go and get your head down, Caddow.\""
+   },
+   {
+    "stage": "a2h"
+   }
+  ],
+  "cartOrders": [
+   {
+    "say": "kane",
+    "text": "\"A Guild cart goes down the Millbridge road tonight, through Hob's Bend, with eight children in it bound for the Sallow hatchery.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"One cart warden. The Guild says a cart of children isn't worth two men's wages. That's their mistake.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"It's your section's job. Brannoc leads. Caddow, you go first to the cart, because the children will trust a woman from the highlands before they trust any of us.\""
+   },
+   {
+    "stage": "a3"
+   }
+  ],
+  "walkBack": [
+   {
+    "say": "",
+    "text": "They walk the children back to the camp through the night. Brannoc carries two of them. Tamsin carries one and sings to her, badly."
+   },
+   {
+    "stage": "a4"
+   }
+  ],
+  "quietTamsin": [
+   {
+    "say": "",
+    "text": "Tamsin is on the hay bales, mending a sling, with her boots off and her feet in the last of the sun."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Sit. You've been walking round this camp like you're looking for something you dropped.\""
+   },
+   {
+    "choose": "Tamsin moves up to make room.",
+    "options": [
+     {
+      "label": "\"I keep thinking I'll see Finch in every cart.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "tamsin",
+        "text": "\"You will, one day. And it'll be him. And he'll be older, and different, and you'll have to get to know him again. Start getting ready for that now.\""
+       }
+      ]
+     },
+     {
+      "label": "\"I keep thinking about Corran.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "tamsin",
+        "text": "\"So do I. I ran the cloud path with him a hundred times. I'd have trusted him with my life.\""
+       },
+       {
+        "say": "tamsin",
+        "text": "\"I did, actually. That's the part I can't get past.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "tamsin",
+    "text": "\"My mother wore lulls for nine years. I used to count her rings when she was asleep. I don't want to be a person who counts rings any more. So I came up the mountain, and then I came here.\""
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Whatever you're carrying, Rhea, put some of it down. You can pick it back up. It'll still be there.\""
+   },
+   {
+    "set": {
+     "quiet.tamsin": true
+    }
+   },
+   {
+    "toast": "Kane will send for you when there's work."
+   }
+  ],
+  "quietSela": [
+   {
+    "say": "",
+    "text": "Sela is in the kith pens, sitting cross-legged in the straw with a loftbuck foal asleep across her knees."
+   },
+   {
+    "say": "sela",
+    "text": "\"Did you know they dream? Their feet go like this. This one's running somewhere.\""
+   },
+   {
+    "say": "sela",
+    "text": "\"At the sorting house they said I'd go to the brood rooms when I was ten. I'm nine now. Nearly.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"Nobody's taking you anywhere, Sela.\""
+   },
+   {
+    "say": "sela",
+    "text": "\"I know. I just like to say it, so I remember.\""
+   },
+   {
+    "set": {
+     "quiet.sela": true
+    }
+   }
+  ],
+  "quietOren": [
+   {
+    "say": "",
+    "text": "Oren Tull has come up from Millbridge with a cart of cut stone and a mason's hammer, and is building the nurses a wall that keeps the wind out."
+   },
+   {
+    "say": "oren",
+    "text": "\"Anna would have hated this place. Too much mud. She'd have stayed anyway, mind. She stayed with me.\""
+   },
+   {
+    "say": "oren",
+    "text": "\"You told the square the truth when it would have been easy not to. I've thought about that a lot. So here I am.\""
+   },
+   {
+    "set": {
+     "quiet.oren": true
+    }
+   }
+  ],
+  "sallowOrders": [
+   {
+    "say": "",
+    "text": "Kane has a map spread on a crate, held down with stones."
+   },
+   {
+    "say": "kane",
+    "text": "\"The Sallow hatchery. Two hundred children, give or take. The Guild has pulled half its Wardens north for the harvest tolls. It won't be this thin again.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Every section goes. Brannoc's takes the gate. Get your people together, Caddow.\""
+   },
+   {
+    "regroup": true
+   },
+   {
+    "stage": "a6"
+   }
+  ],
+  "brannocDown": [
+   {
+    "say": "",
+    "text": "Brannoc is lying on his front in the nurses' tent, with his back wrapped in wet linen from shoulders to waist. He turns his head when he hears you."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Don't. I know what it looks like. The nurse says a month on my belly, and I'm not to laugh, which is no hardship.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"The section needs someone while I'm here. I've told Kane I want it to be you.\""
+   },
+   {
+    "choose": "Brannoc watches you, waiting.",
+    "options": [
+     {
+      "label": "\"I've been here four months. They've been here years.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "brannoc",
+        "text": "\"And in four months you've stitched half of them and sung the other half to sleep. They know you. That's what it is.\""
+       }
+      ]
+     },
+     {
+      "label": "\"I'll do it.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "brannoc",
+        "text": "\"Not so fast.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "brannoc",
+    "text": "\"It's not mine to give, Caddow. It's not Kane's either. In the Commons, the section chooses. They'll vote at the fire tonight.\""
+   },
+   {
+    "set": {
+     "light": "dusk"
+    }
+   },
+   {
+    "stage": "a6d"
+   }
+  ],
+  "sectionVote": [
+   {
+    "say": "",
+    "text": "The section sits round the fire with their bowls. Kane stands at the edge of the light and says nothing at all. This isn't his."
+   },
+   {
+    "say": "soldier",
+    "text": "\"Brannoc's put Caddow's name up. Anyone else want it?\""
+   },
+   {
+    "say": "",
+    "text": "Nobody moves. Then Tamsin puts her hand up, and for a moment you think she's standing against you."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"I'll say it, since nobody else will. She's from Larkfold, and Larkfold's greenlings killed people in Millbridge. Some of you lost family to them. If that sticks in your throat, say so now, not later.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "millbridge": "truth"
+     }
+    },
+    "then": [
+     {
+      "say": "soldier",
+      "text": "\"She stood in the square and owned it, when lying would have won the town quicker. I was there.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "soldier",
+      "text": "\"She told Millbridge the Guild did it. Maybe it did. I'd rather hear her say she doesn't know.\""
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "recruited.ferris"
+    },
+    "then": [
+     {
+      "say": "ferris",
+      "text": "\"She sang my reedcat out of a tree. Then she sat a cold watch with me and listened to me talk rubbish for six hours. I'm for her.\""
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "recruited.ketti"
+    },
+    "then": [
+     {
+      "say": "ketti",
+      "text": "\"She let me keep them.\""
+     },
+     {
+      "say": "",
+      "text": "That's all Ketti says. It seems to be enough."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "The hands go up round the fire, one after another. Not all of them. Enough."
+   },
+   {
+    "say": "kane",
+    "text": "\"That's the section's answer, then. Sergeant Caddow.\""
+   },
+   {
+    "set": {
+     "rank": "Sergeant"
+    }
+   },
+   {
+    "toast": "Promoted: Sergeant. Your section voted for you."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Sergeant Caddow. Go to bed before they make you give a speech.\""
+   },
+   {
+    "stage": "a6e"
+   }
+  ],
+  "sparDawn": [
+   {
+    "say": "",
+    "text": "Brannoc is waiting in the drill yard with two practice staves and no expression at all."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Watch my shoulders, not my hands. When the ring closes, that's when you move. Hit when I'm open. Brace when I'm not.\""
+   },
+   {
+    "battle": "spar-brannoc",
+    "win": [
+     {
+      "say": "brannoc",
+      "text": "\"Huh. You've done this before.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"I've set a lot of bones. You learn where people break.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"Don't say that in front of the recruits.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"Right. Three weeks of drill, latrines, cold porridge and the drove road with a sack of stones on your back. Then you can stand a night watch. Go and get your breakfast, Caddow.\""
+     },
+     {
+      "stage": "a2g"
+     }
+    ]
+   }
+  ],
+  "tent": [
+   {
+    "if": {
+     "stage": "a2e"
+    },
+    "then": [
+     {
+      "fade": "The next morning."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "stage": "a2f"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "a2g"
+      },
+      "then": [
+       {
+        "fade": "Three weeks go by."
+       },
+       {
+        "set": {
+         "light": "night"
+        }
+       },
+       {
+        "stage": "a2c"
+       },
+       {
+        "say": "",
+        "text": "Brannoc's chalked the watch list on a board outside your tent: east picket tonight, Caddow and Ferris."
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "stage": "a2h"
+        },
+        "then": [
+         {
+          "fade": "Another week."
+         },
+         {
+          "set": {
+           "light": "day"
+          }
+         },
+         {
+          "stage": "a2d"
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "stage": "a4b"
+          },
+          "then": [
+           {
+            "fade": "The rains come. A month of quiet at the camp."
+           },
+           {
+            "set": {
+             "light": "day"
+            }
+           },
+           {
+            "stage": "a5b"
+           },
+           {
+            "alone": true
+           }
+          ],
+          "else": [
+           {
+            "if": {
+             "stage": "a6e"
+            },
+            "then": [
+             {
+              "fade": "Autumn. The first harvest since the raid."
+             },
+             {
+              "set": {
+               "light": "dusk",
+               "noWild": true
+              }
+             },
+             {
+              "stage": "a7"
+             },
+             {
+              "alone": true
+             },
+             {
+              "say": "",
+              "text": "There's a note pinned to the tent pole, in Tamsin's square hand: \"It's harvest. You'll want to go up to Larkfold alone. We'll be here when you come down.\""
+             }
+            ],
+            "else": [
+             {
+              "toast": "Your tent. It's not time to sleep yet."
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   ]
  }

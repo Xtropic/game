@@ -1,0 +1,358 @@
+{
+ "id": "wild",
+ "title": "Shy kith",
+ "voiced": [],
+ "cast": {},
+ "objectives": {},
+ "actors": [
+  {
+   "id": "shy-terrace-doe",
+   "map": "land-cloudline",
+   "x": 30,
+   "y": 7,
+   "look": "loftbuck",
+   "when": {
+    "not": "kith.shy-terrace-doe"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The doe bolts before you're close."
+    }
+   ]
+  },
+  {
+   "id": "shy-fog-reedcat",
+   "map": "land-cloudline",
+   "x": 53,
+   "y": 8,
+   "look": "reedcat",
+   "when": {
+    "not": "kith.shy-fog-reedcat"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The reedcat bolts before you're close."
+    }
+   ]
+  },
+  {
+   "id": "shy-drove-buck",
+   "map": "land-vale",
+   "x": 66,
+   "y": 4,
+   "look": "loftbuck",
+   "when": {
+    "not": "kith.shy-drove-buck"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The buck bolts before you're close."
+    }
+   ]
+  }
+ ],
+ "steps": [],
+ "zones": [
+  {
+   "map": "land-cloudline",
+   "area": [
+    27,
+    4,
+    33,
+    10
+   ],
+   "when": {
+    "not": "kith.shy-terrace-doe"
+   },
+   "do": [
+    {
+     "run": "shy_terrace_doe"
+    }
+   ]
+  },
+  {
+   "map": "land-cloudline",
+   "area": [
+    50,
+    5,
+    56,
+    11
+   ],
+   "when": {
+    "not": "kith.shy-fog-reedcat"
+   },
+   "do": [
+    {
+     "run": "shy_fog_reedcat"
+    }
+   ]
+  },
+  {
+   "map": "land-vale",
+   "area": [
+    63,
+    1,
+    69,
+    7
+   ],
+   "when": {
+    "not": "kith.shy-drove-buck"
+   },
+   "do": [
+    {
+     "run": "shy_drove_buck"
+    }
+   ]
+  }
+ ],
+ "looks": [],
+ "songs": [],
+ "hazards": [],
+ "scripts": {
+  "shy_terrace_doe": [
+   {
+    "say": "",
+    "text": "A terrace doe is grazing at the far side of the meadow, small and russet, with a white throat. It lifts its head."
+   },
+   {
+    "say": "",
+    "text": "One step closer and it will be gone into the terraces. It keeps going back to lick at a bare grey rock, where salt has dried in the cracks."
+   },
+   {
+    "choose": "Leave something out for it, and keep still?",
+    "options": [
+     {
+      "label": "Leave out salt lick",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the salt lick on a flat stone, back away downwind, and sit very still."
+       },
+       {
+        "fade": "An hour later."
+       },
+       {
+        "say": "",
+        "text": "The doe comes, one careful step at a time. It eats. When it's done it looks at you for a long moment, and doesn't run."
+       },
+       {
+        "say": "",
+        "text": "When you get up to go, it follows."
+       },
+       {
+        "kith": {
+         "species": "terrace-doe",
+         "level": 3,
+         "id": "shy-terrace-doe"
+        }
+       }
+      ]
+     },
+     {
+      "label": "Leave out dried fish",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the dried fish down and wait, downwind and still. The doe lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Leave out honey bread",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the honey bread down and wait, downwind and still. The doe lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Leave out cave moss",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the cave moss down and wait, downwind and still. The doe lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Walk on",
+      "do": [
+       {
+        "say": "",
+        "text": "You leave it be. The doe watches you until you're gone."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "shy_fog_reedcat": [
+   {
+    "say": "",
+    "text": "Something grey moves at the edge of the cloud forest: a reedcat, so pale it's hard to see against the mist. Its eyes find you."
+   },
+   {
+    "say": "",
+    "text": "One step closer and it will be gone into the cloud. It's nosing at the bones of a trout someone cooked here and left."
+   },
+   {
+    "choose": "Leave something out for it, and keep still?",
+    "options": [
+     {
+      "label": "Leave out salt lick",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the salt lick down and wait, downwind and still. The reedcat lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Leave out dried fish",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the dried fish on a flat stone, back away downwind, and sit very still."
+       },
+       {
+        "fade": "An hour later."
+       },
+       {
+        "say": "",
+        "text": "The reedcat comes, one careful step at a time. It eats. When it's done it looks at you for a long moment, and doesn't run."
+       },
+       {
+        "say": "",
+        "text": "When you get up to go, it follows."
+       },
+       {
+        "kith": {
+         "species": "fog-reedcat",
+         "level": 4,
+         "id": "shy-fog-reedcat"
+        }
+       }
+      ]
+     },
+     {
+      "label": "Leave out honey bread",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the honey bread down and wait, downwind and still. The reedcat lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Leave out cave moss",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the cave moss down and wait, downwind and still. The reedcat lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Walk on",
+      "do": [
+       {
+        "say": "",
+        "text": "You leave it be. The reedcat watches you until you're gone."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "shy_drove_buck": [
+   {
+    "say": "",
+    "text": "A drove buck stands on the rise, shaggy and heavy-horned, left behind by some herd. It stamps once."
+   },
+   {
+    "say": "",
+    "text": "One step closer and it will be gone into the hills. Where the drovers camp, it has licked the stones pale."
+   },
+   {
+    "choose": "Leave something out for it, and keep still?",
+    "options": [
+     {
+      "label": "Leave out salt lick",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the salt lick on a flat stone, back away downwind, and sit very still."
+       },
+       {
+        "fade": "An hour later."
+       },
+       {
+        "say": "",
+        "text": "The buck comes, one careful step at a time. It eats. When it's done it looks at you for a long moment, and doesn't run."
+       },
+       {
+        "say": "",
+        "text": "When you get up to go, it follows."
+       },
+       {
+        "kith": {
+         "species": "drove-loftbuck",
+         "level": 5,
+         "id": "shy-drove-buck"
+        }
+       }
+      ]
+     },
+     {
+      "label": "Leave out dried fish",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the dried fish down and wait, downwind and still. The buck lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Leave out honey bread",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the honey bread down and wait, downwind and still. The buck lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Leave out cave moss",
+      "do": [
+       {
+        "say": "",
+        "text": "You set the cave moss down and wait, downwind and still. The buck lifts its nose, and stays where it is. Whatever it wants, that isn't it."
+       }
+      ]
+     },
+     {
+      "label": "Walk on",
+      "do": [
+       {
+        "say": "",
+        "text": "You leave it be. The buck watches you until you're gone."
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "moods": {
+  "scenes": {
+   "shy_terrace_doe": "tender",
+   "shy_fog_reedcat": "tender",
+   "shy_drove_buck": "tender"
+  },
+  "stages": {}
+ }
+}

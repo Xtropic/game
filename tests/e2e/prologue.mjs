@@ -22,6 +22,8 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const errors = []; page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 await page.goto(url); await page.waitForFunction(() => window.__lull?.explore);
 await page.evaluate(() => localStorage.clear()); await page.reload(); await page.waitForFunction(() => window.__lull?.explore);
+// a new game opens with a few lines about Larkfold: read them through
+for (let i = 0; i < 60; i++) { await page.waitForTimeout(80); const d = await page.evaluate(() => window.__lull.explore()); if (!d.dialog && !d.busy && i > 3) break; if (d.dialog) await page.keyboard.press("Enter"); }
 const t0 = Date.now();
 
 const ex = () => page.evaluate(() => window.__lull.explore());
@@ -35,17 +37,22 @@ async function read(max = 40) {
     if (s.choosing || s.ended) return s;
     if (s.fading) { await page.waitForTimeout(300); continue; }
     if (s.joining) { joins++; await page.waitForTimeout(1500); await tap("Enter", 200); continue; }
-    if (s.dialog) { await tap("Enter"); await tap("Enter", 60); continue; }
-    if (!s.busy) return s;
+    // one press finishes typing, the next closes; never press into a choice that has just come up
+    if (s.dialog) { await tap("Enter"); const t = await ex(); if (t.dialog === s.dialog && !t.choosing) await tap("Enter", 60); continue; }
+    if (!s.busy) { await page.waitForTimeout(120); if (!(await ex()).joining) return s; continue; }
     await page.waitForTimeout(100);
   }
   return ex();
 }
 async function choose(i) { const s = await read(); if (!s.choosing) { fail(`expected a choice, at ${s.stage}: ${s.dialog}`); return; } for (let k = 0; k < i; k++) await tap("ArrowDown"); await tap("Enter", 80); return read(); }
+/** Reads through, taking the first option at every choice, until nothing is running. */
+async function play(max = 12) { let s = await read(); for (let i = 0; i < max && s.choosing; i++) { await tap("Enter", 80); s = await read(); } return s; }
 const expect = async (what, ok) => { const s = await ex(); if (!ok(s)) fail(`${what}: ${JSON.stringify({ map: s.map, stage: s.stage, dialog: s.dialog, followers: s.followers })}`); return s; };
 
 // ---- day one ----
-await expect("starts on day one in Larkfold", (s) => s.map === "larkfold" && s.stage === "d1");
+await expect("starts on day one in Larkfold, with a pilgrim at the spring", (s) => s.map === "larkfold" && s.stage === "d0");
+await put(24, 14, "right"); await tap("Enter"); await play();
+await expect("the pilgrim's first greenling set", (s) => s.stage === "d1");
 await put(13, 2, "right"); await tap("Enter"); await choose(0);
 await expect("asked to sing", (s) => s.stage === "d1b");
 await put(20, 1, "right"); await tap("KeyQ"); await read();
@@ -55,14 +62,16 @@ await expect("into the brood caves", (s) => s.map === "caves");
 await put(13, 1, "right"); await tap("Enter"); await read();
 if (await page.evaluate(() => window.__lull.game.flags.notes) !== 1) fail("the note in the caves was not picked up");
 await put(5, 3, "right"); await tap("Enter"); await choose(1);
-await expect("evening falls", (s) => s.stage === "d3" && s.followers.length === 0);
+await expect("evening falls", (s) => s.stage === "d2b" && s.followers.length === 0);
 await put(7, 7, "down"); await walk("ArrowDown", 300);
+await put(15, 17, "down"); await tap("Enter"); await read();
+await expect("the panniers at the south gate", (s) => s.stage === "d3");
 await put(9, 12, "left"); await walk("ArrowLeft", 250);
 await expect("up the ladder to the roof", (s) => s.map === "roof");
 await put(6, 2, "right"); await tap("Enter"); await choose(0); await choose(2);
 await expect("goodnight to Corran", (s) => s.stage === "d4");
 if (await page.evaluate(() => window.__lull.game.flags.hold) !== 55) fail("hearing about Hask did not steady Corran's hold");
-await put(2, 4, "left"); await walk("ArrowLeft", 250);
+await put(2, 4, "left"); await walk("ArrowLeft", 250); await page.waitForTimeout(300);
 await put(6, 9, "up"); await walk("ArrowUp", 250);
 await expect("home", (s) => s.map === "home");
 await put(1, 2, "up"); await tap("Enter"); await read();
@@ -74,11 +83,24 @@ await put(15, 7, "right"); await tap("Enter"); await choose(1);
 await expect("the news", (s) => s.stage === "n2");
 await put(6, 9, "up"); await walk("ArrowUp", 250);
 await put(4, 3, "right"); await tap("Enter"); await choose(2);
-await expect("three nights later", (s) => s.stage === "n3" && s.map === "larkfold");
+await expect("that night, at home", (s) => s.stage === "n2b" && s.map === "home");
+await put(4, 5, "down"); await walk("ArrowDown", 300);
+await put(16, 17, "down"); await tap("Enter"); await choose(1);
+await expect("Corran at the gate", (s) => s.stage === "n2c");
+await put(6, 9, "up"); await walk("ArrowUp", 250);
+await put(1, 2, "up"); await tap("Enter"); await read();
+await expect("the next morning", (s) => s.stage === "n2d" && s.map === "larkfold");
+await put(15, 7, "right"); await tap("Enter"); await read();
+await expect("the swapped run", (s) => s.stage === "n2e");
+await put(6, 9, "up"); await walk("ArrowUp", 250);
+await put(1, 2, "up"); await tap("Enter"); await read();
+await expect("two nights later", (s) => s.stage === "n3" && s.map === "larkfold");
 await put(14, 18, "right"); await tap("Enter"); await read();
 await expect("Tamsin and Ash join", (s) => s.stage === "n3b" && s.followers.join() === "tamsin,ash");
 await put(16, 18, "down"); await walk("ArrowDown", 300);
 await expect("down the trail", (s) => s.map === "trail");
+await put(9, 4, "down"); await walk("ArrowDown", 400); await play();
+if (!(await page.evaluate(() => window.__lull.game.flags.signalSeen))) fail("the lamp on the cliff was not seen");
 await put(9, 8, "down"); await page.keyboard.down("ArrowDown");
 await page.waitForFunction(() => window.__lull.explore().dialog, null, { timeout: 8000 }); await page.keyboard.up("ArrowDown");
 await tap("Enter"); await tap("Enter");
@@ -96,7 +118,18 @@ await expect("the sky goes orange", (s) => s.stage === "n4");
 await put(8, 1, "up"); await walk("ArrowUp", 300); await read();
 await expect("Larkfold has burned", (s) => s.stage === "n5" && s.map === "larkfold");
 await page.screenshot({ path: "test-results/prologue-burnt.png" });
+await put(15, 8, "right"); await tap("Enter"); await play();
+await expect("Rook's last words", (s) => s.stage === "n5b");
+await put(6, 9, "up"); await walk("ArrowUp", 250);
+await put(7, 2, "up"); await tap("Enter"); await read();
+await expect("the ring and the note", (s) => s.stage === "n5c");
+await put(4, 5, "down"); await walk("ArrowDown", 300);
 await put(19, 5, "up"); await walk("ArrowUp", 900); await choose(0);
+await expect("the night before, as Corran on the cloud path", (s) => s.map === "cloudpath" && s.stage === "c1");
+await page.screenshot({ path: "test-results/prologue-cloudpath.png" });
+await put(8, 5, "up"); await walk("ArrowUp", 400); await play();
+await expect("the signal given", (s) => s.stage === "c2");
+await put(8, 2, "up"); await walk("ArrowUp", 400); await play();
 
 // ---- Corran's interlude ----
 await expect("Corran in the Vantry yard", (s) => s.map === "yard" && s.stage === "i1");

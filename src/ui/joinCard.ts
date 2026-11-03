@@ -8,6 +8,7 @@ import { recruit } from "../cast/recruits";
 import { SPECIES } from "../kith/kith";
 import type { Kith } from "../kith/kith";
 import { sfx } from "../audio/music";
+import { familyOf } from "../kith/befriend";
 
 export interface Joiner { id: string; name: string; what: string; kith?: boolean; species?: string; }
 
@@ -21,7 +22,7 @@ const ROLE: Record<string, string> = {
 /** What a newly joined person or kith does, in a line. */
 export function joinerFor(id: string, kith: Record<string, Kith>, names: Record<string, string>): Joiner {
   const k = kith[id];
-  if (k) return { id, name: k.name, kith: true, species: k.species, what: `Kith: ${SPECIES[k.species]?.name ?? k.species}, level ${k.level}. Fights in the party.` };
+  if (k) return { id, name: k.name, kith: true, species: k.species, what: `Kith: ${SPECIES[k.species]?.name ?? k.species}, level ${k.level}. ${id.startsWith("wild-") || id.startsWith("shy-") ? "Won over in the wild. Travels with your company." : "Fights in the party."}` };
   const r = recruit(id);
   return { id, name: names[id] ?? r?.name ?? id, what: r ? ROLE[r.role] ?? "" : "Travels with Rhea." };
 }
@@ -31,7 +32,7 @@ function portrait(j: Joiner, size: number): Container {
   const c = new Container();
   if (j.kith && !hasPainted(j.id)) {
     c.addChild(new Graphics().rect(0, 0, size, size).fill(0x3a3428));
-    const look = j.species && ["loftbuck", "reedcat"].includes(j.species) ? j.species : "loftbuck";
+    const fam = j.species ? familyOf(j.species) : "loftbuck", look = ["loftbuck", "reedcat"].includes(fam) ? fam : "loftbuck";
     const s = new Sprite(beastSheet(look).right[0]); s.texture.source.scaleMode = "nearest";
     const k = Math.floor(size / 18); s.scale.set(k); s.x = (size - 16 * k) / 2; s.y = (size - 12 * k) / 2 + k;
     c.addChild(s);

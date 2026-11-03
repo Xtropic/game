@@ -2,6 +2,7 @@
 // The party is whoever is travelling with the hero; the foes come from the region (its native kith, how
 // dangerous it is) and the ground underfoot (which also picks the scenery behind the fight).
 import type { BattleDef, UnitDef } from "./rules";
+import { TEMPERAMENTS } from "../kith/kith";
 import type { TileKind } from "../world/map";
 import speciesData from "../../data/kith/species.json";
 
@@ -81,10 +82,10 @@ export function encounter(region: string, ground: TileKind | null, hero: string,
   const foes: UnitDef[] = [];
   for (let i = 0; i < n; i++) {
     const lv = level();
-    foes.push({ id: `k${i}`, name: kind.name, look: `${kind.family}:${coat}`, side: "foe", row: "front", hp: (kind.family === "loftbuck" ? 26 : 16) + lv * 2, level: lv, kith: true, skills: [kind.family === "loftbuck" ? "horns" : "pounce"], at: FOE_AT[i] });
+    foes.push({ id: `k${i}`, name: kind.name, look: `${kind.family}:${coat}`, side: "foe", row: "front", hp: (kind.family === "loftbuck" ? 26 : 16) + lv * 2, level: lv, kith: true, skills: [kind.family === "loftbuck" ? "horns" : "pounce"], at: FOE_AT[i], species: kind.id, temperament: TEMPERAMENTS[Math.floor(rng() * TEMPERAMENTS.length)] });
   }
   const many = n > 1 ? `${n === 2 ? "Two" : "Three"} ${kind.name.toLowerCase()}s` : `A ${kind.name.toLowerCase()}`;
-  return { id: `wild-${kind.id}`, name: kind.name, backdrop: scenery, intro: [`${many} ${n > 1 ? "come" : "comes"} out of the ${groundWord(ground)}, hackles up.`, "The foal song can calm a wild kith until it leaves."], units: [...allies, ...foes], won: "The way is clear", lost: "You back away and lose them" };
+  return { id: `wild-${kind.id}`, name: kind.name, backdrop: scenery, intro: [`${many} ${n > 1 ? "come" : "comes"} out of the ${groundWord(ground)}, hackles up.`, "The foal song can calm a wild kith. Calmed, it may stay, and let you win it over."], units: [...allies, ...foes], won: "The way is clear", lost: "You back away and lose them" };
 }
 
 function groundWord(t: TileKind | null): string {

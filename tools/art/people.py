@@ -102,11 +102,26 @@ def head_side(g, top, hair="short", beard="none"):
     if hair == "bun": g.rect(2, top + 1, 4, top + 3, "h"); g.set(3, top + 1, "H"); g.set(2, top + 3, "d")
 
 
-def frame(facing, fr, small, hair="short", beard="none"):
+# Bodies: everyone has their own shape, the same one the battle art draws (src/art/bodies.ts).
+# torso and leg rows; front torso x0..x1; side torso x0..x1; leg columns (front); belly: a rounded middle.
+BODIES = {
+    "average": dict(torso=5, leg=5, front=(4, 11), side=(5, 10), legs=(5, 9)),
+    "slim":    dict(torso=5, leg=5, front=(5, 10), side=(6, 9), legs=(5, 9)),
+    "tall":    dict(torso=6, leg=5, front=(5, 10), side=(6, 9), legs=(5, 9)),
+    "broad":   dict(torso=5, leg=5, front=(3, 12), side=(4, 10), legs=(4, 10)),
+    "heavy":   dict(torso=5, leg=4, front=(3, 12), side=(5, 10), legs=(4, 10), belly=True),
+    "short":   dict(torso=4, leg=4, front=(4, 11), side=(5, 10), legs=(5, 9)),
+    "huge":    dict(torso=6, leg=5, front=(3, 12), side=(4, 11), legs=(4, 10)),
+    "small":   dict(torso=3, leg=2, front=(4, 11), side=(5, 10), legs=(5, 9)),
+}
+
+
+def frame(facing, fr, body, hair="short", beard="none"):
     """fr 0 stand; 1 contact (left foot forward), 2 passing (up), 3 contact (right foot), 4 passing (up)."""
     g = Grid()
-    torso = 3 if small else 5            # coat rows below the collar
-    leg = 2 if small else 5              # leg rows above the boots
+    B = BODIES[body]
+    torso, leg = B["torso"], B["leg"]   # coat rows below the collar; leg rows above the boots
+    tx0, tx1 = B["front"]; sx0, sx1 = B["side"]; L0, L1 = B["legs"]; belly = B.get("belly", False)
     bob = 1 if fr in (2, 4) else 0
     feet = 22                            # the boot soles sit on row 22
     hip = feet - 1 - leg                 # first leg row
@@ -117,11 +132,11 @@ def frame(facing, fr, small, hair="short", beard="none"):
 
     # ---- legs ----
     if not side:
-        for lx in (5, 9):
-            lift = 1 if (lx == 5 and swing < 0) or (lx == 9 and swing > 0) else 0
-            if fr in (2, 4): lift = 2 if (lx == 5) == (fr == 2) else 0
+        for lx in (L0, L1):
+            lift = 1 if (lx == L0 and swing < 0) or (lx == L1 and swing > 0) else 0
+            if fr in (2, 4): lift = 2 if (lx == L0) == (fr == 2) else 0
             y1 = feet - 1 - lift
-            g.rect(lx, hip - bob, lx + 1, y1 - 1, "l"); g.set(lx + (1 if lx == 5 else 0), hip - bob, "L")
+            g.rect(lx, hip - bob, lx + 1, y1 - 1, "l"); g.set(lx + (1 if lx == L0 else 0), hip - bob, "L")
             g.rect(lx, y1, lx + 1, y1 + 1, "b"); g.set(lx, y1, "B")
             if lift: g.rect(lx, y1 - 1, lx + 1, y1 - 1, "L")
     else:
@@ -138,21 +153,24 @@ def frame(facing, fr, small, hair="short", beard="none"):
 
     # ---- torso ----
     if not side:
-        g.rect(4, collar + 1, 11, collar + torso, "c")
-        g.rect(5, collar, 10, collar, "c")
+        g.rect(tx0, collar + 1, tx1, collar + torso, "c")
+        g.rect(tx0 + 1, collar, tx1 - 1, collar, "c")
         if facing == "down": g.rect(6, collar, 9, collar + 1, "r"); g.set(8, collar + 1, "R"); g.set(7, collar + 2, "R")
-        else: g.rect(5, collar, 10, collar, "r"); g.rect(6, collar + 2, 9, collar + 2, "C")
-        g.rect(4, collar + torso, 11, collar + torso, "C")         # belt / hem
+        else: g.rect(tx0 + 1, collar, tx1 - 1, collar, "r"); g.rect(6, collar + 2, 9, collar + 2, "C")
+        g.rect(tx0, collar + torso, tx1, collar + torso, "C")         # belt / hem
+        if belly and facing == "down": g.rect(6, collar + 3, 9, collar + torso - 1, "c"); g.rect(7, collar + torso - 1, 8, collar + torso - 1, "C")
         # arms over the body's edges, a darker line inside so they read apart from the coat; hands swing a pixel
-        for ax, inner, d in ((3, 4, -swing), (12, 11, swing)):
+        for ax, inner, d in ((tx0 - 1, tx0, -swing), (tx1 + 1, tx1, swing)):
             if facing == "up": d = -d
             y1 = collar + torso - max(0, d) + (1 if d < 0 else 0)
-            g.rect(ax, collar + 1, ax, y1 - 1, "c" if ax == 3 else "k"); g.rect(inner, collar + 1, inner, y1 - 1, "C" if ax == 3 else "k")
-            g.set(ax, y1, "s" if ax == 3 else "S")
+            left = ax < tx0
+            g.rect(ax, collar + 1, ax, y1 - 1, "c" if left else "k"); g.rect(inner, collar + 1, inner, y1 - 1, "C" if left else "k")
+            g.set(ax, y1, "s" if left else "S")
     else:
-        g.rect(5, collar + 1, 10, collar + torso, "c"); g.rect(6, collar, 9, collar, "c")
-        g.rect(8, collar, 10, collar, "r"); g.set(9, collar + 1, "r"); g.set(10, collar + 1, "R")
-        g.rect(5, collar + torso, 10, collar + torso, "C"); g.rect(5, collar + 1, 5, collar + torso, "C")
+        g.rect(sx0, collar + 1, sx1, collar + torso, "c"); g.rect(sx0 + 1, collar, sx1 - 1, collar, "c")
+        if belly: g.rect(sx1 + 1, collar + 2, sx1 + 1, collar + torso - 1, "c"); g.set(sx1 + 1, collar + torso - 1, "C")
+        g.rect(sx1 - 2, collar, sx1, collar, "r"); g.set(sx1 - 1, collar + 1, "r"); g.set(sx1, collar + 1, "R")
+        g.rect(sx0, collar + torso, sx1, collar + torso, "C"); g.rect(sx0, collar + 1, sx0, collar + torso, "C")
         reach = {0: 0, 1: 2, 2: 0, 3: -2, 4: 0}[fr]
         y0 = collar + 1
         for i in range(torso):
@@ -176,13 +194,13 @@ BEARDS = ["none", "full", "moustache"]
 def flip(rows): return [("".join(reversed(r.ljust(W, ".")))).rstrip(".") for r in rows]
 
 
-def sheet(small, hair="short", beard="none"):
-    return {f: [flip(frame("right", fr, small, hair, beard)) if f == "left" else frame(f, fr, small, hair, beard) for fr in range(5)] for f in FACINGS}
+def sheet(body, hair="short", beard="none"):
+    return {f: [flip(frame("right", fr, body, hair, beard)) if f == "left" else frame(f, fr, body, hair, beard) for fr in range(5)] for f in FACINGS}
 
 
 if __name__ == "__main__":
-    data = {"note": "Generated by tools/art/people.py. 16 x 24 frames: sets[size|hair|beard][facing][stand, walk 1-4].", "w": W, "h": H,
-            "sets": {f"{size}|{hair}|{beard}": sheet(size == "small", hair, beard) for size in ("adult", "small") for hair in HAIRS for beard in BEARDS}}
+    data = {"note": "Generated by tools/art/people.py. 16 x 24 frames: sets[body|hair|beard][facing][stand, walk 1-4]; children have no beards.", "w": W, "h": H,
+            "sets": {f"{body}|{hair}|{beard}": sheet(body, hair, beard) for body in BODIES for hair in HAIRS for beard in BEARDS if body != "small" or beard == "none"}}
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src", "art", "peopleFrames.json")
     with open(out, "w") as f: json.dump(data, f, separators=(",", ":"))
     if "--png" in sys.argv:
@@ -191,10 +209,12 @@ if __name__ == "__main__":
                "c": "#6b4a3a", "C": "#4f3428", "k": "#3e2a20", "w": "#efe6dc", "f": "#4a3a30", "p": "#4a5a34", "P": "#36432a", "r": "#c0452f", "R": "#8e2f20", "l": "#3b2e26", "L": "#2a201a", "b": "#221a15", "B": "#4a3a30"}
         S = 8
         combos = [("short", "none"), ("braid", "none"), ("bun", "none"), ("bald", "full"), ("cap", "none"), ("short", "moustache"), ("short", "full")]
-        img = Image.new("RGB", (W * 4 * S * 2 + 40, H * len(combos) * S), "#7fae5a")
-        for k, small in enumerate((False, True)):
+        bodies = list(BODIES)
+        img = Image.new("RGB", ((W * 4 * S + 40) * len(bodies), H * len(combos) * S), "#7fae5a")
+        for k, body in enumerate(bodies):
           for ci, (hair, beard) in enumerate(combos):
-            sh = sheet(small, hair, beard)
+            if body == "small" and beard != "none": continue
+            sh = sheet(body, hair, beard)
             for fi, f in enumerate(FACINGS):
                 for fr in (0,):
                     for y, r in enumerate(sh[f][fr]):

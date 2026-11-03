@@ -29,9 +29,13 @@ export class DialogueBox {
   cursor = 0;
   private optTexts: Text[] = [];
   private optBox = new Graphics();
+  /** A short note under a line, explaining a word the player meets for the first time. */
+  private noteBox = new Graphics();
+  private noteText = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#e8dcc0", wordWrap: true, wordWrapWidth: 600, lineHeight: 20 } });
+  private note: { name: string; note: string } | null = null;
 
   constructor(private voices: Voices, private buildFor: (id: string) => Build = () => EVEN) {
-    this.view.addChild(this.box, this.face, this.frame, this.name, this.body, this.optBox);
+    this.view.addChild(this.noteBox, this.noteText, this.box, this.face, this.frame, this.name, this.body, this.optBox);
     this.view.visible = false;
   }
 
@@ -63,8 +67,8 @@ export class DialogueBox {
     return i;
   }
 
-  show(line: Line): void {
-    this.line = line; this.shown = 0; this.time = 0;
+  show(line: Line, note?: { name: string; note: string }): void {
+    this.line = line; this.shown = 0; this.time = 0; this.note = note ?? null;
     this.voiced = this.voices.play(line.who, line.text);
     this.name.text = line.name;
     this.view.visible = true;
@@ -78,7 +82,9 @@ export class DialogueBox {
     this.close(); sfx.next(); return true;
   }
 
-  close(): void { this.line = null; this.view.visible = false; this.voices.stop(); }
+  close(): void { this.line = null; this.note = null; this.view.visible = false; this.voices.stop(); }
+  /** The note showing, if any (for tests). */
+  get noteShown(): string | null { return this.note ? this.note.name : null; }
 
   private screen = { w: 800, h: 600 };
   resize(w: number, h: number): void { this.screen = { w, h }; this.layout(); }
@@ -101,6 +107,15 @@ export class DialogueBox {
     this.name.x = tx; this.name.y = y + 14;
     this.body.x = tx; this.body.y = y + (this.line?.name ? 40 : 18); this.body.style.wordWrapWidth = x + bw - tx - 20;
     this.body.style.fontSize = narrow ? 16 : 18; this.body.style.lineHeight = narrow ? 22 : 26;
+    this.noteText.visible = this.noteBox.visible = !!this.note;
+    this.noteBox.clear();
+    if (this.note) {
+      this.noteText.style.wordWrapWidth = bw - 40; this.noteText.style.fontSize = narrow ? 13 : 15;
+      this.noteText.text = `${this.note.name}: ${this.note.note}  (J: all notes)`;
+      const nh = this.noteText.height + 16, ny = y - nh - 6;
+      this.noteBox.roundRect(x + 10, ny, bw - 20, nh, 8).fill({ color: 0x2a2416, alpha: 0.95 }).stroke({ color: 0xb89a5a, width: 1.5 });
+      this.noteText.x = x + 22; this.noteText.y = ny + 8;
+    }
     this.optTexts.forEach((t, i) => { t.x = tx + 18; t.y = y + bh - optH + i * (narrow ? 46 : 50); t.style.wordWrapWidth = x + bw - tx - 40; t.style.fontSize = narrow ? 15 : 17; });
   }
 
