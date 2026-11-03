@@ -44,3 +44,5 @@ Every spoken line in `data/maps` is recorded ahead of time with the Kokoro-82M v
 ## Portraits
 
 Painted anime portraits for the main cast (Rhea, Corran, Finch, Tamsin, Elder Maren, Elder Rook, Captain Halloran, Dr Lisle) are in `public/portraits`, made with Figma's image AI; the originals are in the Figma file "The Lull - portraits". They are listed in `public/portraits/index.json`, for example `{ "rhea": ["rhea.jpg"] }`, with an optional second, open-mouth image shown while the voice is loud; without one, a soft light swells with the voice. Characters with no painted portrait use a close-up of their HD battle figure.
+
+The recruitable cast (53 characters: party, army commanders and Thornwick staff) is in `data/cast/recruits.json`, typed by `src/cast/recruits.ts`, with who they are, how they join and a short look description. Every recruit has a portrait; a unit test fails if one is missing. To paint a new one in the same style, print its prompt with `node tools/portraits/prompt.mjs <id>`. Some portraits are still 256px previews; replacing them with 512px versions from the Figma file needs no code change.
