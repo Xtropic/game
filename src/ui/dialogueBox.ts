@@ -2,6 +2,7 @@
 // typed out. Plays the line's recording; the portrait's mouth follows the recording's loudness.
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { drawPortrait, hasPortrait } from "../art/portraits";
+import { EVEN, type Build } from "../art/build";
 import type { Voices } from "../audio/voice";
 import type { Line } from "../world/lines";
 
@@ -23,7 +24,7 @@ export class DialogueBox {
   private voiced = false;
   private size = 132; // portrait size in CSS pixels
 
-  constructor(private voices: Voices) {
+  constructor(private voices: Voices, private buildFor: (id: string) => Build = () => EVEN) {
     this.view.addChild(this.box, this.face, this.frame, this.name, this.body);
     this.view.visible = false;
   }
@@ -84,7 +85,7 @@ export class DialogueBox {
     const typing = this.shown < this.line.text.length;
     // mouth: the recording's loudness, or a simple flap while typing a line with no recording
     const talk = this.voiced ? this.voices.level() : typing ? 0.25 + 0.5 * Math.abs(Math.sin(this.time * 14)) : 0;
-    drawPortrait(this.g, this.line.who, this.cv.width, this.time + 0.5, talk);
+    drawPortrait(this.g, this.line.who, this.cv.width, this.time + 0.5, talk, this.buildFor(this.line.who));
     this.tex.source.update();
   }
 }

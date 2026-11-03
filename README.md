@@ -51,6 +51,13 @@ Each character keeps one keepsake weapon (`data/gear/weapons.json`, `src/gear/we
 
 Kith (`data/kith/species.json`, `src/kith/kith.ts`): 8 families of 3 base species, 16 hybrids, 12 unseen kith with hidden breeding recipes, and 4 legends; 40 traits, six temperaments, colour strains. Kith use people's seven attributes, scaled by 1 to 5 star potential per attribute, level to 50 through four life stages, and breed with inherited potential, traits (the bone sickness is recessive), moves and temperament.
 
+
+### Raising kith, and looks that follow attributes
+
+Players never assign kith points. A kith is steered by how it is raised (`data/kith/upbringing.json`, `src/kith/upbringing.ts`): feed, pen, work, its handler and what it does in battle all pull on its attributes as habits. At each level up a share of growth follows the habits and is taken from what they pull against (`shapeLevel` in `src/kith/kith.ts`), capped by potential (`shapeCap`) and floored at `SHAPE_FLOOR`. Habits fade each level, so changing a kith's life changes its direction. Temperament scales how fast it can be steered. The game describes the direction in words (`readKith`), never numbers.
+
+Looks follow attributes (`src/art/build.ts`). `buildOf` turns attributes into a build (bulk, brawn, reach, poise, keen, warmth, bearing, wear, lull rings, the raw), measured against a baseline: a kith against itself unsteered, a person against who they were at the start. Battle figures and kith are drawn from the build. Painted portraits pick the most specific variant that exists (`<id>@raw`, `@ringed`, `@hardened`, `@heavy`, `@lean`, then `<id>`); without a raw variant the plain portrait is drained of colour. Character mods come from the flags `mods.<id>` (for example `"lull"`) and `rings.<id>`. Ash is a real kith from the start (save version 4 stores kith) and learns from each battle it fights. `__lull.looks()` returns a sheet of example builds.
+
 ## Portraits
 
 Painted anime portraits for the main cast (Rhea, Corran, Finch, Tamsin, Elder Maren, Elder Rook, Captain Halloran, Dr Lisle) are in `public/portraits`, made with Figma's image AI; the originals are in the Figma file "The Lull - portraits". They are listed in `public/portraits/index.json`, for example `{ "rhea": ["rhea.jpg"] }`, with an optional second, open-mouth image shown while the voice is loud; without one, a soft light swells with the voice. Characters with no painted portrait use a close-up of their HD battle figure.

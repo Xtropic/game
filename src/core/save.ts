@@ -1,7 +1,8 @@
+import type { Kith } from "../kith/kith";
 // Saves: versioned JSON in slots. Storage is injected so tests can run without a browser.
 export interface KV { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void; }
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 export const SLOTS = ["auto", "1", "2", "3"] as const;
 export type Slot = (typeof SLOTS)[number];
 
@@ -16,6 +17,8 @@ export interface SaveData {
   /** Each character's keepsake weapon tier, branch and fittings. */
   gear: Record<string, { tier: number; branch?: string; work?: string; charm?: string }>;
   coin: number;
+  /** Owned kith, with how they have been raised (habits) and what it has done to them (shaped). */
+  kith: Record<string, Kith>;
 }
 
 export interface SaveSummary { slot: Slot; savedAt: string; playSeconds: number; map: string; }
@@ -28,6 +31,7 @@ export function migrate(raw: { version?: number } & Record<string, unknown>): Sa
   if (v < 1) { d.flags = d.flags ?? {}; d.playSeconds = d.playSeconds ?? 0; d.version = 1; }
   if ((d.version as number) < 2) { d.party = {}; d.version = 2; }
   if ((d.version as number) < 3) { d.gear = {}; d.coin = 0; d.version = 3; }
+  if ((d.version as number) < 4) { d.kith = {}; d.version = 4; } // the game adds Ash when a save has none
   return d as unknown as SaveData;
 }
 

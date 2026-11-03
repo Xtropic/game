@@ -2,6 +2,7 @@
 // Kith share people's seven attributes (for kith, heart is loyalty and bond, presence is bearing), so the same
 // battle, army and check formulas in src/cast/attributes.ts work for both.
 import data from "../../data/kith/species.json";
+import raising from "../../data/kith/upbringing.json";
 import { ATTRS, type Attrs } from "../cast/attributes";
 
 export type Kind = "base" | "hybrid" | "unseen" | "legend";
@@ -33,6 +34,10 @@ export interface Kith {
   /** Wearing a wild lull: calmer, dulled. */
   lull?: boolean;
   generation: number;
+  /** How it has been raised lately (feed, work, pen, battles, handler), in ATTRS order. See upbringing.ts. */
+  habits?: number[];
+  /** Points its upbringing has added or taken away, in ATTRS order; whole points count. Capped by potential. */
+  shaped?: number[];
 }
 
 /** The families a species belongs to (two for a hybrid). */
@@ -56,7 +61,7 @@ export const stageOf = (level: number): Stage => (level < 10 ? "foal" : level < 
 export function kithAttrs(k: Kith): Attrs {
   const g = growthOf(k.species), stage = stageOf(k.level), out = {} as Attrs;
   ATTRS.forEach((a, i) => {
-    let v = 4 + Math.floor(g[i] * (0.7 + 0.1 * k.potential[i]) * (k.level - 1) + 1e-9) + (k.trained[i] ?? 0);
+    let v = 4 + Math.floor(g[i] * (0.7 + 0.1 * k.potential[i]) * (k.level - 1) + 1e-9) + (k.trained[i] ?? 0) + Math.trunc((k.shaped?.[i] ?? 0) + 1e-9);
     if (stage === "elder") v += a === "wits" || a === "heart" ? Math.floor((k.level - 39) / 3) : a === "might" || a === "finesse" ? -Math.floor((k.level - 39) / 4) : 0;
     if (k.traits.includes("heavy-frame")) v += a === "might" || a === "grit" ? 2 : a === "finesse" ? -2 : 0;
     if (k.traits.includes("deep-chest") && a === "grit") v += 2;
@@ -68,13 +73,39 @@ export function kithAttrs(k: Kith): Attrs {
   return out;
 }
 
+/** What the kith would be at its level if nobody had steered or drilled it: the baseline its looks change from. */
+export const kithBaseline = (k: Kith): Attrs => kithAttrs({ ...k, shaped: undefined, trained: ATTRS.map(() => 0), lull: false });
+
 /** Training cap for an attribute: more stars, more room to train. */
 export const trainCap = (stars: number): number => 2 + stars * 2;
+
+/** How far upbringing can push an attribute: up to this many points, and down to SHAPE_FLOOR. */
+export const shapeCap = (stars: number): number => 2 + stars * 2;
+export const SHAPE_FLOOR = -4;
+const R = raising as unknown as { shapePerLevel: number; decay: number; temperamentBias: Record<string, number[]> };
+
+/**
+ * One level of growth following the kith's habits: a share of growth goes where its upbringing pulls, a
+ * little is taken from what it pulls against, then the habits fade so recent life matters most.
+ * An unsteered kith (no habits) grows exactly as its species and potential say.
+ */
+export function shapeLevel(k: Kith): void {
+  const h = (k.habits ?? ATTRS.map(() => 0)).map((x, i) => x + (R.temperamentBias[k.temperament]?.[i] ?? 0));
+  const pos = h.map((x) => Math.max(0, x)), neg = h.map((x) => Math.max(0, -x));
+  const sp = pos.reduce((a, b) => a + b, 0), sn = neg.reduce((a, b) => a + b, 0);
+  const shaped = k.shaped ?? ATTRS.map(() => 0);
+  if (sp + sn > 0.5) ATTRS.forEach((_, i) => {
+    const d = R.shapePerLevel * (pos[i] / (sp || 1)) - 0.5 * R.shapePerLevel * (neg[i] / (sp + sn));
+    shaped[i] = Math.max(SHAPE_FLOOR, Math.min(shapeCap(k.potential[i]), shaped[i] + d));
+  });
+  k.shaped = shaped;
+  if (k.habits) k.habits = k.habits.map((x) => x * R.decay);
+}
 
 export const kithXpToNext = (level: number): number => 30 + 15 * level;
 export function addKithXp(k: Kith, amount: number): number[] {
   const levels: number[] = []; k.xp += Math.max(0, Math.round(amount));
-  while (k.level < MAX_KITH_LEVEL && k.xp >= kithXpToNext(k.level)) { k.xp -= kithXpToNext(k.level); k.level++; levels.push(k.level); }
+  while (k.level < MAX_KITH_LEVEL && k.xp >= kithXpToNext(k.level)) { k.xp -= kithXpToNext(k.level); k.level++; shapeLevel(k); levels.push(k.level); }
   if (k.level >= MAX_KITH_LEVEL) k.xp = 0;
   return levels;
 }

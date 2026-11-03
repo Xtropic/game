@@ -1,0 +1,59 @@
+{
+  "note": "How a kith is raised steers how it grows. Each source pulls on attributes in ATTRS order (might, grit, finesse, nerve, wits, heart, presence). Pulls build up as habits; at every level up a share of growth follows the habits. The player never spends points: they choose what the kith eats, where it sleeps, what work it does, who tends it and how it fights.",
+  "shapePerLevel": 0.6,
+  "decay": 0.82,
+  "temperament": { "bold": 1, "gentle": 1, "stubborn": 0.65, "skittish": 1.1, "proud": 0.85, "curious": 1.25 },
+  "temperamentBias": {
+    "bold": [0.2, 0, 0, 0.3, 0, 0, 0],
+    "gentle": [0, 0, 0, 0, 0, 0.4, 0],
+    "stubborn": [0, 0.3, 0, 0.2, 0, 0, 0],
+    "skittish": [0, 0, 0.4, -0.2, 0.1, 0, 0],
+    "proud": [0, 0, 0, 0, 0, 0, 0.4],
+    "curious": [0, 0, 0, 0, 0.4, 0, 0]
+  },
+  "sources": {
+    "feed:grain-mash":   { "kind": "feed", "name": "Grain mash", "pull": [1, 0.6, -0.6, 0, 0, 0, 0], "hint": "cheap and heavy; builds bulk, slows the feet" },
+    "feed:marrow-broth": { "kind": "feed", "name": "Marrow broth", "pull": [0.5, 1, 0, 0.2, 0, 0, 0], "hint": "for hard bones and long marches" },
+    "feed:river-fish":   { "kind": "feed", "name": "River fish", "pull": [0, 0, 0.8, 0, 0.6, 0, 0], "hint": "keeps them quick and sharp" },
+    "feed:cloudberries": { "kind": "feed", "name": "Cloudberries", "pull": [-0.3, 0, 0.7, 0, 0, 0.6, 0], "hint": "light food; lean and sweet-natured" },
+    "feed:salt-lick":    { "kind": "feed", "name": "Salt lick", "pull": [0, 0.6, 0, 0.8, 0, 0, 0], "hint": "steady nerves, tough hide" },
+    "feed:bitterleaf":   { "kind": "feed", "name": "Bitterleaf", "pull": [0, 0, 0, 0, 1, -0.4, 0.2], "hint": "sharpens the mind, sours the temper" },
+    "feed:honeycake":    { "kind": "feed", "name": "Honeycake", "pull": [0, -0.3, 0, 0, 0, 1, 0.3], "hint": "a treat; soft, glossy and loyal" },
+    "feed:lean-rations": { "kind": "feed", "name": "Lean rations", "pull": [-0.5, -0.3, 0.6, 0.4, 0, -0.2, 0], "hint": "what an army can spare; wiry and wary" },
+    "feed:glowmoss":     { "kind": "feed", "name": "Glowmoss", "pull": [0, 0, 0, 0, 0.5, 0, 0.8], "hint": "rare; they carry themselves differently after" },
+
+    "work:haul":   { "kind": "work", "name": "Hauling", "pull": [1, 0.8, -0.3, 0, 0, 0, 0], "hint": "carts, timber and stone" },
+    "work:dig":    { "kind": "work", "name": "Digging", "pull": [0.9, 0.6, 0, 0, 0.2, 0, -0.2], "hint": "trenches, wells and tunnels" },
+    "work:scout":  { "kind": "work", "name": "Scouting", "pull": [0, 0, 0.8, 0.2, 0.8, 0, 0], "hint": "ranging ahead of the column" },
+    "work:run":    { "kind": "work", "name": "Running messages", "pull": [0, 0.5, 1, 0, 0.2, 0, 0], "hint": "long legs, long wind" },
+    "work:guard":  { "kind": "work", "name": "Standing guard", "pull": [0.2, 0.6, 0, 1, 0, 0, 0.2], "hint": "nights at the gate" },
+    "work:herd":   { "kind": "work", "name": "Leading the herd", "pull": [0, 0, 0, 0.5, 0, 0.2, 1], "hint": "the others start to follow it" },
+    "work:tend":   { "kind": "work", "name": "Tending the sick", "pull": [-0.2, 0, 0, 0.2, 0, 1, 0], "hint": "lying beside the hurt in the infirmary" },
+    "work:show":   { "kind": "work", "name": "Fairs and shows", "pull": [0, 0, 0.3, 0, 0, 0, 1], "hint": "crowds, ribbons, being looked at" },
+    "work:rest":   { "kind": "work", "name": "Resting", "pull": [0, 0, 0, 0, 0, 0.3, 0], "hint": "no pull either way; habits fade" },
+
+    "pen:high-loft":   { "kind": "pen", "name": "High loft", "pull": [0, 0, 0.5, 0.5, 0, 0, 0], "hint": "wind and drop on every side" },
+    "pen:cold-yard":   { "kind": "pen", "name": "Cold yard", "pull": [0, 0.7, 0, 0.2, 0, -0.2, 0], "hint": "winters outside" },
+    "pen:warm-byre":   { "kind": "pen", "name": "Warm byre", "pull": [0, -0.3, 0, 0, 0, 0.7, 0], "hint": "straw, lamps and company" },
+    "pen:forge-yard":  { "kind": "pen", "name": "Beside the forge", "pull": [0.2, 0.2, 0, 0.7, 0, 0, 0], "hint": "noise, sparks and heat every day" },
+    "pen:quiet-field": { "kind": "pen", "name": "Quiet field", "pull": [0, 0, 0, -0.2, 0.5, 0.5, 0], "hint": "grass, sky and time to think" },
+    "pen:mire-pool":   { "kind": "pen", "name": "Mire pool", "pull": [0, 0.4, 0.4, 0, 0.2, 0, 0], "hint": "water up to the belly" },
+
+    "battle:strike": { "kind": "battle", "name": "Fighting", "pull": [0.8, 0.2, 0.3, 0.2, 0, 0, 0], "hint": "every blow it lands" },
+    "battle:cover":  { "kind": "battle", "name": "Covering its partner", "pull": [0, 0.8, 0, 0.8, 0, 0.3, 0], "hint": "every hit it takes for someone" },
+    "battle:struck": { "kind": "battle", "name": "Being hurt", "pull": [0, 0.5, 0, 0.2, 0, -0.1, 0], "hint": "scars and caution" },
+    "battle:call":   { "kind": "battle", "name": "Answering the Call", "pull": [0.2, 0, 0, 0.2, 0, 0.4, 0.6], "hint": "the big moment, with everyone watching" },
+
+    "lull:wild":     { "kind": "lull", "name": "A wild lull", "pull": [0, 0, -0.3, 0.6, -0.5, -0.6, 0], "hint": "calm on the outside; the light goes out of its eyes" }
+  },
+  "handler": { "note": "Whoever tends a kith rubs off on it: their two highest attributes pull at this strength, and their heart raises bond.", "pull": 0.35 },
+  "hints": {
+    "might":    ["is filling out through the shoulders", "has gone thin through the shoulders"],
+    "grit":     ["has a thicker hide and heavier bones", "looks a little frail"],
+    "finesse":  ["is lighter on its feet", "has gone heavy-footed"],
+    "nerve":    ["no longer flinches at noise", "startles at every noise"],
+    "wits":     ["watches everything", "seems dull and slow to notice"],
+    "heart":    ["leans into whoever tends it", "has turned cold and hard to reach"],
+    "presence": ["carries its head high; the others give way", "keeps to the back of the pen"]
+  }
+}

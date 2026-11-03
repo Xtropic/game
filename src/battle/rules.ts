@@ -13,6 +13,7 @@
 
 import { NEUTRAL, attrsAt, party, person, type Attrs } from "../cast/attributes";
 import { gearTiming, weaponPower, withGear, type Loadout } from "../gear/weapons";
+import { kithAttrs, type Kith } from "../kith/kith";
 
 export type Side = "ally" | "foe";
 export type Row = "front" | "back";
@@ -56,6 +57,8 @@ export interface BattleState {
   resolve: number; // foes' nerve, 0..100
   routed: boolean; // won by breaking their nerve, with foes still standing
   log: string[];
+  /** What each unit did, for what a kith learns from the fight: strike, cover, struck, call. */
+  deeds: Record<string, Record<string, number>>;
 }
 
 export type BattleEvent =
@@ -88,15 +91,17 @@ export function gradePress(offset: number, widen = 1): Grade {
 }
 
 /** `levels` overrides cast members' levels (the party's current levels from the save). */
-export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}): BattleState {
+/** `kith` gives owned kith (by unit id) their real attributes and level, as they have been raised. */
+export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}, kith: Record<string, Kith> = {}): BattleState {
   const units: Unit[] = def.units.map((u) => {
-    const level = (u.cast && levels[u.cast]) || u.level || (u.cast ? person(u.cast)?.level : undefined) || 1;
+    const owned = u.kith ? kith[u.id] : undefined;
+    const level = owned?.level || (u.cast && levels[u.cast]) || u.level || (u.cast ? person(u.cast)?.level : undefined) || 1;
     const kit = u.cast ? gear[u.cast] : undefined;
-    const stats = u.cast ? (kit ? withGear(attrsAt(u.cast, level), kit) : attrsAt(u.cast, level)) : null;
+    const stats = owned ? kithAttrs(owned) : u.cast ? (kit ? withGear(attrsAt(u.cast, level), kit) : attrsAt(u.cast, level)) : null;
     const hp = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
     return { ...u, hp, maxHp: hp, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
   });
-  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro] };
+  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {} };
   planIntents(s, book, rng);
   return s;
 }
@@ -165,6 +170,8 @@ function damage(book: SkillBook, u: Unit, k: string, t: Unit, g: Grade, rng: Rng
   return { amt: Math.round(roll(rng, book[k].dmg ?? [1, 1]) * m), tags };
 }
 
+function deed(s: BattleState, id: string, kind: string): void { const d = (s.deeds[id] ??= {}); d[kind] = (d[kind] ?? 0) + 1; }
+
 /** Deals damage, applying a kith's cover or a guard. Returns the unit actually hit. */
 function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[], ev: BattleEvent[]): Unit {
   let t = target, redirected: "cover" | "guard" | undefined;
@@ -172,6 +179,7 @@ function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[]
   if (k && !k.covered && by.side === "foe") { k.covered = true; t = k; redirected = "cover"; s.log.push(`${k.name} shoulders in front of ${target.name} and takes the blow.`); }
   else if (t.guardedBy) { const gd = unit(s, t.guardedBy); if (alive(gd)) { t = gd; redirected = "guard"; s.log.push(`${gd.name} takes the blow for ${target.name}.`); } }
   t.hp = Math.max(0, t.hp - amt);
+  deed(s, by.id, "strike"); deed(s, t.id, redirected === "cover" ? "cover" : "struck");
   ev.push({ t: "hit", by: by.id, target: t.id, amt, tags, redirected, was: redirected ? target.id : undefined });
   if (t.side === "foe") s.resolve = Math.max(0, s.resolve - amt * 1.05 * party.shake(statsOf(by)) - (t.hp === 0 ? 15 : 0));
   s.log.push(`${by.name} hits ${t.name} for ${amt}.${t.hp === 0 ? ` ${t.name} goes down.` : ""}`);
@@ -230,7 +238,7 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
     }
     case "call": {
       const kin = kithOf(s, u); if (!kin) break;
-      s.bond = 0; ev.push({ t: "call", by: u.id, kith: kin.id }); s.log.push(`${u.name} calls. ${kin.name} comes.`);
+      s.bond = 0; deed(s, kin.id, "call"); ev.push({ t: "call", by: u.id, kith: kin.id }); s.log.push(`${u.name} calls. ${kin.name} comes.`);
       const line = targetsFor(s, book, u, "call");
       line.forEach((t2, i) => { if (!alive(t2)) return; const d = damage(book, kin, "call", t2, g, rng); hit(s, kin, t2, d.amt, i === 0 ? ["Call", ...d.tags] : d.tags, ev); });
       break;

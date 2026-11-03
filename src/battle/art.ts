@@ -2,6 +2,7 @@
 // at full resolution as clean cel-shaded figures (about 6 heads tall, small heads, equal realistic eyes, fine outlines).
 // Everything is laid out in 256 x 144 "stage units"; setScale() sets how many screen pixels one unit is.
 import { BAYER4, dither, hash2, makeCanvas, px } from "../art/pixel";
+import { EVEN, type Build } from "../art/build";
 
 export const CW = 256, CH = 144;
 let K = 4;
@@ -60,20 +61,24 @@ function limb(g: CanvasRenderingContext2D, pts: number[], w: number, col: string
 }
 function ell(g: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, col: string, rot = 0) { g.fillStyle = col; g.beginPath(); g.ellipse(x, y, Math.max(0, rx), Math.max(0, ry), rot, 0, 7); g.fill(); }
 
-/** A person, feet at (x, y) in stage units, facing right unless flipped. */
-export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: number, o: Pose): void {
-  const P0 = CAST[id], t = o.t;
-  const run = o.run ? Math.sin(o.run) : 0, lean = o.run ? 0.14 : o.lunge ? 0.22 : o.brace ? -0.08 : 0;
-  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 : Math.sin(t * 2.2) * 0.25;
+const grey = (hex: string, amt: number): string => { const n = parseInt(hex.slice(1), 16), r = n >> 16, gg = (n >> 8) & 255, b = n & 255, m = (r + gg + b) / 3; const f = (c: number) => Math.round(c + (m - c) * amt).toString(16).padStart(2, "0"); return `#${f(r)}${f(gg)}${f(b)}`; };
+
+/** A person, feet at (x, y) in stage units, facing right unless flipped. `b` is the build their attributes give. */
+export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
+  const base = CAST[id], t = o.t;
+  const P0 = b.raw ? { ...base, skin: shadeHex(grey(base.skin, 0.45), 0.04), skinS: grey(base.skinS, 0.45) } : base;
+  const run = o.run ? Math.sin(o.run) : 0, lean = (o.run ? 0.14 : o.lunge ? 0.22 : o.brace ? -0.08 : 0) - 0.05 * b.bearing + (b.raw ? 0.09 : 0);
+  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
+  const wx = 1 + 0.11 * b.bulk, tallY = 1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0), thick = 1 + 0.22 * b.brawn - 0.1 * b.reach;
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
   ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
   if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha = 1 - o.fall * 0.25; }
   g.translate(0, bob); g.rotate(lean);
   const hipY = -13, sh = -21.5;
-  g.scale(0.9, 1.4);
+  g.scale(0.9 * wx, 1.4 * tallY);
   const leg = (sw: number, near: boolean) => {
     const kx = Math.sin(sw) * 6, fx = Math.sin(sw) * 7.5 + (o.brace ? (near ? 3 : -3) : 0), knee = [kx * 0.55 + (near ? 0.8 : -0.6), hipY + 6.5 - Math.abs(sw) * 0.6], foot = [fx * 0.8 + (near ? 0.8 : -0.6), -1.3 - (sw < 0 && o.run ? 1.5 : 0)];
-    limb(g, [near ? 0.8 : -0.6, hipY, knee[0], knee[1], foot[0], foot[1]], 2.5, near ? P0.pants : shadeHex(P0.pants, -0.25));
+    limb(g, [near ? 0.8 : -0.6, hipY, knee[0], knee[1], foot[0], foot[1]], 2.5 * thick, near ? P0.pants : shadeHex(P0.pants, -0.25));
     g.save(); g.translate(foot[0], foot[1] + 0.6); ell(g, 0.8, 0, 2, 1.05, INK); ell(g, 0.8, -0.15, 1.6, 0.8, near ? P0.boot : shadeHex(P0.boot, -0.3)); g.restore();
   };
   leg(-run * 0.9 - (o.lunge ? 0.5 : 0), false); leg(run * 0.9 + (o.lunge ? 0.7 : 0), true);
@@ -87,7 +92,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
     else if (o.run) { const a = (near ? 1 : -1) * Math.sin(o.run) * 3; el = [a * 0.6 + (near ? 1 : -1), -17.5]; hd = [a + 1.2, -14.5]; }
     else { el = near ? [2.6, -16.8] : [-2, -16.8]; hd = near ? [3.6, -13.3] : [-1.6, -13.2]; }
     const shx = near ? 1.8 : -1.4, col = near ? P0.coat : P0.coatS;
-    limb(g, [shx, sh + 0.8, el[0], el[1], hd[0], hd[1]], 2.1, col);
+    limb(g, [shx, sh + 0.8, el[0], el[1], hd[0], hd[1]], 2.1 * thick, col);
     ell(g, hd[0], hd[1], 1.05, 1.05, INK); ell(g, hd[0], hd[1], 0.8, 0.8, near ? P0.skin : P0.skinS);
     return hd;
   };
@@ -104,8 +109,9 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   if (P0.lantern) { const lx = 3.8, ly = -12; const lg = g.createRadialGradient(lx, ly, 0.3, lx, ly, 7); lg.addColorStop(0, "rgba(255,210,120,.55)"); lg.addColorStop(1, "rgba(255,210,120,0)"); g.fillStyle = lg; g.fillRect(lx - 7, ly - 7, 14, 14); g.fillStyle = INK; g.fillRect(lx - 0.9, ly - 1.4, 1.8, 2.8); g.fillStyle = "#ffd27a"; g.fillRect(lx - 0.6, ly - 1, 1.2, 2); }
   g.fillStyle = P0.skinS; g.fillRect(-0.9, -23.4, 2, 2.4);
   if (P0.scarf) { const fl = Math.sin(t * 5) * 0.8 + (o.run ? 1.5 : 0); g.beginPath(); g.moveTo(-2.6, -22); g.quadraticCurveTo(-5 - fl, -21, -7.5 - fl, -18.5 + Math.sin(t * 6)); g.lineTo(-6.6 - fl, -17.6); g.quadraticCurveTo(-4.4, -19.6, -2.4, -20.4); g.closePath(); inkPath(g, shadeHex(P0.scarf, -0.15), 0.35); g.beginPath(); g.ellipse(0, -21.6, 3.3, 1.35, 0, 0, 7); inkPath(g, P0.scarf, 0.4); }
+  if (b.rings > 0) { g.lineWidth = 0.22; g.strokeStyle = "rgba(150,60,60,.75)"; for (let i = 0; i < Math.min(6, b.rings); i++) { g.beginPath(); g.ellipse(0.1, -21.9 - i * 0.42, 1.15, 0.26, 0, 0.15, Math.PI - 0.15); g.stroke(); } }
   // head: smaller and undistorted, on top of the neck
-  g.save(); g.translate(0, -23); g.scale(0.62 / 0.9, 0.62 / 1.4); g.translate(0, 23.6);
+  g.save(); g.translate(0, -23); g.scale(0.62 / (0.9 * wx), 0.62 / (1.4 * tallY)); g.translate(0, 23.6);
   const hx = 0.6, hy = -28;
   if (P0.style === "bun") { g.beginPath(); g.arc(-2.6, -32.6, 2.2, 0, 7); inkPath(g, P0.hair); ell(g, -3.2, -33.4, 0.9, 0.5, P0.hairL, -0.5); }
   g.beginPath(); g.moveTo(hx - 4.3, hy - 0.5); g.bezierCurveTo(hx - 4.6, hy - 6.4, hx + 4.8, hy - 6.4, hx + 4.4, hy - 0.5); g.quadraticCurveTo(hx + 4.3, hy + 2.6, hx + 2.2, hy + 4.6); g.quadraticCurveTo(hx + 0.9, hy + 5.3, hx - 0.6, hy + 4.2); g.quadraticCurveTo(hx - 3.8, hy + 2.4, hx - 4.3, hy - 0.5); g.closePath(); inkPath(g, P0.skin, 0.4);
@@ -125,17 +131,22 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
     if (P0.lash) { const sd = ex > hx ? 1 : -1, ox = ex + sd * w * 1.02; g.lineWidth = 0.3; g.beginPath(); g.moveTo(ox, eyeY - h * (sd > 0 ? 0.74 : 0.5)); g.lineTo(ox + sd * w * 0.38, eyeY - h * (sd > 0 ? 0.98 : 0.78)); g.stroke(); }
     g.lineWidth = 0.16; g.strokeStyle = shadeHex(P0.skinS, -0.35); g.beginPath(); g.moveTo(ex - w * 0.4, eyeY + h * 0.92); g.quadraticCurveTo(ex + w * 0.3, eyeY + h * 1.02, ex + w * 0.85, eyeY + h * 0.55); g.stroke();
   };
-  eye(hx + 1.85, 0.98, 0.78); eye(hx - 1.75, 0.98, 0.78);
+  const eh = 0.78 * (1 - 0.15 * b.keen);
+  if (b.raw) { ell(g, hx + 1.9, eyeY + 1.05, 1.1, 0.42, "rgba(70,50,80,.32)"); ell(g, hx - 1.7, eyeY + 1.05, 1.1, 0.42, "rgba(70,50,80,.32)"); }
+  eye(hx + 1.85, 0.98, eh); eye(hx - 1.75, 0.98, eh);
   const angry = id === "warden" || id === "archer" || o.lunge;
   g.strokeStyle = shadeHex(P0.hair, -0.2); g.lineWidth = 0.32;
-  for (const bx of [hx + 1.85, hx - 1.75]) { g.beginPath(); g.moveTo(bx - 1, eyeY - 2.5 + (angry ? -0.3 : 0)); g.quadraticCurveTo(bx, eyeY - 2.9, bx + 1, eyeY - 2.4 + (angry ? 0.5 : -0.1)); g.stroke(); }
+  const browY = eyeY + 0.3 * b.keen - 0.2 * b.warmth;
+  for (const bx of [hx + 1.85, hx - 1.75]) { g.beginPath(); g.moveTo(bx - 1, browY - 2.5 + (angry ? -0.3 : 0)); g.quadraticCurveTo(bx, browY - 2.9 - 0.15 * b.warmth, bx + 1, browY - 2.4 + (angry ? 0.5 : -0.1)); g.stroke(); }
   g.lineWidth = 0.3; g.strokeStyle = shadeHex(P0.skinS, -0.25); g.beginPath(); g.moveTo(hx + 0.15, eyeY + 1.2); g.lineTo(hx + 0.4, eyeY + 1.8); g.lineTo(hx - 0.05, eyeY + 1.95); g.stroke();
   g.lineWidth = 0.35; g.strokeStyle = "#7a3a30"; g.beginPath();
   if (o.talk && o.talk > 0.05) { const op = 0.15 + o.talk * 0.55; g.ellipse(hx + 0.1, eyeY + 3.05 + op * 0.3, 0.55 + (1 - o.talk) * 0.1, op * 0.55, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); }
   else if (o.lunge || o.brace || o.shout || o.cast) { g.ellipse(hx + 0.1, eyeY + 3.05, 0.6, 0.45, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); } else { g.moveTo(hx - 0.5, eyeY + 3.05); g.quadraticCurveTo(hx + 0.1, eyeY + 3.25, hx + 0.7, eyeY + 3); }
   g.stroke();
   if (id === "maren") { g.lineWidth = 0.18; g.strokeStyle = "rgba(90,60,50,.45)"; for (const d of [1, -1]) { const bx = hx + d * 1.8; g.beginPath(); g.moveTo(bx + d * 1.1, eyeY + 0.1); g.lineTo(bx + d * 1.6, eyeY + 0.5); g.stroke(); } g.beginPath(); g.moveTo(hx - 0.9, eyeY + 2.4); g.quadraticCurveTo(hx - 1.4, eyeY + 3, hx - 1.1, eyeY + 3.6); g.moveTo(hx + 1.1, eyeY + 2.4); g.quadraticCurveTo(hx + 1.6, eyeY + 3, hx + 1.3, eyeY + 3.6); g.stroke(); }
-  if (id === "rhea" || id === "tamsin") { ell(g, hx + 2.3, eyeY + 1.9, 0.7, 0.28, "rgba(220,120,110,.12)"); ell(g, hx - 2.2, eyeY + 1.9, 0.7, 0.28, "rgba(220,120,110,.12)"); }
+  const blush = b.raw ? 0 : (id === "rhea" || id === "tamsin" ? 0.12 : 0) + Math.max(0, b.warmth) * 0.1;
+  if (blush > 0.01) { ell(g, hx + 2.3, eyeY + 1.9, 0.7, 0.28, `rgba(220,120,110,${blush.toFixed(3)})`); ell(g, hx - 2.2, eyeY + 1.9, 0.7, 0.28, `rgba(220,120,110,${blush.toFixed(3)})`); }
+  if (b.worn > 0.4) { g.lineWidth = 0.2; g.strokeStyle = `rgba(120,70,60,${(0.25 + b.worn * 0.4).toFixed(2)})`; g.beginPath(); g.moveTo(hx + 3.1, eyeY + 0.4); g.lineTo(hx + 2.5, eyeY + 2.4); g.stroke(); }
   if (P0.style === "helm") {
     g.beginPath(); g.moveTo(hx - 5, hy - 1); g.bezierCurveTo(hx - 5.2, hy - 7.6, hx + 5.4, hy - 7.6, hx + 5.2, hy - 1); g.lineTo(hx + 6.4, hy - 0.4); g.lineTo(hx - 5.8, hy - 0.4); g.closePath(); inkPath(g, "#8e959b");
     g.save(); g.clip(); g.fillStyle = "#6a7076"; g.fillRect(hx - 6, hy - 8, 4.2, 8); g.fillStyle = "rgba(255,255,255,.45)"; g.beginPath(); g.ellipse(hx + 1.6, hy - 5.2, 2.2, 0.6, -0.3, 0, 7); g.fill(); g.restore();
@@ -156,34 +167,43 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   g.restore();
 }
 
-/** Ash, the bonded kith: a sturdy horned grazer with a pack. */
-export function drawAsh(g: CanvasRenderingContext2D, x: number, y: number, o: Pose): void {
-  const t = o.t, gait = o.run || 0, bob = o.run ? -Math.abs(Math.sin(gait)) * 1.4 : Math.sin(t * 1.8) * 0.2;
+/** Ash, the bonded kith: a sturdy horned grazer with a pack. Its build follows how it has been raised. */
+export function drawAsh(g: CanvasRenderingContext2D, x: number, y: number, o: Pose, b: Build = EVEN): void {
+  const t = o.t, gait = o.run || 0, bob = o.run ? -Math.abs(Math.sin(gait)) * 1.4 : Math.sin(t * 1.8) * 0.2 * (1 - 0.6 * Math.max(0, b.poise));
+  const lift = 2.6 * b.reach, bw = 1 + 0.2 * b.bulk, bh = 1 + 0.32 * b.bulk, lw = 1.7 * (1 + 0.55 * b.brawn - 0.22 * b.reach), horn = 1 + 0.7 * b.bearing;
   g.save(); g.translate(U(x), U(y)); g.scale(K * 1.3 * (o.flip ? -1 : 1), K * 1.3);
   ell(g, 0, 0, 10, 1.6, "rgba(5,5,15,.45)");
   g.translate(0, bob); if (o.run) g.rotate(Math.sin(gait) * 0.04); if (o.lunge) g.rotate(0.12);
-  const body = "#a8988a", bodyS = "#7a6c60", mane = "#e2d6c0";
-  const legs = (near: boolean) => { for (const [lx, ph] of [[-6, 0], [5.5, Math.PI]]) { const s = o.run ? Math.sin(gait + ph + (near ? Math.PI / 2 : 0)) : 0, n = near ? 0.6 : -0.6; limb(g, [lx + n, -8, lx + s * 2.2 + n, -4.2, lx + s * 3.5 + n, -0.6], 1.7, near ? body : bodyS); ell(g, lx + s * 3.5 + n, -0.4, 1.1, 0.7, "#2a221c"); } };
+  const coat = b.rings ? -0.12 : 0.1 * b.warmth, body = shadeHex("#a8988a", coat), bodyS = shadeHex("#7a6c60", coat), mane = shadeHex("#e2d6c0", coat);
+  const legs = (near: boolean) => { for (const [lx, ph] of [[-6, 0], [5.5, Math.PI]]) { const s = o.run ? Math.sin(gait + ph + (near ? Math.PI / 2 : 0)) : 0, n = near ? 0.6 : -0.6; limb(g, [lx * bw + n, -8 - lift, lx * bw + s * 2.2 + n, -4.2 - lift / 2, lx * bw + s * 3.5 + n, -0.6], lw, near ? body : bodyS); ell(g, lx * bw + s * 3.5 + n, -0.4, 1.1, 0.7, "#2a221c"); } };
   legs(false);
+  g.save(); g.translate(0, -lift); // everything above the legs rides higher on long legs
   g.beginPath(); g.moveTo(-9, -11); g.quadraticCurveTo(-13 - Math.sin(t * 3) * 0.8, -10, -12.5, -6.5); g.quadraticCurveTo(-11, -9, -8.6, -9.8); g.closePath(); inkPath(g, mane, 0.35);
-  g.beginPath(); g.ellipse(0, -10.5, 10, 4.8, 0, 0, 7); inkPath(g, body);
-  g.save(); g.clip(); g.fillStyle = bodyS; g.fillRect(-11, -8.6, 22, 4); g.fillStyle = "rgba(255,255,255,.18)"; g.beginPath(); g.ellipse(-1, -14, 7, 1.2, 0, 0, 7); g.fill(); g.restore();
-  g.beginPath(); g.roundRect(-5.5, -17.2, 8, 5, 1.2); inkPath(g, "#7a5638", 0.4); g.fillStyle = "#5a3e28"; g.fillRect(-5.2, -13.6, 7.4, 1); g.lineWidth = 0.6; g.strokeStyle = "#5a3e28"; g.beginPath(); g.moveTo(-1.5, -12.2); g.lineTo(-1.5, -6.2); g.stroke(); ell(g, -1.5, -15, 0.7, 0.7, "#c9a86a");
+  g.beginPath(); g.ellipse(0, -10.5, 10 * bw, 4.8 * bh, 0, 0, 7); inkPath(g, body);
+  g.save(); g.clip(); g.fillStyle = bodyS; g.fillRect(-11, -8.6, 22, 4); g.fillStyle = `rgba(255,255,255,${(0.18 * (1 + Math.max(-0.8, b.warmth))).toFixed(3)})`; g.beginPath(); g.ellipse(-1, -10.5 - 3.5 * bh, 7, 1.2, 0, 0, 7); g.fill();
+  if (b.worn > 0.35) { g.lineWidth = 0.3; g.strokeStyle = "rgba(70,50,40,.55)"; for (const [sx, sy] of [[-4, -11], [2, -9.5], [-1, -8]].slice(0, b.worn > 0.6 ? 3 : 1)) { g.beginPath(); g.moveTo(sx, sy); g.lineTo(sx + 2.2, sy + 1); g.stroke(); } }
+  g.restore();
+  g.beginPath(); g.roundRect(-5.5, -10.5 - 4.8 * bh - 1.9, 8, 5, 1.2); inkPath(g, "#7a5638", 0.4); g.fillStyle = "#5a3e28"; g.fillRect(-5.2, -13.6, 7.4, 1); g.lineWidth = 0.6; g.strokeStyle = "#5a3e28"; g.beginPath(); g.moveTo(-1.5, -12.2); g.lineTo(-1.5, -6.2); g.stroke(); ell(g, -1.5, -15, 0.7, 0.7, "#c9a86a");
   g.beginPath(); g.moveTo(5.6, -13.4); g.quadraticCurveTo(9, -18, 11.6, -20); g.lineTo(13.4, -17.2); g.quadraticCurveTo(10.6, -13.6, 8.6, -8.4); g.closePath(); inkPath(g, body);
-  for (let i = 0; i < 5; i++) { g.beginPath(); g.moveTo(5.4 + i * 1.4, -13.6 - i * 1.4); g.quadraticCurveTo(4.2 + i * 1.4, -16.6 - i * 1.3, 6.4 + i * 1.5, -15.8 - i * 1.4); g.closePath(); inkPath(g, mane, 0.3); }
+  for (let i = 0; i < 5 + Math.round(2 * Math.max(0, b.warmth)); i++) { g.beginPath(); g.moveTo(5.4 + i * 1.4, -13.6 - i * 1.4); g.quadraticCurveTo(4.2 + i * 1.4, -16.6 - i * 1.3, 6.4 + i * 1.5, -15.8 - i * 1.4); g.closePath(); inkPath(g, mane, 0.3); }
   const hx = 13.4, hy = -20;
   g.beginPath(); g.moveTo(hx - 2.6, hy - 1.4); g.quadraticCurveTo(hx + 1.6, hy - 3, hx + 5.4, hy + 1.6); g.quadraticCurveTo(hx + 5.6, hy + 3.4, hx + 3.6, hy + 3.2); g.quadraticCurveTo(hx, hy + 3.4, hx - 2.4, hy + 1.8); g.closePath(); inkPath(g, body);
   ell(g, hx + 4.4, hy + 2.2, 0.5, 0.35, "#2a221c");
-  for (const d of [0, 1]) { g.beginPath(); g.moveTo(hx - 0.6 + d, hy - 1.6); g.quadraticCurveTo(hx - 4 + d, hy - 5.6, hx - 6.6 + d, hy - 4.2); g.quadraticCurveTo(hx - 3.6 + d, hy - 4, hx + 0.6 + d, hy - 1.4); g.closePath(); inkPath(g, d ? "#e8dfc8" : "#bcb19a", 0.3); }
+  for (const d of [0, 1]) { g.beginPath(); g.moveTo(hx - 0.6 + d, hy - 1.6); g.quadraticCurveTo(hx + (-4 + d + 0.6) * horn - 0.6, hy - 5.6 * horn, hx + (-6.6 + d + 0.6) * horn - 0.6, hy - 4.2 * horn); g.quadraticCurveTo(hx + (-3.6 + d) * horn, hy - 4 * horn, hx + 0.6 + d, hy - 1.4); g.closePath(); inkPath(g, d ? "#e8dfc8" : "#bcb19a", 0.3); }
   if ((o.flash ?? 0) > 0.2) { g.lineWidth = 0.3; g.strokeStyle = INK; g.beginPath(); g.moveTo(hx + 0.8, hy - 0.2); g.lineTo(hx + 2, hy - 0.3); g.stroke(); }
-  else { ell(g, hx + 1.4, hy - 0.2, 0.62, 0.58, INK); ell(g, hx + 1.45, hy - 0.22, 0.45, 0.42, "#2a1e14"); ell(g, hx + 1.3, hy - 0.4, 0.12, 0.12, "rgba(255,255,255,.8)"); }
+  else { ell(g, hx + 1.4, hy - 0.2, 0.62, 0.58, INK); ell(g, hx + 1.45, hy - 0.22, 0.45, 0.42, "#2a1e14"); ell(g, hx + 1.3, hy - 0.4, 0.12 + 0.08 * Math.max(0, b.keen), 0.12 + 0.08 * Math.max(0, b.keen), `rgba(255,255,255,${b.rings ? 0.35 : 0.8})`); }
+  if (b.rings > 0) { // a wild lull clamped under the jaw, and the ring scars it leaves
+    g.lineWidth = 0.25; g.strokeStyle = "rgba(120,60,60,.6)"; for (let i = 0; i < 3; i++) { g.beginPath(); g.moveTo(9.2 + i * 0.9, -14.6 - i * 1.2); g.lineTo(10.8 + i * 0.9, -16 - i * 1.2); g.stroke(); }
+    g.beginPath(); g.ellipse(hx - 1.2, hy + 2.6, 1.5, 0.75, 0.5, 0, 7); inkPath(g, "#4a5848", 0.3); ell(g, hx - 1.6, hy + 2.3, 0.5, 0.18, "rgba(200,220,190,.35)", 0.5);
+  }
   ell(g, hx - 1.6, hy - 1.6, 0.7, 1.2, bodyS, -0.6);
+  g.restore();
   legs(true);
   g.restore();
 }
 
 /** The reedcat: a lean, striped prowler with tall reed ears and lamp-bright eyes. Faces left (towards the party). */
-export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Pose): void {
+export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Pose, b: Build = EVEN): void {
   const t = o.t, gait = o.run || 0;
   g.save(); g.translate(U(x), U(y)); g.scale(-K * 1.25 * (o.flip ? -1 : 1), K * 1.25);
   ell(g, 0, 0, 6, 1.1, "rgba(5,5,15,.45)");
@@ -191,20 +211,20 @@ export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Po
   const body = "#b8a868", bodyS = "#8a7c48";
   for (const [lx, ph, near] of [[-3.5, 0, 0], [3, Math.PI, 0], [-3, Math.PI / 2, 1], [3.6, Math.PI * 1.5, 1]]) { const s = o.run ? Math.sin(gait * 1.3 + ph) : 0; limb(g, [lx, -4.5, lx + s * 2, -0.4], 1, near ? body : bodyS); }
   limb(g, [-6, -5.5, -8.6 - Math.sin(t * 4) * 0.6, -9, -8, -11.6], 0.7, body);
-  g.beginPath(); g.ellipse(0, -5.6, 6.2, 2.6, -0.05, 0, 7); inkPath(g, body, 0.4);
+  g.beginPath(); g.ellipse(0, -5.6, 6.2 * (1 + 0.12 * b.bulk), 2.6 * (1 + 0.22 * b.bulk), -0.05, 0, 7); inkPath(g, body, 0.4);
   g.save(); g.clip(); g.strokeStyle = bodyS; g.lineWidth = 0.7; for (let i = 0; i < 5; i++) { g.beginPath(); g.moveTo(-4 + i * 2, -8.4); g.lineTo(-4.6 + i * 2, -5.4); g.stroke(); } g.restore();
   const hx = 6.4, hy = -7.6;
   g.beginPath(); g.moveTo(hx - 2.4, hy + 1.4); g.quadraticCurveTo(hx - 1.6, hy - 2.4, hx + 1.8, hy - 1.2); g.quadraticCurveTo(hx + 3.8, hy + 0.2, hx + 3, hy + 1.6); g.quadraticCurveTo(hx, hy + 3.2, hx - 2.4, hy + 1.4); g.closePath(); inkPath(g, body, 0.4);
-  for (const d of [0, 1.4]) { g.beginPath(); g.moveTo(hx - 1.4 + d, hy - 1.4); g.lineTo(hx - 2.2 + d, hy - 7); g.lineTo(hx - 0.2 + d, hy - 1.6); g.closePath(); inkPath(g, d ? body : bodyS, 0.3); }
+  for (const d of [0, 1.4]) { g.beginPath(); g.moveTo(hx - 1.4 + d, hy - 1.4); g.lineTo(hx - 2.2 + d, hy - 7 * (1 + 0.3 * b.bearing)); g.lineTo(hx - 0.2 + d, hy - 1.6); g.closePath(); inkPath(g, d ? body : bodyS, 0.3); }
   const glow = g.createRadialGradient(hx + 1.2, hy - 0.2, 0.1, hx + 1.2, hy - 0.2, 2.4); glow.addColorStop(0, "rgba(255,240,120,.8)"); glow.addColorStop(1, "rgba(255,240,120,0)"); g.fillStyle = glow; g.fillRect(hx - 2, hy - 3, 6, 6);
   ell(g, hx + 1.2, hy - 0.2, 0.75, 0.45, "#fff6a0", -0.2); ell(g, hx + 1.35, hy - 0.2, 0.18, 0.4, INK);
   g.restore();
 }
 
-export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose): void {
-  if (look === "ash") drawAsh(g, x, y, o);
-  else if (look === "reedcat") drawCat(g, x, y, o);
-  else drawFig(g, look, x, y, o);
+export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
+  if (look === "ash") drawAsh(g, x, y, o, b);
+  else if (look === "reedcat") drawCat(g, x, y, o, b);
+  else drawFig(g, look, x, y, o, b);
 }
 
 // A hit flash: draw the figure offscreen, wash it white with source-atop, then blit. (Canvas filters were far too slow.)
