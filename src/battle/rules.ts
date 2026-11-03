@@ -33,7 +33,7 @@ export type SkillBook = Record<string, SkillDef>;
 /** A fighter. `cast` links a character's attributes (data/cast/attributes.json); without one (kith), it counts
  *  as an average person. `hp` may be left out for cast members: it then comes from grit and level. */
 export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp?: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; cast?: string; level?: number; }
-export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; }
+export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; /** Banner when the fight is won, and when the party is driven back. */ won?: string; lost?: string; }
 
 export interface Intent { skill: string; target: string; }
 export interface Unit extends UnitDef {
@@ -103,14 +103,17 @@ export function gradePress(offset: number, widen = 1): Grade {
 
 /** `levels` overrides cast members' levels (the party's current levels from the save). */
 /** `kith` gives owned kith (by unit id) their real attributes and level, as they have been raised. */
-export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}, kith: Record<string, Kith> = {}): BattleState {
+/** `health` is how much of each ally's health (by unit id, 0..1) is left from earlier fights; missing means whole. */
+export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}, kith: Record<string, Kith> = {}, health: Record<string, number> = {}): BattleState {
   const units: Unit[] = def.units.map((u) => {
     const owned = u.kith ? kith[u.id] : undefined;
     const level = owned?.level || (u.cast && levels[u.cast]) || u.level || (u.cast ? person(u.cast)?.level : undefined) || 1;
     const kit = u.cast ? gear[u.cast] : undefined;
     const stats = owned ? kithAttrs(owned) : u.cast ? (kit ? withGear(attrsAt(u.cast, level), kit) : attrsAt(u.cast, level)) : null;
-    const hp = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
-    return { ...u, hp, maxHp: hp, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
+    const max = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
+    const left = u.side === "ally" && health[u.id] !== undefined ? Math.min(1, Math.max(0, health[u.id])) : 1;
+    const hp = Math.max(1, Math.round(max * left));
+    return { ...u, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
   });
   const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, early: [], firstStrike: false };
   planIntents(s, book, rng);
@@ -329,4 +332,18 @@ export function checkEnd(s: BattleState, ev: BattleEvent[]): boolean {
 export function seeded(seed: number): Rng {
   let a = seed >>> 0;
   return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+
+/** Wounds carry over between fights. After a win each ally gets back part of what they lost (a breather, a
+ *  bandage), not all of it; anyone who went down gets up hurt. Only rest in a town or camp heals fully.
+ *  Returns what's left of each ally's health (0..1), by unit id; whole allies are left out. */
+export const RECOVER = 0.35, GET_UP = 0.25;
+export function afterBattle(s: BattleState): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const u of s.units) {
+    if (u.side !== "ally") continue;
+    const now = u.hp <= 0 ? GET_UP : u.hp / u.maxHp, left = Math.min(1, now + (1 - now) * RECOVER);
+    if (left < 0.995) out[u.id] = Math.round(left * 100) / 100;
+  }
+  return out;
 }

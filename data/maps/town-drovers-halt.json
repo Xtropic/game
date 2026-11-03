@@ -1,0 +1,53 @@
+{
+ "id": "town-drovers-halt",
+ "name": "Drovers' Halt",
+ "music": "camp",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "x": "crate",
+  "f": "fence",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,rrrrrrrrr,,,,ffffffff,,T",
+  "T,rrrrrrrrr,,,,f,,,,,,f,,T",
+  "T,hhhhdhhhh,,,,f,,,,,,f,,T",
+  "T,,,,,:,,,,,,,,f,,,,,,f,,T",
+  "T,,CC,::::::::,ffff,,ff,,T",
+  "T,,CC,,,,,,,::::::::,,,,,T",
+  "T,,,,,,F,,,,:,,,,,,,,HH,,T",
+  "T,,,,,,,,,,,:,,,,,,,,HH,,T",
+  "T,,xx,,,,,,,:,,,,,,,,,,,,T",
+  "T,,,,,,,,,,,:,,,,,,,,,,,,T",
+  "TTTTTTTTTTTT:TTTTTTTTTTTTT",
+  "TTTTTTTTTTTeeTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  },
+  {
+   "id": "drovers-halt-sign0",
+   "kind": "sign",
+   "x": 7,
+   "y": 8,
+   "props": {
+    "text": "A drovers' fire, kept in all night. A pot of something brown hangs over it."
+   }
+  }
+ ]
+}

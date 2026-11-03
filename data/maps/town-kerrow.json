@@ -1,0 +1,53 @@
+{
+ "id": "town-kerrow",
+ "name": "Kerrow",
+ "music": "road",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "S": "stall",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit",
+  "c": "cliff"
+ },
+ "rows": [
+  "cccccccccccccccccccccccccc",
+  "c,,,rrrr,,,,,,,,,rrrr,,,,c",
+  "c,,,hhdh,,,,,,,,,hdhh,,,,c",
+  "c,,,,::::::::::::::,,,,,,c",
+  "c,,,,:,,,,,,,,,,,,,,,,,,,c",
+  "c~~~~~~~~~~==~~~~~~~~~~~~c",
+  "c~~~~~~~~~~==~~~~~~~~~~~~c",
+  "c,,,,,,,,,,::,,,,,,,,,,,,c",
+  "c,,rrrr,,,,::,,,,SS,,xx,,c",
+  "c,,hdhh,,,,::::::,,,,,,,,c",
+  "c,,,::::::::,,,,,,,,,,,,,c",
+  "c,,,,,,,,,,::,,,,,,,,,TT,c",
+  "cTTTTTTTTTT::TTTTTTTTTTTTc",
+  "ccccccccccceeccccccccccccc"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "kerrow-sign0",
+   "kind": "sign",
+   "x": 5,
+   "y": 4,
+   "props": {
+    "text": "Gorge walls on both sides. The river under the bridge is loud enough to talk under."
+   }
+  }
+ ]
+}

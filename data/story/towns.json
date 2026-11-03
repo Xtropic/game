@@ -1,0 +1,968 @@
+{
+ "id": "towns",
+ "title": "The open towns",
+ "voiced": [],
+ "cast": {
+  "hm-gatherer": "Moss gatherer",
+  "hm-widow": "Widow Sorrel",
+  "hm-boy": "Tobin",
+  "ds-keeper": "Spring keeper",
+  "ds-seller": "Water seller",
+  "ds-girl": "Nell",
+  "mf-herder": "Loftbuck herder",
+  "mf-old": "Old Fen",
+  "kr-ferry": "Bridge warden",
+  "kr-smith": "Smith Garra",
+  "kr-mother": "Annick",
+  "rb-ropemaker": "Ropemaker Hask",
+  "rb-girl": "Wren",
+  "rb-lookout": "Lookout",
+  "wb-miller": "Miller Bain",
+  "wb-fisher": "Eel fisher",
+  "wb-child": "Pip",
+  "dh-host": "Innkeeper Marl",
+  "dh-drover": "Drover",
+  "lb-keeper": "Barrow keeper",
+  "lb-farmer": "Farmer Tilde",
+  "lb-boy": "Ansel"
+ },
+ "objectives": {},
+ "actors": [
+  {
+   "id": "hm-gatherer",
+   "map": "town-highmoss",
+   "x": 9,
+   "y": 4,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "hm-gatherer",
+     "text": "\"Moss for bedding, moss for wounds. It grows up here because nothing else will.\""
+    },
+    {
+     "say": "hm-gatherer",
+     "text": "\"The Commons buys all we can cut now. Kane's surgeons pack it into cuts. Better than the Guild paying us in tins.\""
+    }
+   ]
+  },
+  {
+   "id": "hm-widow",
+   "map": "town-highmoss",
+   "x": 15,
+   "y": 8,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "hm-widow",
+     "text": "\"Larkfold sang on harvest nights. We could hear it from here, over the cloud. It's been quiet a year.\""
+    },
+    {
+     "say": "hm-widow",
+     "text": "\"If you're from down there, girl, you're welcome to a bowl. Nobody's asked for a song since.\""
+    }
+   ]
+  },
+  {
+   "id": "hm-boy",
+   "map": "town-highmoss",
+   "x": 6,
+   "y": 9,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "hm-boy",
+     "text": "\"Ma says the grey coats came up the cloud path. There's no cloud path. I've looked.\""
+    }
+   ]
+  },
+  {
+   "id": "ds-keeper",
+   "map": "town-dripstone",
+   "x": 6,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "ds-keeper",
+     "text": "\"Every drop in this village has been through the mountain first. Takes forty years, they say.\""
+    },
+    {
+     "say": "ds-keeper",
+     "text": "\"The Guild wanted the springs for a hatchery. Brood rooms need warm water. The caves are too cold for them, thank the stone.\""
+    }
+   ]
+  },
+  {
+   "id": "ds-seller",
+   "map": "town-dripstone",
+   "x": 16,
+   "y": 8,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "ds-seller",
+     "text": "\"Mineral water. Good for the raw, people say. It isn't. Nothing is. But it's something to hold in your hands.\""
+    }
+   ]
+  },
+  {
+   "id": "ds-girl",
+   "map": "town-dripstone",
+   "x": 12,
+   "y": 10,
+   "look": "kid2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "ds-girl",
+     "text": "\"There's a cave that sings when the wind's right. Like someone humming under the hill.\""
+    },
+    {
+     "say": "",
+     "text": "Ash's ears go flat at the cave mouth, then forward again."
+    }
+   ]
+  },
+  {
+   "id": "mf-herder",
+   "map": "town-mistfold",
+   "x": 12,
+   "y": 5,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "mf-herder",
+     "text": "\"The mist sits in the fold all summer. The bucks like it. Keeps the flies off and the Wardens lost.\""
+    },
+    {
+     "say": "mf-herder",
+     "text": "\"A Warden came through in spring asking for Larkfold folk. We sent him round the fold three times. He went home wet.\""
+    }
+   ]
+  },
+  {
+   "id": "mf-buck",
+   "map": "town-mistfold",
+   "x": 6,
+   "y": 4,
+   "look": "loftbuck",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A big loftbuck, half asleep in the mist. It sniffs Ash, decides she's no trouble, and goes back to sleep."
+    }
+   ]
+  },
+  {
+   "id": "mf-old",
+   "map": "town-mistfold",
+   "x": 8,
+   "y": 10,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "mf-old",
+     "text": "\"I wore a lull once, after the fall that did my hip. Six months. I've still got the rings.\""
+    },
+    {
+     "say": "mf-old",
+     "text": "\"Took me a whole winter of the raw to come off it. I'd not wish that on a Warden.\""
+    }
+   ]
+  },
+  {
+   "id": "kr-ferry",
+   "map": "town-kerrow",
+   "x": 12,
+   "y": 7,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "kr-ferry",
+     "text": "\"Kerrow's bridge, Kerrow's toll. One copper, or a song, or a good story. Commons go free since spring.\""
+    }
+   ]
+  },
+  {
+   "id": "kr-smith",
+   "map": "town-kerrow",
+   "x": 18,
+   "y": 9,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "kr-smith",
+     "text": "\"I shoe the Guild's cart horses and I shoe the Commons' too. A horse doesn't pick a side.\""
+    },
+    {
+     "say": "kr-smith",
+     "text": "\"But I put the Guild's nails in a little crooked. Don't tell anyone.\""
+    }
+   ]
+  },
+  {
+   "id": "kr-mother",
+   "map": "town-kerrow",
+   "x": 7,
+   "y": 3,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "kr-mother",
+     "text": "\"The indenture carts take the gorge road because it's quiet. My eldest went on one, two winters back.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "a3",
+       "a3b",
+       "a3c",
+       "a4",
+       "a5",
+       "a6",
+       "a6b",
+       "a7",
+       "a7b",
+       "a7c"
+      ]
+     },
+     "then": [
+      {
+       "say": "kr-mother",
+       "text": "\"You're with the Commons now? If you ever stop one of those carts, would you look for a boy called Dell? Freckles. Laughs like a goose.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rb-ropemaker",
+   "map": "town-ropebridge",
+   "x": 13,
+   "y": 10,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "rb-ropemaker",
+     "text": "\"Every rope in that bridge, I twisted. Walk it slow and don't look down. Down is a long way.\""
+    },
+    {
+     "say": "rb-ropemaker",
+     "text": "\"Hask's my name, not the village. The village was further west. I don't talk about it.\""
+    }
+   ]
+  },
+  {
+   "id": "rb-girl",
+   "map": "town-ropebridge",
+   "x": 9,
+   "y": 4,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "rb-girl",
+     "text": "\"I can run the bridge in eleven steps. Ma says if she sees me do it again she'll tie me to the post.\""
+    }
+   ]
+  },
+  {
+   "id": "rb-lookout",
+   "map": "town-ropebridge",
+   "x": 18,
+   "y": 3,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "rb-lookout",
+     "text": "\"From here you can see the whole Vale on a clear day. Millbridge, the weir, the Sallow chimneys.\""
+    },
+    {
+     "say": "rb-lookout",
+     "text": "\"Those chimneys smoke day and night. My cousin says it's the boilers. Brood rooms have to be hot as summer.\""
+    }
+   ]
+  },
+  {
+   "id": "wb-miller",
+   "map": "town-weirbank",
+   "x": 6,
+   "y": 6,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "wb-miller",
+     "text": "\"The weir turns three wheels. Grain, fulling, and the Guild's saw. Guess which one pays.\""
+    },
+    {
+     "say": "wb-miller",
+     "text": "\"I hear Millbridge buried eleven last year. Larkfold greenlings, they said. I don't believe it. I knew Maren.\""
+    }
+   ]
+  },
+  {
+   "id": "wb-fisher",
+   "map": "town-weirbank",
+   "x": 18,
+   "y": 10,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "wb-fisher",
+     "text": "\"Eels come up the weir in autumn. You can stand on the stones and pick them out of the water like apples.\""
+    }
+   ]
+  },
+  {
+   "id": "wb-child",
+   "map": "town-weirbank",
+   "x": 14,
+   "y": 4,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "wb-child",
+     "text": "\"Is that a real kith? Does it bite? Can I touch it? It's looking at me.\""
+    },
+    {
+     "say": "",
+     "text": "Ash allows one pat, then walks behind Rhea's legs."
+    }
+   ]
+  },
+  {
+   "id": "dh-host",
+   "map": "town-drovers-halt",
+   "x": 6,
+   "y": 5,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "dh-host",
+     "text": "\"Drovers' Halt. Last beds before the Drove Road goes up into nothing. The Commons drink here now. They pay, mostly.\""
+    },
+    {
+     "say": "dh-host",
+     "text": "\"No rooms tonight, sorry. Every bed's full of Kane's lot sleeping off a march.\""
+    }
+   ]
+  },
+  {
+   "id": "dh-drover",
+   "map": "town-drovers-halt",
+   "x": 8,
+   "y": 8,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "dh-drover",
+     "text": "\"Took forty loftbucks to the Mill Cities in spring. The Guild checkpoint took four of them for 'inspection'. Never saw them again.\""
+    },
+    {
+     "say": "dh-drover",
+     "text": "\"South of the Vale it's all checkpoints now. You need papers to sneeze.\""
+    }
+   ]
+  },
+  {
+   "id": "dh-buck",
+   "map": "town-drovers-halt",
+   "x": 18,
+   "y": 4,
+   "look": "loftbuck",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A drove loftbuck in the pen, horns wrapped in rag against the wind. It watches Ash with polite interest."
+    }
+   ]
+  },
+  {
+   "id": "dh-cat",
+   "map": "town-drovers-halt",
+   "x": 20,
+   "y": 9,
+   "look": "reedcat",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A reedcat asleep on the hay. It opens one eye at Rhea and closes it again."
+    }
+   ]
+  },
+  {
+   "id": "lb-keeper",
+   "map": "town-longbarrow",
+   "x": 11,
+   "y": 6,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "lb-keeper",
+     "text": "\"The long barrow's older than the Guild, older than the Vale's name. Nobody knows who's in it.\""
+    },
+    {
+     "say": "lb-keeper",
+     "text": "\"People leave things on it. Rings, mostly. Lull rings, cut off with a knife when somebody finally gets clean.\""
+    }
+   ]
+  },
+  {
+   "id": "lb-farmer",
+   "map": "town-longbarrow",
+   "x": 20,
+   "y": 10,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "lb-farmer",
+     "text": "\"Two of my lads went off to join Kane in the spring. I told them the Commons can't win. They told me nobody ever stopped a Guild cart either.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "a4",
+       "a5",
+       "a6",
+       "a6b",
+       "a7",
+       "a7b",
+       "a7c"
+      ]
+     },
+     "then": [
+      {
+       "say": "lb-farmer",
+       "text": "\"That cart at Hob's Bend. That was you? With the children? Well. Sit down, then. There's bread.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lb-boy",
+   "map": "town-longbarrow",
+   "x": 4,
+   "y": 9,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "lb-boy",
+     "text": "\"If you lie on the barrow at night you can hear it breathing. Ansel's brother says so. I'm Ansel.\""
+    }
+   ]
+  }
+ ],
+ "steps": [
+  {
+   "map": "land-cloudline",
+   "at": [
+    17,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-highmoss",
+      "x": 18,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-highmoss",
+   "at": [
+    18,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 17,
+      "y": 11,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-highmoss",
+   "at": [
+    19,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 17,
+      "y": 11,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    45,
+    24
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-dripstone",
+      "x": 13,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-dripstone",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 45,
+      "y": 25,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-dripstone",
+   "at": [
+    14,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 45,
+      "y": 25,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    41,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-mistfold",
+      "x": 13,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-mistfold",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 41,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-mistfold",
+   "at": [
+    14,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 41,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-vale",
+   "at": [
+    6,
+    18
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-kerrow",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-kerrow",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 6,
+      "y": 19,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-kerrow",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 6,
+      "y": 19,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-vale",
+   "at": [
+    22,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ropebridge",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-ropebridge",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 22,
+      "y": 9,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-ropebridge",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 22,
+      "y": 9,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-vale",
+   "at": [
+    37,
+    22
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-weirbank",
+      "x": 12,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-weirbank",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 37,
+      "y": 23,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-weirbank",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 37,
+      "y": 23,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-vale",
+   "at": [
+    52,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-drovers-halt",
+      "x": 12,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-drovers-halt",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 52,
+      "y": 8,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-drovers-halt",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 52,
+      "y": 8,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-vale",
+   "at": [
+    66,
+    28
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-longbarrow",
+      "x": 12,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-longbarrow",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 66,
+      "y": 29,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-longbarrow",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vale",
+      "x": 66,
+      "y": 29,
+      "facing": "down"
+     }
+    }
+   ]
+  }
+ ],
+ "zones": [],
+ "looks": [],
+ "songs": [],
+ "hazards": [],
+ "scripts": {}
+}

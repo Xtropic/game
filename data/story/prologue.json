@@ -1,6 +1,58 @@
 {
  "id": "prologue",
  "title": "Prologue · Larkfold",
+ "voiced": [
+  "roofTalk",
+  "news",
+  "beg",
+  "refused",
+  "interlude",
+  "halloran",
+  "afterCarts",
+  "hatcheryFail",
+  "lisle",
+  "later",
+  "tin",
+  "finchDoor"
+ ],
+ "moods": {
+  "scenes": {
+   "smokeComes": "tender",
+   "roofTalk": "tender",
+   "sleep": "sombre",
+   "news": "grief",
+   "beg": "dread",
+   "refused": "grief",
+   "tamsinGate": "night",
+   "trailFight": "night",
+   "burned": "grief",
+   "ashTerrace": "ash",
+   "singAsh": "grief",
+   "interlude": "dread",
+   "halloran": "dread",
+   "afterCarts": "grief",
+   "enterHatchery": "hatchery",
+   "hatcheryFail": "dread",
+   "lisle": "lull",
+   "later": "lull",
+   "tin": "lull",
+   "finchDoor": "grief"
+  },
+  "stages": {
+   "d3": "dusk",
+   "d4": "dusk",
+   "n1": "sombre",
+   "n2": "sombre",
+   "n3": "night",
+   "n3b": "night",
+   "n4": "dread",
+   "n5": "ash",
+   "i1": "vantry",
+   "i1b": "vantry",
+   "i3": "sombre",
+   "i4": "lull"
+  }
+ },
  "start": {
   "map": "larkfold",
   "x": 15,
@@ -74,7 +126,7 @@
    "map": "larkfold",
    "x": 26,
    "y": 12,
-   "look": "elder2",
+   "look": "oda",
    "when": {
     "stagePrefix": "d",
     "not": "ash"
@@ -91,7 +143,7 @@
    "map": "larkfold",
    "x": 12,
    "y": 16,
-   "look": "kid",
+   "look": "pell",
    "when": {
     "stagePrefix": "d",
     "not": "ash"
@@ -108,7 +160,7 @@
    "map": "larkfold",
    "x": 16,
    "y": 7,
-   "look": "elder",
+   "look": "maren",
    "when": {
     "stagePrefix": "d",
     "not": "ash"
@@ -163,7 +215,7 @@
    "map": "larkfold",
    "x": 16,
    "y": 7,
-   "look": "elder",
+   "look": "maren",
    "when": {
     "stage": "n1"
    },
@@ -178,7 +230,7 @@
    "map": "larkfold",
    "x": 14,
    "y": 9,
-   "look": "elder",
+   "look": "rook",
    "when": {
     "stage": "n1"
    },
@@ -384,7 +436,7 @@
    "map": "yard",
    "x": 16,
    "y": 4,
-   "look": "kid2",
+   "look": "sela",
    "talk": [
     {
      "say": "",
@@ -919,7 +971,7 @@
    "do": [
     {
      "say": "",
-     "text": "The brood book. Tonight's measures in Finch's careful, enormous letters. Every line matches your mother's table."
+     "text": "The brood book. Tonight's measures in Finch's careful, enormous letters, and Pell's cramped ones on the moss column. Every line matches your mother's table."
     }
    ]
   },
@@ -1189,7 +1241,7 @@
    },
    {
     "say": "",
-    "text": "Kith remember the voices that raised them for as long as they live. Smoke will remember this one."
+    "text": "Kith remember the voices that raised them for as long as they live."
    },
    {
     "set": {
@@ -1206,7 +1258,7 @@
     "text": "\"Don't hover. I've done every tray.\""
    },
    {
-    "choose": "The brood book is open on the bench. Tonight's trays go down to Millbridge, where Corran's mother and sister are weaning.",
+    "choose": "The brood book is open on the bench. These trays go down to Millbridge next month, where Corran's mother and sister are weaning.",
     "options": [
      {
       "label": "Check his measures",
@@ -1518,7 +1570,7 @@
     ]
    },
    {
-    "choose": "Rhea won't leave. How she refuses is your choice, and he will carry it for twelve years.",
+    "choose": "Rhea won't leave. How does she refuse?",
     "options": [
      {
       "label": "\"Three hundred people are weaning on our greenlings.\"",
@@ -1628,7 +1680,9 @@
     "stage": "n3b"
    },
    {
-    "toast": "Tamsin and Ash join you"
+    "set": {
+     "recruited.tamsin": true
+    }
    }
   ],
   "trailFight": [
@@ -1639,6 +1693,9 @@
    {
     "battle": "trail-wardens",
     "win": [
+     {
+      "mood": "dread"
+     },
      {
       "set": {
        "light": "fire"
@@ -1690,6 +1747,10 @@
    {
     "say": "",
     "text": "The elders are on the drying-house beam. You don't look twice."
+   },
+   {
+    "say": "",
+    "text": "Old Wenna, who hid under the drying racks all night, tells you what she saw. The Wardens' main company didn't come up the trail. They came over the cloud path, and Corran was walking in front of them, showing the way."
    }
   ],
   "ashTerrace": [
@@ -1738,9 +1799,6 @@
     "hero": "corran"
    },
    {
-    "chapter": "Interlude I · You are Corran"
-   },
-   {
     "set": {
      "light": "day",
      "showHold": true
@@ -1763,7 +1821,7 @@
    },
    {
     "say": "",
-    "text": "No hangings, he had said. No burning, no children taken. You led his company in quietly so that it would be an arrest, not Hask. You sent Rhea down the mountain so she wouldn't be there if it went wrong."
+    "text": "No hangings, he had said. No burning, no children taken. You led his company in quietly so that it would be an arrest, not Hask. You sent Rhea down the mountain so she wouldn't be there if it went wrong. He swore the trail would be clear. He put pickets on it anyway."
    },
    {
     "say": "",
@@ -1778,7 +1836,7 @@
     "then": [
      {
       "say": "halloran",
-      "text": "\"You've nothing to buy a child with, Dace. But I need a man on the hatchery night watch. Nobody wants it. Take it, and I'll sign one indenture over to you. The child still works the hatchery, but on the clerk's side, out of the brood rooms, under your eye.\""
+      "text": "\"You've nothing to buy a child with, Dace. But I need a man on the hatchery night watch. Nobody wants it. Take it, and I'll sign one indenture over to your household. The child still works the hatchery, but on the clerk's side, out of the brood rooms, under your eye.\""
      },
      {
       "choose": "Finch is by the second cart, looking straight at you. By the last cart, a girl of seven called Sela is crying without making a sound.",
@@ -1798,7 +1856,7 @@
         ]
        },
        {
-        "label": "Take the vat-cleaning duty too. Ask for Finch and Sela.",
+        "label": "Take the vat-cleaning duty too. Ask for Finch, and for Sela to be kept out of the brood rooms.",
         "hint": "A second post nobody wants. You'll sleep even less.",
         "do": [
          {
@@ -1844,7 +1902,7 @@
      },
      {
       "say": "",
-      "text": "He laughs, and signs both."
+      "text": "He laughs, signs Finch's paper over to you, and writes \"sorting house, not brood\" against the girl's number."
      }
     ],
     "else": [
@@ -1866,12 +1924,7 @@
     "if": {
      "flag": "sela"
     },
-    "then": [
-     {
-      "say": "",
-      "text": "Years from now, Sela will tell Rhea that a Warden once took a second post for her and never asked for anything back."
-     }
-    ]
+    "then": []
    },
    {
     "stage": "i1b"
@@ -2075,7 +2128,7 @@
           "text": "The bite is a cold pinch at the back of your neck, then nothing at all. Much later, you notice Finch knocked twice and stopped."
          },
          {
-          "end": "prologue"
+          "run": "act1Start"
          }
         ]
        },
@@ -2111,7 +2164,7 @@
       "text": "Your hands shake on the ledger page, and the raw keeps you up until dawn. Finch doesn't say anything, but he stays until the last line."
      },
      {
-      "end": "prologue"
+      "run": "act1Start"
      }
     ]
    }

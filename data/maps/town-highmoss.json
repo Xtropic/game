@@ -1,0 +1,56 @@
+{
+ "id": "town-highmoss",
+ "name": "Highmoss",
+ "music": "road",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "H": "hay",
+  "x": "crate",
+  "e": "exit",
+  "c": "cliff",
+  "m": "moss",
+  "s": "steps",
+  "K": "cloud",
+  "a": "terrace"
+ },
+ "rows": [
+  "KKKKKKKKKKKKKKKKKKKKKKKK",
+  "KccccccccccccccccccccccK",
+  "Kcmmmmmmmmmmmmmmmmmmmm,K",
+  "Kcaaaaaaaaaaaaaaaaass,,K",
+  "Kc,mmmmmmmmmmmmmmmm,,,,K",
+  "Kc,,rrrr,,,,,rrrr,,,,,,K",
+  "Kc,,hdhh,,,,,hhdh,,HH,,K",
+  "Kc,,::::::::::::::,,HH,K",
+  "Kc,,:,,,,,,w,,,,,:,,,,,K",
+  "Kc,,::::::::::::::::,,,K",
+  "Kc,,,,xx,,,,,,,,,,:,,,,K",
+  "KcTT,,,,,,,,,,,,,,:,,TTK",
+  "KcTTTTTTTTTTTTTTTT:TTTTK",
+  "KKKKKKKKKKKKKKKKKKeeKKKK"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 18,
+   "y": 12
+  },
+  {
+   "id": "highmoss-sign0",
+   "kind": "sign",
+   "x": 11,
+   "y": 8,
+   "props": {
+    "text": "A well with a moss-lined bucket. The water up here tastes of stone and cold."
+   }
+  }
+ ]
+}

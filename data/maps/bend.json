@@ -1,0 +1,23 @@
+{
+ "id": "bend",
+ "name": "Hob's Bend",
+ "music": "road",
+ "legend": {"T": "tree", ",": "grass", ".": "trail", "C": "cart", "e": "exit"},
+ "rows": [
+  "TTTTTTTTTTTeeTTTTTTTTTTT",
+  "TTTTTTTTTT,..,TTTTTTTTTT",
+  "TTTTTTTTT,,..,,TTTTTTTTT",
+  "TTTTTTTT,,...,,,TTTTTTTT",
+  "TTTTTTT,,,....,,,TTTTTTT",
+  "TTTTTT,,,,,....,,,TTTTTT",
+  "TTTTT,,,,,,,....,,,TTTTT",
+  "TTTT,,,,,,,,,...,,,,TTTT",
+  "TTTT,,,,,,,,....,,,,TTTT",
+  "TTTT,,,,,,,CC...,,,,TTTT",
+  "TTTTT,,,,,,,....,,,TTTTT",
+  "TTTTTT,,,,,,....,,TTTTTT",
+  "TTTTTTT,,,,,,...,TTTTTTT",
+  "TTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [{"id": "start", "kind": "spawn", "x": 11, "y": 1}]
+}

@@ -1,0 +1,62 @@
+{
+ "id": "cart-warden",
+ "name": "The cart warden",
+ "backdrop": "road",
+ "intro": [
+  "The cart warden at Hob's Bend. One man, alone by the Guild's rule.",
+  "This one is Rhea's. Ash stays at her shoulder."
+ ],
+ "won": "The cart is yours",
+ "lost": "Knocked back into the ditch",
+ "units": [
+  {
+   "id": "rhea",
+   "name": "Rhea",
+   "look": "rhea",
+   "side": "ally",
+   "row": "front",
+   "cast": "rhea",
+   "skills": [
+    "strike",
+    "sing",
+    "rally"
+   ],
+   "at": [
+    86,
+    94
+   ]
+  },
+  {
+   "id": "ash",
+   "name": "Ash",
+   "look": "ash",
+   "side": "ally",
+   "row": "front",
+   "hp": 30,
+   "skills": [],
+   "kith": true,
+   "bonded": "rhea",
+   "at": [
+    62,
+    124
+   ]
+  },
+  {
+   "id": "cw",
+   "name": "Cart warden",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "hp": 44,
+   "cast": "warden",
+   "level": 5,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    104
+   ]
+  }
+ ]
+}

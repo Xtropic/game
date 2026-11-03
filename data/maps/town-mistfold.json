@@ -1,0 +1,51 @@
+{
+ "id": "town-mistfold",
+ "name": "Mistfold",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "H": "hay",
+  "f": "fence",
+  "e": "exit"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,ffffffffff,,,rrrr,,,,T",
+  "T,f,,,,,,,,f,,,hhdh,,,,T",
+  "T,f,,,,,,,,f,,,,::,,,,,T",
+  "T,f,,,,,,,,f::::::,,,,,T",
+  "T,ffff::ffff:,,,,,,HH,,T",
+  "T,,,,,::::::::,,,,,HH,,T",
+  "T,rrrr,,,,,,,:,,,,,,,,,T",
+  "T,hdhh,,,,w,,:,,rrrr,,,T",
+  "T,,:::::::::::::hhhd,,,T",
+  "T,,,,,,,,,,,,:,,,,,:,,,T",
+  "TTTTTTTTTTTTT:TTTTT:TTTT",
+  "TTTTTTTTTTTTTeeTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 12
+  },
+  {
+   "id": "mistfold-sign0",
+   "kind": "sign",
+   "x": 10,
+   "y": 9,
+   "props": {
+    "text": "The well is wrapped in old fleece against the frost."
+   }
+  }
+ ]
+}

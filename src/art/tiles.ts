@@ -1,6 +1,7 @@
 // The Larkfold tile set, painted in code at 16 x 16 per tile with a fixed afternoon palette.
 import { TILE, type TileKind, type WorldMap } from "../world/map";
 import { dither, hash2, makeCanvas, px } from "./pixel";
+import { bakeWorld } from "./worldTiles";
 
 const P = {
   grass: ["#5e8846", "#6f9a52", "#86b064"], grassDark: "#4c7038",
@@ -223,6 +224,62 @@ function paintTile(g: CanvasRenderingContext2D, kind: TileKind, ox: number, oy: 
       px(g, ox + 5, oy + 10, P.ink, 6, 4); px(g, ox + 6, oy + 11, P.glow, 4, 2); px(g, ox + 7, oy, P.ink, 2, 2);
       break;
     }
+    case "tent": {
+      grass();
+      for (let y = 0; y < 14; y++) { const w = Math.min(7, Math.floor(y / 2) + 1); px(g, ox + 8 - w, oy + 1 + y, y === 13 ? P.ink : "#8a7a5a", w * 2, 1); px(g, ox + 8 - w, oy + 1 + y, P.ink, 1, 1); px(g, ox + 7 + w, oy + 1 + y, P.ink, 1, 1); }
+      px(g, ox + 7, oy + 8, "#3a2a1a", 2, 6); px(g, ox + 8, oy + 1, "#6a5a3a", 1, 13);
+      break;
+    }
+    case "campfire": {
+      dither(g, ox, oy, TILE, TILE, P.trail, () => 0.4);
+      for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; px(g, ox + 7 + Math.round(Math.cos(a) * 5), oy + 8 + Math.round(Math.sin(a) * 4), P.stone[1], 2, 2); }
+      px(g, ox + 5, oy + 9, P.wood, 6, 2); px(g, ox + 6, oy + 5, "#e8823a", 4, 4); px(g, ox + 7, oy + 3, "#f2c45a", 2, 4);
+      break;
+    }
+    case "stall": {
+      dither(g, ox, oy, TILE, TILE, P.cobble, () => 0.5);
+      px(g, ox, oy, P.ink, TILE, 6); for (let x = 0; x < TILE; x += 4) px(g, ox + x, oy + 1, (x >> 2) & 1 ? "#e8e0d0" : "#a84a3a", 4, 4);
+      px(g, ox + 1, oy + 9, P.ink, 14, 6); px(g, ox + 2, oy + 9, P.woodLight, 12, 2);
+      for (let i = 0; i < 4; i++) px(g, ox + 3 + i * 3, oy + 7, ["#8d6aa0", "#d0b060", "#9ac08a", "#c06050"][i], 2, 2);
+      px(g, ox + 1, oy + 5, P.ink, 1, 10); px(g, ox + 14, oy + 5, P.ink, 1, 10);
+      break;
+    }
+    case "canal": {
+      dither(g, ox, oy, TILE, TILE, P.water, (x, y) => 0.25 + 0.2 * Math.sin((x + y) * 0.6));
+      if (n(0, -1) !== "canal" && n(0, -1) !== "bridge") px(g, ox, oy, P.ashlar[2], TILE, 2);
+      if (n(0, 1) !== "canal" && n(0, 1) !== "bridge") px(g, ox, oy + TILE - 2, P.stoneLine, TILE, 2);
+      break;
+    }
+    case "bridge": {
+      dither(g, ox, oy, TILE, TILE, P.water, () => 0.3);
+      px(g, ox, oy + 1, P.ink, TILE, 14); for (let y = 2; y < 14; y++) px(g, ox, oy + y, P.plank[(y >> 1) % 3], TILE, 1);
+      px(g, ox, oy + 2, P.wood, TILE, 1); px(g, ox, oy + 13, P.wood, TILE, 1);
+      break;
+    }
+    case "well": {
+      dither(g, ox, oy, TILE, TILE, P.cobble, () => 0.5);
+      for (let y = 0; y < 12; y++) for (let x = 0; x < 12; x++) { const d = Math.hypot(x - 5.5, y - 5.5) / 6; if (d < 1) px(g, ox + 2 + x, oy + 3 + y, d > 0.8 ? P.ink : d > 0.55 ? P.stone[1] : "#1a2a3a"); }
+      px(g, ox + 2, oy, P.wood, 1, 8); px(g, ox + 13, oy, P.wood, 1, 8); px(g, ox + 2, oy, P.wood, 12, 1);
+      break;
+    }
+    case "hay": {
+      dither(g, ox, oy, TILE, TILE, P.trail, () => 0.5);
+      px(g, ox + 1, oy + 4, P.ink, 14, 11); dither(g, ox + 2, oy + 5, 12, 9, ["#b89a4a", "#d0b45a", "#e2c870"], (x, y) => 0.5 + (hash2(x, y) - 0.5) * 0.8);
+      px(g, ox + 2, oy + 8, "#8a6a3a", 12, 1);
+      break;
+    }
+    case "fire": {
+      dither(g, ox, oy, TILE, TILE, P.brick, () => 0.3);
+      for (let y = 0; y < TILE; y++) for (let x = 0; x < TILE; x++) { const f = hash2(x + tx * 16, y + ty * 16) + (TILE - y) / 22; if (f > 0.9) px(g, ox + x, oy + y, f > 1.25 ? "#f2c45a" : f > 1.05 ? "#e8823a" : "#a8401a"); }
+      break;
+    }
+    case "crate": {
+      const base = n(0, 1) === "wetfloor" ? P.wet : P.cobble;
+      dither(g, ox, oy, TILE, TILE, base, () => 0.5);
+      px(g, ox + 2, oy + 3, P.ink, 12, 12); px(g, ox + 3, oy + 4, P.wood, 10, 10); px(g, ox + 3, oy + 4, P.woodLight, 10, 1);
+      for (let i = 0; i < 10; i++) { px(g, ox + 3 + i, oy + 4 + i, P.ink); }
+      break;
+    }
   }
 }
 
@@ -231,6 +288,7 @@ const UNBURNT = new Set<TileKind>(["cloud", "water", "cliff"]);
 /** Bakes the whole map's ground into one canvas. Maps are small, so one texture per map is cheap.
  *  `burnt` paints the village after the fire: everything but the sky, spring and rock goes to ash and char. */
 export function bakeMap(map: WorldMap, opts: { burnt?: boolean } = {}): HTMLCanvasElement {
+  if (map.file.world) return bakeWorld(map);
   const [c, g] = makeCanvas(map.width * TILE, map.height * TILE);
   for (let ty = 0; ty < map.height; ty++) for (let tx = 0; tx < map.width; tx++) {
     const k = map.kindAt(tx, ty)!;

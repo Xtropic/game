@@ -14,6 +14,7 @@ const server = createServer(async (req, res) => {
   catch { res.writeHead(404); res.end(); }
 }).listen(0);
 const url = `http://127.0.0.1:${server.address().port}/`;
+let joins = 0;
 const fail = (m) => { console.error("FAIL:", m); process.exitCode = 1; };
 
 const browser = await chromium.launch();
@@ -33,6 +34,7 @@ async function read(max = 40) {
     const s = await ex();
     if (s.choosing || s.ended) return s;
     if (s.fading) { await page.waitForTimeout(300); continue; }
+    if (s.joining) { joins++; await page.waitForTimeout(1500); await tap("Enter", 200); continue; }
     if (s.dialog) { await tap("Enter"); await tap("Enter", 60); continue; }
     if (!s.busy) return s;
     await page.waitForTimeout(100);
@@ -109,13 +111,13 @@ await expect("the surgery", (s) => s.map === "surgery" && s.stage === "i3");
 await put(4, 3, "left"); await tap("Enter"); await choose(1);
 await expect("a month later", (s) => s.map === "rooms" && s.stage === "i4");
 await put(10, 1, "right"); await tap("Enter"); await read();
-const end = await expect("the ending", (s) => s.ended);
-await page.screenshot({ path: "test-results/prologue-end.png" });
+// no act card, no end screen: the story carries straight on, the next summer, with Rhea
+const end = await expect("straight on to the next summer", (s) => !s.ended && s.stage === "a1");
 const f = await page.evaluate(() => window.__lull.game.flags);
 if (f.evening !== "door" || f.line !== "field" || !f.sela || f.refusal !== "stay") fail(`choices not kept: ${JSON.stringify(f)}`);
-// play again
-await tap("Enter", 200);
-await expect("play again starts over", (s) => !s.ended && s.stage === "d1" && s.map === "larkfold");
+await expect("on the world map below Larkfold", (s) => s.map === "land-cloudline" && s.followers.join() === "tamsin,ash");
+const hud = await page.evaluate(() => window.__lull.game.scenes.top.chapter.text);
+if (/Act|Prologue|Interlude/.test(hud)) fail(`a chapter card on screen: ${hud}`);
 
 if (errors.length) fail("page errors: " + errors.join(" | "));
 console.log(process.exitCode ? "prologue e2e FAILED" : "prologue e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ hold: f.hold, rings: f["rings.corran"], notes: f.notes, ended: end.ended }));

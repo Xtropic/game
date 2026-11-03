@@ -2,6 +2,7 @@
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
 import type { Loadout } from "../gear/weapons";
+import { sfx } from "../audio/music";
 import { buildOf, type Build } from "../art/build";
 import { kithBaseline, type Kith } from "../kith/kith";
 import { attrsAt, person } from "../cast/attributes";
@@ -13,18 +14,18 @@ import {
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
 } from "./rules";
 import {
-  CH, CW, HUD_FONT, LOOK_TOP, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
+  CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
 } from "./art";
 
 type PoseName = "idle" | "run" | "lunge" | "brace" | "aim" | "cast" | "guard" | "down" | "cheer";
-interface Vis { ox: number; oy: number; kx: number; hop: number; fall: number; flash: number; pose: PoseName; run: number; flee: boolean; out: boolean; }
+interface Vis { ox: number; oy: number; kx: number; hop: number; fall: number; flash: number; pose: PoseName; run: number; flee: boolean; out: boolean; fade: number; }
 interface Fx { kind: string; x: number; y: number; x2?: number; y2?: number; t: number; dur: number; text?: string; col?: string; big?: boolean; dir?: number; size?: number; proj?: string; }
 interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" | "note"; grade: Grade | null; }
 type Co = Generator<number | Qte, void, unknown>;
 
 export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
 
 const AUTO_KEY = "lull.autoTiming";
 const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } };
@@ -81,7 +82,7 @@ export class BattleScene implements Scene {
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health);
     // each fighter's look follows their attributes (cast and owned kith); the rest are drawn as designed
     for (const u of this.s.units) {
       const k = u.kith ? opts.kith?.[u.id] : undefined, start = u.cast ? person(u.cast)?.level : undefined;
@@ -103,9 +104,9 @@ export class BattleScene implements Scene {
   exit(): void { this.tex?.destroy(true); }
 
   private reset(): void {
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear);
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith); // after a loss the party falls back and binds its wounds: the retry starts whole
     this.vis.clear(); this.fx = [];
-    for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false });
+    for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;
     this.co = this.flow();
   }
@@ -149,7 +150,7 @@ export class BattleScene implements Scene {
 
   // ---------------- positions ----------------
   private pos(u: Unit): [number, number] { const v = this.vis.get(u.id)!; return [u.at[0] + v.ox + v.kx, u.at[1] + v.oy - v.hop]; }
-  private top(u: Unit): number { return this.pos(u)[1] - (LOOK_TOP[u.look] ?? 40); }
+  private top(u: Unit): number { return this.pos(u)[1] - (LOOK_TOP[lookKind(u.look)] ?? 40); }
   private dirOf(u: Unit): number { return u.side === "ally" ? 1 : -1; }
 
   // ---------------- coroutines ----------------
@@ -307,7 +308,7 @@ export class BattleScene implements Scene {
         this.addFx({ kind: "num", x, y: this.top(t) + 8, text: String(e.amt), col: t.side === "ally" ? "#ff9a7a" : "#fff2c8", dur: 1, big: e.amt >= 12 });
         e.tags.forEach((tg, i) => this.addFx({ kind: "grade", x, y: this.top(t) - 2 - i * 6.5, text: tg, col: "#ffe39a", dur: 1, size: 5.5 }));
         this.addFx({ kind: "spark", x, y: y - 16, dur: 0.3, big: e.amt >= 12 });
-        tv.flash = 1; tv.kx = this.dirOf(t) * -6;
+        tv.flash = 1; tv.kx = this.dirOf(t) * -6; sfx.hit();
         this.shake = Math.min(3, 0.8 + e.amt * 0.12);
         yield 0.12;
       } else if (e.t === "dodge") {
@@ -321,14 +322,16 @@ export class BattleScene implements Scene {
         yield* this.moveTo(kin.id, tx - 26, ty + 10, 0.3); this.vis.get(kin.id)!.pose = "lunge"; yield 0.14;
         this.co2.push((function* (self: BattleScene) { yield 0.35; yield* self.goHome(kin.id); })(this));
       } else if (e.t === "down") {
-        const v = this.vis.get(e.id)!; v.pose = "down"; this.co2.push(this.frames(0.38, (p) => { v.fall = p; }));
+        // the fallen drop; beaten foes then fade from the field, allies stay down where they fell
+        const v = this.vis.get(e.id)!, foe = unit(this.s, e.id).side === "foe"; v.pose = "down";
+        this.co2.push((function* (self: BattleScene): Co { yield* self.frames(0.38, (p) => { v.fall = p; }); if (!foe) return; yield 0.35; yield* self.frames(0.6, (p) => { v.fade = 1 - p; }); v.out = true; })(this));
       } else if (e.t === "bolt") {
         const u = unit(this.s, e.id), v = this.vis.get(e.id)!; v.flee = true; this.co2.push(this.moveTo(u.id, u.at[0] - 140, u.at[1], 0.8));
         this.addFx({ kind: "grade", x: this.pos(u)[0], y: this.top(u), text: `${u.name} bolts`, col: "#c8b8a8", dur: 1.1, size: 6 });
       } else if (e.t === "heal" || e.t === "steady") {
         const t = unit(this.s, e.target), [x, y] = this.pos(t);
         if (e.amt) this.addFx({ kind: "num", x, y: this.top(t) + 8, text: "+" + e.amt, col: "#a8e89a", dur: 1 });
-        this.addFx({ kind: "heal", x, y, dur: 0.9 });
+        this.addFx({ kind: "heal", x, y, dur: 0.9 }); sfx.heal();
         if (e.t === "steady") this.addFx({ kind: "grade", x, y: this.top(t) - 4, text: "Steadied: next hit x1.5", col: "#ffe39a", dur: 1.3, size: 5.5 });
       } else if (e.t === "stun") {
         const t = unit(this.s, e.target), [x] = this.pos(t); this.addFx({ kind: "grade", x, y: this.top(t) - 4, text: "Blinded", col: "#c8c8b8", dur: 1, size: 6 });
@@ -353,7 +356,7 @@ export class BattleScene implements Scene {
     const won = this.s.phase === "won";
     yield 0.9;
     if (won) for (const u of this.s.units) if (u.side === "ally" && alive(u)) this.vis.get(u.id)!.pose = "cheer";
-    this.say(won ? (this.s.routed ? "They break and run" : "The trail goes quiet") : "Driven back up the trail", won);
+    this.say(won ? (this.s.routed ? "They break and run" : this.def.won ?? "The trail goes quiet") : this.def.lost ?? "Driven back up the trail", won);
     this.mode = "over";
   }
 
@@ -452,9 +455,12 @@ export class BattleScene implements Scene {
     const order = s.units.filter((u) => !this.vis.get(u.id)!.out).sort((a, b) => this.pos(a)[1] - this.pos(b)[1]);
     for (const u of order) {
       const v = this.vis.get(u.id)!, [x, y] = this.pos(u);
-      const flip = u.look === "ash" ? v.flee : u.look === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
+      const lk = lookKind(u.look);
+      const flip = lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
       const pose = { t: T + x * 0.1, run: v.pose === "run" ? v.run : 0, lunge: v.pose === "lunge", brace: v.pose === "brace" || v.pose === "guard" || (this.qte?.mode === "brace" && this.qte.target === u.id), bow: v.pose === "aim" && u.look === "archer" ? 1 : undefined, cast: v.pose === "cast" || v.pose === "aim" && u.look !== "archer" || v.pose === "cheer", shout: v.pose === "cheer", flash: v.flash, flip, fall: v.fall };
+      g.save(); g.globalAlpha = v.fade;
       withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose, this.builds[u.id]));
+      g.restore();
     }
     // foe HP bars and intents
     for (const u of s.units) {

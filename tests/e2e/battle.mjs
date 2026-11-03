@@ -57,15 +57,19 @@ if (shots) { await page.waitForTimeout(100); await page.screenshot({ path: "test
 
 // the rest of the fight with auto timing, choosing the first move and first target every turn
 await page.keyboard.press("KeyT");
-const t0 = Date.now(); let shotFoe = false;
+const t0 = Date.now(); let shotFoe = false; const fellAt = {}; let vanished = 0;
 while (Date.now() - t0 < 90000) {
   d = await bt();
   if (!d) break;
+  // a beaten foe falls, fades and leaves the field within a couple of seconds
+  const gone = await page.evaluate(() => { const b = window.__lull.game.scenes.top; return b.vis ? b.s.units.filter((u) => u.side === "foe" && u.hp <= 0).map((u) => [u.id, b.vis.get(u.id).out || b.vis.get(u.id).flee]) : []; });
+  for (const [id, out] of gone) { fellAt[id] ??= Date.now(); if (out) vanished++; else if (Date.now() - fellAt[id] > 3000) { fail(`${id} is still on the field 3s after falling`); fellAt[id] = Infinity; } }
   if (d.mode === "over") { await page.screenshot({ path: "test-results/battle-over.png" }); await page.keyboard.press("Enter"); break; }
   if (shots && !shotFoe && d.qte?.mode === "brace") { shotFoe = true; await page.screenshot({ path: "test-results/battle-brace.png" }); }
   if (d.mode === "menu") { await page.keyboard.press("Enter"); await page.keyboard.press("Enter"); }
   await page.waitForTimeout(120);
 }
+if (!vanished) fail("no fallen foe was seen leaving the field");
 const ex = await page.evaluate(() => ({ battle: window.__lull.battle()?.debug() ?? null, explore: window.__lull.explore(), flags: window.__lull.game.flags }));
 if (ex.battle) fail(`battle did not end: ${JSON.stringify(ex.battle)}`);
 if (!ex.flags["won.trail-wardens"]) fail(`win not recorded: ${JSON.stringify(ex.flags)}`);

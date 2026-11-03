@@ -1,0 +1,54 @@
+{
+ "id": "town-longbarrow",
+ "name": "Longbarrow",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "H": "hay",
+  "x": "crate",
+  "e": "exit",
+  "R": "rock",
+  "m": "moss",
+  "*": "flowers"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,mmmmmmmmmmmmmmmmmmm,,,T",
+  "T,mmmmmmmmmmmmmmmmmmmmmm,T",
+  "T,,mmmmmmmmmmmmmmmmmmm,,,T",
+  "T,,,,R,,,,,,,,,,,,,,R,,,,T",
+  "T,,,,,,::::::::::::,,,,,,T",
+  "T,rrrr,:,,,,,,,,,,:,rrrr,T",
+  "T,hdhh,:,,*,,,*,,,:,hhdh,T",
+  "T,,:::::,,,,,,,,,,::::,,,T",
+  "T,,,,,,,,,,,w,,,,,,,,,,,,T",
+  "T,,,HH,,,,,,:,,,,,,,xx,,,T",
+  "TTTTTTTTTTTT:TTTTTTTTTTTTT",
+  "TTTTTTTTTTTeeTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  },
+  {
+   "id": "longbarrow-sign0",
+   "kind": "sign",
+   "x": 5,
+   "y": 5,
+   "props": {
+    "text": "A standing stone at the barrow's end. Dozens of little iron rings hang from a nail in it."
+   }
+  }
+ ]
+}

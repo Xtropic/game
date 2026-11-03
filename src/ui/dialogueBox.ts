@@ -4,6 +4,7 @@ import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { drawPortrait, hasPortrait } from "../art/portraits";
 import { EVEN, type Build } from "../art/build";
 import type { Voices } from "../audio/voice";
+import { sfx } from "../audio/music";
 import type { Line } from "../world/lines";
 
 const CPS = 48; // characters per second when typing out a line with no recording
@@ -58,7 +59,7 @@ export class DialogueBox {
     let i = this.cursor;
     if (x !== undefined && y !== undefined) { i = this.optTexts.findIndex((t) => y >= t.y - 4 && y <= t.y + t.height + 4 && x >= t.x - 10); if (i < 0) return -1; }
     this.options = null; for (const t of this.optTexts) t.destroy(); this.optTexts = []; this.optBox.clear();
-    this.close();
+    this.close(); sfx.choose();
     return i;
   }
 
@@ -74,7 +75,7 @@ export class DialogueBox {
   advance(): boolean {
     if (!this.line) return true;
     if (this.shown < this.line.text.length) { this.shown = this.line.text.length; return false; }
-    this.close(); return true;
+    this.close(); sfx.next(); return true;
   }
 
   close(): void { this.line = null; this.view.visible = false; this.voices.stop(); }

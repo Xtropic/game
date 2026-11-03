@@ -1,0 +1,4 @@
+{
+ "note": "Kith that come with a recruit. When recruited.<person> is set, the kith joins too (and gets its own card).",
+ "ferris": {"id": "thistle", "species": "reedcat", "name": "Thistle", "level": 6, "bond": 55, "temperament": "proud"}
+}

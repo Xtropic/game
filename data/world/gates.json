@@ -1,0 +1,121 @@
+{
+  "note": "How Ostrel opens up. The world is ten lands, each its own map, joined by ways: roads that leave one land at its edge and come into the next. A way is shut until the story opens it (from a stage, or with the flag open.<way id>), and something Rhea can see stands across the road while it's shut: snow, a Guild checkpoint, a shut gate. 'why' is what she's told when she walks up to it. Everything inside a land Rhea can reach is open. Finds are rare things lying on a land's map from a stage until picked up.",
+  "order": [
+    "d1",
+    "d1b",
+    "d2",
+    "d3",
+    "d4",
+    "n1",
+    "n2",
+    "n3",
+    "n3b",
+    "n4",
+    "n5",
+    "n6",
+    "i1",
+    "i1b",
+    "i2",
+    "i2b",
+    "i3",
+    "i4",
+    "a1",
+    "a1b",
+    "a2",
+    "a3",
+    "a3b",
+    "a3c",
+    "a4",
+    "a5",
+    "a6",
+    "a6b",
+    "a7",
+    "a7b",
+    "a7c"
+  ],
+  "ways": {
+    "cloudline-vale": {
+      "from": "a1",
+      "blocker": "none",
+      "why": "The mountain road down to the vale."
+    },
+    "cloudline-north": {
+      "blocker": "snow",
+      "why": "Snow chokes the high passes. Nobody gets through to the north until the thaw."
+    },
+    "cloudline-vael": {
+      "blocker": "mist",
+      "why": "The spire ridge vanishes into thick cloud. Without someone who knows the way, Rhea would walk straight off the edge."
+    },
+    "vale-north": {
+      "blocker": "riders",
+      "why": "Drevka clan riders watch the high grazing at the top of the drove road. Strangers who come uninvited don't come back down."
+    },
+    "vale-west": {
+      "blocker": "gate",
+      "why": "The Free Towns have shut their gates to strangers from the north since the raids."
+    },
+    "vale-east": {
+      "blocker": "toll",
+      "why": "League toll-men hold the hill road. Nobody without a Corvane letter gets past the toll house."
+    },
+    "vale-millcities": {
+      "blocker": "checkpoint",
+      "why": "A Guild checkpoint closes the road south to the Millcities. Without indenture papers, Rhea would be taken at the barrier."
+    },
+    "west-coast": {
+      "blocker": "smugglers",
+      "why": "Smugglers watch the coast road to Port Ashby, and they don't like new faces."
+    },
+    "west-millcities": {
+      "blocker": "checkpoint",
+      "why": "A Guild checkpoint closes the canal road into the Millcities."
+    },
+    "east-ember": {
+      "blocker": "desert",
+      "why": "Beyond here is a week of desert. Nobody crosses it without water, a guide and a reason."
+    },
+    "millcities-heartland": {
+      "blocker": "walls",
+      "why": "Vantry's outer wall, and the Guild's own Wardens on the gate. Not yet."
+    }
+  },
+  "finds": [
+    {
+      "id": "duskwort",
+      "x": 30,
+      "y": 26,
+      "from": "a1",
+      "fitting": "charm-moss",
+      "text": "Duskwort, growing wild on the old monastery terraces. Healers dry a sprig to keep their hands steady.",
+      "map": "land-cloudline"
+    },
+    {
+      "id": "drovebell",
+      "x": 58,
+      "y": 15,
+      "from": "a2",
+      "fitting": "charm-bell",
+      "text": "A drove bell, lost in the grass above the camp. Kith settle to the sound of it.",
+      "map": "land-vale"
+    },
+    {
+      "id": "indenture",
+      "x": 41,
+      "y": 35,
+      "from": "a3c",
+      "fitting": "charm-number",
+      "text": "A brass indenture number, thrown from the cart. Nobody was ever stamped with it.",
+      "map": "land-vale"
+    },
+    {
+      "id": "trayiron",
+      "x": 54,
+      "y": 42,
+      "from": "a7",
+      "fitting": "head-hatchery",
+      "text": "A tray-iron from the burnt brood house, cooled in the ditch. Heavy enough to forge into something.",
+      "map": "land-vale"
+    }
+  ]
+}

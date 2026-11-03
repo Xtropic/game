@@ -31,7 +31,7 @@ describe("story", () => {
 
   it("every actor, door and trigger stands on its map, and doors are walkable", () => {
     for (const a of STORY.actors) { const m = MAPS[a.map]; expect(m.rows[a.y]?.[a.x], `${a.id} on ${a.map}`).toBeDefined(); }
-    for (const s of STORY.steps) { const m = MAPS[s.map], ch = m.rows[s.at[1]]?.[s.at[0]]; expect(ch, `${s.map} ${s.at}`).toBeDefined(); expect(["door", "ladder", "cave", "gate", "exit"], `${s.map} ${s.at} is ${m.legend[ch!]}`).toContain(m.legend[ch!]); }
+    for (const s of STORY.steps) { const m = MAPS[s.map], ch = m.rows[s.at[1]]?.[s.at[0]]; expect(ch, `${s.map} ${s.at}`).toBeDefined(); expect(m.world ? ["townground"] : ["door", "ladder", "cave", "gate", "exit"], `${s.map} ${s.at} is ${m.legend[ch!]}`).toContain(m.legend[ch!]); }
   });
 
   it("conditions: stage, prefix, flags, not, eq, hero and map", () => {
@@ -102,7 +102,7 @@ describe("story", () => {
     r.run([{ run: "lisle" }]); expect(f.line).toBe("house"); expect(f.hold).toBe(33); expect(f["rings.corran"]).toBe(1); expect(f.stage).toBe("i4");
     r.run([{ run: "tin" }]); // put it on
     expect(f.evening).toBe("on"); expect(f["rings.corran"]).toBe(2); expect(f.hold).toBe(23);
-    expect(log.at(-1)).toBe("end prologue");
+    expect(log).not.toContain("end prologue"); expect(f.hero).toBe("rhea"); expect(f.stage).toBe("a1"); // no end card: straight on with Rhea
   });
 
   it("finds every spoken line, including choices said aloud, once each", () => {
@@ -110,5 +110,88 @@ describe("story", () => {
     expect(lines.some((l) => l.who === "rhea" && l.text.includes("Three hundred people"))).toBe(true);
     expect(lines.some((l) => l.who === "narrator" && l.text === "The terrace is silent.")).toBe(true);
     expect(new Set(lines.map((l) => `${l.who}|${l.text}`)).size).toBe(lines.length);
+  });
+
+  it("Act I: the empty cart, Brannoc, enlisting, the cart warden and Sela, to Sergeant", () => {
+    const f: Flags = { ...fresh(), stage: "i4", hero: "corran", sela: true, ash: true }, { h, log, map } = host(f, [0, 1]);
+    const r = new StoryRunner(STORY, h);
+    r.run([{ run: "act1Start" }]);
+    expect(f.hero).toBe("rhea"); expect(f.chapter).toBeUndefined(); expect(f.party).toBe("tamsin,ash"); expect(map()).toBe("land-cloudline"); expect(f.stage).toBe("a1");
+    r.run([{ run: "emptyCart" }]); expect(f.stage).toBe("a1b");
+    r.run([{ run: "meetBrannoc" }]); // "Then I'll join your army."
+    expect(f.party).toBe("tamsin,ash,brannoc"); expect(f["party.brannoc"]).toBe(true); expect(f.stage).toBe("a2");
+    r.run([{ run: "kane" }]); // "I want every hatchery in Ostrel burned."
+    expect(f.why).toBe("burn"); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a3");
+    r.run([{ run: "cartFight" }]); expect(f["won.cart-warden"]).toBe(true); expect(f.stage).toBe("a3b");
+    r.run([{ run: "openCart" }]); expect(f.stage).toBe("a3c"); // Sela is in this cart: talk to her first
+    r.run([{ run: "selaFree" }]); expect(f["recruited.sela"]).toBe(true); expect(f.rank).toBe("Sergeant"); expect(f.stage).toBe("a4");
+    expect(log).toContain("battle cart-warden");
+  });
+
+  it("Act I without Sela: the cart's children, straight on to Sergeant", () => {
+    const f: Flags = { ...fresh(), stage: "a3b", sela: false }, { h } = host(f);
+    new StoryRunner(STORY, h).run([{ run: "openCart" }]);
+    expect(f.rank).toBe("Sergeant"); expect(f.stage).toBe("a4"); expect(f["recruited.sela"]).toBeUndefined();
+  });
+
+  it("Millbridge: the truth wins Oren, the elders' story wins the town at once", () => {
+    const truth: Flags = { ...fresh(), stage: "a5" }, t = host(truth, [0]);
+    new StoryRunner(STORY, t.h).run([{ run: "reeve" }]);
+    expect(truth.millbridge).toBe("truth"); expect(truth["recruited.oren"]).toBe(true); expect(truth.stage).toBe("a6");
+    const lie: Flags = { ...fresh(), stage: "a5" }, l = host(lie, [1]);
+    new StoryRunner(STORY, l.h).run([{ run: "reeve" }]);
+    expect(lie.millbridge).toBe("elders"); expect(lie["recruited.oren"]).toBeUndefined();
+  });
+
+  it("the Sallow hatchery: Ketti joins if she keeps the children, then Lieutenant and the harvest alone", () => {
+    const f: Flags = { ...fresh(), stage: "a6", party: "tamsin,ash,brannoc" }, { h, log, map } = host(f, [0]);
+    const r = new StoryRunner(STORY, h);
+    r.run([{ run: "sallowGate" }]); expect(f.stage).toBe("a6b"); expect(f.sallowBurning).toBe(true);
+    r.run([{ run: "ketti" }]);
+    expect(f["recruited.ketti"]).toBe(true); expect(f.party).toBe("tamsin,ash,brannoc,ketti"); expect(f.rank).toBe("Lieutenant");
+    expect(f.stage).toBe("a7"); expect(log.at(-1)).toBe("goto land-vale 59,18"); expect(log).toContain("follow "); // she climbs alone
+    r.run([{ run: "harvest" }]); expect(map()).toBe("larkfold"); expect(f.stage).toBe("a7b");
+    r.run([{ run: "harvestSong" }]); expect(f.stage).toBe("a7c");
+    r.run([{ run: "oda" }]); expect(f["recruited.oda"]).toBe(true);
+    r.run([{ run: "leaveLarkfold" }]); expect(log.slice(-2)).toEqual(["follow tamsin,ash,brannoc,ketti", "end act1"]);
+  });
+
+  it("handing Ketti's children to the nurses: she leaves", () => {
+    const f: Flags = { ...fresh(), stage: "a6b", party: "tamsin,ash" }, { h } = host(f, [1]);
+    new StoryRunner(STORY, h).run([{ run: "ketti" }]);
+    expect(f.kettiLeft).toBe(true); expect(f["recruited.ketti"]).toBeUndefined(); expect(f.party).toBe("tamsin,ash");
+  });
+
+  it("later acts' doors are checked first: the Larkfold caves open at the harvest", () => {
+    const st = STORY.steps.find((s) => s.map === "larkfold" && s.at[0] === 27 && s.at[1] === 16 && holds(s.when, { flags: { stage: "a7b" }, map: "larkfold" }));
+    expect(st?.do).toEqual([{ goto: { map: "caves", x: 7, y: 7, facing: "up" } }]);
+  });
+});
+
+describe("music tells the player how to feel", () => {
+  // everyday scenes where the place's own music is the right feeling
+  const PLACE_MUSIC = new Set(["finchTerrace", "finchCaves", "evening", "afterNews", "kane", "reeve"]);
+  it("every scene with lines has a mood, unless the place's music is the point", () => {
+    const moods = STORY.moods!;
+    for (const [id, steps] of Object.entries(STORY.scripts)) {
+      const lines = JSON.stringify(steps).split('"say"').length - 1;
+      if (lines && !PLACE_MUSIC.has(id)) expect(moods.scenes[id], `scene ${id} has no mood`).toBeTruthy();
+    }
+  });
+  it("every mood is a real track", async () => {
+    const { TRACK_NAMES } = await import("../../src/audio/music");
+    const names = new Set(TRACK_NAMES());
+    for (const m of [...Object.values(STORY.moods!.scenes), ...Object.values(STORY.moods!.stages)]) expect(names.has(m), m).toBe(true);
+  });
+  it("a scene's mood plays while it runs and gives way to the stage's mood after", () => {
+    const flags: Flags = { stage: "a2" };
+    const log: string[] = [];
+    let next: (() => void) | null = null;
+    const host = { where: () => ({ flags, map: "camp" }), line: (_w: string, _n: string, _t: string, done: () => void) => { log.push(String(flags.scene)); next = done; }, choose: (_p: string, _o: unknown[], done: (i: number) => void) => done(0), fade: (_c: string, d: () => void) => d(), goto: (_m: string, _x: number, _y: number, _f: unknown, d: () => void) => d(), battle: (_i: string, d: () => void) => d(), follow: () => {}, toast: () => {}, changed: () => {}, end: () => {} } as unknown as StoryHost;
+    const r = new StoryRunner(STORY, host);
+    r.run([{ run: "emptyCart" }]);
+    expect(log[0]).toBe("grief");
+    for (let i = 0; i < 50 && next; i++) { const n: () => void = next; next = null; n(); }
+    expect(flags.scene).toBe("");
   });
 });

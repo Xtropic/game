@@ -21,36 +21,69 @@ export function shadeHex(hex: string, amt: number): string {
 
 // ---------------- Pixel backdrops ----------------
 const backdrops: Record<string, HTMLCanvasElement> = {};
+interface Scenery { sky: string[]; stars: boolean; orb: [number, number, string, string] | null; far: [string, string]; near: [string, string]; ground: string[]; track: [string, string]; rock: [string, string, string]; tuft: [string, string]; trees: "dead" | "pines" | "leafy" | "reeds" | "none"; tree: string; haze?: string; }
+const SCENERY: Record<string, Scenery> = {
+  "night-trail": { sky: ["#0e1024", "#161a36", "#232848", "#34355a", "#4a4568"], stars: true, orb: [200, 18, "#f2ecd6", "#5a5880"], far: ["#3e3c62", "#2c2c4c"], near: ["#2e3a40", "#222c32"], ground: ["#1f2a28", "#28362f", "#33443a", "#3d4f40"], track: ["#4a5446", "#555e4e"], rock: ["#56604f", "#1a221e", "#6a7460"], tuft: ["#4f6a44", "#5e7c50"], trees: "dead", tree: "#14161c" },
+  meadow: { sky: ["#6f9ccc", "#8ab2d8", "#a8c6e2", "#c8dcec", "#e2ecf2"], stars: false, orb: [206, 20, "#fff6d8", "#f2e6b8"], far: ["#8a9ab8", "#7a8aa8"], near: ["#5a7a4a", "#4a6a3e"], ground: ["#5e8846", "#6f9a52", "#7fa85c", "#8cb466"], track: ["#b5a27c", "#c7b590"], rock: ["#99927f", "#4a4436", "#b3ac98"], tuft: ["#4c7038", "#86b064"], trees: "leafy", tree: "#2f5a2c" },
+  forest: { sky: ["#5a7a6a", "#6a8a7a", "#86a294", "#a2b8ac", "#bccac0"], stars: false, orb: null, far: ["#4a6a5a", "#3e5a4c"], near: ["#2f4a3a", "#263e30"], ground: ["#3a5a32", "#46683a", "#527444", "#5e804c"], track: ["#7a6a52", "#8c7b60"], rock: ["#6a6a5a", "#2a2a22", "#8a8a78"], tuft: ["#2f5a2c", "#558f48"], trees: "leafy", tree: "#1e3a22", haze: "rgba(220,235,230,.22)" },
+  snow: { sky: ["#8aa0b8", "#a2b6ca", "#bccad8", "#d6e0e8", "#eef2f6"], stars: false, orb: [190, 22, "#ffffff", "#dfe8f0"], far: ["#a8b4c4", "#94a2b4"], near: ["#7a8898", "#6a7888"], ground: ["#c8d2dc", "#d8e0e8", "#e6ecf2", "#f2f6fa"], track: ["#a8b0b8", "#b8c0c8"], rock: ["#6a6a72", "#3a3a42", "#8a8a92"], tuft: ["#9aa8b4", "#b0bcc8"], trees: "pines", tree: "#203f30" },
+  steppe: { sky: ["#9ab4c8", "#b2c6d4", "#cad6dc", "#dee4e0", "#ece8d8"], stars: false, orb: [60, 20, "#fff6d8", "#f2e6b8"], far: ["#b0a080", "#a09070"], near: ["#9a8a5a", "#8a7a4e"], ground: ["#a8985e", "#b3a36a", "#c2b278", "#cfc088"], track: ["#d6c8a0", "#e0d4b0"], rock: ["#8a7a5a", "#4a4030", "#a89878"], tuft: ["#8a7a4a", "#a8985a"], trees: "none", tree: "#4a4030" },
+  sand: { sky: ["#d8b88a", "#e2c8a0", "#ead6b6", "#f0e2c8", "#f6eedc"], stars: false, orb: [200, 18, "#fffae8", "#f2e0b0"], far: ["#d2a878", "#c4986a"], near: ["#d8b47e", "#caa670"], ground: ["#d8bf84", "#e3cc92", "#ecd8a2", "#f2e2b4"], track: ["#c8ac74", "#d4b882"], rock: ["#b08a5a", "#6a4a2a", "#c8a274"], tuft: ["#b8a060", "#c8b070"], trees: "none", tree: "#6a4a2a" },
+  marsh: { sky: ["#7a8a8a", "#8e9c9a", "#a4b0aa", "#bac4bc", "#ccd4cc"], stars: false, orb: null, far: ["#6a7a70", "#5a6a62"], near: ["#4c5a3a", "#404e32"], ground: ["#4c5a3a", "#5a6a44", "#6a7a50", "#768656"], track: ["#3f6a7a", "#4a7686"], rock: ["#5a5a4a", "#2a2a22", "#7a7a68"], tuft: ["#a69a5a", "#c2b46e"], trees: "reeds", tree: "#6a5a3a", haze: "rgba(220,228,220,.18)" },
+  road: { sky: ["#c86a4a", "#d8845a", "#e2a070", "#eab88a", "#f0cca2"], stars: false, orb: [64, 40, "#ffe0a0", "#f2b070"], far: ["#7a5a6a", "#6a4a5a"], near: ["#5a4a3a", "#4a3c30"], ground: ["#6a7a46", "#768652", "#82925c", "#8c9c66"], track: ["#a8906a", "#b8a07a"], rock: ["#8a7a6a", "#3a3028", "#a89888"], tuft: ["#5a6a3a", "#76864c"], trees: "leafy", tree: "#2a2a22" },
+  yard: { sky: ["#3a3a42", "#4a4a52", "#5a5a62", "#6a6a70", "#7a7a80"], stars: false, orb: null, far: ["#4a3a36", "#3a2c28"], near: ["#5a2a22", "#4a221c"], ground: ["#5f5d58", "#6f6d68", "#7f7d78", "#878580"], track: ["#545250", "#5e5c5a"], rock: ["#6e342a", "#2a1712", "#82402f"], tuft: ["#4a4a44", "#5a5a54"], trees: "none", tree: "#222", haze: "rgba(200,200,205,.16)" },
+  fire: { sky: ["#2a0c06", "#4a160a", "#6a2210", "#8a3a18", "#b05a22"], stars: false, orb: null, far: ["#3a1a12", "#2a120c"], near: ["#4a221c", "#3a1a14"], ground: ["#3a2a24", "#4a3830", "#5a463c", "#6a5448"], track: ["#5a4a40", "#6a5a50"], rock: ["#6e342a", "#1a0c08", "#a85a2a"], tuft: ["#e8823a", "#f2c45a"], trees: "none", tree: "#120806", haze: "rgba(255,140,60,.14)" },
+};
+/** The pixel-art stage behind a fight. The id names the scenery; the trail fight keeps its night. */
 export function backdrop(id: string): HTMLCanvasElement {
   if (backdrops[id]) return backdrops[id];
+  const S = SCENERY[id] ?? SCENERY["night-trail"];
   const [cv, g] = makeCanvas(CW, CH);
-  // night trail: dithered sky, stars, moon with a halo, two ridges, a moonlit trail, rocks, tufts, dead pines framing the stage
-  dither(g, 0, 0, CW, 64, ["#0e1024", "#161a36", "#232848", "#34355a", "#4a4568"], (_x, y) => y / 64);
-  for (let i = 0; i < 70; i++) { const sx = (hash2(i, 11) * CW) | 0, sy = (hash2(11, i) * 50) | 0; px(g, sx, sy, hash2(i, i) > 0.8 ? "#fff6d8" : "#9aa0c8"); }
-  for (let y = -14; y <= 14; y++) for (let x = -14; x <= 14; x++) { const d = Math.hypot(x, y); if (d > 5 && d < 14 && (BAYER4[(y + 16) & 3][(x + 16) & 3] + 0.5) / 16 > (d - 5) / 9 + 0.35) px(g, 200 + x, 18 + y, "#5a5880"); }
-  for (let y = -5; y <= 5; y++) for (let x = -5; x <= 5; x++) { const d = Math.hypot(x, y); if (d <= 5.2) px(g, 200 + x, 18 + y, d > 4.2 ? "#cfc8b0" : (x - 1) * (x - 1) + (y + 1) * (y + 1) < 3 ? "#d8d0b8" : "#f2ecd6"); }
+  dither(g, 0, 0, CW, 64, S.sky, (_x, y) => y / 64);
+  if (S.stars) for (let i = 0; i < 70; i++) { const sx = (hash2(i, 11) * CW) | 0, sy = (hash2(11, i) * 50) | 0; px(g, sx, sy, hash2(i, i) > 0.8 ? "#fff6d8" : "#9aa0c8"); }
+  if (S.orb) {
+    const [ox, oy, col, halo] = S.orb;
+    for (let y = -14; y <= 14; y++) for (let x = -14; x <= 14; x++) { const d = Math.hypot(x, y); if (d > 5 && d < 14 && (BAYER4[(y + 16) & 3][(x + 16) & 3] + 0.5) / 16 > (d - 5) / 9 + 0.35) px(g, ox + x, oy + y, halo); }
+    for (let y = -5; y <= 5; y++) for (let x = -5; x <= 5; x++) { const d = Math.hypot(x, y); if (d <= 5.2) px(g, ox + x, oy + y, d > 4.2 ? shadeHex(col, -0.12) : col); }
+  }
+  if (id === "fire") for (let i = 0; i < 40; i++) { const sx = (hash2(i, 21) * CW) | 0, sy = (hash2(21, i) * 60) | 0; px(g, sx, sy, hash2(i, 3) > 0.5 ? "#f2c45a" : "#e8823a"); }
   const ridge = (base: number, amp: number, f: number, ph: number, cols: [string, string]) => { for (let x = 0; x < CW; x++) { const top = Math.round(base - amp * (Math.sin(x * f + ph) * 0.6 + Math.sin(x * f * 2.7 + ph * 2) * 0.4)); for (let y = top; y < CH; y++) px(g, x, y, y === top ? cols[0] : cols[1]); } };
-  ridge(52, 10, 0.035, 1, ["#3e3c62", "#2c2c4c"]);
-  ridge(62, 7, 0.06, 4, ["#2e3a40", "#222c32"]);
-  dither(g, 0, 66, CW, CH - 66, ["#1f2a28", "#28362f", "#33443a", "#3d4f40"], (x, y) => clamp(((y - 66) / 78) * 0.85 + Math.sin(x * 0.05) * 0.08));
-  for (let y = 78; y < CH; y++) { const w0 = 40 + (y - 78) * 1.4, cx = 128 + Math.sin(y * 0.05) * 6; for (let x = Math.round(cx - w0); x < cx + w0; x++) if ((BAYER4[y & 3][x & 3] + 0.5) / 16 < 0.55 + (y - 78) / 140) px(g, x, y, (x + y) % 7 ? "#4a5446" : "#555e4e"); }
-  for (let i = 0; i < 26; i++) { const rx = (hash2(i, 3) * CW) | 0, ry = 70 + ((hash2(3, i) * 72) | 0); if (Math.abs(rx - 128) < 60 && ry > 80) continue; px(g, rx, ry, "#56604f", 3, 2); px(g, rx, ry + 2, "#1a221e", 3, 1); px(g, rx + 1, ry - 1, "#6a7460", 1, 1); }
-  for (let i = 0; i < 40; i++) { const tx = (hash2(i, 5) * CW) | 0, ty = 70 + ((hash2(5, i) * 72) | 0); px(g, tx, ty, "#4f6a44"); px(g, tx + 1, ty - 1, "#5e7c50"); px(g, tx + 2, ty, "#4f6a44"); }
-  for (const [x0, flip] of [[8, 0], [246, 1]]) { for (let y = 20; y < 100; y++) px(g, x0, y, "#14161c", 2, 1); for (let k2 = 0; k2 < 7; k2++) { const by = 28 + k2 * 9, len = 4 + k2; for (let i = 0; i < len; i++) px(g, flip ? x0 - i : x0 + 2 + i, by + (i >> 1), "#14161c"); for (let i = 0; i < len - 2; i++) px(g, flip ? x0 + 2 + i : x0 - i, by + 3 + (i >> 1), "#14161c"); } }
+  ridge(52, 10, 0.035, 1, S.far);
+  ridge(62, 7, 0.06, 4, S.near);
+  dither(g, 0, 66, CW, CH - 66, S.ground, (x, y) => clamp(((y - 66) / 78) * 0.85 + Math.sin(x * 0.05) * 0.08));
+  for (let y = 78; y < CH; y++) { const w0 = 40 + (y - 78) * 1.4, cx = 128 + Math.sin(y * 0.05) * 6; for (let x = Math.round(cx - w0); x < cx + w0; x++) if ((BAYER4[y & 3][x & 3] + 0.5) / 16 < 0.55 + (y - 78) / 140) px(g, x, y, (x + y) % 7 ? S.track[0] : S.track[1]); }
+  for (let i = 0; i < 26; i++) { const rx = (hash2(i, 3) * CW) | 0, ry = 70 + ((hash2(3, i) * 72) | 0); if (Math.abs(rx - 128) < 60 && ry > 80) continue; px(g, rx, ry, S.rock[0], 3, 2); px(g, rx, ry + 2, S.rock[1], 3, 1); px(g, rx + 1, ry - 1, S.rock[2], 1, 1); }
+  for (let i = 0; i < 40; i++) { const tx = (hash2(i, 5) * CW) | 0, ty = 70 + ((hash2(5, i) * 72) | 0); px(g, tx, ty, S.tuft[0]); px(g, tx + 1, ty - 1, S.tuft[1]); px(g, tx + 2, ty, S.tuft[0]); }
+  for (const [x0, flip] of [[8, 0], [246, 1]]) {
+    if (S.trees === "dead") { for (let y = 20; y < 100; y++) px(g, x0, y, S.tree, 2, 1); for (let k2 = 0; k2 < 7; k2++) { const by = 28 + k2 * 9, len = 4 + k2; for (let i = 0; i < len; i++) px(g, flip ? x0 - i : x0 + 2 + i, by + (i >> 1), S.tree); for (let i = 0; i < len - 2; i++) px(g, flip ? x0 + 2 + i : x0 - i, by + 3 + (i >> 1), S.tree); } }
+    if (S.trees === "pines") for (let y = 0; y < 60; y++) { const w = Math.floor(y / 3); px(g, x0 - w, 36 + y, S.tree, w * 2 + 2, 1); }
+    if (S.trees === "leafy") { px(g, x0, 50, S.tree, 3, 50); for (let y = -16; y <= 16; y++) for (let x = -16; x <= 16; x++) if (Math.hypot(x, y * 1.2) < 16 && hash2(x + x0, y) > 0.15) px(g, x0 + x, 40 + y, (x + y) % 5 ? S.tree : shadeHex(S.tree, 0.2)); }
+    if (S.trees === "reeds") for (let i = 0; i < 18; i++) { const rx = x0 + (flip ? -1 : 1) * (i * 1.6 | 0), h = 18 + ((hash2(i, x0) * 22) | 0); px(g, rx, 100 - h, S.tree, 1, h); px(g, rx, 100 - h, "#c2b46e", 1, 3); }
+  }
+  if (S.haze) { g.fillStyle = S.haze; g.fillRect(0, 40, CW, 50); }
   return (backdrops[id] = cv);
 }
 
 // ---------------- HD figures ----------------
-interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm"; scarf?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
+interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
   rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#7a5444", coatS: "#5a3c30", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8402c", weapon: "staff", lash: true },
-  tamsin: { skin: "#e3b896", skinS: "#c0916f", hair: "#1e1915", hairL: "#4e463e", coat: "#4f6b5c", coatS: "#3a5246", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
+  tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#3e5a46", coatS: "#2e4434", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
   warden: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#7c8389", coatS: "#5c6268", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "spear", lantern: true, long: true },
-  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#d8d2c6", hairL: "#f2eee6", coat: "#6d5f4e", coatS: "#504538", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
+  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#e0dcd4", hairL: "#f4f0ea", coat: "#6a4a36", coatS: "#4e3628", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
   archer: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#6f7a72", coatS: "#525c55", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "bow", long: true },
+  // the Commons Army: Brannoc, a huge soft-spoken ex-miner with a shield-spear; Ketti, twelve, with a knife
+  brannoc: { skin: "#d4a888", skinS: "#ac8466", hair: "#6a6560", hairL: "#8a8580", coat: "#5a4a38", coatS: "#42362a", pants: "#3a3028", boot: "#221a14", eye: "#4a5a6a", style: "bald", beard: "#8a8580", weapon: "spear", long: true },
+  ketti: { skin: "#f0cfb2", skinS: "#d2a88a", hair: "#8a3a1e", hairL: "#b4562e", coat: "#5a5a36", coatS: "#44442a", pants: "#3a3228", boot: "#241c16", eye: "#6a8a4a", style: "braid", weapon: "dart", lash: true },
+  ferris: { skin: "#d8aa80", skinS: "#b08460", hair: "#1e1a18", hairL: "#3a3430", coat: "#3e5a32", coatS: "#2e4426", pants: "#3a3a2a", boot: "#24221a", eye: "#5a4a32", style: "cap", cap: "#4a5a34", weapon: "bow", lash: false, long: true },
+  // a Guild cart warden: an officer's long grey coat and a red sash
+  cartwarden: { skin: "#e6c0a0", skinS: "#c29878", hair: "#3a3a3a", hairL: "#606060", coat: "#6a7076", coatS: "#4c5258", pants: "#34373a", boot: "#1a1a1a", eye: "#5a6470", style: "helm", scarf: "#8a2a24", weapon: "spear", lantern: true, long: true },
 };
 /** Height of each look above its feet, in stage units: where to put intent badges and the turn marker. */
-export const LOOK_TOP: Record<string, number> = { maren: 51, rhea: 51, tamsin: 51, warden: 51, archer: 51, ash: 32, reedcat: 22 };
+export const LOOK_TOP: Record<string, number> = { maren: 51, rhea: 51, tamsin: 51, warden: 51, archer: 51, brannoc: 54, ketti: 46, ferris: 51, cartwarden: 51, ash: 32, loftbuck: 32, reedcat: 22 };
+/** A look can carry a coat colour after a colon ("reedcat:#8a8a80"): the kind, and the coat. */
+export const lookKind = (look: string): string => look.split(":")[0];
+const lookCoat = (look: string): string | undefined => look.split(":")[1];
 
 export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; /** 0..1 mouth opening while speaking */ talk?: number; }
 
@@ -72,7 +105,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   const wx = 1 + 0.11 * b.bulk, tallY = 1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0), thick = 1 + 0.22 * b.brawn - 0.1 * b.reach;
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
   ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
-  if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha = 1 - o.fall * 0.25; }
+  if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
   g.translate(0, bob); g.rotate(lean);
   const hipY = -13, sh = -21.5;
   g.scale(0.9 * wx, 1.4 * tallY);
@@ -143,6 +176,11 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   if (o.talk && o.talk > 0.05) { const op = 0.15 + o.talk * 0.55; g.ellipse(hx + 0.1, eyeY + 3.05 + op * 0.3, 0.55 + (1 - o.talk) * 0.1, op * 0.55, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); }
   else if (o.lunge || o.brace || o.shout || o.cast) { g.ellipse(hx + 0.1, eyeY + 3.05, 0.6, 0.45, 0, 0, 7); g.fillStyle = "#5a2020"; g.fill(); } else { g.moveTo(hx - 0.5, eyeY + 3.05); g.quadraticCurveTo(hx + 0.1, eyeY + 3.25, hx + 0.7, eyeY + 3); }
   g.stroke();
+  if (P0.beard) {
+    g.beginPath(); g.moveTo(hx - 3.9, hy + 0.6); g.quadraticCurveTo(hx - 3.6, hy + 4.6, hx + 0.4, hy + 6.2); g.quadraticCurveTo(hx + 4.2, hy + 4.6, hx + 4.3, hy + 0.4);
+    g.lineTo(hx + 3.4, hy + 1.4); g.quadraticCurveTo(hx + 2.4, hy + 3.4, hx + 1.4, hy + 3.2); g.quadraticCurveTo(hx + 0.2, hy + 2.6, hx - 1, hy + 3.2); g.quadraticCurveTo(hx - 2.4, hy + 3.4, hx - 3.1, hy + 1.4); g.closePath(); inkPath(g, P0.beard, 0.3);
+    g.lineWidth = 0.35; g.strokeStyle = shadeHex(P0.beard, -0.25); g.beginPath(); g.moveTo(hx - 0.4, eyeY + 3.05); g.lineTo(hx + 0.8, eyeY + 3); g.stroke();
+  }
   if (id === "maren") { g.lineWidth = 0.18; g.strokeStyle = "rgba(90,60,50,.45)"; for (const d of [1, -1]) { const bx = hx + d * 1.8; g.beginPath(); g.moveTo(bx + d * 1.1, eyeY + 0.1); g.lineTo(bx + d * 1.6, eyeY + 0.5); g.stroke(); } g.beginPath(); g.moveTo(hx - 0.9, eyeY + 2.4); g.quadraticCurveTo(hx - 1.4, eyeY + 3, hx - 1.1, eyeY + 3.6); g.moveTo(hx + 1.1, eyeY + 2.4); g.quadraticCurveTo(hx + 1.6, eyeY + 3, hx + 1.3, eyeY + 3.6); g.stroke(); }
   const blush = b.raw ? 0 : (id === "rhea" || id === "tamsin" ? 0.12 : 0) + Math.max(0, b.warmth) * 0.1;
   if (blush > 0.01) { ell(g, hx + 2.3, eyeY + 1.9, 0.7, 0.28, `rgba(220,120,110,${blush.toFixed(3)})`); ell(g, hx - 2.2, eyeY + 1.9, 0.7, 0.28, `rgba(220,120,110,${blush.toFixed(3)})`); }
@@ -151,12 +189,22 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
     g.beginPath(); g.moveTo(hx - 5, hy - 1); g.bezierCurveTo(hx - 5.2, hy - 7.6, hx + 5.4, hy - 7.6, hx + 5.2, hy - 1); g.lineTo(hx + 6.4, hy - 0.4); g.lineTo(hx - 5.8, hy - 0.4); g.closePath(); inkPath(g, "#8e959b");
     g.save(); g.clip(); g.fillStyle = "#6a7076"; g.fillRect(hx - 6, hy - 8, 4.2, 8); g.fillStyle = "rgba(255,255,255,.45)"; g.beginPath(); g.ellipse(hx + 1.6, hy - 5.2, 2.2, 0.6, -0.3, 0, 7); g.fill(); g.restore();
     g.fillStyle = "rgba(10,10,20,.25)"; g.fillRect(hx - 4, hy - 0.4, 8.6, 1.4);
+  } else if (P0.style === "bald") {
+    // a fringe of close-cropped hair round the back and sides, light on the crown
+    g.beginPath(); g.moveTo(hx - 4.6, hy + 1.6); g.quadraticCurveTo(hx - 5.2, hy - 2.4, hx - 3.4, hy - 3.2); g.lineTo(hx - 2.6, hy - 1.6); g.quadraticCurveTo(hx - 3.6, hy - 0.4, hx - 3.4, hy + 1.6); g.closePath(); inkPath(g, P0.hair, 0.3);
+    g.fillStyle = "rgba(255,255,255,.35)"; g.beginPath(); g.ellipse(hx + 0.8, hy - 4.4, 1.8, 0.7, -0.3, 0, 7); g.fill();
   } else {
     g.beginPath(); g.moveTo(hx - 4.9, hy + 1.6); g.bezierCurveTo(hx - 5.6, hy - 7.6, hx + 5.8, hy - 7.8, hx + 5, hy - 0.6);
     for (const [fx, fy] of [[4.3, -1.4], [3.7, 0.1], [2.9, -1.9], [2, -0.3], [1, -2], [0, -0.6], [-1, -2.2], [-2.2, -0.6], [-3.4, -2], [-4.2, 0.6]]) g.lineTo(hx + fx, hy + fy);
     g.closePath(); inkPath(g, P0.hair, 0.45);
     g.save(); g.clip(); g.strokeStyle = P0.hairL; g.lineWidth = 0.6; g.beginPath(); g.ellipse(hx + 0.2, hy - 3.2, 3.6, 1.6, -0.15, Math.PI * 1.1, Math.PI * 1.75); g.stroke(); g.restore();
     if (P0.style === "braid") { g.beginPath(); g.moveTo(hx - 4.4, hy - 1); g.quadraticCurveTo(hx - 5.4, hy + 3, hx - 4.6, hy + 5); g.lineTo(hx - 3.6, hy + 2); g.closePath(); inkPath(g, P0.hair, 0.35); }
+    if (P0.style === "cap") {
+      const c = P0.cap ?? "#4a5a34";
+      g.beginPath(); g.moveTo(hx - 5.2, hy - 1.4); g.bezierCurveTo(hx - 5.6, hy - 9, hx + 5.8, hy - 9.2, hx + 5.4, hy - 1.6); g.closePath(); inkPath(g, c, 0.4);
+      g.beginPath(); g.moveTo(hx - 5.3, hy - 1.2); g.lineTo(hx + 5.5, hy - 1.4); g.lineTo(hx + 5.3, hy - 3); g.lineTo(hx - 5.1, hy - 2.8); g.closePath(); inkPath(g, shadeHex(c, -0.2), 0.3);
+      g.lineWidth = 0.15; g.strokeStyle = shadeHex(c, -0.3); for (let i = -4; i <= 4; i += 1.4) { g.beginPath(); g.moveTo(hx + i, hy - 3); g.lineTo(hx + i * 0.8, hy - 7.2); g.stroke(); }
+    }
     if (P0.style === "bun") { g.beginPath(); g.moveTo(hx + 4.4, hy - 1); g.quadraticCurveTo(hx + 5, hy + 2.5, hx + 4.1, hy + 3.6); g.lineTo(hx + 3.9, hy); g.closePath(); inkPath(g, P0.hair, 0.35); }
   }
   g.restore();
@@ -168,13 +216,13 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
 }
 
 /** Ash, the bonded kith: a sturdy horned grazer with a pack. Its build follows how it has been raised. */
-export function drawAsh(g: CanvasRenderingContext2D, x: number, y: number, o: Pose, b: Build = EVEN): void {
+export function drawAsh(g: CanvasRenderingContext2D, x: number, y: number, o: Pose, b: Build = EVEN, coatHex?: string, pack = true): void {
   const t = o.t, gait = o.run || 0, bob = o.run ? -Math.abs(Math.sin(gait)) * 1.4 : Math.sin(t * 1.8) * 0.2 * (1 - 0.6 * Math.max(0, b.poise));
   const lift = 2.6 * b.reach, bw = 1 + 0.2 * b.bulk, bh = 1 + 0.32 * b.bulk, lw = 1.7 * (1 + 0.55 * b.brawn - 0.22 * b.reach), horn = 1 + 0.7 * b.bearing;
   g.save(); g.translate(U(x), U(y)); g.scale(K * 1.3 * (o.flip ? -1 : 1), K * 1.3);
   ell(g, 0, 0, 10, 1.6, "rgba(5,5,15,.45)");
   g.translate(0, bob); if (o.run) g.rotate(Math.sin(gait) * 0.04); if (o.lunge) g.rotate(0.12);
-  const coat = b.rings ? -0.12 : 0.1 * b.warmth, body = shadeHex("#a8988a", coat), bodyS = shadeHex("#7a6c60", coat), mane = shadeHex("#e2d6c0", coat);
+  const coat = b.rings ? -0.12 : 0.1 * b.warmth, body = shadeHex(coatHex ?? "#a8988a", coat), bodyS = shadeHex(coatHex ? shadeHex(coatHex, -0.28) : "#7a6c60", coat), mane = shadeHex(coatHex ? shadeHex(coatHex, 0.4) : "#e2d6c0", coat);
   const legs = (near: boolean) => { for (const [lx, ph] of [[-6, 0], [5.5, Math.PI]]) { const s = o.run ? Math.sin(gait + ph + (near ? Math.PI / 2 : 0)) : 0, n = near ? 0.6 : -0.6; limb(g, [lx * bw + n, -8 - lift, lx * bw + s * 2.2 + n, -4.2 - lift / 2, lx * bw + s * 3.5 + n, -0.6], lw, near ? body : bodyS); ell(g, lx * bw + s * 3.5 + n, -0.4, 1.1, 0.7, "#2a221c"); } };
   legs(false);
   g.save(); g.translate(0, -lift); // everything above the legs rides higher on long legs
@@ -183,7 +231,7 @@ export function drawAsh(g: CanvasRenderingContext2D, x: number, y: number, o: Po
   g.save(); g.clip(); g.fillStyle = bodyS; g.fillRect(-11, -8.6, 22, 4); g.fillStyle = `rgba(255,255,255,${(0.18 * (1 + Math.max(-0.8, b.warmth))).toFixed(3)})`; g.beginPath(); g.ellipse(-1, -10.5 - 3.5 * bh, 7, 1.2, 0, 0, 7); g.fill();
   if (b.worn > 0.35) { g.lineWidth = 0.3; g.strokeStyle = "rgba(70,50,40,.55)"; for (const [sx, sy] of [[-4, -11], [2, -9.5], [-1, -8]].slice(0, b.worn > 0.6 ? 3 : 1)) { g.beginPath(); g.moveTo(sx, sy); g.lineTo(sx + 2.2, sy + 1); g.stroke(); } }
   g.restore();
-  g.beginPath(); g.roundRect(-5.5, -10.5 - 4.8 * bh - 1.9, 8, 5, 1.2); inkPath(g, "#7a5638", 0.4); g.fillStyle = "#5a3e28"; g.fillRect(-5.2, -13.6, 7.4, 1); g.lineWidth = 0.6; g.strokeStyle = "#5a3e28"; g.beginPath(); g.moveTo(-1.5, -12.2); g.lineTo(-1.5, -6.2); g.stroke(); ell(g, -1.5, -15, 0.7, 0.7, "#c9a86a");
+  if (pack) { g.beginPath(); g.roundRect(-5.5, -10.5 - 4.8 * bh - 1.9, 8, 5, 1.2); inkPath(g, "#7a5638", 0.4); g.fillStyle = "#5a3e28"; g.fillRect(-5.2, -13.6, 7.4, 1); g.lineWidth = 0.6; g.strokeStyle = "#5a3e28"; g.beginPath(); g.moveTo(-1.5, -12.2); g.lineTo(-1.5, -6.2); g.stroke(); ell(g, -1.5, -15, 0.7, 0.7, "#c9a86a"); }
   g.beginPath(); g.moveTo(5.6, -13.4); g.quadraticCurveTo(9, -18, 11.6, -20); g.lineTo(13.4, -17.2); g.quadraticCurveTo(10.6, -13.6, 8.6, -8.4); g.closePath(); inkPath(g, body);
   for (let i = 0; i < 5 + Math.round(2 * Math.max(0, b.warmth)); i++) { g.beginPath(); g.moveTo(5.4 + i * 1.4, -13.6 - i * 1.4); g.quadraticCurveTo(4.2 + i * 1.4, -16.6 - i * 1.3, 6.4 + i * 1.5, -15.8 - i * 1.4); g.closePath(); inkPath(g, mane, 0.3); }
   const hx = 13.4, hy = -20;
@@ -203,12 +251,12 @@ export function drawAsh(g: CanvasRenderingContext2D, x: number, y: number, o: Po
 }
 
 /** The reedcat: a lean, striped prowler with tall reed ears and lamp-bright eyes. Faces left (towards the party). */
-export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Pose, b: Build = EVEN): void {
+export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Pose, b: Build = EVEN, coatHex?: string): void {
   const t = o.t, gait = o.run || 0;
   g.save(); g.translate(U(x), U(y)); g.scale(-K * 1.25 * (o.flip ? -1 : 1), K * 1.25);
   ell(g, 0, 0, 6, 1.1, "rgba(5,5,15,.45)");
   if (o.fall) g.rotate(-o.fall * 0.5);
-  const body = "#b8a868", bodyS = "#8a7c48";
+  const body = coatHex ?? "#b8a868", bodyS = shadeHex(body, -0.28);
   for (const [lx, ph, near] of [[-3.5, 0, 0], [3, Math.PI, 0], [-3, Math.PI / 2, 1], [3.6, Math.PI * 1.5, 1]]) { const s = o.run ? Math.sin(gait * 1.3 + ph) : 0; limb(g, [lx, -4.5, lx + s * 2, -0.4], 1, near ? body : bodyS); }
   limb(g, [-6, -5.5, -8.6 - Math.sin(t * 4) * 0.6, -9, -8, -11.6], 0.7, body);
   g.beginPath(); g.ellipse(0, -5.6, 6.2 * (1 + 0.12 * b.bulk), 2.6 * (1 + 0.22 * b.bulk), -0.05, 0, 7); inkPath(g, body, 0.4);
@@ -222,9 +270,11 @@ export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Po
 }
 
 export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
-  if (look === "ash") drawAsh(g, x, y, o, b);
-  else if (look === "reedcat") drawCat(g, x, y, o, b);
-  else drawFig(g, look, x, y, o, b);
+  const kind = lookKind(look), coat = lookCoat(look);
+  if (kind === "ash") drawAsh(g, x, y, o, b);
+  else if (kind === "loftbuck") drawAsh(g, x, y, o, b, coat ?? "#9a8a70", false);
+  else if (kind === "reedcat") drawCat(g, x, y, o, b, coat);
+  else drawFig(g, kind, x, y, o, b);
 }
 
 // A hit flash: draw the figure offscreen, wash it white with source-atop, then blit. (Canvas filters were far too slow.)

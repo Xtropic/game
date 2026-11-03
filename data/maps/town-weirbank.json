@@ -1,0 +1,53 @@
+{
+ "id": "town-weirbank",
+ "name": "Weirbank",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "S": "stall",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit",
+  "R": "rock"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,rrrrr,,,,rrrr,,,,rrrrr,T",
+  "T,hhdhh,,,,hdhh,,,,hhhdh,T",
+  "T,,,:,,,,,,,:,,,,,,,,,:,,T",
+  "T,,,::::::::::::::::::::,T",
+  "T,,,,,,,,,,,:,,,,,,,,,,,,T",
+  "T~~~~~~~~~~~=~~~~~~~~~~~~T",
+  "TRRRRRRRRRRR=RRRRRRRRRRRRT",
+  "T~~~~~~~~~~~=~~~~~~~~~~~~T",
+  "T,,,,SS,,,,,:,,,,,,xx,,,,T",
+  "T,,,,,,,,,,,:,,,,,,,,,,,,T",
+  "TTTTTTTTTTTT:TTTTTTTTTTTTT",
+  "TTTTTTTTTTTeeTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  },
+  {
+   "id": "weirbank-sign0",
+   "kind": "sign",
+   "x": 12,
+   "y": 8,
+   "props": {
+    "text": "The weir. Water pours over the stones in a long white curtain."
+   }
+  }
+ ]
+}

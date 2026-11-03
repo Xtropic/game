@@ -26,6 +26,10 @@ export type Step =
   | { set?: Flags; add?: Record<string, number> }
   | { stage: string }
   | { follow: string[] }
+  /** The party travelling with the hero: join and leave change it; alone sends them off for a while; regroup brings them back. */
+  | { join: string } | { leave: string } | { alone: true } | { regroup: true }
+  /** Changes the music's mood partway through a scene ("" goes back to the stage's mood). */
+  | { mood: string }
   | { toast: string }
   | { fade: string }
   | { goto: { map: string; x: number; y: number; facing?: "up" | "down" | "left" | "right" } }
@@ -40,11 +44,12 @@ export interface StepTrigger { map: string; at: [number, number]; when?: Cond; d
 export interface Zone { map: string; area: [number, number, number, number]; when?: Cond; do: Step[]; }
 export interface Look { map?: string; tile: string; when?: Cond; do: Step[]; }
 export interface Song { when?: Cond; near?: string; range?: number; do: Step[]; }
-export interface Hazard { map: string; when?: Cond; kind: "steam"; sources: [number, number][]; spreadEvery: number; spreadBy: number; max: number; on: string; burn: number; fail: Step[]; }
+export interface Hazard { map: string; when?: Cond; kind: "steam" | "fire"; sources: [number, number][]; spreadEvery: number; spreadBy: number; max: number; on: string; burn: number; fail: Step[]; }
 
 export interface Story {
   id: string;
   title: string;
+  /** Where a new game begins. Only the first story file's counts; later acts begin from a script. */
   start: { map: string; x: number; y: number; facing: "up" | "down" | "left" | "right"; stage: string; hero: string; set?: Flags };
   cast: Record<string, string>;
   objectives: Record<string, string>;
@@ -55,6 +60,11 @@ export interface Story {
   songs: Song[];
   hazards: Hazard[];
   scripts: Record<string, Step[]>;
+  /** The plot-point scripts whose spoken lines are voiced. Everything else is read, not heard. */
+  voiced?: string[];
+  /** What each scene, and each stage of the story, should make the player feel: a music track name.
+   *  A scene's mood plays while it runs; between scenes the stage's mood plays, else the place's own music. */
+  moods?: { scenes: Record<string, string>; stages: Record<string, string> };
 }
 
 /** Numbers named here are kept within 0..100 when added to. */
@@ -108,6 +118,8 @@ export class StoryRunner {
       const st = this.queue.shift()!;
       this.exec(st);
     }
+    // a scene's mood lasts as long as the scene; when the story goes quiet the stage's mood takes over again
+    if (!this.waiting && !this.queue.length && this.flags().scene) this.flags().scene = "";
   }
 
   private resume = (): void => { this.waiting = false; this.pump(); };
@@ -131,11 +143,19 @@ export class StoryRunner {
     if ("if" in st) { this.front(holds(st.if, this.host.where()) ? st.then : st.else ?? []); return; }
     if ("stage" in st) { f.stage = st.stage; this.host.changed(); return; }
     if ("follow" in st) { this.host.follow(st.follow); return; }
+    if ("join" in st || "leave" in st) {
+      const id = "join" in st ? st.join : st.leave, list = partyOf(f).filter((x) => x !== id);
+      if ("join" in st) list.push(id);
+      f.party = list.join(","); f[`party.${id}`] = "join" in st; this.host.follow(list); this.host.changed(); return;
+    }
+    if ("alone" in st) { this.host.follow([]); return; }
+    if ("regroup" in st) { this.host.follow(partyOf(f)); return; }
     if ("toast" in st) { this.host.toast(st.toast); return; }
     if ("fade" in st) { this.block(); this.host.fade(st.fade, this.resume); return; }
     if ("goto" in st) { this.block(); const g = st.goto; this.host.goto(g.map, g.x, g.y, g.facing, this.resume); return; }
     if ("battle" in st) { const win = st.win ?? []; this.block(); this.host.battle(st.battle, () => { this.front(win); this.resume(); }); return; }
-    if ("run" in st) { const s = this.story.scripts[st.run]; if (!s) throw new Error(`no script ${st.run}`); this.front(s); return; }
+    if ("run" in st) { const s = this.story.scripts[st.run]; if (!s) throw new Error(`no script ${st.run}`); const m = this.story.moods?.scenes[st.run]; if (m) f.scene = m; this.front(s); return; }
+    if ("mood" in st) { f.scene = st.mood; return; }
     if ("hero" in st) { f.hero = st.hero; this.host.changed(); return; }
     if ("chapter" in st) { f.chapter = st.chapter; this.host.changed(); return; }
     if ("end" in st) { this.queue = []; this.host.end(st.end); return; }
@@ -146,6 +166,23 @@ export class StoryRunner {
     }
     throw new Error(`unknown story step ${JSON.stringify(st)}`);
   }
+}
+
+/** Who is travelling with the hero, from the save. */
+export const partyOf = (f: Flags): string[] => String(f.party ?? "").split(",").filter(Boolean);
+
+/** Joins story files (prologue, act I, ...) into one story. Triggers from later acts are checked first, so an
+ *  act can give an old door something new to do without the earlier act's catch-all getting there first. */
+export function mergeStories(parts: Story[]): Story {
+  const [first] = parts, later = [...parts].reverse();
+  const out: Story = { ...first, cast: {}, objectives: {}, scripts: {}, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [], voiced: [], moods: { scenes: {}, stages: {} } };
+  for (const p of parts) {
+    for (const k of Object.keys(p.scripts)) if (k in out.scripts) throw new Error(`script ${k} is in two story files`);
+    Object.assign(out.cast, p.cast); Object.assign(out.objectives, p.objectives); Object.assign(out.scripts, p.scripts);
+    out.actors.push(...p.actors); out.hazards.push(...p.hazards); out.voiced!.push(...(p.voiced ?? [])); Object.assign(out.moods!.scenes, p.moods?.scenes); Object.assign(out.moods!.stages, p.moods?.stages);
+  }
+  for (const p of later) { out.steps.push(...p.steps); out.zones.push(...p.zones); out.looks.push(...p.looks); out.songs.push(...p.songs); }
+  return out;
 }
 
 /** Every spoken line in a story, with who says it: lines, and choices a character says aloud. For voice recording. */
@@ -163,6 +200,23 @@ export function storyLines(s: Story): { who: string; text: string }[] {
   for (const g of [...s.steps, ...s.zones, ...s.looks, ...s.songs]) walk(g.do);
   for (const h of s.hazards) walk(h.fail);
   for (const sc of Object.values(s.scripts)) walk(sc);
+  const seen = new Set<string>();
+  return out.filter((l) => { const k = `${l.who}|${l.text}`; if (seen.has(k)) return false; seen.add(k); return true; });
+}
+
+/** The lines that are spoken aloud: what characters (not the narrator) say in the plot-point scripts listed in
+ *  story.voiced. Speech is kept for the moments that matter; everyday talk is read. tools/voice records these. */
+export function voicedLines(s: Story): { who: string; text: string }[] {
+  const out: { who: string; text: string }[] = [];
+  const walk = (steps: Step[] | undefined): void => {
+    for (const st of steps ?? []) {
+      if ("say" in st && st.say && st.say !== "narrator") out.push({ who: st.say, text: st.text });
+      if ("choose" in st) for (const o of st.options) walk(o.do);
+      if ("if" in st) { walk(st.then); walk(st.else); }
+      if ("battle" in st) walk(st.win);
+    }
+  };
+  for (const id of s.voiced ?? []) walk(s.scripts[id]);
   const seen = new Set<string>();
   return out.filter((l) => { const k = `${l.who}|${l.text}`; if (seen.has(k)) return false; seen.add(k); return true; });
 }
@@ -189,6 +243,6 @@ export function checkStory(s: Story, maps: Set<string>, battles: Set<string>): s
   s.songs.forEach((g, i) => walk(g.do, `song ${i}`));
   s.hazards.forEach((h, i) => walk(h.fail, `hazard ${i}`));
   for (const [k, sc] of Object.entries(s.scripts)) walk(sc, `script ${k}`);
-  if (!maps.has(s.start.map)) errs.push(`start: no map ${s.start.map}`);
+  if (s.start && !maps.has(s.start.map)) errs.push(`start: no map ${s.start.map}`);
   return errs;
 }

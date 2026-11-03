@@ -1,0 +1,54 @@
+{
+ "id": "town-dripstone",
+ "name": "Dripstone",
+ "music": "caves",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "S": "stall",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit",
+  "R": "rock",
+  "o": "cave"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRR",
+  "RRRRoRRRRRRRRRRRRoRRRR",
+  "RR,,:,,,,,,,,,,,,:,,RR",
+  "RR,,:::::::::::::::,RR",
+  "RR,,,,,,,,~~,,,,,:,,RR",
+  "RRrrrr,,,,~~,,rrrr:,RR",
+  "RRhhdh,,,,~~,,hdhh:,RR",
+  "RR,,:::::::==:::::::RR",
+  "RR,,,,,,,,~~,,,,,,,,RR",
+  "RR,xx,,,,,~~,,,,,SS,RR",
+  "RR,,,,,,,,~~,,,,,,,,RR",
+  "RRTT,,,,,,~~,:,,,,TTRR",
+  "RRTTTTTTTT~~T:TTTTTTRR",
+  "RRRRRRRRRRRRReeRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 12
+  },
+  {
+   "id": "dripstone-sign0",
+   "kind": "sign",
+   "x": 4,
+   "y": 2,
+   "props": {
+    "text": "A cave mouth, dripping. Someone has chalked tally marks inside: days, or people."
+   }
+  }
+ ]
+}
