@@ -12,6 +12,7 @@
 // - A blinded (smoked) foe loses its next move, and hits on it land as an ambush (x1.4).
 
 import { NEUTRAL, attrsAt, party, person, type Attrs } from "../cast/attributes";
+import { gearTiming, weaponPower, withGear, type Loadout } from "../gear/weapons";
 
 export type Side = "ally" | "foe";
 export type Row = "front" | "back";
@@ -32,6 +33,9 @@ export interface Unit extends UnitDef {
   maxHp: number;
   level: number;
   stats: Attrs | null; // null: no attributes (kith); counts as NEUTRAL
+  /** Damage multiplier from the keepsake weapon's tier, and timing window from its fittings. */
+  weapon: number;
+  gearTiming: number;
   stunned: boolean;
   guardedBy: string | null;
   covered: boolean; // a bonded kith has already covered its partner this round
@@ -84,12 +88,13 @@ export function gradePress(offset: number, widen = 1): Grade {
 }
 
 /** `levels` overrides cast members' levels (the party's current levels from the save). */
-export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}): BattleState {
+export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}): BattleState {
   const units: Unit[] = def.units.map((u) => {
     const level = (u.cast && levels[u.cast]) || u.level || (u.cast ? person(u.cast)?.level : undefined) || 1;
-    const stats = u.cast ? attrsAt(u.cast, level) : null;
+    const kit = u.cast ? gear[u.cast] : undefined;
+    const stats = u.cast ? (kit ? withGear(attrsAt(u.cast, level), kit) : attrsAt(u.cast, level)) : null;
     const hp = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
-    return { ...u, hp, maxHp: hp, level, stats, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
+    return { ...u, hp, maxHp: hp, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
   });
   const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro] };
   planIntents(s, book, rng);
@@ -98,7 +103,7 @@ export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: 
 
 export const statsOf = (u: Unit): Attrs => u.stats ?? NEUTRAL;
 /** How much wider this unit's timing windows are, from finesse. */
-export const timingOf = (u: Unit): number => party.timing(statsOf(u));
+export const timingOf = (u: Unit): number => party.timing(statsOf(u)) * u.gearTiming;
 
 export const unit = (s: BattleState, id: string): Unit => { const u = s.units.find((x) => x.id === id); if (!u) throw new Error(`no unit ${id}`); return u; };
 export const alive = (u: Unit): boolean => u.hp > 0 && !u.gone;
@@ -154,7 +159,7 @@ function addBond(s: BattleState, n: number, ev: BattleEvent[]): void {
 
 function damage(book: SkillBook, u: Unit, k: string, t: Unit, g: Grade, rng: Rng): { amt: number; tags: string[] } {
   let m = gradeMult(g); const tags: string[] = [];
-  m *= party.power(statsOf(u), statsOf(t), book[k].kind === "ranged" ? "ranged" : "melee");
+  m *= party.power(statsOf(u), statsOf(t), book[k].kind === "ranged" ? "ranged" : "melee") * u.weapon;
   if (t.stunned) { m *= u.stats ? party.ambush(u.stats) : 1.4; tags.push("Ambush"); }
   if (u.steady) { m *= 1.5; u.steady = false; tags.push("Steadied"); }
   return { amt: Math.round(roll(rng, book[k].dmg ?? [1, 1]) * m), tags };

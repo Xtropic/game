@@ -4,6 +4,7 @@ import { SceneStack } from "./scene";
 import { SaveStore, browserKV } from "./save";
 import { Voices } from "../audio/voice";
 import { addXp, gains, person, type Attr, type Progress } from "../cast/attributes";
+import type { Loadout } from "../gear/weapons";
 
 export const STEP = 1 / 60; // fixed logic step in seconds
 
@@ -19,6 +20,9 @@ export class Game {
   flags: Record<string, boolean | number | string> = {};
   /** Levels and experience by character id; characters not listed are at their starting level. */
   party: Record<string, Progress> = {};
+  /** Keepsake weapons by character id; characters not listed carry theirs at the Worn tier. */
+  gear: Record<string, Loadout> = {};
+  coin = 0;
 
   progress(id: string): Progress { return this.party[id] ?? { level: person(id)?.level ?? 1, xp: 0 }; }
   levels(): Record<string, number> { return Object.fromEntries(Object.entries(this.party).map(([k, p]) => [k, p.level])); }

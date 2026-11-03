@@ -1,6 +1,7 @@
 // The battle scene: a stage where every move is animated, timed presses (hits, braces, song notes) are graded,
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
+import type { Loadout } from "../gear/weapons";
 import { Container, Graphics, Sprite, Text, Texture, type FederatedPointerEvent } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -20,7 +21,7 @@ interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" |
 type Co = Generator<number | Qte, void, unknown>;
 
 export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; onDone?: (result: BattleResult, s: BattleState) => void; }
 
 const AUTO_KEY = "lull.autoTiming";
 const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } };
@@ -76,7 +77,7 @@ export class BattleScene implements Scene {
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear);
   }
 
   enter(game: Game): void {
@@ -92,7 +93,7 @@ export class BattleScene implements Scene {
   exit(): void { this.tex?.destroy(true); }
 
   private reset(): void {
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels);
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear);
     this.vis.clear(); this.fx = [];
     for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false });
     this.mode = "busy"; this.choice = null; this.qte = null;
