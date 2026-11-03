@@ -14,7 +14,7 @@ async function boot(): Promise<void> {
   const saved = game.saves.read("auto");
   const file = (saved && MAPS[saved.place.map]) || MAPS["larkfold-square"];
   const scene = new ExploreScene(file, saved && MAPS[saved.place.map] ? saved.place : undefined);
-  if (saved) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; }
+  if (saved) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; game.party = { ...saved.party }; }
   game.scenes.replace(scene);
   // Test and debugging hook; read-only views plus the input object so automated tests can play.
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), saves: () => game.saves.list(),

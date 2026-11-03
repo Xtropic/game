@@ -41,6 +41,10 @@ Every spoken line in `data/maps` is recorded ahead of time with the Kokoro-82M v
 
 `KOKORO_DIR` holds `kokoro-v1.0.onnx` and `voices-v1.0.bin` from the kokoro-onnx GitHub releases. Unchanged lines are kept, unused recordings are removed, and `npm test` fails if any line has no recording.
 
+## Attributes and levels
+
+Every character has seven attributes (might, grit, finesse, nerve, wits, heart, presence) that grow with level, from 1 to 60. Growth profiles are in `data/cast/attributes.json`: twelve archetypes, and each person leans toward one or two attributes and away from others. Growth is deterministic, with no random level-ups. `src/cast/attributes.ts` holds the formulas every system uses: party battles (damage, health, timing windows, braces, healing, song, enemy nerve), army officers, duels, Thornwick jobs and checks. A battle unit with `"cast": "<id>"` gets that character's attributes at their saved level. Winning a battle gives experience, and the levels are kept in save files (save version 2).
+
 ## Portraits
 
 Painted anime portraits for the main cast (Rhea, Corran, Finch, Tamsin, Elder Maren, Elder Rook, Captain Halloran, Dr Lisle) are in `public/portraits`, made with Figma's image AI; the originals are in the Figma file "The Lull - portraits". They are listed in `public/portraits/index.json`, for example `{ "rhea": ["rhea.jpg"] }`, with an optional second, open-mouth image shown while the voice is loud; without one, a soft light swells with the voice. Characters with no painted portrait use a close-up of their HD battle figure.

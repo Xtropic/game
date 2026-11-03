@@ -1,7 +1,7 @@
 // Saves: versioned JSON in slots. Storage is injected so tests can run without a browser.
 export interface KV { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void; }
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 export const SLOTS = ["auto", "1", "2", "3"] as const;
 export type Slot = (typeof SLOTS)[number];
 
@@ -11,6 +11,8 @@ export interface SaveData {
   playSeconds: number;
   place: { map: string; x: number; y: number; facing: "up" | "down" | "left" | "right" };
   flags: Record<string, boolean | number | string>;
+  /** Each character's level and experience toward the next level. */
+  party: Record<string, { level: number; xp: number }>;
 }
 
 export interface SaveSummary { slot: Slot; savedAt: string; playSeconds: number; map: string; }
@@ -21,6 +23,7 @@ export function migrate(raw: { version?: number } & Record<string, unknown>): Sa
   const v = typeof d.version === "number" ? d.version : 0;
   if (v > SAVE_VERSION) throw new Error(`Save is from a newer version (${v})`);
   if (v < 1) { d.flags = d.flags ?? {}; d.playSeconds = d.playSeconds ?? 0; d.version = 1; }
+  if ((d.version as number) < 2) { d.party = {}; d.version = 2; }
   return d as unknown as SaveData;
 }
 

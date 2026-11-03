@@ -8,6 +8,7 @@ import { pixelTexture } from "../art/pixel";
 import { LOOKS, personSheet, type Facing } from "../art/people";
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
+import { xpForFoe } from "../cast/attributes";
 import type { Texture } from "pixi.js";
 import { DialogueBox } from "../ui/dialogueBox";
 import { entityLines, type Line } from "./lines";
@@ -74,7 +75,7 @@ export class ExploreScene implements Scene {
 
   save(slot: "auto" | "1"): void {
     const s = this.snapshot();
-    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags } });
+    this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags }, party: { ...this.game.party } });
   }
 
   /** Shows lines one after another; the next shows when the player closes the current one. */
@@ -90,14 +91,19 @@ export class ExploreScene implements Scene {
   startBattle(id: string, e?: MapEntity): void {
     const def = BATTLES[id]; if (!def) throw new Error(`no battle ${id}`);
     this.game.scenes.push(new BattleScene(def, SKILLS, {
-      onDone: () => {
+      levels: this.game.levels(),
+      onDone: (_r, s) => {
         this.game.flags[`won.${id}`] = true;
+        // experience: every foe beaten, shared in full by each cast member who fought
+        const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
+        const ups = s.units.filter((u) => u.side === "ally" && u.cast).flatMap((u) => this.game.giveXp(u.cast!, xp, u.name));
         if (e) {
           const i = this.npcs.findIndex((n) => n.e === e);
           if (i >= 0) { this.npcs[i].sprite.destroy(); this.npcs.splice(i, 1); }
           const after = entityLines(e).find((l) => l.who === "narrator" && l.text === String(e.props?.after));
           if (after) this.say(after);
         }
+        if (ups.length) this.say(...ups.map((text) => ({ who: "narrator", name: "", text })));
         this.save("auto");
       },
     }));

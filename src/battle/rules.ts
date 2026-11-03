@@ -11,6 +11,8 @@
 // - The foal song takes three timed notes: it calms a wild kith (it leaves) or steadies an ally kith (next hit x1.5).
 // - A blinded (smoked) foe loses its next move, and hits on it land as an ambush (x1.4).
 
+import { NEUTRAL, attrsAt, party, person, type Attrs } from "../cast/attributes";
+
 export type Side = "ally" | "foe";
 export type Row = "front" | "back";
 export type Grade = "perfect" | "good" | "early" | "late" | "none";
@@ -19,12 +21,17 @@ export type SkillKind = "melee" | "ranged" | "pounce" | "heal" | "stun" | "guard
 export interface SkillDef { name: string; note: string; kind: SkillKind; dmg?: [number, number]; amt?: number; ally?: boolean; proj?: string; icon?: string; }
 export type SkillBook = Record<string, SkillDef>;
 
-export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; }
+/** A fighter. `cast` links a character's attributes (data/cast/attributes.json); without one (kith), it counts
+ *  as an average person. `hp` may be left out for cast members: it then comes from grit and level. */
+export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp?: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; cast?: string; level?: number; }
 export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; }
 
 export interface Intent { skill: string; target: string; }
 export interface Unit extends UnitDef {
+  hp: number;
   maxHp: number;
+  level: number;
+  stats: Attrs | null; // null: no attributes (kith); counts as NEUTRAL
   stunned: boolean;
   guardedBy: string | null;
   covered: boolean; // a bonded kith has already covered its partner this round
@@ -71,17 +78,27 @@ export const braceMult = (g: Grade): number => (g === "perfect" ? 0.3 : g === "g
 const isGood = (g: Grade) => g === "perfect" || g === "good";
 
 /** Timing window in seconds from the moment of impact. */
-export function gradePress(offset: number): Grade {
-  const a = Math.abs(offset);
+export function gradePress(offset: number, widen = 1): Grade {
+  const a = Math.abs(offset) / widen;
   return a < 0.075 ? "perfect" : a < 0.17 ? "good" : offset < 0 ? "early" : "late";
 }
 
-export function createBattle(def: BattleDef, book: SkillBook, rng: Rng): BattleState {
-  const units: Unit[] = def.units.map((u) => ({ ...u, maxHp: u.hp, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null }));
+/** `levels` overrides cast members' levels (the party's current levels from the save). */
+export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}): BattleState {
+  const units: Unit[] = def.units.map((u) => {
+    const level = (u.cast && levels[u.cast]) || u.level || (u.cast ? person(u.cast)?.level : undefined) || 1;
+    const stats = u.cast ? attrsAt(u.cast, level) : null;
+    const hp = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
+    return { ...u, hp, maxHp: hp, level, stats, stunned: false, guardedBy: null, covered: false, calm: 0, gone: false, steady: false, intent: null };
+  });
   const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro] };
   planIntents(s, book, rng);
   return s;
 }
+
+export const statsOf = (u: Unit): Attrs => u.stats ?? NEUTRAL;
+/** How much wider this unit's timing windows are, from finesse. */
+export const timingOf = (u: Unit): number => party.timing(statsOf(u));
 
 export const unit = (s: BattleState, id: string): Unit => { const u = s.units.find((x) => x.id === id); if (!u) throw new Error(`no unit ${id}`); return u; };
 export const alive = (u: Unit): boolean => u.hp > 0 && !u.gone;
@@ -137,7 +154,8 @@ function addBond(s: BattleState, n: number, ev: BattleEvent[]): void {
 
 function damage(book: SkillBook, u: Unit, k: string, t: Unit, g: Grade, rng: Rng): { amt: number; tags: string[] } {
   let m = gradeMult(g); const tags: string[] = [];
-  if (t.stunned) { m *= 1.4; tags.push("Ambush"); }
+  m *= party.power(statsOf(u), statsOf(t), book[k].kind === "ranged" ? "ranged" : "melee");
+  if (t.stunned) { m *= u.stats ? party.ambush(u.stats) : 1.4; tags.push("Ambush"); }
   if (u.steady) { m *= 1.5; u.steady = false; tags.push("Steadied"); }
   return { amt: Math.round(roll(rng, book[k].dmg ?? [1, 1]) * m), tags };
 }
@@ -150,7 +168,7 @@ function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[]
   else if (t.guardedBy) { const gd = unit(s, t.guardedBy); if (alive(gd)) { t = gd; redirected = "guard"; s.log.push(`${gd.name} takes the blow for ${target.name}.`); } }
   t.hp = Math.max(0, t.hp - amt);
   ev.push({ t: "hit", by: by.id, target: t.id, amt, tags, redirected, was: redirected ? target.id : undefined });
-  if (t.side === "foe") s.resolve = Math.max(0, s.resolve - amt * 1.05 - (t.hp === 0 ? 15 : 0));
+  if (t.side === "foe") s.resolve = Math.max(0, s.resolve - amt * 1.05 * party.shake(statsOf(by)) - (t.hp === 0 ? 15 : 0));
   s.log.push(`${by.name} hits ${t.name} for ${amt}.${t.hp === 0 ? ` ${t.name} goes down.` : ""}`);
   if (t.hp === 0 && t.bonded) { t.gone = true; ev.push({ t: "bolt", id: t.id }); s.log.push(`${t.name} bolts back up the trail. He'll find you after.`); }
   else if (t.hp === 0) { t.intent = null; ev.push({ t: "down", id: t.id }); }
@@ -182,21 +200,22 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
         const kin = isGood(g) && alive(landed) && sk.kind === "melee" ? kithOf(s, u) : undefined;
         if (kin) { ev.push({ t: "follow", by: kin.id, target: landed.id }); const f = damage(book, kin, "follow", landed, "none", rng); hit(s, kin, landed, f.amt, ["Follow-up", ...f.tags], ev); }
       } else {
-        hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * braceMult(g))), [], ev);
+        const brace = braceMult(g) * (g === "perfect" || g === "good" ? party.brace(statsOf(t)) : 1);
+        hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * brace * party.power(statsOf(u), statsOf(t), sk.kind === "ranged" ? "ranged" : "melee"))), [], ev);
         addBond(s, g === "perfect" ? 20 : g === "good" ? 8 : 0, ev);
       }
       break;
     }
-    case "heal": { const n = Math.min(sk.amt ?? 0, t.maxHp - t.hp); t.hp += n; ev.push({ t: "heal", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} rallies ${t.name} (+${n}).`); break; }
+    case "heal": { const n = Math.min(Math.round((sk.amt ?? 0) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; ev.push({ t: "heal", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} rallies ${t.name} (+${n}).`); break; }
     case "stun": { t.stunned = true; ev.push({ t: "stun", by: u.id, target: t.id }); s.log.push(`${u.name} throws a smoke pot. ${t.name} is blinded and loses its move.`); break; }
     case "guard": { for (const x of sideOf(s, u.side)) if (x.guardedBy === u.id) x.guardedBy = null; t.guardedBy = u.id; ev.push({ t: "guard", by: u.id, target: t.id }); s.log.push(`${u.name} stands in front of ${t.name}.`); break; }
     case "song": {
       const hits = grades.filter(isGood).length, perfects = grades.filter((x) => x === "perfect").length;
       if (t.side === u.side) {
-        t.steady = true; const n = Math.min(4 + hits * 3, t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
+        t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
         ev.push({ t: "steady", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} sings. ${t.name} steadies.`);
       } else {
-        t.calm = Math.min(100, t.calm + 18 + hits * 14 + perfects * 6); addBond(s, perfects * 8, ev);
+        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)))); addBond(s, perfects * 8, ev);
         const left = t.calm >= 100;
         if (left) { t.intent = null; t.gone = true; s.resolve = Math.max(0, s.resolve - 15); }
         ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left });
