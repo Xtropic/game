@@ -67,6 +67,12 @@ if (!ex.flags["won.trail-wardens"]) fail(`win not recorded: ${JSON.stringify(ex.
 if (!ex.explore.dialog?.includes("trail down the mountain is open")) fail(`no after line: ${ex.explore.dialog}`);
 const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).flags);
 if (!saved["won.trail-wardens"]) fail("win not in the autosave");
+// experience: the win levels Rhea and Tamsin up, says so, and the levels are saved
+const party = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).party);
+if (!(party.rhea?.level > 3) || !(party.tamsin?.level > 3)) fail(`no level-up saved: ${JSON.stringify(party)}`);
+await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); await page.waitForTimeout(100);
+const lvl = await page.evaluate(() => window.__lull.explore().dialog);
+if (!/reaches level 4/.test(lvl ?? "")) fail(`no level-up line: ${lvl}`);
 await page.screenshot({ path: "test-results/battle-after.png" });
 
 if (errors.length) fail("page errors: " + errors.join(" | "));

@@ -4,12 +4,12 @@
   "backdrop": "night-trail",
   "intro": ["Grey coats on the trail. Wardens, holding the path.", "Ash stays at Rhea's shoulder. He follows her good hits and covers her once a round."],
   "units": [
-    { "id": "rhea", "name": "Rhea",          "look": "rhea",    "side": "ally", "row": "front", "hp": 42, "skills": ["strike", "sing", "rally"], "at": [86, 94] },
+    { "id": "rhea", "name": "Rhea",          "look": "rhea",    "side": "ally", "row": "front", "cast": "rhea", "skills": ["strike", "sing", "rally"], "at": [86, 94] },
     { "id": "ash",  "name": "Ash",           "look": "ash",     "side": "ally", "row": "front", "hp": 30, "skills": [], "kith": true, "bonded": "rhea", "at": [62, 124] },
-    { "id": "tam",  "name": "Tamsin",        "look": "tamsin",  "side": "ally", "row": "back",  "hp": 30, "skills": ["sling", "smoke"], "at": [42, 104] },
-    { "id": "w1",   "name": "Warden",        "look": "warden",  "side": "foe",  "row": "front", "hp": 26, "skills": ["wstrike"], "at": [168, 92] },
+    { "id": "tam",  "name": "Tamsin",        "look": "tamsin",  "side": "ally", "row": "back",  "cast": "tamsin", "skills": ["sling", "smoke"], "at": [42, 104] },
+    { "id": "w1",   "name": "Warden",        "look": "warden",  "side": "foe",  "row": "front", "hp": 26, "cast": "warden", "skills": ["wstrike"], "at": [168, 92] },
     { "id": "rc",   "name": "Reedcat",       "look": "reedcat", "side": "foe",  "row": "front", "hp": 20, "skills": ["pounce"], "kith": true, "at": [160, 126] },
-    { "id": "w2",   "name": "Warden",        "look": "warden",  "side": "foe",  "row": "front", "hp": 26, "skills": ["wstrike"], "at": [194, 110] },
-    { "id": "wa",   "name": "Warden archer", "look": "archer",  "side": "foe",  "row": "back",  "hp": 20, "skills": ["bow"], "at": [226, 98] }
+    { "id": "w2",   "name": "Warden",        "look": "warden",  "side": "foe",  "row": "front", "hp": 26, "cast": "warden", "skills": ["wstrike"], "at": [194, 110] },
+    { "id": "wa",   "name": "Warden archer", "look": "archer",  "side": "foe",  "row": "back",  "hp": 20, "cast": "archer", "skills": ["bow"], "at": [226, 98] }
   ]
 }
