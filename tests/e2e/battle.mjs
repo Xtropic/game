@@ -30,11 +30,12 @@ if (!talk.dialog?.includes("Trail")) fail(`warden did not speak: ${talk.dialog}`
 await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); // finish typing, then close
 await page.waitForFunction(() => window.__lull.battle()?.debug().mode === "menu", null, { timeout: 5000 });
 let d = await bt();
-if (d.acting !== "rhea" || d.skills[0] !== "strike") fail(`unexpected first turn ${JSON.stringify(d)}`);
+// Tamsin's finesse gives her the higher initiative, so she opens
+if (d.acting !== "tam" || d.skills[0] !== "sling") fail(`unexpected first turn ${JSON.stringify(d)}`);
 await page.waitForTimeout(400);
 await page.screenshot({ path: "test-results/battle-menu.png" });
 
-// a real timed strike: choose Strike, the first target, then press Space when the ring closes
+// a real timed shot: choose Sling, the first target, then press Space when the ring closes
 await page.keyboard.press("Enter"); await page.waitForTimeout(80);
 if ((await bt()).mode !== "target") fail("no target selection");
 if (shots) await page.screenshot({ path: "test-results/battle-target.png" });
@@ -44,10 +45,10 @@ const qAt = Date.now();
 if (shots) await page.screenshot({ path: "test-results/battle-qte.png" });
 await page.waitForTimeout(Math.max(0, 430 - (Date.now() - qAt)));
 await page.keyboard.press("Space");
-await page.waitForFunction(() => window.__lull.battle()?.debug().acting === "tam", null, { timeout: 5000 });
+await page.waitForFunction(() => window.__lull.battle()?.debug().acting === "rhea", null, { timeout: 5000 });
 d = await bt();
-const w1 = d.units.find((u) => u.id === "w1");
-if (!(w1.hp < 26)) fail(`strike did no damage: ${JSON.stringify(d.units)}`);
+const hurt = d.units.filter((u) => ["w1", "rc", "w2", "wa"].includes(u.id) && u.hp < { w1: 26, rc: 20, w2: 26, wa: 20 }[u.id]);
+if (!hurt.length && !d.log.some((l) => l.includes("slips"))) fail(`shot neither hit nor was dodged: ${JSON.stringify(d)}`);
 if (shots) { await page.waitForTimeout(100); await page.screenshot({ path: "test-results/battle-after-hit.png" }); }
 
 // the rest of the fight with auto timing, choosing the first move and first target every turn

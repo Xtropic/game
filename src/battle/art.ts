@@ -286,6 +286,7 @@ export function intentFX(g: CanvasRenderingContext2D, kind: string, x: number, y
   else if (kind === "paw") { g.arc(0, U(0.7), U(1), 0, 7); g.fill(); g.beginPath(); for (const a of [-1.2, -0.4, 0.4, 1.2]) { const cx = Math.sin(a) * U(1.9), cy = -U(0.6) - Math.cos(a) * U(0.6); g.moveTo(cx + U(0.45), cy); g.arc(cx, cy, U(0.45), 0, 7); } g.fill(); g.beginPath(); }
   else if (kind === "aim") { g.arc(0, 0, U(1.5), 0, 7); g.moveTo(-U(2.6), 0); g.lineTo(-U(0.9), 0); g.moveTo(U(0.9), 0); g.lineTo(U(2.6), 0); g.moveTo(0, -U(2.6)); g.lineTo(0, -U(0.9)); g.moveTo(0, U(0.9)); g.lineTo(0, U(2.6)); }
   else if (kind === "smoke") { g.arc(-U(0.8), U(0.3), U(1), 0, 7); g.moveTo(U(1.8), 0); g.arc(U(0.8), 0, U(1), 0, 7); }
+  else if (kind === "unknown") { g.arc(0, -U(0.7), U(1.1), Math.PI * 1.05, Math.PI * 2.35); g.lineTo(0, U(0.7)); g.moveTo(U(0.25), U(1.75)); g.arc(0, U(1.75), U(0.25), 0, 7); }
   g.stroke(); g.restore();
 }
 /** The small bouncing arrow over whoever's turn it is, or over the target being chosen. */
