@@ -11,7 +11,7 @@ const make = (species: string, level = 25, over: Partial<Kith> = {}): Kith => ({
 describe("kith species", () => {
   it("has 36 base species in 12 families, 45 regional forms, 36 hybrids, 25 unseen and 6 legends, all well formed", () => {
     const all = Object.values(SPECIES), count = (k: string) => all.filter((s) => s.kind === k).length;
-    expect([count("base"), count("regional"), count("hybrid"), count("unseen"), count("legend")]).toEqual([36, 45, 36, 25, 6]);
+    expect([count("base"), count("regional"), count("hybrid"), count("unseen"), count("legend")]).toEqual([36, 45, 36, 25, 6]); expect(count("heir")).toBe(6);
     expect(Object.keys(FAMILIES).length).toBe(12);
     for (const f of Object.keys(FAMILIES)) expect(all.filter((s) => s.kind === "base" && s.family === f).length, f).toBe(3);
     for (const s of all) {

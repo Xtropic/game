@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { seeded } from "../../src/battle/rules";
-import { COLOURS, PATTERNS, REGIONS, SPECIES, TRAITS, breed, breedLitter, canBreed, coatOf, formsIn, movesAt, nativesOf, shownCoat, unseenFor, wildIn, wildKith, type Kith } from "../../src/kith/kith";
+import { COLOURS, PATTERNS, REGIONS, SPECIES, TRAITS, breed, breedHeir, breedLitter, canBreed, canSireHeir, foalToKith, legendKith, coatOf, formsIn, movesAt, nativesOf, shownCoat, unseenFor, wildIn, wildKith, type Kith } from "../../src/kith/kith";
 
 const make = (species: string, over: Partial<Kith> = {}): Kith => ({
   id: `${species}-${Math.random()}`, name: species, species, level: 25, xp: 0, potential: [3, 3, 3, 3, 3, 3, 3], trained: [0, 0, 0, 0, 0, 0, 0],
@@ -27,7 +27,7 @@ describe("regions", () => {
 
   it("each regional form lives in a real region, and the new species describe their looks", () => {
     for (const s of Object.values(SPECIES)) if (s.kind === "regional") expect(REGIONS[s.region!], s.id).toBeDefined();
-    expect(Object.values(SPECIES).filter((s) => s.look).length).toBe(108); // every species added this round, and every hybrid, describes its look
+    expect(Object.values(SPECIES).filter((s) => s.look).length).toBe(114); // every species added this round, every hybrid and every heir describes its look
   });
 });
 
@@ -92,5 +92,44 @@ describe("breeding variations", () => {
     expect(unseenFor(a, b, { ...night, place: "thornwick" }).map((s) => s.id)).not.toContain("ghost-loper");
     expect(unseenFor(make("bellower"), make("bellower"), { rng: seeded(1), place: "vael" }).map((s) => s.id)).toContain("anthem-bellower");
     expect(canBreed(make("bellower"), make("canal-gloamer")).ok).toBe(true);
+  });
+});
+
+describe("legends and their heirs", () => {
+  it("every legend is fixed: the same potential, level, temperament and traits for every player", () => {
+    for (const s of Object.values(SPECIES).filter((x) => x.kind === "legend")) {
+      const k = legendKith(s.id);
+      expect(k.potential.length, s.id).toBe(7); expect(k.potential.filter((p) => p === 5).length, s.id).toBeGreaterThanOrEqual(2);
+      expect(k.level).toBe(40); expect(REGIONS[s.lair!], s.id).toBeDefined(); expect(SPECIES[s.heir!.species].kind).toBe("heir");
+      for (const t of k.traits) expect(TRAITS[t], `${s.id} ${t}`).toBeDefined();
+    }
+  });
+
+  it("a legend never breeds normally, and sires one heir only after its quest, at full bond, in its lair", () => {
+    const m = legendKith("matriarch"), mate = make("ironback", { potential: [3, 3, 3, 3, 3, 3, 3] }), rng = seeded(2);
+    expect(canBreed(m, mate).ok).toBe(false);
+    const at = { rng, place: "wandering-herd", questDone: true };
+    expect(canSireHeir(m, mate, at).why).toMatch(/trust/); m.bond = 100;
+    expect(canSireHeir(m, mate, { ...at, questDone: false }).why).toMatch(/The Last Calving/);
+    expect(canSireHeir(m, mate, { ...at, place: "thornwick" }).ok).toBe(false);
+    expect(canSireHeir(m, make("loftbuck"), at).ok).toBe(false);
+    const heir = breedHeir(m, mate, at)!;
+    expect(heir.species).toBe("heir-matriarch"); expect(heir.blood).toBe("matriarch");
+    // the Matriarch's five-star attributes (might, grit, nerve, presence) come through at 4 or 5; none fall below the mate
+    for (const i of [0, 1, 3, 6]) expect(heir.potential[i]).toBeGreaterThanOrEqual(4);
+    heir.potential.forEach((p, i) => expect(p).toBeGreaterThanOrEqual(mate.potential[i]));
+    expect(m.sired).toBe(true); expect(breedHeir(m, mate, at)).toBeNull();
+  });
+
+  it("an heir can't make more heirs: its foals take the other parent's species, with a touch of legend blood", () => {
+    const m = legendKith("matriarch"); m.bond = 100;
+    const heir = foalToKith(breedHeir(m, make("ironback"), { rng: seeded(1), place: "wandering-herd", questDone: true })!, "h", "Heir");
+    heir.level = 25;
+    const rng = seeded(8); let might = 0, plain = 0;
+    for (let i = 0; i < 300; i++) {
+      const f = breed(heir, make("ironback"), { rng })!; expect(f.species).toBe("ironback"); expect(f.blood).toBe("matriarch"); might += f.potential[0];
+      plain += breed(make("ironback", { potential: heir.potential }), make("ironback"), { rng })!.potential[0];
+    }
+    expect(might).toBeGreaterThan(plain + 60);
   });
 });
