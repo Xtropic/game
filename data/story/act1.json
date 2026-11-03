@@ -129,7 +129,7 @@
      "else": [
       {
        "say": "soldier",
-       "text": "\"Half of us were miners. The other half were hatchery children once. Nobody here wears a lull, Recruit. Not one.\""
+       "text": "\"Half of us were miners. The other half were hatchery children once. Nobody here wears a lull. Not one.\""
       }
      ]
     }
@@ -1280,7 +1280,7 @@
     "join": "ash"
    },
    {
-    "fade": "A year later."
+    "fade": "The next summer."
    },
    {
     "goto": {
@@ -1292,7 +1292,7 @@
    },
    {
     "say": "",
-    "text": "For a year Rhea has followed the indenture carts down every road out of the highlands. Tamsin and Ash have followed her."
+    "text": "For most of a year Rhea has followed the indenture carts down every road out of the highlands. Tamsin and Ash have followed her."
    },
    {
     "say": "",
@@ -1317,11 +1317,11 @@
    },
    {
     "say": "innkeeper",
-    "text": "\"They split the children here, a year ago. Some to the Guild's houses in Vantry, some to the outer hatcheries, some down the river. A Warden stood by the stove and fed the cart's ledger into it, page by page.\""
+    "text": "\"They split the children here, last autumn. Some to the Guild's houses in Vantry, some to the outer hatcheries, some down the river. A Warden stood by the stove and fed the cart's ledger into it, page by page.\""
    },
    {
     "say": "rhea",
-    "text": "\"Where did the boy go? Nine years old, sandy hair. He'd have been holding on to a lead rope. He'd have been asking about a loftbuck.\""
+    "text": "\"Where did the boy go? Nine years old then, sandy hair. He'd have been holding on to a lead rope. He'd have been asking about a loftbuck.\""
    },
    {
     "say": "innkeeper",
@@ -1384,7 +1384,7 @@
       "do": [
        {
         "say": "brannoc",
-        "text": "\"For eleven years, down the Kerrow mines. I've been clean for six. Some days I'm proud of it, some days it's just a long time.\""
+        "text": "\"Eleven months, after a roof came down on me in the Kerrow mines. One ring for every lull. Getting off them took longer than wearing them. I've been clean six years. Some days I'm proud of it, some days it's just a long time.\""
        },
        {
         "add": {
@@ -1457,7 +1457,7 @@
   "enlist": [
    {
     "say": "",
-    "text": "Marshal Idris Kane is younger than Rhea expected, with an easy smile and a red coat gone pink at the seams. He listens like he has all day."
+    "text": "Marshal Idris Kane is younger than Rhea expected, with an easy smile and a green coat gone grey at the seams. He listens like he has all day."
    },
    {
     "say": "kane",
@@ -1531,7 +1531,7 @@
    },
    {
     "say": "kane",
-    "text": "\"One cart warden. The Guild keeps them alone so they can't be bribed in pairs. Stop him, bring the children here, and you're a Sergeant.\""
+    "text": "\"One cart warden. The Guild says a cart of children isn't worth two men's wages. Stop him, bring the children here, and you're a Sergeant.\""
    },
    {
     "stage": "a3"
@@ -1651,7 +1651,11 @@
    },
    {
     "say": "sela",
-    "text": "\"They took me with Finch. Then a Warden paid for me. He went into the hut with the captain and came out and said my name, and they put me in a different cart. I never saw his face. He had his back to the lamp.\""
+    "text": "\"They took me with Finch. Then a Warden paid for me. He went into the hut with the captain and came out and said my name, and they put me in a different cart, to the sorting house, not the brood rooms. I never saw his face. He had his back to the lamp.\""
+   },
+   {
+    "say": "sela",
+    "text": "\"Then last week a clerk said the sorting house was full, and put me in this one.\""
    },
    {
     "say": "rhea",
@@ -2024,7 +2028,7 @@
    },
    {
     "say": "",
-    "text": "Old Oda, who kept the greenling trays. She's thin as a stick, and there's moss under her nails. She has lived in the spring caves for a year."
+    "text": "Old Oda, who kept the greenling trays. She's thin as a stick, and there's moss under her nails. She has lived in the spring caves since the raid."
    },
    {
     "say": "oda",

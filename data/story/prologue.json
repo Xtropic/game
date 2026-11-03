@@ -919,7 +919,7 @@
    "do": [
     {
      "say": "",
-     "text": "The brood book. Tonight's measures in Finch's careful, enormous letters. Every line matches your mother's table."
+     "text": "The brood book. Tonight's measures in Finch's careful, enormous letters, and Pell's cramped ones on the moss column. Every line matches your mother's table."
     }
    ]
   },
@@ -1206,7 +1206,7 @@
     "text": "\"Don't hover. I've done every tray.\""
    },
    {
-    "choose": "The brood book is open on the bench. Tonight's trays go down to Millbridge, where Corran's mother and sister are weaning.",
+    "choose": "The brood book is open on the bench. These trays go down to Millbridge next month, where Corran's mother and sister are weaning.",
     "options": [
      {
       "label": "Check his measures",
@@ -1690,6 +1690,10 @@
    {
     "say": "",
     "text": "The elders are on the drying-house beam. You don't look twice."
+   },
+   {
+    "say": "",
+    "text": "Old Wenna, who hid under the drying racks all night, tells you what she saw. The Wardens' main company didn't come up the trail. They came over the cloud path, and Corran was walking in front of them, showing the way."
    }
   ],
   "ashTerrace": [
@@ -1763,7 +1767,7 @@
    },
    {
     "say": "",
-    "text": "No hangings, he had said. No burning, no children taken. You led his company in quietly so that it would be an arrest, not Hask. You sent Rhea down the mountain so she wouldn't be there if it went wrong."
+    "text": "No hangings, he had said. No burning, no children taken. You led his company in quietly so that it would be an arrest, not Hask. You sent Rhea down the mountain so she wouldn't be there if it went wrong. He swore the trail would be clear. He put pickets on it anyway."
    },
    {
     "say": "",
@@ -1778,7 +1782,7 @@
     "then": [
      {
       "say": "halloran",
-      "text": "\"You've nothing to buy a child with, Dace. But I need a man on the hatchery night watch. Nobody wants it. Take it, and I'll sign one indenture over to you. The child still works the hatchery, but on the clerk's side, out of the brood rooms, under your eye.\""
+      "text": "\"You've nothing to buy a child with, Dace. But I need a man on the hatchery night watch. Nobody wants it. Take it, and I'll sign one indenture over to your household. The child still works the hatchery, but on the clerk's side, out of the brood rooms, under your eye.\""
      },
      {
       "choose": "Finch is by the second cart, looking straight at you. By the last cart, a girl of seven called Sela is crying without making a sound.",
@@ -1798,7 +1802,7 @@
         ]
        },
        {
-        "label": "Take the vat-cleaning duty too. Ask for Finch and Sela.",
+        "label": "Take the vat-cleaning duty too. Ask for Finch, and for Sela to be kept out of the brood rooms.",
         "hint": "A second post nobody wants. You'll sleep even less.",
         "do": [
          {
@@ -1844,7 +1848,7 @@
      },
      {
       "say": "",
-      "text": "He laughs, and signs both."
+      "text": "He laughs, signs Finch's paper over to you, and writes \"sorting house, not brood\" against the girl's number."
      }
     ],
     "else": [
@@ -1869,7 +1873,7 @@
     "then": [
      {
       "say": "",
-      "text": "Years from now, Sela will tell Rhea that a Warden once took a second post for her and never asked for anything back."
+      "text": "A year from now, Sela will tell Rhea that a Warden once took a second post for her and never asked for anything back."
      }
     ]
    },
