@@ -1,0 +1,32 @@
+{
+ "id": "hatchery",
+ "name": "House Mire's hatchery",
+ "music": "hatchery",
+ "legend": {
+  "#": "brick",
+  "_": "wetfloor",
+  "t": "tray",
+  "B": "boiler",
+  "e": "exit"
+ },
+ "rows": [
+  "####################",
+  "#B________________B#",
+  "#_tttt_tttt_tttt___#",
+  "#__________________#",
+  "#_tttt_tttt_tttt___#",
+  "#__________________#",
+  "#_tttt_tttt_tttt___#",
+  "#__________________#",
+  "#B________________B#",
+  "#########e##########"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 9,
+   "y": 8
+  }
+ ]
+}

@@ -23,15 +23,44 @@ export class DialogueBox {
   private time = 0;
   private voiced = false;
   private size = 132; // portrait size in CSS pixels
+  /** A choice the player is making: the options, and which one is highlighted. */
+  private options: { label: string; hint?: string }[] | null = null;
+  cursor = 0;
+  private optTexts: Text[] = [];
+  private optBox = new Graphics();
 
   constructor(private voices: Voices, private buildFor: (id: string) => Build = () => EVEN) {
-    this.view.addChild(this.box, this.face, this.frame, this.name, this.body);
+    this.view.addChild(this.box, this.face, this.frame, this.name, this.body, this.optBox);
     this.view.visible = false;
   }
 
   get open(): boolean { return !!this.line; }
   get text(): string | null { return this.line?.text ?? null; }
   get speaking(): boolean { return this.voiced && this.voices.playing; }
+
+  get choosing(): boolean { return !!this.options; }
+
+  /** Shows a prompt with options to pick from. The prompt is narrated; the options sit under it. */
+  choose(prompt: Line, options: { label: string; hint?: string }[]): void {
+    this.options = options; this.cursor = 0;
+    for (const t of this.optTexts) t.destroy();
+    this.optTexts = options.map((o) => { const t = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 17, fill: "#efe6d2", wordWrap: true, wordWrapWidth: 600, lineHeight: 22 } }); t.text = o.label + (o.hint ? `\n${o.hint}` : ""); this.view.addChild(t); return t; });
+    this.show(prompt);
+    this.shown = prompt.text.length;
+  }
+
+  /** Moves the highlight. */
+  move(d: number): void { if (this.options) this.cursor = (this.cursor + d + this.options.length) % this.options.length; }
+
+  /** Picks the highlighted option, or the one under a tap at (x, y). Returns its index, or -1. */
+  pick(x?: number, y?: number): number {
+    if (!this.options) return -1;
+    let i = this.cursor;
+    if (x !== undefined && y !== undefined) { i = this.optTexts.findIndex((t) => y >= t.y - 4 && y <= t.y + t.height + 4 && x >= t.x - 10); if (i < 0) return -1; }
+    this.options = null; for (const t of this.optTexts) t.destroy(); this.optTexts = []; this.optBox.clear();
+    this.close();
+    return i;
+  }
 
   show(line: Line): void {
     this.line = line; this.shown = 0; this.time = 0;
@@ -57,7 +86,8 @@ export class DialogueBox {
     const { w, h } = this.screen, port = !!this.line && hasPortrait(this.line.who);
     const narrow = w < 560;
     this.size = narrow ? 92 : 132;
-    const bw = Math.min(w - 24, 820), bh = Math.max(this.size + 24, 130), x = (w - bw) / 2, y = h - bh - 12;
+    const optH = this.options ? this.options.length * (narrow ? 46 : 50) + 10 : 0;
+    const bw = Math.min(w - 24, 820), bh = Math.max(this.size + 24, 130) + optH, x = (w - bw) / 2, y = h - bh - 12;
     this.box.clear().roundRect(x, y, bw, bh, 10).fill({ color: 0x14100c, alpha: 0.94 }).stroke({ color: 0x6b5236, width: 2 });
     const tx = port ? x + this.size + 30 : x + 20;
     this.face.visible = this.frame.visible = port;
@@ -70,6 +100,7 @@ export class DialogueBox {
     this.name.x = tx; this.name.y = y + 14;
     this.body.x = tx; this.body.y = y + (this.line?.name ? 40 : 18); this.body.style.wordWrapWidth = x + bw - tx - 20;
     this.body.style.fontSize = narrow ? 16 : 18; this.body.style.lineHeight = narrow ? 22 : 26;
+    this.optTexts.forEach((t, i) => { t.x = tx + 18; t.y = y + bh - optH + i * (narrow ? 46 : 50); t.style.wordWrapWidth = x + bw - tx - 40; t.style.fontSize = narrow ? 15 : 17; });
   }
 
   update(dt: number): void {
@@ -80,6 +111,15 @@ export class DialogueBox {
 
   render(): void {
     if (!this.line) return;
+    if (this.options) {
+      this.optBox.clear();
+      this.optTexts.forEach((t, i) => {
+        const on = i === this.cursor;
+        t.style.fill = on ? "#ffe39a" : "#cfc4ac";
+        if (on) this.optBox.roundRect(t.x - 14, t.y - 4, t.style.wordWrapWidth + 24, t.height + 8, 6).fill({ color: 0x3a2c1c, alpha: 0.9 });
+      });
+      this.view.setChildIndex(this.optBox, this.view.children.length - 1 - this.optTexts.length);
+    }
     this.body.text = this.line.text.slice(0, Math.floor(this.shown));
     if (!this.face.visible || !this.tex) return;
     const typing = this.shown < this.line.text.length;

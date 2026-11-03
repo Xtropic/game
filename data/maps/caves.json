@@ -1,0 +1,32 @@
+{
+ "id": "caves",
+ "name": "The brood caves",
+ "music": "caves",
+ "legend": {
+  "#": "rock",
+  "_": "cavefloor",
+  "t": "tray",
+  "w": "water",
+  "e": "exit",
+  "k": "shelf"
+ },
+ "rows": [
+  "################",
+  "#______________#",
+  "#_tt_tt_tt_tt__#",
+  "#______________#",
+  "#_tt_tt_tt_tt__#",
+  "#_____________w#",
+  "#_tt_tt_tt____w#",
+  "#_______k______#",
+  "#######e########"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 7,
+   "y": 7
+  }
+ ]
+}

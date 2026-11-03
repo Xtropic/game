@@ -1,0 +1,30 @@
+{
+ "id": "yard",
+ "name": "Vantry, the indenture yard",
+ "music": "vantry",
+ "legend": {
+  "#": "stonewall",
+  "o": "cobble",
+  "c": "cart",
+  "h": "door"
+ },
+ "rows": [
+  "########################",
+  "#oooooooooooooooooooooo#",
+  "#oooccooccooccooccooooo#",
+  "#oooccooccooccooccooooo#",
+  "#oooooooooooooooooooooo#",
+  "#oooooooooooooooooooooo#",
+  "#oooooooooooooooooooooo#",
+  "#oooooooooooooooooooooo#",
+  "#####h##################"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 7
+  }
+ ]
+}

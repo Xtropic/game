@@ -1,7 +1,14 @@
 // Map data: authored as rows of characters with a legend, so maps are readable and diffable as text.
 export const TILE = 16; // pixels per tile in the 320 x 180 world
 
-export type TileKind = "grass" | "path" | "flag" | "wall" | "roof" | "water" | "tree" | "fence" | "door" | "flowers" | "cliff";
+export type TileKind =
+  | "grass" | "path" | "flag" | "wall" | "roof" | "water" | "tree" | "fence" | "door" | "flowers" | "cliff"
+  // Larkfold: the cloud sea below the village, duskwort terraces and their walls, steps, the drying house
+  | "cloud" | "moss" | "terrace" | "steps" | "drying" | "ladder" | "cave" | "gate"
+  // the brood caves, houses and rooms
+  | "rock" | "cavefloor" | "tray" | "exit" | "plank" | "iwall" | "bed" | "shelf" | "table" | "innerdoor" | "roofwalk"
+  // the trail, Vantry's yard and the hatchery
+  | "trail" | "cobble" | "cart" | "stonewall" | "brick" | "wetfloor" | "boiler";
 
 export interface TileDef { kind: TileKind; solid: boolean; }
 
@@ -28,12 +35,40 @@ export const TILE_DEFS: Record<TileKind, TileDef> = {
   tree: { kind: "tree", solid: true },
   fence: { kind: "fence", solid: true },
   cliff: { kind: "cliff", solid: true },
+  cloud: { kind: "cloud", solid: true },
+  moss: { kind: "moss", solid: false },
+  terrace: { kind: "terrace", solid: true },
+  steps: { kind: "steps", solid: false },
+  drying: { kind: "drying", solid: true },
+  ladder: { kind: "ladder", solid: false },
+  cave: { kind: "cave", solid: false },
+  gate: { kind: "gate", solid: true },
+  rock: { kind: "rock", solid: true },
+  cavefloor: { kind: "cavefloor", solid: false },
+  tray: { kind: "tray", solid: true },
+  exit: { kind: "exit", solid: false },
+  plank: { kind: "plank", solid: false },
+  iwall: { kind: "iwall", solid: true },
+  bed: { kind: "bed", solid: true },
+  shelf: { kind: "shelf", solid: true },
+  table: { kind: "table", solid: true },
+  innerdoor: { kind: "innerdoor", solid: true },
+  roofwalk: { kind: "roofwalk", solid: false },
+  trail: { kind: "trail", solid: false },
+  cobble: { kind: "cobble", solid: false },
+  cart: { kind: "cart", solid: true },
+  stonewall: { kind: "stonewall", solid: true },
+  brick: { kind: "brick", solid: true },
+  wetfloor: { kind: "wetfloor", solid: false },
+  boiler: { kind: "boiler", solid: true },
 };
 
 export class WorldMap {
   readonly width: number;
   readonly height: number;
   private kinds: TileKind[];
+  /** Solid kinds the story has opened (the lower gate, once the night run starts). */
+  readonly open = new Set<TileKind>();
 
   constructor(readonly file: MapFile) {
     const errs = validateMap(file);
@@ -49,7 +84,7 @@ export class WorldMap {
   }
 
   /** Off-map counts as solid so nothing can walk out of the world. */
-  solidAt(tx: number, ty: number): boolean { const k = this.kindAt(tx, ty); return k === null || TILE_DEFS[k].solid; }
+  solidAt(tx: number, ty: number): boolean { const k = this.kindAt(tx, ty); return k === null || (TILE_DEFS[k].solid && !this.open.has(k)); }
 
   /** True if a box (pixels, top-left x,y) overlaps any solid tile. */
   boxBlocked(x: number, y: number, w: number, h: number): boolean {

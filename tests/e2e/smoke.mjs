@@ -30,15 +30,16 @@ if (!(walked.x > start.x + 20)) fail(`walking right moved ${walked.x - start.x}p
 await page.keyboard.down("Shift"); await hold("ArrowLeft", 500); await page.keyboard.up("Shift");
 const ran = await at();
 if (!(walked.x - ran.x > (walked.x - start.x) * 1.3)) fail(`running was not faster (${walked.x - ran.x} vs ${walked.x - start.x})`);
-// walk into the top cliff: must stop, not pass through
+// walk up the steps onto the top terrace and into the cloud edge: must stop, not pass through
+await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x = 9 * 16 + 2; s.player.y = 6 * 16 - 2; });
 await hold("ArrowUp", 3000);
-const top = await at(); if (top.y < 0) fail(`walked through the cliff to y=${top.y}`);
+const top = await at(); if (top.y < 0 || top.y > 2 * 16) fail(`did not stop at the cloud edge: y=${top.y}`);
 await page.screenshot({ path: "test-results/explore.png" });
 
 // talk to Maren: put Rhea right beside her, facing her
-await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x = 17 * 16 - 9; s.player.y = 9 * 16 - 2; s.player.facing = "right"; });
+await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x = 15 * 16 + 2; s.player.y = 7 * 16 - 2; s.player.facing = "right"; });
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);
-const talk = await at(); if (!talk.dialog || !talk.dialog.includes("well")) fail(`no dialogue from Maren: ${talk.dialog}`);
+const talk = await at(); if (!talk.dialog || !talk.dialog.includes("Three hundred")) fail(`no dialogue from Maren: ${talk.dialog}`);
 await page.screenshot({ path: "test-results/dialogue.png" });
 // first press finishes typing the line out, the second closes it
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);

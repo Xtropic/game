@@ -1,5 +1,6 @@
-// Plays the trail battle in a real browser: talks to the warden, fights with real key presses, checks a timed
-// press is graded, wins (with auto timing to keep it fast), and checks the warden is gone and the win is saved.
+// Plays the trail battle in a real browser: takes the night run down the trail, walks into the patrol, fights with
+// real key presses, checks a timed press is graded, wins (with auto timing to keep it fast), and checks the story
+// carries on, the patrol is gone and the win is saved.
 import { createRequire } from "node:module";
 const { chromium } = createRequire(import.meta.url)("playwright");
 import { createServer } from "node:http";
@@ -22,11 +23,14 @@ const errors = []; page.on("pageerror", (e) => errors.push(e.message)); page.on(
 await page.goto(url); await page.waitForFunction(() => window.__lull?.explore);
 const bt = () => page.evaluate(() => window.__lull.battle()?.debug() ?? null);
 
-// walk up to the warden on the trail and talk
-await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x = 10 * 16 + 2; s.player.y = 11 * 16 - 2 - 6; s.player.facing = "down"; });
-await page.keyboard.press("Enter"); await page.waitForTimeout(100);
+// the night of the greenling run: Tamsin and Ash follow Rhea down the trail, and she walks into the patrol
+await page.evaluate(() => { const g = window.__lull.game, s = g.scenes.top; Object.assign(g.flags, { stage: "n3b", light: "night", gateOpen: true }); s.follow(["tamsin", "ash"]); s.goto("trail", 9, 8, "down", () => {}); });
+await page.waitForTimeout(300); // arriving waits for keys to be let go, so a held key cannot walk straight back out
+await page.keyboard.down("ArrowDown");
+await page.waitForFunction(() => window.__lull.explore().dialog, null, { timeout: 8000 });
+await page.keyboard.up("ArrowDown");
 const talk = await page.evaluate(() => window.__lull.explore());
-if (!talk.dialog?.includes("Trail")) fail(`warden did not speak: ${talk.dialog}`);
+if (!talk.dialog?.includes("Grey coats")) fail(`walking into the patrol said: ${talk.dialog}`);
 await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); // finish typing, then close
 await page.waitForFunction(() => window.__lull.battle()?.debug().mode === "menu", null, { timeout: 5000 });
 let d = await bt();
@@ -65,7 +69,8 @@ while (Date.now() - t0 < 90000) {
 const ex = await page.evaluate(() => ({ battle: window.__lull.battle()?.debug() ?? null, explore: window.__lull.explore(), flags: window.__lull.game.flags }));
 if (ex.battle) fail(`battle did not end: ${JSON.stringify(ex.battle)}`);
 if (!ex.flags["won.trail-wardens"]) fail(`win not recorded: ${JSON.stringify(ex.flags)}`);
-if (!ex.explore.dialog?.includes("trail down the mountain is open")) fail(`no after line: ${ex.explore.dialog}`);
+if (!ex.explore.dialog?.includes("Below you the trail is empty")) fail(`no after line: ${ex.explore.dialog}`);
+if (ex.explore.stage !== "n4") fail(`story did not move on: ${ex.explore.stage}`);
 const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).flags);
 if (!saved["won.trail-wardens"]) fail("win not in the autosave");
 // experience: the win levels Rhea and Tamsin up, says so, and the levels are saved
@@ -73,8 +78,9 @@ const party = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.sa
 if (!(party.rhea?.level > 3) || !(party.tamsin?.level > 3)) fail(`no level-up saved: ${JSON.stringify(party)}`);
 const ash = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).kith?.ash);
 if (!ash || !ash.habits?.some((h) => h > 0)) fail(`Ash did not learn from the fight: ${JSON.stringify(ash)}`);
-await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); await page.waitForTimeout(100);
-const lvl = await page.evaluate(() => window.__lull.explore().dialog);
+// Tamsin's line, the climb, then the level-ups
+let lvl = null;
+for (let i = 0; i < 6 && !/reaches level 4/.test(lvl ?? ""); i++) { await page.keyboard.press("Enter"); await page.waitForTimeout(50); await page.keyboard.press("Enter"); await page.waitForTimeout(100); lvl = await page.evaluate(() => window.__lull.explore().dialog); }
 if (!/reaches level 4/.test(lvl ?? "")) fail(`no level-up line: ${lvl}`);
 await page.screenshot({ path: "test-results/battle-after.png" });
 
