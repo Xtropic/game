@@ -19,7 +19,11 @@ import { arrival, closedAt, findsNow, wayAt, wayBlocker, wayOpen, wayWhy } from 
 import { MAPS } from "./content";
 import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
-import { LOOKS, SMALL, beastSheet, isBeast, glintTexture, noteTexture, personSheet, type Facing } from "../art/people";
+import { LOOKS, beastSheet, bodyOf, isBeast, glintTexture, noteTexture, personSheet, toneOf, type Facing } from "../art/people";
+import { RECRUITS } from "../cast/recruits";
+
+/** People who can join you: drawn bright so they stand out from the crowd. */
+const RECRUITABLE = new Set(RECRUITS.map((r) => r.id));
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
@@ -116,7 +120,7 @@ export class ExploreScene implements Scene, StoryHost {
   constructor(private story: Story, private maps: Record<string, MapFile>, private start?: Partial<ExploreState>) {}
 
   private sheet(look: string): Record<Facing, Texture[]> {
-    return (this.sheets[look] ??= isBeast(look) ? beastSheet(look) : personSheet(LOOKS[look] ?? LOOKS.elder, SMALL.has(look)));
+    return (this.sheets[look] ??= isBeast(look) ? beastSheet(look) : personSheet(LOOKS[look] ?? LOOKS.elder, bodyOf(look), toneOf(look, RECRUITABLE)));
   }
 
   get flags() { return this.game.flags; }

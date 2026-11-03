@@ -265,7 +265,7 @@
    "map": "bend",
    "x": 13,
    "y": 10,
-   "look": "kid2",
+   "look": "sela",
    "when": {
     "stage": "a3c",
     "flag": "sela"
@@ -449,7 +449,7 @@
    "map": "caves",
    "x": 10,
    "y": 3,
-   "look": "elder2",
+   "look": "oda",
    "when": {
     "stage": [
      "a7b",

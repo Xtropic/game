@@ -1,6 +1,7 @@
 // Pixel people for the explore view: a shared body recoloured per character, standing plus a 4-step walk, 4 facings.
 import { drawRows, makeCanvas, pixelTexture } from "./pixel";
 import { Rectangle, Texture } from "pixi.js";
+import { bodyOf, type BodyKind } from "./bodies";
 
 export type Facing = "down" | "up" | "left" | "right";
 export const FACINGS: Facing[] = ["down", "up", "left", "right"];
@@ -29,6 +30,8 @@ export const LOOKS: Record<string, Look> = {
   oda: { hair: "#e8e4dc", hairLight: "#ffffff", skin: "#a87450", skinShade: "#86583a", coat: "#5a4838", coatShade: "#44362a", accent: "#7a6a52", legs: "#3e352c", boots: "#2a221c", style: "braid" },
   pell: { hair: "#c8a868", hairLight: "#e0c488", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#7a7870", coatShade: "#5e5c56", accent: "#8a8880", legs: "#3e3a34", boots: "#2a221c" },
   sela: { hair: "#2a201a", hairLight: "#443428", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#6a4a30", coatShade: "#4e3624", accent: "#7a5a3a", legs: "#3e352c", boots: "#2a221c" },
+  // Hessa, the pilgrim from Millbridge: eight lull rings, a town coat, her hair pinned up
+  hessa: { hair: "#6a4a3a", hairLight: "#8a6a52", skin: "#e2bc9a", skinShade: "#ba9476", coat: "#5a6a7a", coatShade: "#44505e", accent: "#a89a80", legs: "#3a3a3a", boots: "#222", style: "bun" },
   // Act I
   brannoc: { hair: "#6a6560", hairLight: "#8a8580", skin: "#d4a888", skinShade: "#ac8466", coat: "#5a4a38", coatShade: "#42362a", accent: "#4a3e30", legs: "#3a3028", boots: "#221a14", style: "bald", beardStyle: "full", beard: "#8a8580" },
   kane: { hair: "#3e3c3a", hairLight: "#8a8886", skin: "#d8b08a", skinShade: "#b08866", coat: "#2e4434", coatShade: "#22332a", accent: "#9a2a24", legs: "#2a2e2a", boots: "#1a1614", beardStyle: "full", beard: "#3e3c3a" },
@@ -50,8 +53,9 @@ export const LOOKS: Record<string, Look> = {
   vil7: { hair: "#d8d4cc", hairLight: "#f0ece4", skin: "#dcb090", skinShade: "#b48a6c", coat: "#5a3a3a", coatShade: "#442c2c", accent: "#c8b890", legs: "#3a3028", boots: "#201812", style: "short", beardStyle: "full", beard: "#d8d4cc" },
   kid3: { hair: "#2a1a10", hairLight: "#4a3020", skin: "#c8a07a", skinShade: "#a07c5a", coat: "#8a8a7a", coatShade: "#6a6a5c", accent: "#5a5a50", legs: "#3e352c", boots: "#2a221c" },
 };
-/** Children are drawn shorter: the same body with fewer torso and leg rows. */
-export const SMALL = new Set(["finch", "kid", "kid2", "kid3", "ketti", "sela"]);
+/** Characters you can recruit (and Rhea) are drawn in clear, bright colours; everyone else a little muted,
+ *  so the people who can join you stand out in a crowd. */
+export type Tone = "vivid" | "plain" | "muted";
 
 // The frames are composed by tools/art/people.py: 16 x 24, [facing][stand, walk 1-4], drawn as palette letters.
 import FRAMES from "./peopleFrames.json";
@@ -68,13 +72,32 @@ function mix(a: string, b: string, t: number): string {
   return "#" + A.map((c, i) => Math.round(c + (B[i] - c) * t).toString(16).padStart(2, "0")).join("");
 }
 
+/** A colour made more (amt > 0) or less (amt < 0) saturated, and a touch lighter when brightened. */
+export function saturate(hex: string, amt: number): string {
+  const n = parseInt(hex.slice(1).padEnd(6, hex.slice(1)), 16), c = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  const m = (c[0] + c[1] + c[2]) / 3, lift = amt > 0 ? 1 + amt * 0.18 : 1;
+  return "#" + c.map((v) => Math.max(0, Math.min(255, Math.round((m + (v - m) * (1 + amt)) * lift))).toString(16).padStart(2, "0")).join("");
+}
+const CLOTHES: (keyof Look)[] = ["coat", "coatShade", "accent", "legs", "hair", "hairLight", "cap", "beard"];
+function toned(look: Look, tone: Tone): Look {
+  if (tone === "plain") return look;
+  const out = { ...look } as Record<string, string>;
+  for (const k of CLOTHES) if (out[k]) out[k] = saturate(out[k], tone === "vivid" ? 0.85 : -0.4);
+  if (tone === "vivid") { out.skin = saturate(look.skin, 0.15); out.skinShade = saturate(look.skinShade, 0.15); }
+  return out as unknown as Look;
+}
+/** The tone a look is drawn in. */
+export const toneOf = (id: string, recruitable: Set<string>): Tone => (recruitable.has(id) || id === "rhea" ? "vivid" : id in LOOKS ? "muted" : "plain");
+export { bodyOf };
+
 /** Where a person's old 12 x 18 top-left sits inside the 16 x 24 frame, so positions and feet line up as before. */
 export const PERSON_ANCHOR = { x: 2 / 16, y: 6 / 24 };
 
 /** A sheet of 5 frames (stand, then a 4-step walk) x 4 facings, as Pixi textures [facing][frame]. */
-export function personSheet(look: Look, small = false): Record<Facing, Texture[]> {
+export function personSheet(look: Look, body: BodyKind = "average", tone: Tone = "plain"): Record<Facing, Texture[]> {
   const W = FRAMES.w, H = FRAMES.h, sets = FRAMES.sets as Record<string, Record<Facing, string[][]>>;
-  const set = sets[`${small ? "small" : "adult"}|${look.style ?? "short"}|${look.beardStyle ?? "none"}`];
+  const set = sets[`${body}|${look.style ?? "short"}|${body === "small" ? "none" : look.beardStyle ?? "none"}`];
+  look = toned(look, tone);
   const pal: Record<string, string> = {
     o: mix(shade(look.coatShade, 0.45), "#1a1210", 0.5), h: look.hair, H: look.hairLight, d: shade(look.hair, 0.72), s: look.skin, S: look.skinShade,
     n: mix(look.skinShade, "#a03a30", 0.35), e: "#1a1210", w: "#efe6dc", c: look.coat, C: look.coatShade, k: shade(look.coatShade, 0.8), r: look.accent, R: shade(look.accent, 0.72),

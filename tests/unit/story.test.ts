@@ -45,15 +45,19 @@ describe("story", () => {
   });
 
   it("plays day one: Finch, the song, the caves, the roof, then nine days pass", () => {
-    const f = fresh(), { h, log, map } = host(f, [0, 1, 3]);
+    const f = fresh(), { h, log, map } = host(f, [0, 0, 1, 3]);
     const r = new StoryRunner(STORY, h);
+    expect(f.stage).toBe("d0");
+    r.run([{ run: "pilgrimFit" }]); expect(f.stage).toBe("d1");
     r.run([{ run: "finchTerrace" }]);
     expect(f.stage).toBe("d1b");
     expect(log).toContain("rhea: \"I'll sing for him.\""); // a quoted choice is said aloud
     r.run([{ run: "smokeComes" }]);
     expect(f.stage).toBe("d2"); expect(log).toContain("follow smoke");
     r.run([{ run: "finchCaves" }]); // leave him to it
-    expect(f.finchTrust).toBe(55); expect(f.stage).toBe("d3"); expect(f.light).toBe("dusk");
+    expect(f.finchTrust).toBe(55); expect(f.stage).toBe("d2b"); expect(f.light).toBe("dusk");
+    r.run([{ run: "panniers" }]); // the cairns, the cloud path and the three blinks, set up before they matter
+    expect(f.stage).toBe("d3");
     r.run([{ run: "roofTalk" }]); // say goodnight straight away (the fourth option)
     expect(f.stage).toBe("d4"); expect(f.hold).toBe(50);
     r.run([{ run: "sleep" }]);
@@ -82,12 +86,22 @@ describe("story", () => {
     r.run([{ run: "news" }]); expect(f.doubted).toBe(true); expect(f.stage).toBe("n2");
     r.run([{ run: "beg" }]);
     expect(log.some((l) => l.startsWith("corran: \"I read the brood book"))).toBe(true);
-    expect(f.refusal).toBe("cold"); expect(f.hold).toBe(42); expect(f.gateOpen).toBe(true); expect(f.stage).toBe("n3");
+    expect(f.refusal).toBe("cold"); expect(f.stage).toBe("n2b"); expect(map()).toBe("home");
+    r.run([{ run: "gateLie" }]); // press him about the Warden token
+    expect(f.gatePressed).toBe(true); expect(f.stage).toBe("n2c");
+    r.run([{ run: "sleep" }]); expect(f.stage).toBe("n2d");
+    r.run([{ run: "swappedRun" }]); expect(f.stage).toBe("n2e");
+    r.run([{ run: "sleep" }]); expect(f.gateOpen).toBe(true); expect(f.stage).toBe("n3");
     r.run([{ run: "tamsinGate" }]); expect(f.stage).toBe("n3b");
     r.run([{ run: "trailFight" }]); expect(f["won.trail-wardens"]).toBe(true); expect(f.stage).toBe("n4");
     r.run([{ run: "burned" }]); expect(f.ash).toBe(true); expect(f.stage).toBe("n5");
-    r.run([{ run: "ashTerrace" }]); // sing
-    expect(f.hero).toBe("corran"); expect(f.stage).toBe("i1"); expect(map()).toBe("yard");
+    r.run([{ run: "rookDying" }]); expect(f.stage).toBe("n5b");
+    r.run([{ run: "ringNote" }]); expect(f.ring).toBe(true); expect(f.stage).toBe("n5c");
+    f.stage = "n6"; r.run([{ run: "ashTerrace" }]); // sing; then the night before, played as Corran
+    expect(f.hero).toBe("corran"); expect(f.stage).toBe("c1"); expect(map()).toBe("cloudpath");
+    r.run([{ run: "giveSignal" }]); expect(f.stage).toBe("c2");
+    r.run([{ run: "cloudGate" }]);
+    expect(log).toContain("fade Four days later. Vantry, the Guild's city."); expect(f.stage).toBe("i1"); expect(map()).toBe("yard");
   });
 
   it("plays the interlude to an ending; each choice moves Corran's hold and his rings", () => {

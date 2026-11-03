@@ -13,7 +13,15 @@
   "lisle",
   "later",
   "tin",
-  "finchDoor"
+  "finchDoor",
+  "pilgrimFit",
+  "gateLie",
+  "signal",
+  "rookDying",
+  "cloudPath",
+  "giveSignal",
+  "cloudGate",
+  "swappedRun"
  ],
  "moods": {
   "scenes": {
@@ -36,7 +44,18 @@
    "lisle": "lull",
    "later": "lull",
    "tin": "lull",
-   "finchDoor": "grief"
+   "finchDoor": "grief",
+   "pilgrimFit": "tender",
+   "panniers": "dusk",
+   "gateLie": "dread",
+   "knot": "tender",
+   "swappedRun": "sombre",
+   "signal": "dread",
+   "rookDying": "grief",
+   "ringNote": "grief",
+   "cloudPath": "dread",
+   "giveSignal": "dread",
+   "cloudGate": "tension"
   },
   "stages": {
    "d3": "dusk",
@@ -50,7 +69,17 @@
    "i1": "vantry",
    "i1b": "vantry",
    "i3": "sombre",
-   "i4": "lull"
+   "i4": "lull",
+   "d0": "larkfold",
+   "d2b": "dusk",
+   "n2b": "night",
+   "n2c": "night",
+   "n2d": "sombre",
+   "n2e": "sombre",
+   "n5b": "grief",
+   "n5c": "ash",
+   "c1": "dread",
+   "c2": "dread"
   }
  },
  "start": {
@@ -58,7 +87,7 @@
   "x": 15,
   "y": 5,
   "facing": "up",
-  "stage": "d1",
+  "stage": "d0",
   "hero": "rhea",
   "set": {
    "hold": 50,
@@ -81,27 +110,39 @@
   "sela": "Sela",
   "halloran": "Captain Halloran",
   "lisle": "Dr Lisle",
-  "warden": "Warden"
+  "warden": "Warden",
+  "hessa": "Hessa",
+  "davin": "Davin"
  },
  "objectives": {
   "d1": "Find Finch on the upper terrace. Take the steps north of the square.",
   "d1b": "Smoke is stuck. Stand near him and sing (Q).",
   "d2": "Meet Finch in the brood caves, east of the lower terrace by the spring.",
-  "d3": "It's evening. Climb the ladder on the drying house to find Corran.",
+  "d3": "It's evening. Corran has gone up on the drying-house roof. Climb the ladder.",
   "d4": "Go home to sleep. Your house is the north-west door.",
   "n1": "Nine days later. Something is wrong in the square.",
   "n2": "Corran is back from Millbridge. He's waiting at your house.",
-  "n3": "Three nights later. Meet Tamsin at the south gate and take the greenling run.",
+  "n3": "Meet Tamsin at the south gate and take the greenling run.",
   "n3b": "Follow the trail down the mountain.",
   "n4": "The sky above the cloud is orange. Climb back to Larkfold.",
-  "n5": "Climb to the top terrace, where Finch tried to call Smoke down.",
+  "n5": "Someone is alive in the square.",
   "n6": "Sing (Q), or press E.",
   "i1": "Talk to Captain Halloran.",
   "i1b": "Six months later. The pressure bell is ringing. Go through the hatchery door.",
   "i2": "Find Finch in the steam and get him out.",
   "i2b": "Get Finch to the door.",
   "i3": "Talk to Dr Lisle.",
-  "i4": "A fresh lull in a tin on the table. Finch is in the next room."
+  "i4": "A fresh lull in a tin on the table. Finch is in the next room.",
+  "d0": "Maren is waiting by the warm spring, east of the lower terrace. Someone has come up the mountain.",
+  "d2b": "Corran and Tamsin are loading the market panniers by the south gate.",
+  "n2b": "You wake. Corran's side of the bed is cold. Find him.",
+  "n2c": "Go back to bed.",
+  "n2d": "Morning. Maren wants a word in the square.",
+  "n2e": "Go home and rest. The greenling run is in two nights.",
+  "n5b": "Go home.",
+  "n5c": "Climb to the top terrace, where Finch tried to call Smoke down.",
+  "c1": "Lead the column up the cloud path. At the last cairn, give the signal.",
+  "c2": "Go up to the cloud gate."
  },
  "actors": [
   {
@@ -111,8 +152,13 @@
    "y": 9,
    "look": "tamsin",
    "when": {
-    "stagePrefix": "d",
-    "not": "ash"
+    "stage": [
+     "d1",
+     "d1b",
+     "d2",
+     "d3",
+     "d4"
+    ]
    },
    "talk": [
     {
@@ -128,8 +174,13 @@
    "y": 12,
    "look": "oda",
    "when": {
-    "stagePrefix": "d",
-    "not": "ash"
+    "stage": [
+     "d1",
+     "d1b",
+     "d2",
+     "d3",
+     "d4"
+    ]
    },
    "talk": [
     {
@@ -145,8 +196,13 @@
    "y": 16,
    "look": "pell",
    "when": {
-    "stagePrefix": "d",
-    "not": "ash"
+    "stage": [
+     "d1",
+     "d1b",
+     "d2",
+     "d3",
+     "d4"
+    ]
    },
    "talk": [
     {
@@ -162,8 +218,13 @@
    "y": 7,
    "look": "maren",
    "when": {
-    "stagePrefix": "d",
-    "not": "ash"
+    "stage": [
+     "d1",
+     "d1b",
+     "d2",
+     "d3",
+     "d4"
+    ]
    },
    "talk": [
     {
@@ -246,7 +307,7 @@
    "map": "larkfold",
    "x": 17,
    "y": 8,
-   "look": "tamsin",
+   "look": "vil3",
    "when": {
     "stage": "n1"
    },
@@ -625,6 +686,162 @@
      "text": "Mother's notes: \"Step a person down one strength each fortnight. Too fast and they go into the raw. Too strong a brood and the heart slows. Never guess a measure.\""
     }
    ]
+  },
+  {
+   "id": "hessa",
+   "map": "larkfold",
+   "x": 25,
+   "y": 14,
+   "look": "hessa",
+   "when": {
+    "stage": "d0"
+   },
+   "talk": [
+    {
+     "run": "pilgrimFit"
+    }
+   ]
+  },
+  {
+   "id": "maren",
+   "map": "larkfold",
+   "x": 23,
+   "y": 14,
+   "look": "maren",
+   "when": {
+    "stage": "d0"
+   },
+   "talk": [
+    {
+     "run": "pilgrimFit"
+    }
+   ]
+  },
+  {
+   "id": "corran",
+   "map": "larkfold",
+   "x": 15,
+   "y": 18,
+   "look": "corran",
+   "when": {
+    "stage": "d2b"
+   },
+   "talk": [
+    {
+     "run": "panniers"
+    }
+   ]
+  },
+  {
+   "id": "tamsin",
+   "map": "larkfold",
+   "x": 17,
+   "y": 18,
+   "look": "tamsin",
+   "when": {
+    "stage": "d2b"
+   },
+   "talk": [
+    {
+     "run": "panniers"
+    }
+   ]
+  },
+  {
+   "id": "finch",
+   "map": "larkfold",
+   "x": 14,
+   "y": 17,
+   "look": "finch",
+   "when": {
+    "stage": "d2b"
+   },
+   "talk": [
+    {
+     "run": "panniers"
+    }
+   ]
+  },
+  {
+   "id": "corran",
+   "map": "larkfold",
+   "x": 16,
+   "y": 18,
+   "look": "corran",
+   "when": {
+    "stage": "n2b"
+   },
+   "talk": [
+    {
+     "run": "gateLie"
+    }
+   ]
+  },
+  {
+   "id": "corran",
+   "map": "larkfold",
+   "x": 9,
+   "y": 11,
+   "look": "corran",
+   "when": {
+    "stage": [
+     "n2d",
+     "n2e"
+    ]
+   },
+   "talk": [
+    {
+     "run": "knot"
+    }
+   ]
+  },
+  {
+   "id": "finch",
+   "map": "larkfold",
+   "x": 10,
+   "y": 11,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "n2d",
+     "n2e"
+    ]
+   },
+   "talk": [
+    {
+     "run": "knot"
+    }
+   ]
+  },
+  {
+   "id": "maren",
+   "map": "larkfold",
+   "x": 16,
+   "y": 7,
+   "look": "maren",
+   "when": {
+    "stage": "n2d"
+   },
+   "talk": [
+    {
+     "run": "swappedRun"
+    }
+   ]
+  },
+  {
+   "id": "rook",
+   "map": "larkfold",
+   "x": 16,
+   "y": 8,
+   "look": "rook",
+   "when": {
+    "stage": "n5"
+   },
+   "talk": [
+    {
+     "run": "rookDying"
+    }
+   ]
   }
  ],
  "steps": [
@@ -942,7 +1159,7 @@
     3
    ],
    "when": {
-    "stage": "n5"
+    "stage": "n5c"
    },
    "do": [
     {
@@ -952,9 +1169,73 @@
      "run": "ashTerrace"
     }
    ]
+  },
+  {
+   "map": "trail",
+   "area": [
+    5,
+    5,
+    15,
+    6
+   ],
+   "when": {
+    "stage": "n3b",
+    "not": "signalSeen"
+   },
+   "do": [
+    {
+     "run": "signal"
+    }
+   ]
+  },
+  {
+   "map": "cloudpath",
+   "area": [
+    5,
+    3,
+    11,
+    4
+   ],
+   "when": {
+    "stage": "c1"
+   },
+   "do": [
+    {
+     "run": "giveSignal"
+    }
+   ]
+  },
+  {
+   "map": "cloudpath",
+   "area": [
+    5,
+    1,
+    11,
+    1
+   ],
+   "when": {
+    "stage": "c2"
+   },
+   "do": [
+    {
+     "run": "cloudGate"
+    }
+   ]
   }
  ],
  "looks": [
+  {
+   "map": "home",
+   "tile": "shelf",
+   "when": {
+    "stage": "n5b"
+   },
+   "do": [
+    {
+     "run": "ringNote"
+    }
+   ]
+  },
   {
    "map": "caves",
    "tile": "tray",
@@ -1113,7 +1394,11 @@
   },
   {
    "when": {
-    "stage": "n5"
+    "stage": [
+     "n5",
+     "n5b",
+     "n5c"
+    ]
    },
    "do": [
     {
@@ -1313,7 +1598,7 @@
     }
    },
    {
-    "stage": "d3"
+    "stage": "d2b"
    },
    {
     "toast": "Smoke goes home with Finch. Evening falls."
@@ -1455,18 +1740,75 @@
     "else": [
      {
       "if": {
-       "stagePrefix": "n"
+       "stage": "n2c"
       },
       "then": [
        {
-        "say": "",
-        "text": "You can't sleep."
+        "fade": "The next morning."
+       },
+       {
+        "set": {
+         "light": "day"
+        }
+       },
+       {
+        "stage": "n2d"
+       },
+       {
+        "goto": {
+         "map": "larkfold",
+         "x": 6,
+         "y": 9,
+         "facing": "down"
+        }
        }
       ],
       "else": [
        {
-        "say": "",
-        "text": "It's the middle of the day."
+        "if": {
+         "stage": "n2e"
+        },
+        "then": [
+         {
+          "fade": "Two nights later."
+         },
+         {
+          "set": {
+           "light": "night",
+           "gateOpen": true
+          }
+         },
+         {
+          "stage": "n3"
+         },
+         {
+          "goto": {
+           "map": "larkfold",
+           "x": 6,
+           "y": 9,
+           "facing": "down"
+          }
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "stagePrefix": "n"
+          },
+          "then": [
+           {
+            "say": "",
+            "text": "You can't sleep."
+           }
+          ],
+          "else": [
+           {
+            "say": "",
+            "text": "It's the middle of the day."
+           }
+          ]
+         }
+        ]
        }
       ]
      }
@@ -1642,25 +1984,24 @@
    },
    {
     "say": "",
-    "text": "Three nights later he asks you to take the greenling run to Millbridge yourself. He says he can't face the market."
+    "text": "He doesn't argue. That's the worst of it. He sits by the fire with his coat still on until you fall asleep."
    },
    {
-    "fade": "Three nights later."
+    "fade": "That night."
    },
    {
     "set": {
-     "light": "night",
-     "gateOpen": true
+     "light": "night"
     }
    },
    {
-    "stage": "n3"
+    "stage": "n2b"
    },
    {
     "goto": {
-     "map": "larkfold",
-     "x": 6,
-     "y": 9,
+     "map": "home",
+     "x": 2,
+     "y": 2,
      "facing": "down"
     }
    }
@@ -1750,7 +2091,7 @@
    },
    {
     "say": "",
-    "text": "Old Wenna, who hid under the drying racks all night, tells you what she saw. The Wardens' main company didn't come up the trail. They came over the cloud path, and Corran was walking in front of them, showing the way."
+    "text": "Somewhere in the square, someone is calling your name."
    }
   ],
   "ashTerrace": [
@@ -1788,10 +2129,10 @@
     "text": "Nothing comes."
    },
    {
-    "fade": "Four days later, and a long way down the mountain."
+    "fade": "The night before."
    },
    {
-    "run": "interlude"
+    "run": "cloudPath"
    }
   ],
   "interlude": [
@@ -1817,15 +2158,7 @@
    },
    {
     "say": "",
-    "text": "Halloran broke every promise he made."
-   },
-   {
-    "say": "",
-    "text": "No hangings, he had said. No burning, no children taken. You led his company in quietly so that it would be an arrest, not Hask. You sent Rhea down the mountain so she wouldn't be there if it went wrong. He swore the trail would be clear. He put pickets on it anyway."
-   },
-   {
-    "say": "",
-    "text": "It went wrong. Now you're standing in a yard in Vantry, beside the carts."
+    "text": "You're standing in a yard in Vantry, beside the carts. Your head still rings. Every child from Larkfold is here, sorted by height."
    }
   ],
   "halloran": [
@@ -2167,6 +2500,533 @@
       "run": "act1Start"
      }
     ]
+   }
+  ],
+  "pilgrimFit": [
+   {
+    "say": "",
+    "text": "A woman sits on the rim of the warm spring with her boots off and her collar open. Eight small round scars climb the side of her neck, one above the other."
+   },
+   {
+    "say": "maren",
+    "text": "\"This is Hessa, from Millbridge. Tamsin brought her up the cloud path last night, blindfolded for the last mile. Same as everyone.\""
+   },
+   {
+    "say": "hessa",
+    "text": "\"Eight months on Guild lulls. A new one every month from the Guild shop, and the price goes up every time. When one dies and drops off, the raw comes in a day. I couldn't face it again.\""
+   },
+   {
+    "say": "maren",
+    "text": "\"So she came to us. Rhea, fetch a third strength from the warm trays and show her.\""
+   },
+   {
+    "say": "",
+    "text": "You lift a greenling from the moss with two fingers. It's the size of a thumbnail, grey-green, and it curls towards the warmth of your hand."
+   },
+   {
+    "say": "rhea",
+    "text": "\"This one's wild-bred, and weaker than a Guild lull on purpose. Every fortnight you come down one strength, until you don't need one at all.\""
+   },
+   {
+    "choose": "Hessa looks at the greenling, then at you.",
+    "options": [
+     {
+      "label": "\"It won't hurt. It numbs the place it bites, that's all.\"",
+      "by": "rhea",
+      "hint": "Gentle.",
+      "do": [
+       {
+        "say": "hessa",
+        "text": "\"That's what the Guild man said about the first one.\""
+       },
+       {
+        "say": "",
+        "text": "But she turns her head and lets you set it."
+       }
+      ]
+     },
+     {
+      "label": "\"The first fortnight will still be hard. I won't lie to you.\"",
+      "by": "rhea",
+      "hint": "Honest.",
+      "do": [
+       {
+        "say": "hessa",
+        "text": "\"Nobody's ever told me that before. Go on, then.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "The greenling settles at the back of her neck. Her shoulders come down slowly, like a held breath let go."
+   },
+   {
+    "say": "maren",
+    "text": "\"Three hundred people in Millbridge are on our greenlings now. The Guild calls it breeding without a licence. They hang people for it.\""
+   },
+   {
+    "say": "maren",
+    "text": "\"So we stay hidden, we stay careful, and only Larkfold folk walk the cloud path. Now go and find your brother. He's been shouting for you all morning.\""
+   },
+   {
+    "stage": "d1"
+   }
+  ],
+  "panniers": [
+   {
+    "say": "",
+    "text": "Panniers of greenling trays stand by the south gate, packed in warm wet moss for the trip down. Corran and Tamsin are roping them onto the frames."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Fortnight run. Three hundred greenlings for Millbridge, and two of them for Corran's mother and sister.\""
+   },
+   {
+    "say": "corran",
+    "text": "\"Second month. My sister wrote. She says Ma laughs again.\""
+   },
+   {
+    "say": "",
+    "text": "Finch has slipped out of the caves to watch. Corran crouches beside him and points past the drying house, to the north edge of the village, where the cloud lies thick against the cliff."
+   },
+   {
+    "say": "corran",
+    "text": "\"See the cairns, going down into the cloud? Little stacks of three stones. That's the cloud path. In fog you walk cairn to cairn, and you never step off.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"Can you walk it in the dark?\""
+   },
+   {
+    "say": "corran",
+    "text": "\"With a lamp. Coming home late, you stop at the last cairn and blink the lamp three times, so the gate watch knows it's a friend. Three blinks. Larkfold folk only.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"Three blinks.\""
+   },
+   {
+    "say": "",
+    "text": "He says it over to himself, blinking at nothing."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"And if you ever tell anyone outside the valley, I'll throw you off it myself. Go on, the pair of you. It's nearly dark.\""
+   },
+   {
+    "stage": "d3"
+   }
+  ],
+  "gateLie": [
+   {
+    "say": "",
+    "text": "Corran is at the south gate on his own, with a shuttered lamp. He's turning something over in his fingers. When he hears you, he closes his hand."
+   },
+   {
+    "say": "rhea",
+    "text": "\"Corran? It's the middle of the night.\""
+   },
+   {
+    "say": "corran",
+    "text": "\"Couldn't sleep. I keep seeing the graves.\""
+   },
+   {
+    "say": "",
+    "text": "You've seen what's in his hand before, in the pocket of his old coat: a disc of grey horn on a cord, with the Guild's lantern cut into it. Wardens carry them."
+   },
+   {
+    "say": "corran",
+    "text": "\"From an old friend. A long time ago. I came out here to throw it off the cliff.\""
+   },
+   {
+    "choose": "He doesn't throw it.",
+    "options": [
+     {
+      "label": "\"What old friend? Halloran?\"",
+      "by": "rhea",
+      "hint": "Press him.",
+      "do": [
+       {
+        "set": {
+         "gatePressed": true
+        }
+       },
+       {
+        "add": {
+         "hold": -5
+        }
+       },
+       {
+        "say": "corran",
+        "text": "\"...Halloran wants me back. He says there's still a place for me. I told him no.\""
+       },
+       {
+        "say": "",
+        "text": "It's the first time he's ever looked away from you while he talks."
+       }
+      ]
+     },
+     {
+      "label": "Take his hand and bring him back to bed",
+      "hint": "Let it go. He's grieving.",
+      "do": [
+       {
+        "set": {
+         "gateLetGo": true
+        }
+       },
+       {
+        "add": {
+         "hold": 3
+        }
+       },
+       {
+        "say": "",
+        "text": "He lets you lead him. The token goes into his pocket, not off the cliff."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "corran",
+    "text": "\"Go back to bed, Rhea. I'll be in in a minute.\""
+   },
+   {
+    "stage": "n2c"
+   }
+  ],
+  "knot": [
+   {
+    "say": "",
+    "text": "Corran has been up since before dawn. He's fixed the drying-house shutters and carried water for Oda, and now he's sitting in the dust with Finch, teaching him a knot."
+   },
+   {
+    "say": "corran",
+    "text": "\"Over, under, back through. It's a Warden's knot. Holds a loftbuck, holds a cart, and it comes free with one pull if you know where.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"Where?\""
+   },
+   {
+    "say": "corran",
+    "text": "\"Here. Always leave yourself one pull.\""
+   },
+   {
+    "say": "",
+    "text": "He looks up at you and smiles, and for a moment he's the man who came up the cloud path three years ago."
+   },
+   {
+    "set": {
+     "knot": true
+    }
+   }
+  ],
+  "swappedRun": [
+   {
+    "say": "maren",
+    "text": "\"Your husband came to me this morning. He wants you on the greenling run with Tamsin in two nights, instead of him.\""
+   },
+   {
+    "say": "maren",
+    "text": "\"He says he can't face the Millbridge market so soon after the funeral, and you could do with a night off the mountain. He's been kind to everyone all day. Grief takes people strangely.\""
+   },
+   {
+    "stage": "n2e"
+   }
+  ],
+  "signal": [
+   {
+    "say": "",
+    "text": "Halfway down, Tamsin stops dead and catches your sleeve."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Look. Over there, on the north cliff.\""
+   },
+   {
+    "say": "",
+    "text": "Far across the valley, where the cloud path climbs the cliff, a lamp blinks in the dark. Once. Twice. Three times. Then it goes out."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"That's ours. That's the friend signal. Who's coming up the cloud path at this hour?\""
+   },
+   {
+    "choose": "Rhea stares at where the lamp was.",
+    "options": [
+     {
+      "label": "\"A runner, late home. Keep going.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "tamsin",
+        "text": "\"...Yes. A runner. Come on.\""
+       }
+      ]
+     },
+     {
+      "label": "\"I don't know.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "tamsin",
+        "text": "\"Neither do I. I don't like it.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "signalSeen": true
+    }
+   }
+  ],
+  "rookDying": [
+   {
+    "say": "",
+    "text": "Old Rook is sitting against the flagpole with his hands folded over his stomach. There's a lot of blood. He's very calm."
+   },
+   {
+    "say": "rook",
+    "text": "\"Rhea. Good. I waited.\""
+   },
+   {
+    "say": "rook",
+    "text": "\"They didn't come up the trail. They came out of the cloud, by the cloud gate, quiet as you like. Davin opened it for them. He thought it was a friend.\""
+   },
+   {
+    "say": "rook",
+    "text": "\"Corran was at the front, with a lamp. Walking the lanes, calling, stay inside, stay inside, nobody will be hurt. I think he believed it. Right up until the torches.\""
+   },
+   {
+    "choose": "Rook's breathing is slowing.",
+    "options": [
+     {
+      "label": "\"Corran? No. Not Corran.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "rook",
+        "text": "\"I'm sorry, girl. I saw his face.\""
+       }
+      ]
+     },
+     {
+      "label": "Hold his hand",
+      "do": [
+       {
+        "say": "",
+        "text": "His hand is already cold. He squeezes once."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "rook",
+    "text": "\"Look after the songs. Somebody has to.\""
+   },
+   {
+    "say": "",
+    "text": "Then he's gone, and the square is very quiet."
+   },
+   {
+    "stage": "n5b"
+   }
+  ],
+  "ringNote": [
+   {
+    "say": "",
+    "text": "Your house is still standing. On the shelf by the bed, where he always leaves his things, is Corran's wedding ring, with a scrap torn from the brood book under it."
+   },
+   {
+    "say": "",
+    "text": "One line, in his handwriting: \"They promised me. I'm sorry.\""
+   },
+   {
+    "say": "",
+    "text": "You thread the ring onto a cord and put it round your neck. You don't know why."
+   },
+   {
+    "set": {
+     "ring": true
+    }
+   },
+   {
+    "stage": "n5c"
+   }
+  ],
+  "cloudPath": [
+   {
+    "hero": "corran"
+   },
+   {
+    "set": {
+     "light": "night",
+     "showHold": true
+    }
+   },
+   {
+    "stage": "c1"
+   },
+   {
+    "goto": {
+     "map": "cloudpath",
+     "x": 8,
+     "y": 20,
+     "facing": "up"
+    }
+   },
+   {
+    "follow": [
+     "halloran",
+     "warden"
+    ]
+   },
+   {
+    "say": "",
+    "text": "You know every cairn on the cloud path. You've walked it a hundred times, and taught it to Finch. You never thought you'd walk it with a column of Wardens at your back."
+   },
+   {
+    "say": "halloran",
+    "text": "\"No hangings. No burning. No children on carts. We go in quiet, we take the brood, we take the elders down to Vantry to answer for it. An arrest, Dace. Not Hask.\""
+   },
+   {
+    "say": "halloran",
+    "text": "\"And your wife's down the trail with the greenlings, where you sent her. She won't see any of it.\""
+   }
+  ],
+  "giveSignal": [
+   {
+    "say": "",
+    "text": "The last cairn. Above you, the dark shape of the cloud gate, and one lamp burning behind it."
+   },
+   {
+    "choose": "Halloran is waiting.",
+    "options": [
+     {
+      "label": "Lift the lamp",
+      "do": []
+     },
+     {
+      "label": "Hesitate",
+      "do": [
+       {
+        "say": "halloran",
+        "text": "\"Every hour you stand here, Dace, someone in Millbridge goes into the raw. Or a column comes up the hard way, with torches from the start.\""
+       },
+       {
+        "say": "",
+        "text": "You lift the lamp."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Once. Twice. Three times."
+   },
+   {
+    "stage": "c2"
+   }
+  ],
+  "cloudGate": [
+   {
+    "say": "davin",
+    "text": "\"Corran? That's the friend signal. Who've you got with you?\""
+   },
+   {
+    "choose": "Davin has kept the cloud gate for twenty years.",
+    "options": [
+     {
+      "label": "\"Traders from Lorne. Open up, Davin, it's freezing.\"",
+      "by": "corran",
+      "do": [
+       {
+        "add": {
+         "hold": -3
+        }
+       },
+       {
+        "say": "davin",
+        "text": "\"At this hour? ...Go on, then.\""
+       }
+      ]
+     },
+     {
+      "label": "\"Davin. Trust me. Open the gate. Nobody will be hurt.\"",
+      "by": "corran",
+      "do": [
+       {
+        "say": "davin",
+        "text": "\"Nobody will be...? Corran, what is this?\""
+       },
+       {
+        "say": "",
+        "text": "But he opens it. He's known you three years."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "The gate swings in. The column goes past you into Larkfold, quiet as snow."
+   },
+   {
+    "goto": {
+     "map": "larkfold",
+     "x": 16,
+     "y": 10,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "For a while it's what Halloran promised. Doors knocked on. Names read out. You walk the lanes with your lamp, calling: stay inside, stay inside, nobody will be hurt."
+   },
+   {
+    "say": "",
+    "text": "Then Halloran looks at the drying house, and the terraces, and the brood caves, and says one word."
+   },
+   {
+    "say": "halloran",
+    "text": "\"Torches.\""
+   },
+   {
+    "set": {
+     "light": "fire"
+    }
+   },
+   {
+    "mood": "fire"
+   },
+   {
+    "say": "corran",
+    "text": "\"You gave me your word! Halloran, you gave me your word!\""
+   },
+   {
+    "say": "halloran",
+    "text": "\"I did. Hold him.\""
+   },
+   {
+    "say": "",
+    "text": "Something hits the back of your head. The last thing you see is the drying house catching, and the thatch going up like paper."
+   },
+   {
+    "follow": []
+   },
+   {
+    "fade": "Four days later. Vantry, the Guild's city."
+   },
+   {
+    "run": "interlude"
    }
   ]
  }

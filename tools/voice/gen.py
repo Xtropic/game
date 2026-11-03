@@ -35,9 +35,12 @@ CAST = {
     "halloran": (V(("am_fenrir", 1)), 0.88, 0),
     "lisle": (V(("af_bella", 1)), 0.94, 0),
     "warden": (V(("bm_george", 1)), 0.95, 0),
+    "hessa": (V(("bf_alice", 1)), 0.9, 0),
+    "davin": (V(("am_puck", 1)), 1.0, 0),
     # Act I
     "kane": (V(("am_michael", .5), ("am_fenrir", .5)), 0.96, 0),
-    "brannoc": (V(("bm_george", 1)), 0.88, 0),
+    # a big, soft-spoken man: a warm low voice at its natural pace (slowing Kokoro down makes it sound strange)
+    "brannoc": (V(("am_fenrir", 1)), 0.97, 0),
     "innkeeper": (V(("bm_fable", 1)), 0.94, 0),
     "ferris": (V(("am_puck", 1)), 0.97, 0),
     "cartwarden": (V(("am_fenrir", 1)), 0.94, 0),
@@ -50,7 +53,7 @@ CAST = {
 }
 # the accent each voice was trained on (a = American, b = British)
 def lang_for(who):
-    v = {"rhea": "b", "rook": "b", "oda": "b", "warden": "b", "brannoc": "b", "innkeeper": "b", "oren": "b"}.get(who, "a")
+    v = {"rhea": "b", "rook": "b", "oda": "b", "warden": "b", "innkeeper": "b", "oren": "b", "hessa": "b"}.get(who, "a")
     return "en-gb" if v == "b" else "en-us"
 # a breath between sentences, so long lines aren't rushed
 PAUSE = {".": 0.38, "?": 0.42, "!": 0.36, "—": 0.22, "…": 0.45, ";": 0.25, ":": 0.25}
@@ -92,7 +95,8 @@ for ln in lines:
     who, text = ln["who"], clean(ln["text"])
     if who not in CAST: sys.exit(f"no voice cast for '{who}' (line: {text[:40]})")
     h = fnv(f"{who}|{text}"); out = os.path.join(OUT, h + ".mp3")
-    if os.environ.get("FRESH") and h not in done: os.path.exists(out) and os.remove(out)
+    redo = os.environ.get("FRESH") or who in os.environ.get("REDO", "").split(",")   # REDO=brannoc,davin re-records just those speakers
+    if redo and h not in done: os.path.exists(out) and os.remove(out)
     if not os.path.exists(out):
         style, speed, st = CAST[who]
         a, sr = speak(text, style, speed, lang_for(who))
@@ -100,7 +104,7 @@ for ln in lines:
         af = (f"rubberband=pitch={2 ** (st / 12):.4f}:formant=preserved," if st else "") + "afade=t=in:d=0.02,highpass=f=70,loudnorm=I=-18:TP=-2"
         subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", "/tmp/lull-vo.wav", "-af", af, "-ac", "1", "-ar", "24000", "-c:a", "libmp3lame", "-b:a", "64k", out], check=True)
         print("recorded", who, text[:50])
-    if os.environ.get("FRESH") and h not in done: index.pop(h, None)
+    if redo and h not in done: index.pop(h, None)
     done.add(h)
     keep[h] = index.get(h) or envelope(out)
 for f in os.listdir(OUT):

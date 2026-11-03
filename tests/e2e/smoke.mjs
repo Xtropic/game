@@ -36,7 +36,9 @@ await hold("ArrowUp", 3000);
 const top = await at(); if (top.y < 0 || top.y > 2 * 16) fail(`did not stop at the cloud edge: y=${top.y}`);
 await page.screenshot({ path: "test-results/explore.png" });
 
-// talk to Maren: put Rhea right beside her, facing her
+// talk to Maren: put Rhea right beside her, facing her (after the morning's pilgrim)
+await page.evaluate(() => { window.__lull.game.flags.stage = "d1"; window.__lull.game.scenes.top.changed?.(); });
+await page.waitForTimeout(200);
 await page.evaluate(() => { const s = window.__lull.game.scenes.top; s.player.x = 15 * 16 + 2; s.player.y = 7 * 16 - 2; s.player.facing = "right"; });
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);
 const talk = await at(); if (!talk.dialog || !talk.dialog.includes("Three hundred")) fail(`no dialogue from Maren: ${talk.dialog}`);
