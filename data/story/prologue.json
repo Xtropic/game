@@ -15,6 +15,44 @@
   "tin",
   "finchDoor"
  ],
+ "moods": {
+  "scenes": {
+   "smokeComes": "tender",
+   "roofTalk": "tender",
+   "sleep": "sombre",
+   "news": "grief",
+   "beg": "dread",
+   "refused": "grief",
+   "tamsinGate": "night",
+   "trailFight": "night",
+   "burned": "grief",
+   "ashTerrace": "ash",
+   "singAsh": "grief",
+   "interlude": "dread",
+   "halloran": "dread",
+   "afterCarts": "grief",
+   "enterHatchery": "hatchery",
+   "hatcheryFail": "dread",
+   "lisle": "lull",
+   "later": "lull",
+   "tin": "lull",
+   "finchDoor": "grief"
+  },
+  "stages": {
+   "d3": "dusk",
+   "d4": "dusk",
+   "n1": "sombre",
+   "n2": "sombre",
+   "n3": "night",
+   "n3b": "night",
+   "n4": "dread",
+   "n5": "ash",
+   "i1": "vantry",
+   "i1b": "vantry",
+   "i3": "sombre",
+   "i4": "lull"
+  }
+ },
  "start": {
   "map": "larkfold",
   "x": 15,
@@ -1203,7 +1241,7 @@
    },
    {
     "say": "",
-    "text": "Kith remember the voices that raised them for as long as they live. Smoke will remember this one."
+    "text": "Kith remember the voices that raised them for as long as they live."
    },
    {
     "set": {
@@ -1532,7 +1570,7 @@
     ]
    },
    {
-    "choose": "Rhea won't leave. How she refuses is your choice, and he will carry it for twelve years.",
+    "choose": "Rhea won't leave. How does she refuse?",
     "options": [
      {
       "label": "\"Three hundred people are weaning on our greenlings.\"",
@@ -1655,6 +1693,9 @@
    {
     "battle": "trail-wardens",
     "win": [
+     {
+      "mood": "dread"
+     },
      {
       "set": {
        "light": "fire"
@@ -1883,12 +1924,7 @@
     "if": {
      "flag": "sela"
     },
-    "then": [
-     {
-      "say": "",
-      "text": "A year from now, Sela will tell Rhea that a Warden once took a second post for her and never asked for anything back."
-     }
-    ]
+    "then": []
    },
    {
     "stage": "i1b"

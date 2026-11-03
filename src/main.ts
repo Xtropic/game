@@ -7,7 +7,7 @@ import { MAPS, STORY } from "./world/content";
 import { bakeWorld } from "./art/worldTiles";
 import { WorldMap } from "./world/map";
 import { fromOldWorld } from "./world/oldWorld";
-import { attachSound, audio } from "./audio/music";
+import { TRACK_NAMES, attachSound, audio } from "./audio/music";
 
 async function boot(): Promise<void> {
   const game = new Game();
@@ -27,6 +27,7 @@ async function boot(): Promise<void> {
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), saves: () => game.saves.list(),
     battle: () => { const top = game.scenes.top; return top instanceof BattleScene ? top : null; },
     startBattle: (id: string) => scene.startBattle(id),
+    sound: audio, tracks: TRACK_NAMES,
     looks: () => looksSheet(),
     cast: () => castSheet(),
     worldMap: (id = "land-cloudline") => bakeWorld(new WorldMap(MAPS[id])).toDataURL(),

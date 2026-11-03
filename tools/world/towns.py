@@ -120,7 +120,7 @@ TOWNS = [
             "\"But I put the Guild's nails in a little crooked. Don't tell anyone.\""]),
         ("kr-mother", "Annick", "vil2", 7, 3, [
             "\"The indenture carts take the gorge road because it's quiet. My eldest went on one, two winters back.\"",
-            "\"If your Commons stops one, would you look for a boy called Dell? Freckles. Laughs like a goose.\""]),
+            ("from", "a3", "\"You're with the Commons now? If you ever stop one of those carts, would you look for a boy called Dell? Freckles. Laughs like a goose.\"")]),
     ], signs=[(5, 4, "Gorge walls on both sides. The river under the bridge is loud enough to talk under.")]),
 
     dict(id="ropebridge", land="vale", name="Ropebridge", music="road", rows=[
@@ -223,14 +223,17 @@ TOWNS = [
             "\"The long barrow's older than the Guild, older than the Vale's name. Nobody knows who's in it.\"",
             "\"People leave things on it. Rings, mostly. Lull rings, cut off with a knife when somebody finally gets clean.\""]),
         ("lb-farmer", "Farmer Tilde", "vil2", 20, 10, [
-            "\"Two of my lads went off to join Kane in the spring. I told them the Commons can't win. They said the Guild couldn't lose either, until it did, at a cart.\"",
-            "\"That was you? With the children? Well. Sit down, then. There's bread.\""]),
+            "\"Two of my lads went off to join Kane in the spring. I told them the Commons can't win. They told me nobody ever stopped a Guild cart either.\"",
+            ("from", "a4", "\"That cart at Hob's Bend. That was you? With the children? Well. Sit down, then. There's bread.\"")]),
         ("lb-boy", "Ansel", "kid", 4, 9, [
             "\"If you lie on the barrow at night you can hear it breathing. Ansel's brother says so. I'm Ansel.\""]),
     ], signs=[(5, 5, "A standing stone at the barrow's end. Dozens of little iron rings hang from a nail in it.")]),
 ]
 
 LOOKS_NOTE = "vil1..vil7 are defined in src/art/people.ts"
+
+
+ORDER = [s for s in json.load(open(os.path.join(ROOT, "data", "world", "gates.json")))["order"] if s.startswith("a")]
 
 
 def main():
@@ -263,7 +266,9 @@ def main():
             assert rows[y][x] in ",.:*m/", f"{pid} stands on {rows[y][x]!r}"
             talk = []
             for ln in lines:
-                if isinstance(ln, tuple): talk.append({"say": "", "text": ln[1]})
+                if isinstance(ln, tuple) and ln[0] == "from":  # only once the story has got that far
+                    talk.append({"if": {"stage": ORDER[ORDER.index(ln[1]):]}, "then": [{"say": pid, "text": ln[2]}]})
+                elif isinstance(ln, tuple): talk.append({"say": "", "text": ln[1]})
                 else: talk.append({"say": pid, "text": ln})
             if name: story["cast"][pid] = name
             story["actors"].append({"id": pid, "map": mid, "x": x, "y": y, "look": look, "when": {"stagePrefix": "a"}, "talk": talk})

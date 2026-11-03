@@ -247,8 +247,26 @@
      "text": "\"The indenture carts take the gorge road because it's quiet. My eldest went on one, two winters back.\""
     },
     {
-     "say": "kr-mother",
-     "text": "\"If your Commons stops one, would you look for a boy called Dell? Freckles. Laughs like a goose.\""
+     "if": {
+      "stage": [
+       "a3",
+       "a3b",
+       "a3c",
+       "a4",
+       "a5",
+       "a6",
+       "a6b",
+       "a7",
+       "a7b",
+       "a7c"
+      ]
+     },
+     "then": [
+      {
+       "say": "kr-mother",
+       "text": "\"You're with the Commons now? If you ever stop one of those carts, would you look for a boy called Dell? Freckles. Laughs like a goose.\""
+      }
+     ]
     }
    ]
   },
@@ -468,11 +486,26 @@
    "talk": [
     {
      "say": "lb-farmer",
-     "text": "\"Two of my lads went off to join Kane in the spring. I told them the Commons can't win. They said the Guild couldn't lose either, until it did, at a cart.\""
+     "text": "\"Two of my lads went off to join Kane in the spring. I told them the Commons can't win. They told me nobody ever stopped a Guild cart either.\""
     },
     {
-     "say": "lb-farmer",
-     "text": "\"That was you? With the children? Well. Sit down, then. There's bread.\""
+     "if": {
+      "stage": [
+       "a4",
+       "a5",
+       "a6",
+       "a6b",
+       "a7",
+       "a7b",
+       "a7c"
+      ]
+     },
+     "then": [
+      {
+       "say": "lb-farmer",
+       "text": "\"That cart at Hob's Bend. That was you? With the children? Well. Sit down, then. There's bread.\""
+      }
+     ]
     }
    ]
   },

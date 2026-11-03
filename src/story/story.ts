@@ -28,6 +28,8 @@ export type Step =
   | { follow: string[] }
   /** The party travelling with the hero: join and leave change it; alone sends them off for a while; regroup brings them back. */
   | { join: string } | { leave: string } | { alone: true } | { regroup: true }
+  /** Changes the music's mood partway through a scene ("" goes back to the stage's mood). */
+  | { mood: string }
   | { toast: string }
   | { fade: string }
   | { goto: { map: string; x: number; y: number; facing?: "up" | "down" | "left" | "right" } }
@@ -60,6 +62,9 @@ export interface Story {
   scripts: Record<string, Step[]>;
   /** The plot-point scripts whose spoken lines are voiced. Everything else is read, not heard. */
   voiced?: string[];
+  /** What each scene, and each stage of the story, should make the player feel: a music track name.
+   *  A scene's mood plays while it runs; between scenes the stage's mood plays, else the place's own music. */
+  moods?: { scenes: Record<string, string>; stages: Record<string, string> };
 }
 
 /** Numbers named here are kept within 0..100 when added to. */
@@ -113,6 +118,8 @@ export class StoryRunner {
       const st = this.queue.shift()!;
       this.exec(st);
     }
+    // a scene's mood lasts as long as the scene; when the story goes quiet the stage's mood takes over again
+    if (!this.waiting && !this.queue.length && this.flags().scene) this.flags().scene = "";
   }
 
   private resume = (): void => { this.waiting = false; this.pump(); };
@@ -147,7 +154,8 @@ export class StoryRunner {
     if ("fade" in st) { this.block(); this.host.fade(st.fade, this.resume); return; }
     if ("goto" in st) { this.block(); const g = st.goto; this.host.goto(g.map, g.x, g.y, g.facing, this.resume); return; }
     if ("battle" in st) { const win = st.win ?? []; this.block(); this.host.battle(st.battle, () => { this.front(win); this.resume(); }); return; }
-    if ("run" in st) { const s = this.story.scripts[st.run]; if (!s) throw new Error(`no script ${st.run}`); this.front(s); return; }
+    if ("run" in st) { const s = this.story.scripts[st.run]; if (!s) throw new Error(`no script ${st.run}`); const m = this.story.moods?.scenes[st.run]; if (m) f.scene = m; this.front(s); return; }
+    if ("mood" in st) { f.scene = st.mood; return; }
     if ("hero" in st) { f.hero = st.hero; this.host.changed(); return; }
     if ("chapter" in st) { f.chapter = st.chapter; this.host.changed(); return; }
     if ("end" in st) { this.queue = []; this.host.end(st.end); return; }
@@ -167,11 +175,11 @@ export const partyOf = (f: Flags): string[] => String(f.party ?? "").split(",").
  *  act can give an old door something new to do without the earlier act's catch-all getting there first. */
 export function mergeStories(parts: Story[]): Story {
   const [first] = parts, later = [...parts].reverse();
-  const out: Story = { ...first, cast: {}, objectives: {}, scripts: {}, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [], voiced: [] };
+  const out: Story = { ...first, cast: {}, objectives: {}, scripts: {}, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [], voiced: [], moods: { scenes: {}, stages: {} } };
   for (const p of parts) {
     for (const k of Object.keys(p.scripts)) if (k in out.scripts) throw new Error(`script ${k} is in two story files`);
     Object.assign(out.cast, p.cast); Object.assign(out.objectives, p.objectives); Object.assign(out.scripts, p.scripts);
-    out.actors.push(...p.actors); out.hazards.push(...p.hazards); out.voiced!.push(...(p.voiced ?? []));
+    out.actors.push(...p.actors); out.hazards.push(...p.hazards); out.voiced!.push(...(p.voiced ?? [])); Object.assign(out.moods!.scenes, p.moods?.scenes); Object.assign(out.moods!.stages, p.moods?.stages);
   }
   for (const p of later) { out.steps.push(...p.steps); out.zones.push(...p.zones); out.looks.push(...p.looks); out.songs.push(...p.songs); }
   return out;

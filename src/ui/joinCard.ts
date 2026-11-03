@@ -11,10 +11,11 @@ import { sfx } from "../audio/music";
 
 export interface Joiner { id: string; name: string; what: string; kith?: boolean; species?: string; }
 
+// Only what is true now: never what a recruit will go on to do later in the story.
 const ROLE: Record<string, string> = {
   party: "Travels and fights beside Rhea.",
-  command: "Will lead a company in the Commons army.",
-  base: "Joins the Commons. Will have work at the base.",
+  command: "Stands with the Commons.",
+  base: "Has joined the Commons.",
 };
 
 /** What a newly joined person or kith does, in a line. */
@@ -46,42 +47,78 @@ function portraitTexture(id: string, size: number): Texture {
 
 const serif = (size: number, fill: string, bold = false) => ({ fontFamily: "Georgia, serif", fontSize: size, fill, fontWeight: bold ? ("bold" as const) : ("normal" as const) });
 
+/** The recruit moment: the world dims, light breaks behind the portrait, sparks rise, and a fanfare on the foal
+ *  song plays while the music steps back. It holds until the player presses on, so nobody misses who joined. */
 export class JoinCards {
   readonly view = new Container();
   private queue: Joiner[] = [];
-  private card: Container | null = null;
+  private card: { root: Container; rays: Graphics; sparks: Graphics; pic: Container; parts: { x: number; y: number; vy: number; s: number; life: number }[] } | null = null;
   private t = 0;
   private w = 800;
+  private h = 600;
 
   constructor() { this.view.eventMode = "none"; }
 
   push(j: Joiner): void { this.queue.push(j); }
   get showing(): boolean { return !!this.card || this.queue.length > 0; }
+  /** The card can be dismissed once it has fully arrived. */
+  get canClose(): boolean { return !!this.card && this.t > 1.4; }
 
-  resize(w: number): void { this.w = w; if (this.card) this.card.x = (w - 420) / 2; }
+  resize(w: number, h = this.h): void { this.w = w; this.h = h; }
+
+  close(): void {
+    if (!this.card) return;
+    this.card.root.destroy({ children: true }); this.card = null;
+  }
 
   update(dt: number): void {
     if (!this.card && this.queue.length) this.open(this.queue.shift()!);
-    if (!this.card) return;
+    const c = this.card; if (!c) return;
     this.t += dt;
-    const inT = Math.min(1, this.t / 0.35), outT = Math.max(0, (this.t - 3.6) / 0.4);
-    this.card.alpha = Math.min(inT, 1 - outT);
-    this.card.y = 70 - 30 * (1 - inT) * (1 - inT);
-    if (this.t > 4) { this.card.destroy({ children: true }); this.card = null; }
+    const a = Math.min(1, this.t / 0.4), pop = this.t < 0.9 ? Math.min(1, Math.max(0, (this.t - 0.25) / 0.45)) : 1;
+    c.root.alpha = a;
+    const ease = 1 - Math.pow(1 - pop, 3), over = pop < 1 ? 1 + 0.12 * Math.sin(pop * Math.PI) : 1;
+    c.pic.scale.set(ease * over);
+    // light: slow turning rays behind the portrait
+    const cx = this.w / 2, cy = this.h * 0.4;
+    c.rays.clear();
+    for (let i = 0; i < 16; i++) {
+      const ang = this.t * 0.25 + (i * Math.PI * 2) / 16, sp = 0.09, r = Math.max(this.w, this.h);
+      c.rays.moveTo(cx, cy).lineTo(cx + Math.cos(ang - sp) * r, cy + Math.sin(ang - sp) * r).lineTo(cx + Math.cos(ang + sp) * r, cy + Math.sin(ang + sp) * r).closePath()
+        .fill({ color: 0xffd98a, alpha: 0.07 * a });
+    }
+    c.rays.circle(cx, cy, 170).fill({ color: 0xffe2a0, alpha: 0.10 * a }).circle(cx, cy, 120).fill({ color: 0xfff0c8, alpha: 0.10 * a });
+    // sparks rising from the portrait
+    if (this.t < 3 && Math.random() < 0.6) c.parts.push({ x: cx + (Math.random() - 0.5) * 260, y: cy + 90, vy: 30 + Math.random() * 60, s: 1 + Math.random() * 2.5, life: 1 });
+    c.sparks.clear();
+    for (const p of c.parts) { p.y -= p.vy * dt; p.life -= dt * 0.45; if (p.life > 0) c.sparks.circle(p.x + Math.sin(p.y * 0.05) * 6, p.y, p.s).fill({ color: 0xfff0b0, alpha: p.life * a }); }
+    c.parts = c.parts.filter((p) => p.life > 0);
+    const hint = c.root.getChildByLabel("hint") as Text | null; if (hint) hint.alpha = this.canClose ? 0.6 + 0.4 * Math.sin(this.t * 4) : 0;
   }
 
   private open(j: Joiner): void {
     this.t = 0;
-    const c = new Container(), W = 420, H = 112;
-    const bg = new Graphics().roundRect(0, 0, W, H, 10).fill({ color: 0x14100c, alpha: 0.94 }).roundRect(0, 0, W, H, 10).stroke({ color: 0xe0c070, width: 2 });
-    const pic = portrait(j, 92); pic.x = pic.y = 10;
-    const frame = new Graphics().rect(10, 10, 92, 92).stroke({ color: 0xe0c070, width: 1 });
-    const tag = new Text({ text: j.kith ? "KITH JOINED" : "RECRUITED", style: { ...serif(13, "#e0c070", true), letterSpacing: 3 } }); tag.x = 116; tag.y = 14;
-    const name = new Text({ text: j.kith ? `${j.name} joins you` : `${j.name} joins you`, style: serif(24, "#fff4dc", true) }); name.x = 116; name.y = 34;
-    const what = new Text({ text: j.what + "\nPress R to see your company.", style: { ...serif(14, "#d8ccb4"), wordWrap: true, wordWrapWidth: W - 130, lineHeight: 19 } }); what.x = 116; what.y = 66;
-    c.addChild(bg, pic, frame, tag, name, what);
-    c.x = (this.w - W) / 2; c.y = 40; c.alpha = 0;
-    this.view.addChild(c); this.card = c;
+    const root = new Container(), w = this.w, h = this.h, cx = w / 2, cy = h * 0.4;
+    root.addChild(new Graphics().rect(0, 0, w, h).fill({ color: 0x080604, alpha: 0.78 }));
+    const rays = new Graphics(); root.addChild(rays);
+    const size = Math.min(220, h * 0.36);
+    const pic = new Container();
+    const art = portrait(j, size); art.x = -size / 2; art.y = -size / 2;
+    pic.addChild(new Graphics().roundRect(-size / 2 - 6, -size / 2 - 6, size + 12, size + 12, 8).fill(0x2a2010).roundRect(-size / 2 - 6, -size / 2 - 6, size + 12, size + 12, 8).stroke({ color: 0xe0c070, width: 3 }), art);
+    pic.x = cx; pic.y = cy; pic.scale.set(0); root.addChild(pic);
+    const sparks = new Graphics(); root.addChild(sparks);
+    const tag = new Text({ text: j.kith ? "A KITH JOINS YOU" : "RECRUITED", style: { ...serif(18, "#e0c070", true), letterSpacing: 6 } });
+    tag.anchor.set(0.5, 0); tag.x = cx; tag.y = cy + size / 2 + 22;
+    const name = new Text({ text: j.name, style: { ...serif(42, "#fff4dc", true), dropShadow: { color: "#000000", alpha: 0.8, blur: 6, distance: 2, angle: Math.PI / 2 } } });
+    name.anchor.set(0.5, 0); name.x = cx; name.y = tag.y + 26;
+    const what = new Text({ text: j.what, style: { ...serif(17, "#e8dcc4"), align: "center", wordWrap: true, wordWrapWidth: Math.min(560, w - 40) } });
+    what.anchor.set(0.5, 0); what.x = cx; what.y = name.y + 54;
+    const hint = new Text({ text: "Press Enter to go on   ·   R shows your company", style: serif(14, "#c8b890") });
+    hint.label = "hint"; hint.anchor.set(0.5, 0); hint.x = cx; hint.y = Math.min(h - 30, what.y + what.height + 22); hint.alpha = 0;
+    root.addChild(tag, name, what, hint);
+    root.alpha = 0;
+    this.view.addChild(root);
+    this.card = { root, rays, sparks, pic, parts: [] };
     sfx.join();
   }
 }

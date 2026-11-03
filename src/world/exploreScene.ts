@@ -306,7 +306,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.screen = { w, h };
     this.zoom = this.zoomFor(w, h);
     this.world.scale.set(this.zoom);
-    this.dialog.resize(w, h); this.joins.resize(w);
+    this.dialog.resize(w, h); this.joins.resize(w, h);
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
     this.meter.x = w - 160; this.meter.y = 34;
@@ -318,7 +318,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** The music that fits where the hero is now. */
-  musicNow(): string { return this.ended ? "home" : trackFor(this.map.file.id, this.map.file.music, String(this.flags.stage ?? "")); }
+  musicNow(): string { return this.ended ? "home" : trackFor(this.map.file.id, this.map.file.music, String(this.flags.scene ?? ""), this.story.moods?.stages[String(this.flags.stage ?? "")]); }
 
   snapshot(): ExploreState { return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing }; }
 
@@ -537,6 +537,7 @@ export class ExploreScene implements Scene, StoryHost {
       return;
     }
     this.joins.update(dt);
+    if (this.joins.showing) { if (this.joins.canClose && (inp.wasPressed("confirm") || inp.wasPressed("cancel"))) this.joins.close(); return; }
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
@@ -624,6 +625,6 @@ export class ExploreScene implements Scene, StoryHost {
   /** Read-only view for tests and debugging. */
   debug() {
     return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
-      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp };
+      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

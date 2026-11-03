@@ -20,6 +20,9 @@ class Engine {
   private step = 0;
   private next = 0;
   on = true;
+  /** Notes that failed to play (a bad note never stops the music; tests check this stays 0). */
+  errors = 0;
+  lastError = "";
   private listeners: ((on: boolean) => void)[] = [];
 
   constructor() { try { this.on = localStorage.getItem("lull-sound") !== "off"; } catch { /* storage may be blocked */ } }
@@ -52,6 +55,13 @@ class Engine {
   }
   onChange(fn: (on: boolean) => void): void { this.listeners.push(fn); }
 
+  /** Pulls the music back for a few seconds (a fanfare, a big moment), then lets it return. */
+  duck(seconds: number): void {
+    const a = this.ctx; if (!a || !this.bus) return;
+    const g = this.bus.gain, now = a.currentTime, full = this.cur ? TRACKS[this.cur]?.vol ?? 0.5 : 0.5;
+    g.cancelScheduledValues(now); g.setTargetAtTime(full * 0.15, now, 0.15); g.setTargetAtTime(full, now + seconds, 0.8);
+  }
+
   /** Crossfades to a track by name (null for silence). Remembered until the engine starts. */
   track(name: string | null): void {
     if (name && !TRACKS[name]) name = "lull";
@@ -71,7 +81,7 @@ class Engine {
     if (!this.cur || !this.on || !this.bus) { this.next = a.currentTime + 0.1; return; }
     const tr = TRACKS[this.cur], e = 60 / tr.bpm / 2;
     if (this.next < a.currentTime) this.next = a.currentTime + 0.05;
-    while (this.next < a.currentTime + 0.25) { try { tr.play(this.step, this.next, this.bus, e); } catch { /* one bad note never stops the music */ } this.step++; this.next += e; }
+    while (this.next < a.currentTime + 0.25) { try { tr.play(this.step, this.next, this.bus, e); } catch (err) { this.errors++; this.lastError = String(err); } this.step++; this.next += e; }
   }
 
   /** One note of an instrument. */
@@ -224,6 +234,41 @@ const TRACKS: Record<string, Track> = {
     if (i === 0 || i === 4) v("bass", c[0] - 12, t, e * 2, 0.22, o);
     if (i === 2 || i === 6) v("tick", 0, t, e, 0.04, o);
     if (n % 128 >= 64) { const nt = FOAL_AT[b * 8 + i]; if (nt) v("bell", nt[0] + 12, t, e, 0.05, o); } } },
+  // ---- moods: what a scene should make the player feel, whatever the place ----
+  // tender: close, warm, quiet. The foal song an octave up on soft bells over a held major chord.
+  tender: { bpm: 58, vol: 0.7, play(n, t, o, e) { const b = bar(n, 8), i = n % 8, c = [[50, 57, 62, 66], [47, 54, 59, 62], [43, 50, 55, 59], [45, 52, 57, 61]][b % 4];
+    if (i === 0) { v("pad", c[0] + 12, t, e * 8, 0.28, o); v("pad", c[3], t, e * 8, 0.2, o); v("bass", c[0] - 12, t, e * 6, 0.12, o); }
+    if (i === 2 || i === 6) v("pluck", c[2] + 12, t, e, 0.05, o);
+    const nt = FOAL_AT[b * 8 + i]; if (nt) v("bell", nt[0] + 12, t, e, 0.06, o); } },
+  // dread: something terrible is coming. A low drone a semitone apart, a slow heartbeat, a high thin bell.
+  dread: { bpm: 60, vol: 0.6, play(n, t, o, e) { const i = n % 8;
+    if (n % 32 === 0) { v("pad", 38, t, e * 32, 0.6, o); v("pad", 39, t, e * 32, 0.3, o); v("wind", 0, t, e * 24, 0.05, o); }
+    if (i === 0) v("drum", 0, t, e, 0.32, o); if (i === 1) v("drum", 0, t, e, 0.16, o);
+    if (n % 64 === 44) v("bell", 87, t, e, 0.03, o);
+    if (n % 32 === 20) v("bass", 25, t, e * 8, 0.18, o); } },
+  // tension: something has to be done now. A driving pulse, ticking, a phrase that never resolves.
+  tension: { bpm: 112, vol: 0.5, play(n, t, o, e) { const i = n % 8, b = bar(n, 4), r = [38, 38, 39, 36][b];
+    v("bass", r + (i % 2 ? 12 : 0), t, e * 0.7, i % 2 ? 0.12 : 0.24, o);
+    v("tick", 0, t, e, i % 2 ? 0.025 : 0.045, o);
+    if (i === 0) v("drum", 0, t, e, 0.35, o); if (i === 6) v("drum", 0, t, e, 0.2, o);
+    if (i === 0 && b % 2 === 0) v("pad", r + 24, t, e * 16, 0.3, o);
+    if (b === 3 && (i === 0 || i === 2 || i === 4)) v("pluck", [74, 69, 75][i / 2], t, e * 2, 0.08, o); } },
+  // grief: loss. A slow minor chord walk and the foal song alone, an octave down, with gaps where notes should be.
+  grief: { bpm: 46, vol: 0.65, play(n, t, o, e) { const b = bar(n, 8), i = n % 8, c = [[50, 57, 62, 65], [46, 53, 58, 62], [43, 50, 55, 58], [45, 52, 57, 60], [41, 48, 53, 57], [43, 50, 55, 58], [45, 52, 57, 61], [50, 57, 62, 65]][b];
+    if (i === 0) { v("pad", c[0], t, e * 8, 0.4, o); v("pad", c[2], t, e * 8, 0.28, o); v("bass", c[0] - 12, t, e * 8, 0.18, o); }
+    const nt = FOAL_AT[b * 8 + i]; if (nt && (b % 4 !== 3 || i < 3)) v("flute", nt[0] - 12, t, nt[1] * e * 0.9, 0.12, o); } },
+  // hope: the way forward. The foal song whole, bright and rising, over moving arpeggios.
+  hope: { bpm: 80, vol: 0.55, play(n, t, o, e) { const b = bar(n, 16), i = n % 8, c = [[50, 57, 62, 66], [55, 59, 62, 67], [57, 61, 64, 69], [50, 57, 62, 66], [47, 54, 59, 62], [55, 59, 62, 67], [57, 61, 64, 69], [50, 57, 62, 66]][b % 8];
+    v("pluck", c[[0, 1, 2, 3, 2, 3, 1, 2][i]] + 12, t, e, 0.08, o);
+    if (i === 0) { v("bass", c[0] - 12, t, e * 4, 0.24, o); v("pad", c[1] + 12, t, e * 8, 0.22, o); } if (i === 4) v("bass", c[1] - 12, t, e * 3, 0.16, o);
+    if (b >= 8) { const nt = FOAL_AT[(b - 8) * 8 + i]; if (nt) v("flute", nt[0] + (nt[0] % 12 === 5 ? 1 : 0), t, nt[1] * e * 0.95, 0.15, o); } } },
+  // fire: the burning. Crackle, war drums, a held dissonance, the foal song fighting through it.
+  fire: { bpm: 120, vol: 0.55, play(n, t, o, e) { const i = n % 8, b = bar(n, 8);
+    if (n % 32 === 0) { v("pad", 38, t, e * 32, 0.5, o); v("pad", 44, t, e * 32, 0.3, o); }
+    if (i % 4 === 0) v("crackle", 0, t, e * 4, 0.08, o);
+    if (i === 0 || i === 3 || i === 6) v("drum", 0, t, e, i === 0 ? 0.5 : 0.3, o);
+    v("bass", [38, 38, 44, 43][Math.floor(n / 16) % 4] - (i % 2 ? 0 : 12), t, e * 0.8, 0.2, o);
+    const nt = FOAL_AT[b * 8 + i]; if (nt && n % 128 >= 64) v("flute", nt[0], t, nt[1] * e * 0.9, 0.12, o); } },
 };
 
 /** Short effects for what happens on screen. */
@@ -237,23 +282,31 @@ export const sfx = {
   heal(): void { const a = audio.ctx; if (!a) return; const t = a.currentTime; [69, 74, 78].forEach((m, i) => audio.voice("bell", m, t + i * 0.07, 0.3, 0.06, audio.sfxBus)); },
   swing(): void { const a = audio.ctx; if (a) audio.voice("whoosh", 0, a.currentTime, 0.25, 0.07, audio.sfxBus); },
   note(m: number): void { const a = audio.ctx; if (a) audio.voice("flute", m, a.currentTime, 0.32, 0.2, audio.sfxBus); },
-  join(): void { const a = audio.ctx; if (!a) return; const t = a.currentTime; [62, 69, 74, 77, 81].forEach((m, i) => audio.voice("bell", m, t + i * 0.08, 0.4, 0.07, audio.sfxBus)); audio.voice("flute", 74, t + 0.45, 0.5, 0.14, audio.sfxBus); audio.voice("flute", 81, t + 0.9, 0.9, 0.14, audio.sfxBus); },
+  /** The recruit fanfare: the music steps back, a drum roll, a rising bell run, then the foal song's opening
+   *  in a bright major key over a full chord. About four seconds. */
+  join(): void {
+    const a = audio.ctx; if (!a) return; const t = a.currentTime, out = audio.sfxBus;
+    audio.duck(5);
+    for (let k = 0; k < 10; k++) audio.voice("drum", 0, t + k * 0.05, 0.1, 0.12 + k * 0.03, out);
+    [62, 66, 69, 74, 78, 81].forEach((m, i) => audio.voice("bell", m, t + 0.5 + i * 0.07, 0.4, 0.07, out));
+    audio.voice("drum", 0, t + 0.95, 0.3, 0.6, out);
+    for (const m of [50, 57, 62, 66]) audio.voice("pad", m, t + 0.95, 3.2, 0.5, out);
+    audio.voice("bass", 38, t + 0.95, 3, 0.35, out);
+    const e = 60 / 96 / 2; let tt = t + 0.95;
+    for (const [m, d] of [[74, 2], [69, 2], [78, 4], [76, 2], [74, 2], [81, 6]] as const) { audio.voice("flute", m, tt, d * e * 0.95, 0.2, out); audio.voice("bell", m + 12, tt, d * e, 0.04, out); tt += d * e; }
+    audio.voice("drum", 0, tt - 6 * e, 0.3, 0.45, out);
+    [74, 78, 81, 86].forEach((m, i) => audio.voice("bell", m, tt + i * 0.06, 0.6, 0.06, out));
+  },
   bump(): void { const a = audio.ctx; if (a) audio.voice("step", 300, a.currentTime, 0.05, 0.08, audio.sfxBus); },
 };
 
-/** Which track fits a place at a point in the story. */
-export function trackFor(map: string, music: string | undefined, stage: string): string {
-  if (map === "larkfold") {
-    if (stage.startsWith("a")) return "ash";
-    if (stage === "n4" || stage === "n5") return "ash";
-    if (stage === "n3" || stage === "n3b") return "night";
-    if (stage === "n1" || stage === "n2") return "sombre";
-    if (stage === "d3" || stage === "d4") return "dusk";
-    return "larkfold";
-  }
-  if (map === "trail" && (stage === "n4" || stage === "n5")) return "ash";
-  if (map === "home" && stage === "n2") return "sombre";
-  if (map === "hatchery" && stage !== "i2" && stage !== "i2b") return "vantry";
+export const TRACK_NAMES = (): string[] => Object.keys(TRACKS);
+
+/** Which track plays: the scene's mood first (set by the story while a scene plays), then the mood of the story
+ *  at this stage, then the place's own music. The music always says how the moment should feel. */
+export function trackFor(map: string, music: string | undefined, sceneMood?: string, stageMood?: string): string {
+  if (sceneMood && TRACKS[sceneMood]) return sceneMood;
+  if (stageMood && TRACKS[stageMood]) return stageMood;
   if (map.startsWith("town-")) return "town";
   return music && TRACKS[music] ? music : "lull";
 }

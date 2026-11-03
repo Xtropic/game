@@ -11,6 +11,38 @@
   "ketti",
   "oda"
  ],
+ "moods": {
+  "scenes": {
+   "act1Start": "road",
+   "emptyCart": "grief",
+   "meetBrannoc": "hope",
+   "enlist": "camp",
+   "ferrisDown": "tender",
+   "cartFight": "tension",
+   "openCart": "tender",
+   "selaFree": "tender",
+   "promotedSergeant": "hope",
+   "afterCart": "hope",
+   "townMeeting": "tension",
+   "sallowGate": "tension",
+   "ketti": "hope",
+   "harvest": "grief",
+   "harvestSong": "grief",
+   "oda": "hope",
+   "leaveLarkfold": "hope"
+  },
+  "stages": {
+   "a3": "tension",
+   "a3b": "tension",
+   "a3c": "tender",
+   "a4": "hope",
+   "a6": "dread",
+   "a6b": "fire",
+   "a7": "dusk",
+   "a7b": "grief",
+   "a7c": "hope"
+  }
+ },
  "cast": {
   "brannoc": "Sergeant Brannoc",
   "kane": "Marshal Kane",
@@ -1615,6 +1647,9 @@
     "battle": "cart-warden",
     "win": [
      {
+      "mood": "tension"
+     },
+     {
       "say": "",
       "text": "The cart warden goes down in the road and stays down. Rhea stands over him, breathing hard, with her staff still raised."
      },
@@ -1691,7 +1726,7 @@
    },
    {
     "say": "",
-    "text": "Rhea holds her for a long time. Later she'll think about that Warden, and she'll never work out who he was."
+    "text": "Rhea holds her for a long time."
    },
    {
     "set": {
@@ -1803,10 +1838,10 @@
         }
        },
        {
-        "toast": "Millbridge will join the Commons slowly. Oren Tull will help build its walls."
+        "toast": "Some of Millbridge stays to listen. Some goes home angry."
        }
       ],
-      "hint": "Millbridge will be slow to trust you, but it won't turn later."
+      "hint": "The truth, as far as she knows it."
      },
      {
       "label": "Repeat the elders' story: Guild agents tampered with the brood.",
@@ -1832,7 +1867,7 @@
         "toast": "Millbridge joins the Commons at once."
        }
       ],
-      "hint": "Millbridge joins at once. It will remember what you said."
+      "hint": "What the elders told her. What the square wants to hear."
      }
     ]
    },
@@ -1856,6 +1891,9 @@
    {
     "battle": "sallow-gate",
     "win": [
+     {
+      "mood": "fire"
+     },
      {
       "say": "",
       "text": "The gate swings open. Across the yard the brood house is already burning: a boiler has gone, or someone has fired it to cover the Wardens' retreat."

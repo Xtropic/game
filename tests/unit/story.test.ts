@@ -167,3 +167,31 @@ describe("story", () => {
     expect(st?.do).toEqual([{ goto: { map: "caves", x: 7, y: 7, facing: "up" } }]);
   });
 });
+
+describe("music tells the player how to feel", () => {
+  // everyday scenes where the place's own music is the right feeling
+  const PLACE_MUSIC = new Set(["finchTerrace", "finchCaves", "evening", "afterNews", "kane", "reeve"]);
+  it("every scene with lines has a mood, unless the place's music is the point", () => {
+    const moods = STORY.moods!;
+    for (const [id, steps] of Object.entries(STORY.scripts)) {
+      const lines = JSON.stringify(steps).split('"say"').length - 1;
+      if (lines && !PLACE_MUSIC.has(id)) expect(moods.scenes[id], `scene ${id} has no mood`).toBeTruthy();
+    }
+  });
+  it("every mood is a real track", async () => {
+    const { TRACK_NAMES } = await import("../../src/audio/music");
+    const names = new Set(TRACK_NAMES());
+    for (const m of [...Object.values(STORY.moods!.scenes), ...Object.values(STORY.moods!.stages)]) expect(names.has(m), m).toBe(true);
+  });
+  it("a scene's mood plays while it runs and gives way to the stage's mood after", () => {
+    const flags: Flags = { stage: "a2" };
+    const log: string[] = [];
+    let next: (() => void) | null = null;
+    const host = { where: () => ({ flags, map: "camp" }), line: (_w: string, _n: string, _t: string, done: () => void) => { log.push(String(flags.scene)); next = done; }, choose: (_p: string, _o: unknown[], done: (i: number) => void) => done(0), fade: (_c: string, d: () => void) => d(), goto: (_m: string, _x: number, _y: number, _f: unknown, d: () => void) => d(), battle: (_i: string, d: () => void) => d(), follow: () => {}, toast: () => {}, changed: () => {}, end: () => {} } as unknown as StoryHost;
+    const r = new StoryRunner(STORY, host);
+    r.run([{ run: "emptyCart" }]);
+    expect(log[0]).toBe("grief");
+    for (let i = 0; i < 50 && next; i++) { const n: () => void = next; next = null; n(); }
+    expect(flags.scene).toBe("");
+  });
+});

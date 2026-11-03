@@ -14,6 +14,7 @@ const server = createServer(async (req, res) => {
   catch { res.writeHead(404); res.end(); }
 }).listen(0);
 const url = `http://127.0.0.1:${server.address().port}/`;
+let joins = 0;
 const fail = (m) => { console.error("FAIL:", m); process.exitCode = 1; };
 
 const browser = await chromium.launch();
@@ -33,6 +34,7 @@ async function read(max = 40) {
     const s = await ex();
     if (s.choosing || s.ended) return s;
     if (s.fading) { await page.waitForTimeout(300); continue; }
+    if (s.joining) { joins++; await page.waitForTimeout(1500); await tap("Enter", 200); continue; }
     if (s.dialog) { await tap("Enter"); await tap("Enter", 60); continue; }
     if (!s.busy) return s;
     await page.waitForTimeout(100);
