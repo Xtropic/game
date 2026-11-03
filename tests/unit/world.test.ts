@@ -159,3 +159,12 @@ describe("chance meetings", () => {
     expect(sceneryFor("snow")).toBe("snow"); expect(sceneryFor("reeds")).toBe("marsh"); expect(sceneryFor("plains")).toBe("meadow");
   });
 });
+
+describe("saves from before the lands", () => {
+  it("move a save on the old world map to the same place on the new lands", async () => {
+    const { fromOldWorld } = await import("../../src/world/oldWorld");
+    // standing just south of the old Hob's Bend (44, 37)
+    expect(fromOldWorld(44 * 16 + 2, 38 * 16 - 2, MAPS)).toEqual({ map: "land-vale", x: 43 * 16 + 2, y: 34 * 16 - 2, facing: "down" });
+    expect(fromOldWorld(22 * 16 + 2, 21 * 16 - 2, MAPS)!.map).toBe("land-cloudline");
+  });
+});

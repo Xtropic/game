@@ -1057,6 +1057,26 @@
      "a7b"
     ]
    }
+  },
+  {
+   "map": "larkfold",
+   "at": [
+    16,
+    19
+   ],
+   "when": {
+    "stagePrefix": "a"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 22,
+      "y": 23,
+      "facing": "down"
+     }
+    }
+   ]
   }
  ],
  "zones": [

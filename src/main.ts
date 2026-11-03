@@ -6,12 +6,14 @@ import { castSheet, looksSheet } from "./art/gallery";
 import { MAPS, STORY } from "./world/content";
 import { bakeWorld } from "./art/worldTiles";
 import { WorldMap } from "./world/map";
+import { fromOldWorld } from "./world/oldWorld";
 
 async function boot(): Promise<void> {
   const game = new Game();
   await game.init(document.getElementById("game")!);
   await Promise.all([game.voices.load(), loadPortraits()]);
   const saved = game.saves.read("auto");
+  if (saved?.place.map === "ostrel") { const at = fromOldWorld(saved.place.x, saved.place.y, MAPS); if (at) saved.place = at; }
   const scene = new ExploreScene(STORY, MAPS, saved && MAPS[saved.place.map] && saved.flags.stage ? saved.place : undefined);
   if (saved && saved.flags.stage) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; game.party = { ...saved.party }; game.gear = { ...saved.gear }; game.coin = saved.coin; game.kith = { ...game.kith, ...saved.kith }; }
   game.scenes.replace(scene);
