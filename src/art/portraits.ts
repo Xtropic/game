@@ -29,6 +29,7 @@ export async function loadPortraits(base = "portraits/"): Promise<void> {
 }
 
 export const hasPortrait = (id: string): boolean => id in CAST || id in painted;
+export const hasPainted = (id: string): boolean => id in painted;
 
 /** Draws the bust of `id` filling a size x size square. talk is 0..1 mouth opening; `b` is their build now. */
 export function drawPortrait(g: CanvasRenderingContext2D, id: string, size: number, t: number, talk: number, b: Build = EVEN): void {

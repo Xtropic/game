@@ -1,6 +1,16 @@
 {
  "id": "act1",
  "title": "Act I: The Commons",
+ "voiced": [
+  "meetBrannoc",
+  "enlist",
+  "cartFight",
+  "selaFree",
+  "afterCart",
+  "townMeeting",
+  "ketti",
+  "oda"
+ ],
  "cast": {
   "brannoc": "Sergeant Brannoc",
   "kane": "Marshal Kane",
@@ -1573,7 +1583,7 @@
    },
    {
     "say": "ferris",
-    "text": "\"Ferris. I scout for Kane, when she lets me. If you ever need someone to go ahead of you quietly, we'll both come.\""
+    "text": "\"Ferris. I scout for Kane, when she lets me. This is Thistle. If you ever need someone to go ahead of you quietly, we'll both come.\""
    },
    {
     "set": {
@@ -1582,9 +1592,6 @@
    },
    {
     "join": "ferris"
-   },
-   {
-    "toast": "Ferris joins you, with his reedcat."
    }
   ],
   "cartFight": [
@@ -1915,9 +1922,6 @@
        },
        {
         "join": "ketti"
-       },
-       {
-        "toast": "Ketti joins you."
        }
       ],
       "hint": "She stays with them, and with you."

@@ -58,6 +58,8 @@ export interface Story {
   songs: Song[];
   hazards: Hazard[];
   scripts: Record<string, Step[]>;
+  /** The plot-point scripts whose spoken lines are voiced. Everything else is read, not heard. */
+  voiced?: string[];
 }
 
 /** Numbers named here are kept within 0..100 when added to. */
@@ -165,11 +167,11 @@ export const partyOf = (f: Flags): string[] => String(f.party ?? "").split(",").
  *  act can give an old door something new to do without the earlier act's catch-all getting there first. */
 export function mergeStories(parts: Story[]): Story {
   const [first] = parts, later = [...parts].reverse();
-  const out: Story = { ...first, cast: {}, objectives: {}, scripts: {}, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [] };
+  const out: Story = { ...first, cast: {}, objectives: {}, scripts: {}, actors: [], steps: [], zones: [], looks: [], songs: [], hazards: [], voiced: [] };
   for (const p of parts) {
     for (const k of Object.keys(p.scripts)) if (k in out.scripts) throw new Error(`script ${k} is in two story files`);
     Object.assign(out.cast, p.cast); Object.assign(out.objectives, p.objectives); Object.assign(out.scripts, p.scripts);
-    out.actors.push(...p.actors); out.hazards.push(...p.hazards);
+    out.actors.push(...p.actors); out.hazards.push(...p.hazards); out.voiced!.push(...(p.voiced ?? []));
   }
   for (const p of later) { out.steps.push(...p.steps); out.zones.push(...p.zones); out.looks.push(...p.looks); out.songs.push(...p.songs); }
   return out;
@@ -190,6 +192,23 @@ export function storyLines(s: Story): { who: string; text: string }[] {
   for (const g of [...s.steps, ...s.zones, ...s.looks, ...s.songs]) walk(g.do);
   for (const h of s.hazards) walk(h.fail);
   for (const sc of Object.values(s.scripts)) walk(sc);
+  const seen = new Set<string>();
+  return out.filter((l) => { const k = `${l.who}|${l.text}`; if (seen.has(k)) return false; seen.add(k); return true; });
+}
+
+/** The lines that are spoken aloud: what characters (not the narrator) say in the plot-point scripts listed in
+ *  story.voiced. Speech is kept for the moments that matter; everyday talk is read. tools/voice records these. */
+export function voicedLines(s: Story): { who: string; text: string }[] {
+  const out: { who: string; text: string }[] = [];
+  const walk = (steps: Step[] | undefined): void => {
+    for (const st of steps ?? []) {
+      if ("say" in st && st.say && st.say !== "narrator") out.push({ who: st.say, text: st.text });
+      if ("choose" in st) for (const o of st.options) walk(o.do);
+      if ("if" in st) { walk(st.then); walk(st.else); }
+      if ("battle" in st) walk(st.win);
+    }
+  };
+  for (const id of s.voiced ?? []) walk(s.scripts[id]);
   const seen = new Set<string>();
   return out.filter((l) => { const k = `${l.who}|${l.text}`; if (seen.has(k)) return false; seen.add(k); return true; });
 }

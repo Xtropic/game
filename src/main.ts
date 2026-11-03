@@ -7,6 +7,7 @@ import { MAPS, STORY } from "./world/content";
 import { bakeWorld } from "./art/worldTiles";
 import { WorldMap } from "./world/map";
 import { fromOldWorld } from "./world/oldWorld";
+import { attachSound, audio } from "./audio/music";
 
 async function boot(): Promise<void> {
   const game = new Game();
@@ -17,6 +18,11 @@ async function boot(): Promise<void> {
   const scene = new ExploreScene(STORY, MAPS, saved && MAPS[saved.place.map] && saved.flags.stage ? saved.place : undefined);
   if (saved && saved.flags.stage) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; game.party = { ...saved.party }; game.gear = { ...saved.gear }; game.coin = saved.coin; game.kith = { ...game.kith, ...saved.kith }; }
   game.scenes.replace(scene);
+  // sound: starts on the first press; N switches music, effects and voices on and off together
+  attachSound(window);
+  game.voices.muted = !audio.on;
+  audio.onChange((on) => { game.voices.muted = !on; if (!on) game.voices.stop(); scene.toast(on ? "Sound on (N)" : "Sound off (N)"); });
+  setInterval(() => audio.track(game.scenes.top instanceof BattleScene ? "battle" : scene.musicNow()), 300);
   // Test and debugging hook; read-only views plus the input object so automated tests can play.
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), saves: () => game.saves.list(),
     battle: () => { const top = game.scenes.top; return top instanceof BattleScene ? top : null; },

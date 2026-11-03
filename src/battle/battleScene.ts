@@ -2,6 +2,7 @@
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
 import type { Loadout } from "../gear/weapons";
+import { sfx } from "../audio/music";
 import { buildOf, type Build } from "../art/build";
 import { kithBaseline, type Kith } from "../kith/kith";
 import { attrsAt, person } from "../cast/attributes";
@@ -307,7 +308,7 @@ export class BattleScene implements Scene {
         this.addFx({ kind: "num", x, y: this.top(t) + 8, text: String(e.amt), col: t.side === "ally" ? "#ff9a7a" : "#fff2c8", dur: 1, big: e.amt >= 12 });
         e.tags.forEach((tg, i) => this.addFx({ kind: "grade", x, y: this.top(t) - 2 - i * 6.5, text: tg, col: "#ffe39a", dur: 1, size: 5.5 }));
         this.addFx({ kind: "spark", x, y: y - 16, dur: 0.3, big: e.amt >= 12 });
-        tv.flash = 1; tv.kx = this.dirOf(t) * -6;
+        tv.flash = 1; tv.kx = this.dirOf(t) * -6; sfx.hit();
         this.shake = Math.min(3, 0.8 + e.amt * 0.12);
         yield 0.12;
       } else if (e.t === "dodge") {
@@ -330,7 +331,7 @@ export class BattleScene implements Scene {
       } else if (e.t === "heal" || e.t === "steady") {
         const t = unit(this.s, e.target), [x, y] = this.pos(t);
         if (e.amt) this.addFx({ kind: "num", x, y: this.top(t) + 8, text: "+" + e.amt, col: "#a8e89a", dur: 1 });
-        this.addFx({ kind: "heal", x, y, dur: 0.9 });
+        this.addFx({ kind: "heal", x, y, dur: 0.9 }); sfx.heal();
         if (e.t === "steady") this.addFx({ kind: "grade", x, y: this.top(t) - 4, text: "Steadied: next hit x1.5", col: "#ffe39a", dur: 1.3, size: 5.5 });
       } else if (e.t === "stun") {
         const t = unit(this.s, e.target), [x] = this.pos(t); this.addFx({ kind: "grade", x, y: this.top(t) - 4, text: "Blinded", col: "#c8c8b8", dur: 1, size: 6 });

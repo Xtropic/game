@@ -1,6 +1,20 @@
 {
  "id": "prologue",
  "title": "Prologue · Larkfold",
+ "voiced": [
+  "roofTalk",
+  "news",
+  "beg",
+  "refused",
+  "interlude",
+  "halloran",
+  "afterCarts",
+  "hatcheryFail",
+  "lisle",
+  "later",
+  "tin",
+  "finchDoor"
+ ],
  "start": {
   "map": "larkfold",
   "x": 15,
@@ -1628,7 +1642,9 @@
     "stage": "n3b"
    },
    {
-    "toast": "Tamsin and Ash join you"
+    "set": {
+     "recruited.tamsin": true
+    }
    }
   ],
   "trailFight": [

@@ -1,0 +1,52 @@
+{
+ "id": "town-ropebridge",
+ "name": "Ropebridge",
+ "music": "road",
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "x": "crate",
+  "e": "exit",
+  "c": "cliff",
+  "p": "plank",
+  "K": "cloud"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,rrrr,,,,,,,,,,rrrr,,T",
+  "T,,hhdh,,,,,,,,,,hdhh,,T",
+  "T,,,,:::::::::::::,,,,,T",
+  "T,,,,,,,,,,::,,,,,,,,,,T",
+  "ccccccccccc::ccccccccccc",
+  "KKKKKKKKKKKppKKKKKKKKKKK",
+  "KKKKKKKKKKKppKKKKKKKKKKK",
+  "KKKKKKKKKKKppKKKKKKKKKKK",
+  "ccccccccccc::ccccccccccc",
+  "T,,,xx,,,,,::,,,,,HH,,,T",
+  "T,,,,,,,,,,::,,,,,,,,,,T",
+  "TTTTTTTTTTT::TTTTTTTTTTT",
+  "TTTTTTTTTTTeeTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "ropebridge-sign0",
+   "kind": "sign",
+   "x": 12,
+   "y": 8,
+   "props": {
+    "text": "The rope bridge sways under Rhea's weight. Far below, the gorge is full of cloud."
+   }
+  }
+ ]
+}

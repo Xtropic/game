@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAPS, REGIONS } from "../../src/world/content";
+import { MAPS, REGIONS, STORY } from "../../src/world/content";
 import { TILE_DEFS, WILD, WorldMap } from "../../src/world/map";
 import { GATES, arrival, closedAt, findsNow, wayAt, wayOpen, wayWhy } from "../../src/world/gates";
 import { FITTINGS } from "../../src/gear/weapons";
@@ -166,5 +166,31 @@ describe("saves from before the lands", () => {
     // standing just south of the old Hob's Bend (44, 37)
     expect(fromOldWorld(44 * 16 + 2, 38 * 16 - 2, MAPS)).toEqual({ map: "land-vale", x: 43 * 16 + 2, y: 34 * 16 - 2, facing: "down" });
     expect(fromOldWorld(22 * 16 + 2, 21 * 16 - 2, MAPS)!.map).toBe("land-cloudline");
+  });
+});
+
+describe("the towns of the open lands", () => {
+  const open = ["land-cloudline", "land-vale"];
+  const stepsAt = (map: string, x: number, y: number) => STORY.steps.filter((s) => s.map === map && s.at[0] === x && s.at[1] === y);
+  it("every town in a land Rhea can reach can be walked into, or the story says why not", () => {
+    for (const id of open) for (const p of MAPS[id].places ?? []) {
+      const here = stepsAt(id, p.x, p.y);
+      const enters = here.some((s) => s.do.some((d) => "goto" in d || "run" in d));
+      const why = here.some((s) => s.do.some((d) => "toast" in d));
+      expect(enters || why, `${p.name} has nothing`).toBe(true);
+    }
+  });
+  it("the new towns have people, a way in and a way back out onto open ground", () => {
+    const towns = Object.keys(MAPS).filter((k) => k.startsWith("town-"));
+    expect(towns.length).toBe(8);
+    for (const t of towns) {
+      expect(STORY.actors.filter((a) => a.map === t).length, t).toBeGreaterThanOrEqual(3);
+      const out = STORY.steps.filter((s) => s.map === t).flatMap((s) => s.do).find((d) => "goto" in d) as { goto: { map: string; x: number; y: number } };
+      const land = new WorldMap(MAPS[out.goto.map]);
+      expect(TILE_DEFS[land.kindAt(out.goto.x, out.goto.y)!].solid, `${t} exit`).toBe(false);
+      const inn = STORY.steps.find((s) => s.do.some((d) => "goto" in d && d.goto.map === t))!;
+      const g = (inn.do.find((d) => "goto" in d) as { goto: { x: number; y: number } }).goto, m = new WorldMap(MAPS[t]);
+      expect(TILE_DEFS[m.kindAt(g.x, g.y)!].solid, `${t} entry`).toBe(false);
+    }
   });
 });

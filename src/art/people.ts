@@ -40,6 +40,14 @@ export const LOOKS: Record<string, Look> = {
   reeve: { hair: "#3a3a3a", hairLight: "#5a5a5a", skin: "#d4aa86", skinShade: "#ac8464", coat: "#2a3a5a", coatShade: "#1e2a44", accent: "#c9a86a", legs: "#2a2a30", boots: "#18181c" },
   soldier: { hair: "#4a3020", hairLight: "#6a4630", skin: "#d8b08c", skinShade: "#b08866", coat: "#6a4a3a", coatShade: "#4e362a", accent: "#7a2a2a", legs: "#3a3028", boots: "#221a14" },
   cartwarden: { hair: "#2b2b2b", hairLight: "#8e959b", skin: "#e0b896", skinShade: "#b88e6c", coat: "#6a7076", coatShade: "#4c5258", accent: "#8a2a24", legs: "#34373a", boots: "#1a1a1a" },
+  // townsfolk of the open towns (tools/world/towns.py)
+  vil1: { hair: "#4a3424", hairLight: "#6a4c34", skin: "#d4a886", skinShade: "#ac8264", coat: "#5a6a3a", coatShade: "#44502c", accent: "#c8b080", legs: "#3a3428", boots: "#241c16", style: "cap", cap: "#8a4a2a" },
+  vil2: { hair: "#7a5a3a", hairLight: "#9a7a52", skin: "#e8c4a4", skinShade: "#c09c80", coat: "#8a5a6a", coatShade: "#6a4452", accent: "#e0d0b0", legs: "#3e3430", boots: "#241c16", style: "bun" },
+  vil3: { hair: "#2a1e16", hairLight: "#4a3626", skin: "#b88a62", skinShade: "#94684a", coat: "#4a5a7a", coatShade: "#38445e", accent: "#c0a060", legs: "#34302a", boots: "#201812" },
+  vil4: { hair: "#5a5550", hairLight: "#7a7570", skin: "#d0a07a", skinShade: "#a87c5a", coat: "#6a4a2e", coatShade: "#4e3622", accent: "#3a2a1e", legs: "#3a3028", boots: "#1e1610", style: "bald", beardStyle: "full", beard: "#6a645e" },
+  vil5: { hair: "#a87a3a", hairLight: "#c89a52", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#3a5a5a", coatShade: "#2a4444", accent: "#b84a3a", legs: "#3a3a34", boots: "#221a14", style: "braid" },
+  vil6: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#a87450", skinShade: "#86583a", coat: "#7a6a4a", coatShade: "#5e5038", accent: "#d8ccb0", legs: "#3e352c", boots: "#221a14", beardStyle: "moustache", beard: "#1e1a18" },
+  vil7: { hair: "#d8d4cc", hairLight: "#f0ece4", skin: "#dcb090", skinShade: "#b48a6c", coat: "#5a3a3a", coatShade: "#442c2c", accent: "#c8b890", legs: "#3a3028", boots: "#201812", style: "short", beardStyle: "full", beard: "#d8d4cc" },
   kid3: { hair: "#2a1a10", hairLight: "#4a3020", skin: "#c8a07a", skinShade: "#a07c5a", coat: "#8a8a7a", coatShade: "#6a6a5c", accent: "#5a5a50", legs: "#3e352c", boots: "#2a221c" },
 };
 /** Children are drawn shorter: the same body with fewer torso and leg rows. */

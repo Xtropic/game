@@ -2,6 +2,11 @@
 // HD on top. What happens here comes from the story data: who is where, what they say, what stepping on a door
 // or singing near a kith does. The scene only moves people about and shows things; StoryRunner decides.
 import { Container, Graphics, Sprite, Text, type Texture } from "pixi.js";
+import { sfx, trackFor } from "../audio/music";
+import { CompanyPanel, JoinCards, joinerFor } from "../ui/joinCard";
+import companions from "../../data/kith/companions.json";
+import { wildKith, type Temperament } from "../kith/kith";
+import { seeded } from "../battle/rules";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
@@ -61,6 +66,8 @@ export class ExploreScene implements Scene, StoryHost {
   private overlay = new Graphics();
   private steamLayer = new Graphics();
   private hud = new Container();
+  private joins = new JoinCards();
+  private company = new CompanyPanel();
   private map!: WorldMap;
   private game!: Game;
   private zoom = 1;
@@ -122,7 +129,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.cover, this.caption);
+    this.hud.addChild(this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view);
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
@@ -131,6 +138,7 @@ export class ExploreScene implements Scene, StoryHost {
     const sp = this.story.start;
     this.load(s.map && this.maps[s.map] ? s.map : sp.map, s.x, s.y, s.facing ?? sp.facing);
     const fl = String(this.flags.follow ?? ""); if (fl) this.follow(fl.split(","));
+    this.checkJoins(true);
     // a save made at the old end of the prologue carries straight on into the story, as it would now
     if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
     else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
@@ -148,6 +156,7 @@ export class ExploreScene implements Scene, StoryHost {
   /** Puts the player on a map, at pixel x, y (or the map's spawn), and rebuilds what's shown. */
   private load(id: string, x?: number, y?: number, facing?: Facing): void {
     const file = this.maps[id]; if (!file) throw new Error(`no map ${id}`);
+    if (this.map && this.map.file.id !== id) sfx.door();
     this.map = new WorldMap(file);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
     if (this.flags.gateOpen) this.map.open.add("gate");
@@ -297,7 +306,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.screen = { w, h };
     this.zoom = this.zoomFor(w, h);
     this.world.scale.set(this.zoom);
-    this.dialog.resize(w, h);
+    this.dialog.resize(w, h); this.joins.resize(w);
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
     this.meter.x = w - 160; this.meter.y = 34;
@@ -307,6 +316,9 @@ export class ExploreScene implements Scene, StoryHost {
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
     if (this.ended) { this.ended.x = w / 2; this.ended.y = h / 2; }
   }
+
+  /** The music that fits where the hero is now. */
+  musicNow(): string { return this.ended ? "home" : trackFor(this.map.file.id, this.map.file.music, String(this.flags.stage ?? "")); }
 
   snapshot(): ExploreState { return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing }; }
 
@@ -321,8 +333,38 @@ export class ExploreScene implements Scene, StoryHost {
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
-  toast(t: string): void { this.toastLabel.text = t; this.toastTime = 2.6; }
-  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.refresh(); }
+  toast(t: string): void { this.toastLabel.text = t; this.toastTime = 2.6; if (t.startsWith("Found")) sfx.pickup(); }
+  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.refresh(); }
+
+  /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */
+  private joinedIds(): string[] { return String(this.flags.company ?? "").split(",").filter(Boolean); }
+
+  /** Shows a card for each person or kith who has just joined. On loading a game, notes them quietly instead. */
+  private checkJoins(quiet = false): void {
+    const f = this.flags, game = this.game;
+    for (const [person, c] of Object.entries(companions as Record<string, { id: string; species: string; name: string; level: number; bond: number; temperament?: string } | string>)) {
+      if (typeof c === "string" || !f[`recruited.${person}`] || game.kith[c.id]) continue;
+      const k = wildKith(c.species, c.level, seeded(c.id.length * 7919), c.id); k.name = c.name; k.bond = c.bond; k.lull = false;
+      if (c.temperament) k.temperament = c.temperament as Temperament;
+      game.kith[c.id] = k;
+    }
+    const now = [
+      ...Object.keys(f).filter((k) => (k.startsWith("recruited.") || k.startsWith("party.")) && f[k] === true).map((k) => k.split(".")[1]),
+      ...Object.keys(game.kith),
+    ];
+    const have = this.joinedIds();
+    for (const id of now) {
+      if (have.includes(id) || id === "rhea" || id === "corran" && f.hero === "corran") continue;
+      have.push(id);
+      if (!quiet && id !== "ash") this.joins.push(joinerFor(id, game.kith, this.story.cast));
+    }
+    f.company = have.join(",");
+  }
+
+  private toggleCompany(): void {
+    const members = this.joinedIds().map((id) => joinerFor(id, this.game.kith, this.story.cast));
+    this.company.toggle(members, this.screen.w, this.screen.h);
+  }
 
   follow(ids: string[]): void {
     for (const f of this.followers) f.sprite.destroy();
@@ -424,7 +466,7 @@ export class ExploreScene implements Scene, StoryHost {
       if (s.near) { const a = this.shown.find((x) => x.a.id === s.near); if (!a || Math.hypot(a.a.x * TILE + 8 - px, a.a.y * TILE + 8 - py) > (s.range ?? 3) * TILE) continue; }
       this.runner.run(s.do); return;
     }
-    this.toast("Rhea sings the foal song.");
+    this.toast("Rhea sings the foal song."); sfx.sing();
   }
 
   private tileKey(): string { const [tx, ty] = this.feetTile(); return `${this.map.file.id}:${tx},${ty}`; }
@@ -494,6 +536,8 @@ export class ExploreScene implements Scene, StoryHost {
       if (f.t >= 2.5) { this.fading = null; this.cover.alpha = 0; this.caption.alpha = 0; }
       return;
     }
+    this.joins.update(dt);
+    if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
@@ -511,6 +555,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.runner.busy) return;
     if (inp.wasPressed("confirm")) { this.interact(); return; }
     if (inp.wasPressed("sing")) { this.sing(); return; }
+    if (inp.wasPressed("company")) { this.toggleCompany(); return; }
     if (inp.wasPressed("menu")) { this.save("1"); this.toast("Saved"); }
     const a = inp.axis();
     if (this.settle) { if (a.x || a.y) return; this.settle = false; }
