@@ -25,7 +25,7 @@ interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" |
 type Co = Generator<number | Qte, void, unknown>;
 
 export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
 
 const AUTO_KEY = "lull.autoTiming";
 const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } };
@@ -82,7 +82,7 @@ export class BattleScene implements Scene {
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health);
     // each fighter's look follows their attributes (cast and owned kith); the rest are drawn as designed
     for (const u of this.s.units) {
       const k = u.kith ? opts.kith?.[u.id] : undefined, start = u.cast ? person(u.cast)?.level : undefined;
@@ -104,7 +104,7 @@ export class BattleScene implements Scene {
   exit(): void { this.tex?.destroy(true); }
 
   private reset(): void {
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear);
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith); // after a loss the party falls back and binds its wounds: the retry starts whole
     this.vis.clear(); this.fx = [];
     for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;

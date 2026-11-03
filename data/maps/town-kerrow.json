@@ -2,6 +2,7 @@
  "id": "town-kerrow",
  "name": "Kerrow",
  "music": "road",
+ "rest": true,
  "legend": {
   "T": "tree",
   ",": "grass",

@@ -2,6 +2,7 @@
  "id": "town-dripstone",
  "name": "Dripstone",
  "music": "caves",
+ "rest": true,
  "legend": {
   "T": "tree",
   ",": "grass",

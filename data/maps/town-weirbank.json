@@ -2,6 +2,7 @@
  "id": "town-weirbank",
  "name": "Weirbank",
  "music": "town",
+ "rest": true,
  "legend": {
   "T": "tree",
   ",": "grass",

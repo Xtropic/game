@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { act, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
+import { act, afterBattle, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
 import { BATTLES, SKILLS } from "../../src/battle/data";
 import { initiativeOf, intentRead, statsOf } from "../../src/battle/rules";
 import { party } from "../../src/cast/attributes";
@@ -201,5 +201,22 @@ describe("battle rules", () => {
       }
       expect(s.phase, `seed ${seed}`).toBe("won");
     }
+  });
+});
+
+describe("wounds carry over", () => {
+  it("allies start a fight with what they had left; foes always start whole", () => {
+    const s = createBattle(def, book, seeded(1), {}, {}, {}, { rhea: 0.5 });
+    const r = unit(s, "rhea");
+    expect(r.hp).toBe(Math.round(r.maxHp * 0.5));
+    for (const f of s.units.filter((u) => u.side === "foe")) expect(f.hp).toBe(f.maxHp);
+  });
+  it("after a win only part of the damage heals, and the fallen get up hurt", () => {
+    const s = fresh();
+    const r = unit(s, "rhea"); r.hp = Math.round(r.maxHp * 0.4);
+    const other = s.units.find((u) => u.side === "ally" && u.id !== "rhea")!; other.hp = 0;
+    const h = afterBattle(s);
+    expect(h.rhea).toBeGreaterThan(0.4); expect(h.rhea).toBeLessThan(1);
+    expect(h[other.id]).toBeCloseTo(0.25 + 0.75 * 0.35, 2);
   });
 });

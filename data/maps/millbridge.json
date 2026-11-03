@@ -2,7 +2,21 @@
  "id": "millbridge",
  "name": "Millbridge",
  "music": "town",
- "legend": {"T": "tree", ",": "grass", ".": "cobble", "h": "wall", "r": "roof", "d": "door", "S": "stall", "w": "well", "~": "canal", "=": "bridge", "e": "exit", "f": "fence"},
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "S": "stall",
+  "w": "well",
+  "~": "canal",
+  "=": "bridge",
+  "e": "exit",
+  "f": "fence"
+ },
  "rows": [
   "TTTTTTTTTTTTTTeeTTTTTTTTTTTTTT",
   "T,rrrrr,rrrrr,..,rrrrr,rrrrr,T",
@@ -23,5 +37,12 @@
   "T,hhhhh,hhhhh,..,hhhhh,hhhhh,T",
   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
  ],
- "entities": [{"id": "start", "kind": "spawn", "x": 14, "y": 1}]
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 1
+  }
+ ]
 }

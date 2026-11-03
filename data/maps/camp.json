@@ -2,7 +2,17 @@
  "id": "camp",
  "name": "The Commons camp",
  "music": "camp",
- "legend": {"T": "tree", ",": "grass", ".": "path", "A": "tent", "F": "campfire", "H": "hay", "x": "crate", "e": "exit"},
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ".": "path",
+  "A": "tent",
+  "F": "campfire",
+  "H": "hay",
+  "x": "crate",
+  "e": "exit"
+ },
  "rows": [
   "TTTTTTTTTTTTTTTTTTTTTTTTTTTT",
   "T,,,,,,,,,,,,,,,,,,,,,,,,TTT",
@@ -20,5 +30,12 @@
   "T,,,,,,,,,,,,,,,,,,,,,,,,,,T",
   "TTTTTTTTTTTTTTTTTTTTTTTTTTTT"
  ],
- "entities": [{"id": "start", "kind": "spawn", "x": 1, "y": 9}]
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 9
+  }
+ ]
 }

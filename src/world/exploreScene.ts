@@ -6,7 +6,7 @@ import { sfx, trackFor } from "../audio/music";
 import { CompanyPanel, JoinCards, joinerFor } from "../ui/joinCard";
 import companions from "../../data/kith/companions.json";
 import { wildKith, type Temperament } from "../kith/kith";
-import { seeded } from "../battle/rules";
+import { afterBattle, seeded } from "../battle/rules";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
@@ -66,6 +66,7 @@ export class ExploreScene implements Scene, StoryHost {
   private overlay = new Graphics();
   private steamLayer = new Graphics();
   private hud = new Container();
+  private wounds = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#e8b8a0", lineHeight: 17, dropShadow: { color: "#000000", alpha: 0.9, blur: 3, distance: 1, angle: Math.PI / 2 } } });
   private joins = new JoinCards();
   private company = new CompanyPanel();
   private map!: WorldMap;
@@ -129,7 +130,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view);
+    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view);
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
@@ -157,6 +158,7 @@ export class ExploreScene implements Scene, StoryHost {
   private load(id: string, x?: number, y?: number, facing?: Facing): void {
     const file = this.maps[id]; if (!file) throw new Error(`no map ${id}`);
     if (this.map && this.map.file.id !== id) sfx.door();
+    if (file.rest && this.map && this.map.file.id !== id) queueMicrotask(() => this.rest(file.name));
     this.map = new WorldMap(file);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
     if (this.flags.gateOpen) this.map.open.add("gate");
@@ -198,7 +200,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.overlay.clear();
     if (!indoor && light.alpha > 0) this.overlay.rect(0, 0, this.map.width * TILE, this.map.height * TILE).fill({ color: light.color, alpha: light.alpha });
     this.drawFog();
-    this.drawMeter();
+    this.drawMeter(); this.drawWounds();
   }
 
   // ---- the world map: regions, hidden lands, places, chance meetings ----
@@ -311,6 +313,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
     this.meter.x = w - 160; this.meter.y = 34;
     this.toastLabel.x = 16; this.toastLabel.y = 56;
+    this.wounds.x = 16; this.wounds.y = h - 44;
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
@@ -410,7 +413,9 @@ export class ExploreScene implements Scene, StoryHost {
       levels: this.game.levels(),
       gear: this.game.gear,
       kith: this.game.kith,
+      health: this.health(),
       onDone: (_r, s) => {
+        this.setHealth(afterBattle(s));
         if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
@@ -423,6 +428,31 @@ export class ExploreScene implements Scene, StoryHost {
         this.save("auto");
       },
     }));
+  }
+
+  /** What's left of each ally's health from earlier fights (0..1, by battle unit id). */
+  private health(): Record<string, number> {
+    const out: Record<string, number> = {};
+    for (const [k, v] of Object.entries(this.flags)) if (k.startsWith("health.") && typeof v === "number") out[k.slice(7)] = v;
+    return out;
+  }
+  private setHealth(h: Record<string, number>): void {
+    for (const k of Object.keys(this.flags)) if (k.startsWith("health.")) delete this.flags[k];
+    for (const [id, v] of Object.entries(h)) this.flags[`health.${id}`] = v;
+    this.drawWounds();
+  }
+  /** Rest in a town, inn or camp: everyone's wounds are seen to. */
+  private rest(where: string): void {
+    if (!Object.keys(this.health()).length) return;
+    this.setHealth({});
+    this.toast(`The party rests in ${where}. Wounds are cleaned and bound.`);
+    sfx.heal();
+  }
+  /** A small line in the corner while anyone is hurt, so the player knows to rest. */
+  private drawWounds(): void {
+    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran" };
+    const parts = Object.entries(h).map(([id, v]) => `${names[id] ?? id} ${Math.round(v * 100)}%`);
+    this.wounds.text = parts.length ? `Wounded: ${parts.join("  ·  ")}\nRest in a town or camp to heal fully.` : "";
   }
 
   // ---- input and movement ----

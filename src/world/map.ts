@@ -29,6 +29,8 @@ export interface MapFile {
   id: string;
   name: string;
   music?: string;
+  /** A town, inn or camp where the party can rest and heal fully. */
+  rest?: boolean;
   legend: Record<string, TileKind>;
   rows: string[];
   entities: MapEntity[];

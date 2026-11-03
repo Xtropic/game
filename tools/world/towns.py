@@ -251,7 +251,7 @@ def main():
         for i, (x, y, text) in enumerate(t["signs"]):
             entities.append({"id": f"{t['id']}-sign{i}", "kind": "sign", "x": x, "y": y, "props": {"text": text}})
         mid = f"town-{t['id']}"
-        json.dump({"id": mid, "name": t["name"], "music": t["music"], "legend": legend, "rows": rows, "entities": entities},
+        json.dump({"id": mid, "name": t["name"], "music": t["music"], "rest": True, "legend": legend, "rows": rows, "entities": entities},
                   open(os.path.join(ROOT, "data", "maps", f"{mid}.json"), "w"), indent=1)
         land = lands[t["land"]]
         place = next(p for p in land["places"] if p["id"] == t["id"])

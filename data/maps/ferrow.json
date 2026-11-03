@@ -2,7 +2,22 @@
  "id": "ferrow",
  "name": "Ferrow Cross",
  "music": "road",
- "legend": {"T": "tree", ",": "grass", ".": "cobble", "h": "wall", "r": "roof", "d": "door", "C": "cart", "F": "campfire", "H": "hay", "x": "crate", "w": "well", "e": "exit", "f": "fence"},
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "C": "cart",
+  "F": "campfire",
+  "H": "hay",
+  "x": "crate",
+  "w": "well",
+  "e": "exit",
+  "f": "fence"
+ },
  "rows": [
   "TTTTTTTTTTTTTTTTTTTTTTTT",
   "T,,rrrrrrrrrrrr,,,,,,,,T",
@@ -19,5 +34,12 @@
   "TTTTTTTTTT,,,,TTTTTTTTTT",
   "TTTTTTTTTTTeeTTTTTTTTTTT"
  ],
- "entities": [{"id": "start", "kind": "spawn", "x": 11, "y": 12}]
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  }
+ ]
 }

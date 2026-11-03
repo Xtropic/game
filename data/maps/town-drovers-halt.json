@@ -2,6 +2,7 @@
  "id": "town-drovers-halt",
  "name": "Drovers' Halt",
  "music": "camp",
+ "rest": true,
  "legend": {
   "T": "tree",
   ",": "grass",
