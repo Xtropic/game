@@ -3,12 +3,19 @@
 // battle, army and check formulas in src/cast/attributes.ts work for both.
 import data from "../../data/kith/species.json";
 import raising from "../../data/kith/upbringing.json";
+import world from "../../data/kith/regions.json";
 import { ATTRS, type Attrs } from "../cast/attributes";
 
-export type Kind = "base" | "hybrid" | "unseen" | "legend";
-export interface Family { name: string; field: string; army: string; growth: number[]; moves: string[]; }
+export type Kind = "base" | "regional" | "hybrid" | "unseen" | "legend" | "heir";
+export interface Family { name: string; field: string; army: string; growth: number[]; moves: string[]; look?: string; }
 export interface Recipe { parents: [string, string]; needs: string[]; hint: string; }
-export interface Species { id: string; name: string; family?: string; kind: Kind; home?: string; parents?: [string, string]; recipe?: Recipe; moves: string[]; }
+/** `region` is where a base or regional species lives wild (regions.json); a regional form lives nowhere else. */
+export interface Species {
+  id: string; name: string; family?: string; kind: Kind; home?: string; region?: string; look?: string; parents?: [string, string]; recipe?: Recipe; moves: string[];
+  /** Legends only: the one creature every player meets, fixed. `lair` is the region it lives in. */
+  potential?: number[]; level?: number; temperament?: Temperament; traits?: string[]; lair?: string;
+  heir?: { species: string; quest: string; needs: string };
+}
 export type Temperament = "bold" | "gentle" | "stubborn" | "skittish" | "proud" | "curious";
 
 export const FAMILIES = data.families as Record<string, Family>;
@@ -38,7 +45,30 @@ export interface Kith {
   habits?: number[];
   /** Points its upbringing has added or taken away, in ATTRS order; whole points count. Capped by potential. */
   shaped?: number[];
+  /** Coat genes, two of each (one from each parent); the more dominant one shows. Missing: plain, its strain. */
+  coat?: Coat;
+  /** Its parents' species, which a throwback foal can return to. */
+  lineage?: string[];
+  /** Generations bred same-species back to back: a pure line. */
+  line?: number;
+  /** A legend that has sired its one heir. */
+  sired?: boolean;
+  /** The legend whose blood it carries: a legend's heir, or a foal of an heir. */
+  blood?: string;
 }
+
+// ---- Coats: colour and pattern genes ---------------------------------------------------------------------
+// Each kith carries two colour genes and two pattern genes. Earlier entries in regions.json's lists are more
+// dominant, so two grey parents can hide cream between them and throw a cream foal. Regions add colours of
+// their own: wild kith caught there carry them.
+
+export interface Coat { colour: [string, string]; pattern: [string, string]; }
+export const COLOURS = world.colours as string[];
+export const PATTERNS = world.patterns as string[];
+const dominant = (list: string[], [a, b]: [string, string]): string => (list.indexOf(a) <= list.indexOf(b) ? a : b);
+export const coatOf = (k: Kith): Coat => k.coat ?? { colour: [k.strain, k.strain], pattern: ["plain", "plain"] };
+/** What shows: the dominant colour and pattern. */
+export const shownCoat = (c: Coat): { colour: string; pattern: string } => ({ colour: dominant(COLOURS, c.colour), pattern: dominant(PATTERNS, c.pattern) });
 
 /** The families a species belongs to (two for a hybrid). */
 export function familiesOf(id: string): string[] {
@@ -50,7 +80,7 @@ export function familiesOf(id: string): string[] {
 /** Growth per level for a species: its family's (the average of both for a hybrid). */
 export function growthOf(id: string): number[] {
   const fams = familiesOf(id).map((f) => FAMILIES[f].growth);
-  const kindBoost = SPECIES[id].kind === "legend" ? 1.25 : SPECIES[id].kind === "unseen" ? 1.12 : SPECIES[id].kind === "hybrid" ? 1.05 : 1;
+  const kindBoost = { legend: 1.25, heir: 1.15, unseen: 1.12, regional: 1.06, hybrid: 1.05, base: 1 }[SPECIES[id].kind];
   return ATTRS.map((_, i) => (fams.reduce((n, g) => n + g[i], 0) / fams.length) * kindBoost);
 }
 
@@ -127,7 +157,28 @@ export interface BreedContext {
   wing?: number;
 }
 
-export interface Foal { species: string; potential: number[]; traits: string[]; moves: string[]; temperament: Temperament; strain: string; carrier: boolean; sport: boolean; unseen: boolean; generation: number; }
+export interface Foal {
+  species: string; potential: number[]; traits: string[]; moves: string[]; temperament: Temperament; strain: string; carrier: boolean; sport: boolean; unseen: boolean; generation: number;
+  coat: Coat; lineage: string[];
+  /** Born a regional form because it was bred in that region. */
+  form: boolean;
+  /** Took after a grandparent's species instead of either parent's. */
+  throwback: boolean;
+  /** Both parents the same species for generations: the line breeds true and potential rises. */
+  trueBred: boolean;
+  line: number;
+  /** The legend whose blood it carries. */
+  blood?: string;
+}
+
+interface Region { name: string; kind: string; biome: string; roaming: string[]; colours: string[]; breed: { attr?: string; trait?: string; clean?: boolean; lullScarred?: boolean; note: string }; }
+export const REGIONS = world.regions as Record<string, Region>;
+export const RULES = world.rules;
+/** Species living wild in a region: its natives (found nowhere else if regional) and the kinds that roam there. */
+export const nativesOf = (region: string): string[] => Object.values(SPECIES).filter((s) => s.region === region).map((s) => s.id);
+export const wildIn = (region: string): string[] => [...new Set([...nativesOf(region), ...(REGIONS[region]?.roaming ?? [])])];
+/** The regional forms of a family that a region can give. */
+export const formsIn = (family: string, region: string): string[] => Object.values(SPECIES).filter((s) => s.kind === "regional" && s.family === family && s.region === region).map((s) => s.id);
 
 const pick = <T>(rng: () => number, xs: T[]): T => xs[Math.floor(rng() * xs.length) % xs.length];
 const both = (a: string, b: string, x: string, y: string): boolean => (a === x && b === y) || (a === y && b === x);
@@ -143,7 +194,7 @@ export function hybridFor(famA: string, famB: string): string | undefined {
 export function canBreed(a: Kith, b: Kith): { ok: boolean; why?: string } {
   if (a.id === b.id) return { ok: false, why: "A kith can't breed with itself." };
   if (stageOf(a.level) === "foal" || stageOf(a.level) === "yearling" || stageOf(b.level) === "foal" || stageOf(b.level) === "yearling") return { ok: false, why: "Both need to be grown." };
-  if (SPECIES[a.species].kind === "legend" || SPECIES[b.species].kind === "legend") return { ok: false, why: "Legends don't breed." };
+  if (SPECIES[a.species].kind === "legend" || SPECIES[b.species].kind === "legend") return { ok: false, why: "A legend only ever sires one heir, and only after its quest." };
   const fa = familiesOf(a.species), fb = familiesOf(b.species);
   if (fa.some((f) => fb.includes(f))) return { ok: true };
   if (fa.length === 1 && fb.length === 1 && hybridFor(fa[0], fb[0])) return { ok: true };
@@ -154,7 +205,7 @@ function meetsNeed(need: string, a: Kith, b: Kith, ctx: BreedContext): boolean {
   const [k, v] = need.split(":");
   switch (k) {
     case "moonlit": return !!ctx.moonlit;
-    case "song": return !!ctx.song;
+    case "song": return !!ctx.song || ctx.place === "vael"; // the Spire Folk sing to every pairing
     case "elders": return stageOf(a.level) === "elder" && stageOf(b.level) === "elder";
     case "trait": return a.traits.includes(v) || b.traits.includes(v);
     case "item": return !!ctx.items?.includes(v);
@@ -178,8 +229,9 @@ export const SPORT_CHANCE = 1 / 50;
 /** Breeds two kith. Returns the foal, or null if they can't breed. */
 export function breed(a: Kith, b: Kith, ctx: BreedContext): Foal | null {
   if (!canBreed(a, b).ok) return null;
-  const { rng } = ctx, wing = ctx.wing ?? 0;
+  const { rng } = ctx, wing = ctx.wing ?? 0, region = ctx.place ? REGIONS[ctx.place] : undefined;
   const sport = rng() < SPORT_CHANCE;
+  let form = false, throwback = false;
 
   // species: an unseen recipe first (sport-only recipes need a sport), then a hybrid, then a parent's species
   const unseen = unseenFor(a, b, ctx).filter((s) => !s.recipe!.needs.includes("sport") || sport);
@@ -193,25 +245,51 @@ export function breed(a: Kith, b: Kith, ctx: BreedContext): Foal | null {
       const sa = a.potential.reduce((n, x) => n + x, 0), sb = b.potential.reduce((n, x) => n + x, 0);
       species = rng() < sa / (sa + sb) ? a.species : b.species; // the stronger parent's line is likelier
     }
+    // an heir is one of a kind: its foals take the other parent's species, or the family's own
+    if (SPECIES[species].kind === "heir") {
+      const other = [a, b].find((k) => SPECIES[k.species].kind !== "heir");
+      species = other ? other.species : SPECIES[SPECIES[species].family!] ? SPECIES[species].family! : a.species;
+      if (SPECIES[species].kind === "heir") species = Object.values(SPECIES).find((x) => x.kind === "base" && x.family === SPECIES[species].family)!.id;
+    }
+    // bred in a region with a form of this family: the foal may take the local form
+    const fam = SPECIES[species].family, forms = fam && ctx.place ? formsIn(fam, ctx.place) : [];
+    if (forms.length && SPECIES[species].kind !== "regional") {
+      const inForm = [a, b].filter((k) => forms.includes(k.species)).length;
+      if (rng() < (inForm === 2 ? 1 : inForm === 1 ? RULES.formFromForm : RULES.formChance)) { species = forms.find((f) => f === a.species || f === b.species) ?? pick(rng, forms); form = true; }
+    }
+    // now and then a foal takes after a grandparent instead
+    const back = [...(a.lineage ?? []), ...(b.lineage ?? [])].filter((x) => SPECIES[x] && !["legend", "heir"].includes(SPECIES[x].kind) && x !== a.species && x !== b.species);
+    if (!form && back.length && rng() < RULES.throwbackChance) { species = pick(rng, back); throwback = true; }
   }
 
-  // potential: the parents' average, nudged; a good breeding wing and a sport help
-  const potential = ATTRS.map((_, i) => {
-    let p = (a.potential[i] + b.potential[i]) / 2 + (rng() - 0.5) * 0.9 + wing * 0.12;
+  // potential: the parents' average, nudged; a good breeding wing and a sport help, a true-bred line rises,
+  // and a region's breeders favour one attribute
+  const lineGen = RULES.trueBreedGeneration - (ctx.place === "salt-house" ? 1 : 0);
+  const pure = a.species === b.species && a.species === species, line = pure ? Math.min(a.line ?? 0, b.line ?? 0) + 1 : 0;
+  const trueBred = pure && line > lineGen;
+  const lullNerve = !!region?.breed.lullScarred && [a, b].some((k) => k.lull || k.traits.includes("lull-scarred"));
+  const heirParent = [a, b].find((k) => SPECIES[k.species].kind === "heir" && k.blood), blood = heirParent ? SPECIES[heirParent.blood!]?.potential : undefined;
+  const potential = ATTRS.map((attr, i) => {
+    let p = (a.potential[i] + b.potential[i]) / 2 + (rng() - 0.5) * 0.9 + wing * 0.12 + (trueBred ? RULES.trueBreedBonus : 0) + (blood?.[i] === 5 ? 0.5 : 0);
     if (rng() < 0.08 + wing * 0.03) p += 1;
     if (sport && rng() < 0.5) p += 1;
+    if (region?.breed.attr === attr && rng() < RULES.bonusChance) p += 1;
+    if (lullNerve && attr === "nerve" && rng() < 0.5) p += 1;
     return Math.max(1, Math.min(5, Math.round(p)));
   });
 
   // traits: up to three from the parents; the bone sickness shows only if both carry it
   const sick = (k: Kith) => k.traits.includes("bone-sickness") || !!k.carrier;
-  const pool = [...new Set([...a.traits, ...b.traits])].filter((t) => t !== "bone-sickness");
+  const pool = [...new Set([...a.traits, ...b.traits])].filter((t) => t !== "bone-sickness" && !(lullNerve && t === "lull-scarred"));
   const traits: string[] = [];
   for (const t of pool) if (traits.length < 3 && rng() < 0.45 + wing * 0.1) traits.push(t);
   let carrier = false;
   if (sick(a) && sick(b)) { if (rng() < 0.5) traits.unshift("bone-sickness"); else carrier = true; }
   else if (sick(a) || sick(b)) carrier = rng() < 0.5;
+  if (region?.breed.clean) { carrier = false; const i = traits.indexOf("bone-sickness"); if (i >= 0) traits.splice(i, 1); }
   if (sport) { const rare = Object.keys(TRAITS).filter((t) => t !== "bone-sickness" && !traits.includes(t)); traits.push(pick(rng, rare)); }
+  const local = region?.breed.trait;
+  if (local && !traits.includes(local) && rng() < 0.45) traits.unshift(local);
 
   // moves: the species' first, plus one inherited from each parent that the species doesn't learn itself
   const own = movesAt(species, 1), inherit = (k: Kith) => k.moves.filter((m) => !SPECIES[species].moves.includes(m));
@@ -219,15 +297,79 @@ export function breed(a: Kith, b: Kith, ctx: BreedContext): Foal | null {
   for (const k of [a, b]) { const m = inherit(k); if (m.length) moves.push(pick(rng, m)); }
 
   const temperament = rng() < 0.7 ? (rng() < 0.5 ? a.temperament : b.temperament) : pick(rng, TEMPERAMENTS);
-  const strain = sport ? pick(rng, STRAINS.filter((s) => s !== a.strain && s !== b.strain)) : rng() < 0.5 ? a.strain : b.strain;
-  return { species, potential, traits: traits.slice(0, 4), moves: [...new Set(moves)], temperament, strain, carrier, sport, unseen: SPECIES[species].kind === "unseen", generation: Math.max(a.generation, b.generation) + 1 };
+  // coat: one colour gene and one pattern gene from each parent; a sport changes one of them
+  const ca = coatOf(a), cb = coatOf(b), gene = (x: [string, string]) => x[rng() < 0.5 ? 0 : 1];
+  const coat: Coat = { colour: [gene(ca.colour), gene(cb.colour)], pattern: [gene(ca.pattern), gene(cb.pattern)] };
+  if (sport) { if (rng() < 0.5) coat.colour[rng() < 0.5 ? 0 : 1] = pick(rng, COLOURS); else coat.pattern[rng() < 0.5 ? 0 : 1] = pick(rng, PATTERNS.slice(3)); }
+  const strain = shownCoat(coat).colour;
+  return { species, potential, traits: traits.slice(0, 4), moves: [...new Set(moves)], temperament, strain, carrier, sport, unseen: SPECIES[species].kind === "unseen", generation: Math.max(a.generation, b.generation) + 1, coat, lineage: [a.species, b.species], form, throwback, trueBred, line, ...(heirParent ? { blood: heirParent.blood } : {}) };
+}
+
+// ---- Legends and their heirs ------------------------------------------------------------------------------
+// There is one of each legend, and every player meets the same one: fixed potential, level, temperament and
+// traits. A legend never breeds like other kith. Once in a game, after its own quest, at full bond, in its
+// lair, it can sire a single heir with a grown kith of its family. The heir is stronger than any bred kith
+// of that family but is not a legend, and it can't make more heirs: its foals take the other parent's
+// species, carrying a little of the legend's blood.
+
+/** The legend as the player meets it. */
+export function legendKith(id: string): Kith {
+  const s = SPECIES[id]; if (!s || s.kind !== "legend") throw new Error(`${id} is not a legend`);
+  return { id, name: s.name, species: id, level: s.level!, xp: 0, potential: [...s.potential!], trained: ATTRS.map(() => 0), traits: [...s.traits!], moves: movesAt(id, s.level!).slice(-4), temperament: s.temperament!, strain: "grey", bond: 0, generation: 0, line: 0 };
+}
+
+export interface HeirContext extends BreedContext { /** The legend's own quest is done. */ questDone: boolean; }
+
+/** Whether a legend can sire its heir now, and why not. */
+export function canSireHeir(legend: Kith, mate: Kith, ctx: HeirContext): { ok: boolean; why?: string } {
+  const s = SPECIES[legend.species];
+  if (s?.kind !== "legend" || !s.heir) return { ok: false, why: "Only a legend has an heir." };
+  if (legend.sired) return { ok: false, why: `${legend.name} has already sired its heir.` };
+  if (!ctx.questDone) return { ok: false, why: `Not until "${s.heir.quest}": ${s.heir.needs}` };
+  if (legend.bond < 100) return { ok: false, why: `${legend.name} doesn't trust you enough yet.` };
+  if (ctx.place !== s.lair) return { ok: false, why: `Only in ${REGIONS[s.lair!]?.name ?? s.lair}.` };
+  if (!familiesOf(mate.species).includes(s.family!) || ["legend", "heir"].includes(SPECIES[mate.species].kind)) return { ok: false, why: `The mate must be a ${FAMILIES[s.family!].name.toLowerCase().replace(/s$/, "")} of ordinary blood.` };
+  if (stageOf(mate.level) === "foal" || stageOf(mate.level) === "yearling") return { ok: false, why: "The mate needs to be grown." };
+  return { ok: true };
+}
+
+/** The legend's one heir. Marks the legend as having sired. */
+export function breedHeir(legend: Kith, mate: Kith, ctx: HeirContext): Foal | null {
+  if (!canSireHeir(legend, mate, ctx).ok) return null;
+  const { rng } = ctx, s = SPECIES[legend.species], heir = s.heir!.species;
+  // potential: never below the mate's; the legend's five-star attributes come through at four or five
+  const potential = ATTRS.map((_, i) => {
+    const L = legend.potential[i], M = mate.potential[i];
+    let p = Math.max(M, Math.round((L + M) / 2 + 0.5));
+    if (L === 5) p = Math.max(p, rng() < 0.5 ? 5 : 4);
+    return Math.min(5, p);
+  });
+  const fromMate = mate.traits.filter((t) => t !== "bone-sickness" && !legend.traits.includes(t));
+  const traits = [...legend.traits, ...(fromMate.length ? [pick(rng, fromMate)] : [])];
+  const ca = coatOf(legend), cb = coatOf(mate), gene = (x: [string, string]) => x[rng() < 0.5 ? 0 : 1];
+  const coat: Coat = { colour: [gene(ca.colour), gene(cb.colour)], pattern: [gene(ca.pattern), gene(cb.pattern)] };
+  legend.sired = true;
+  return { species: heir, potential, traits, moves: movesAt(heir, 1), temperament: legend.temperament, strain: shownCoat(coat).colour, carrier: !!mate.carrier && rng() < 0.5, sport: false, unseen: false, generation: mate.generation + 1, coat, lineage: [legend.species, mate.species], form: false, throwback: false, trueBred: false, line: 0, blood: legend.species };
+}
+
+/** A litter: usually one foal, sometimes twins, more often when both parents are deeply bonded. */
+export function breedLitter(a: Kith, b: Kith, ctx: BreedContext): Foal[] {
+  const first = breed(a, b, ctx); if (!first) return [];
+  const twinChance = RULES.twinChance + (a.bond >= 80 && b.bond >= 80 ? RULES.twinBondBonus : 0);
+  if (ctx.rng() >= twinChance) return [first];
+  const second = breed(a, b, ctx)!;
+  return [first, { ...second, species: first.species, form: first.form, throwback: first.throwback, unseen: first.unseen, moves: first.moves }];
 }
 
 /** A new kith from a foal. */
-export const foalToKith = (f: Foal, id: string, name: string): Kith => ({ id, name, species: f.species, level: 1, xp: 0, potential: f.potential, trained: ATTRS.map(() => 0), traits: f.traits, moves: f.moves, temperament: f.temperament, strain: f.strain, bond: 0, carrier: f.carrier, generation: f.generation });
+export const foalToKith = (f: Foal, id: string, name: string): Kith => ({ id, name, species: f.species, level: 1, xp: 0, potential: f.potential, trained: ATTRS.map(() => 0), traits: f.traits, moves: f.moves, temperament: f.temperament, strain: f.strain, bond: 0, carrier: f.carrier, generation: f.generation, coat: f.coat, lineage: f.lineage, line: f.line, ...(f.blood ? { blood: f.blood } : {}) });
 
-/** A wild kith as caught: average potential, maybe wearing a lull. */
-export function wildKith(species: string, level: number, rng: () => number, id = species): Kith {
+/** A wild kith as caught: average potential, maybe wearing a lull. Caught in a region, it carries local colours. */
+export function wildKith(species: string, level: number, rng: () => number, id = species, region?: string): Kith {
+  const local = region ? REGIONS[region]?.colours ?? [] : [];
+  const colour = (): string => (local.length && rng() < 0.6 ? pick(rng, local) : pick(rng, STRAINS));
+  const pattern = (): string => (rng() < 0.6 ? "plain" : pick(rng, PATTERNS.slice(1, 6)));
+  const coat: Coat = { colour: [colour(), colour()], pattern: [pattern(), pattern()] };
   const potential = ATTRS.map(() => Math.max(1, Math.min(5, Math.round(3 + (rng() - 0.5) * 2))));
-  return { id, name: SPECIES[species].name, species, level, xp: 0, potential, trained: ATTRS.map(() => 0), traits: rng() < 0.4 ? [pick(rng, Object.keys(TRAITS).filter((t) => t !== "bone-sickness"))] : [], moves: movesAt(species, level).slice(-4), temperament: pick(rng, TEMPERAMENTS), strain: pick(rng, STRAINS), bond: 0, lull: rng() < 0.35, generation: 0 };
+  return { id, name: SPECIES[species].name, species, level, xp: 0, potential, trained: ATTRS.map(() => 0), traits: rng() < 0.4 ? [pick(rng, Object.keys(TRAITS).filter((t) => t !== "bone-sickness"))] : [], moves: movesAt(species, level).slice(-4), temperament: pick(rng, TEMPERAMENTS), strain: shownCoat(coat).colour, bond: 0, lull: rng() < 0.35, generation: 0, coat };
 }

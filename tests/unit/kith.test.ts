@@ -9,9 +9,10 @@ const make = (species: string, level = 25, over: Partial<Kith> = {}): Kith => ({
 });
 
 describe("kith species", () => {
-  it("has 24 base species in 8 families, 16 hybrids, 12 unseen and 4 legends, all well formed", () => {
+  it("has 36 base species in 12 families, 45 regional forms, 36 hybrids, 25 unseen and 6 legends, all well formed", () => {
     const all = Object.values(SPECIES), count = (k: string) => all.filter((s) => s.kind === k).length;
-    expect([count("base"), count("hybrid"), count("unseen"), count("legend")]).toEqual([24, 16, 12, 4]);
+    expect([count("base"), count("regional"), count("hybrid"), count("unseen"), count("legend")]).toEqual([36, 45, 36, 25, 6]); expect(count("heir")).toBe(6);
+    expect(Object.keys(FAMILIES).length).toBe(12);
     for (const f of Object.keys(FAMILIES)) expect(all.filter((s) => s.kind === "base" && s.family === f).length, f).toBe(3);
     for (const s of all) {
       expect(s.moves.length, s.id).toBe(6);
@@ -21,9 +22,9 @@ describe("kith species", () => {
     expect(Object.keys(TRAITS).length).toBe(40);
   });
 
-  it("makes each of the 16 hybrids from exactly one pair of families", () => {
+  it("makes each of the 36 hybrids from exactly one pair of families", () => {
     const pairs = new Set(Object.values(SPECIES).filter((s) => s.kind === "hybrid").map((s) => [...s.parents!].sort().join("+")));
-    expect(pairs.size).toBe(16);
+    expect(pairs.size).toBe(36);
     expect(hybridFor("mistwing", "loftbuck")).toBe("glidebuck");
     expect(hybridFor("loftbuck", "wadeskin")).toBeUndefined();
   });

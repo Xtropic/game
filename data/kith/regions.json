@@ -1,0 +1,42 @@
+{
+  "note": "Where kith live. Every region has native species (species.region) found wild nowhere else, a few roaming kinds, coat colours of its own, and a breeding bonus for pairs bred there. Breeding a family in the region of one of its regional forms can give that form.",
+  "regions": {
+    "guild":          { "name": "The Brood Guild", "kind": "nation", "biome": "Hatchery city (Vantry)", "roaming": ["boiler-hearthling", "reedcat"], "colours": ["ash-white"], "breed": { "attr": "nerve", "note": "Guild stock is bred calm: a better chance of nerve potential." } },
+    "crown":          { "name": "The Crown of Ostrel", "kind": "nation", "biome": "Royal parks and stud farms", "roaming": ["mistwing", "terrace-doe"], "colours": ["gold"], "breed": { "attr": "presence", "note": "Royal stud lines: a better chance of presence potential." } },
+    "millcities":     { "name": "The Millcities", "kind": "nation", "biome": "Mill towns, canals and coal mines", "roaming": ["clay-delver", "reedcat"], "colours": ["sooty"], "breed": { "attr": "grit", "note": "Hard lives make hard kith: a better chance of grit potential." } },
+    "millbridge":     { "name": "Millbridge", "kind": "nation", "biome": "River market town", "roaming": ["canal-wadeskin", "draughtkith"], "colours": ["rust"], "breed": { "trait": "curious", "note": "Market kith grow up among crowds: foals are often curious." } },
+    "cloudline":      { "name": "The Cloudline Clans", "kind": "nation", "biome": "Moss terraces in the cloud", "roaming": ["mistwing", "treeloper"], "colours": ["moss"], "breed": { "attr": "heart", "note": "Clan kith are hand-raised: a better chance of heart potential." } },
+    "corvane":        { "name": "Corvane League", "kind": "nation", "biome": "Hill towns and counting houses", "roaming": ["ironback", "lantern-cat"], "colours": ["slate"], "breed": { "trait": "patient", "note": "Kith that guard vaults learn to wait: foals are often patient." } },
+    "hollin":         { "name": "Hollin Free Towns", "kind": "nation", "biome": "River valleys and orchards", "roaming": ["canal-wadeskin", "terrace-doe"], "colours": ["russet"], "breed": { "attr": "wits", "note": "Free Town breeders keep honest records: a better chance of wits potential." } },
+    "college":        { "name": "The College of Physicians", "kind": "nation", "biome": "Lowland college city", "roaming": ["spring-hearthling", "mistwing"], "colours": ["pale"], "breed": { "clean": true, "note": "College breeders test every pair: the bone sickness never passes on here." } },
+    "drevka":         { "name": "The Drevka Clans", "kind": "nation", "biome": "Mountain forts and high grazing", "roaming": ["plateau-ironback", "loftbuck"], "colours": ["black"], "breed": { "attr": "might", "note": "Bred for war: a better chance of might potential." } },
+    "ember":          { "name": "The Ember Courts", "kind": "nation", "biome": "Desert courts and night gardens", "roaming": ["dune-strider", "glass-delver"], "colours": ["gold", "ember"], "breed": { "trait": "heat-proof", "note": "Foals born in the desert are often heat-proof." } },
+    "tarsis":         { "name": "Tarsis", "kind": "nation", "biome": "Mercenary fortress on the dry steppe", "roaming": ["dusk-strider", "ironback"], "colours": ["ember"], "breed": { "trait": "fierce", "note": "War kith: foals are often fierce." } },
+    "ashby":          { "name": "Port Ashby", "kind": "nation", "biome": "Smugglers' harbour", "roaming": ["tide-wadeskin", "canal-wadeskin"], "colours": ["ink"], "breed": { "trait": "water-born", "note": "Harbour foals are often water-born." } },
+    "lorne":          { "name": "The Kingdom of Lorne", "kind": "nation", "biome": "Cold northern kingdom over the passes", "roaming": ["mistwing", "plateau-ironback"], "colours": ["frost"], "breed": { "trait": "thick-coat", "note": "Northern foals are often thick-coated." } },
+    "vael":           { "name": "The Spire Folk of Vael", "kind": "hidden", "biome": "Rock spires above the cloud sea", "roaming": ["mistwing"], "colours": ["silver"], "breed": { "trait": "song-touched", "note": "The Spire Folk sing to every pairing: foals are often song-touched, and recipes that need the foal song work here without it." } },
+    "low-water":      { "name": "The Low Water Sisters", "kind": "hidden", "biome": "Candlelit galleries under the canals", "roaming": ["canal-wadeskin"], "colours": ["blue-roan"], "breed": { "attr": "heart", "note": "The Sisters' kith are raised to comfort: a better chance of heart potential." } },
+    "osk":            { "name": "The Exiles of Osk", "kind": "hidden", "biome": "Volcanic island beyond the charts", "roaming": ["tide-wadeskin"], "colours": ["coral", "ink"], "breed": { "lullScarred": true, "note": "On Osk, kith that wore lulls breed true: a lull-scarred parent passes on nerve, not the scars." } },
+    "salt-house":     { "name": "The Salt House", "kind": "hidden", "biome": "Southern salt marshes", "roaming": ["salt-reedcat", "fen-wadeskin"], "colours": ["salt-white"], "breed": { "trait": "salt-hide", "note": "Marsh foals often have salt hides, and the House's records make lines breed true sooner." } },
+    "wandering-herd": { "name": "The Wandering Herd", "kind": "hidden", "biome": "The open eastern plateau", "roaming": ["plateau-ironback", "loftbuck"], "colours": ["dun"], "breed": { "trait": "herd-leader", "note": "Born on the move among the herd: often herd leaders." } },
+    "cloud-forest":   { "name": "The cloud forest", "kind": "wild", "biome": "Dripping forest inside the cloud", "roaming": ["loftbuck", "mistwing", "terrace-doe"], "colours": ["moss", "grey"], "breed": { "trait": "night-eyed", "note": "Forest foals are often night-eyed." } },
+    "high-passes":    { "name": "The high passes", "kind": "wild", "biome": "Snow passes between the ranges", "roaming": ["loftbuck", "mistwing"], "colours": ["frost", "pale"], "breed": { "attr": "grit", "note": "A better chance of grit potential." } },
+    "kerrow-gorge":   { "name": "Kerrow Gorge", "kind": "wild", "biome": "A deep, narrow river gorge", "roaming": ["loftbuck", "treeloper"], "colours": ["slate"], "breed": { "trait": "sure-footed", "note": "Gorge foals are often sure-footed." } },
+    "fens":           { "name": "The fens", "kind": "wild", "biome": "Reed beds and peat bog", "roaming": ["reedcat", "canal-wadeskin"], "colours": ["moss", "rust"], "breed": { "trait": "water-born", "note": "Fen foals are often water-born." } },
+    "deep-desert":    { "name": "The deep desert", "kind": "wild", "biome": "Dunes and dry salt pans", "roaming": ["ember-strider", "dusk-strider"], "colours": ["gold", "pale"], "breed": { "trait": "long-wind", "note": "Desert foals are often long-winded." } },
+    "storm-roost":    { "name": "The Storm Roost", "kind": "wild", "biome": "A peak that is always in storm", "roaming": ["spirecrest", "mistwing"], "colours": ["silver", "slate"], "breed": { "trait": "storm-calm", "note": "Foals born in storm are often storm-calm." } },
+    "old-drove-road": { "name": "The Old Drove Road", "kind": "wild", "biome": "An ancient droving road across the uplands", "roaming": ["loftbuck", "ironback", "draughtkith"], "colours": ["dun", "grey"], "breed": { "attr": "grit", "note": "A better chance of grit potential." } }
+  },
+  "colours": ["grey", "dun", "russet", "slate", "black", "rust", "moss", "sooty", "cream", "pale", "ash-white", "gold", "ember", "ink", "frost", "silver", "blue-roan", "coral", "salt-white"],
+  "patterns": ["plain", "banded", "dappled", "masked", "brindled", "piebald", "starred"],
+  "rules": {
+    "formChance": 0.35,
+    "formFromForm": 0.5,
+    "bonusChance": 0.3,
+    "throwbackChance": 0.04,
+    "twinChance": 0.03,
+    "twinBondBonus": 0.04,
+    "trueBreedGeneration": 3,
+    "trueBreedBonus": 0.3
+  }
+}
