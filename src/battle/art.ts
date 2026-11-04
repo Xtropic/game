@@ -70,13 +70,13 @@ export function backdrop(id: string): HTMLCanvasElement {
 // ---------------- HD figures ----------------
 interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
-  rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#7a5444", coatS: "#5a3c30", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8402c", weapon: "staff", lash: true },
-  tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#3e5a46", coatS: "#2e4434", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
+  rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#8e7a5c", coatS: "#6e5c44", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8262a", weapon: "staff", lash: true },
+  tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#5a6a2e", coatS: "#444f22", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
   warden: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#7c8389", coatS: "#5c6268", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "spear", lantern: true, long: true },
-  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#e0dcd4", hairL: "#f4f0ea", coat: "#6a4a36", coatS: "#4e3628", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
+  maren: { skin: "#e6c4a4", skinS: "#c29c7c", hair: "#e0dcd4", hairL: "#f4f0ea", coat: "#8a3e22", coatS: "#6a2e18", pants: "#3e352c", boot: "#2a221c", eye: "#6a6458", style: "bun", scarf: "#8a6a4a", weapon: "none", long: true },
   archer: { skin: "#ecc8a8", skinS: "#c99f80", hair: "#2b2b2b", hairL: "#555555", coat: "#6f7a72", coatS: "#525c55", pants: "#3a3d40", boot: "#1e1e1e", eye: "#5a6470", style: "helm", weapon: "bow", long: true },
   // the Commons Army: Brannoc, a huge soft-spoken ex-miner with a shield-spear; Ketti, twelve, with a knife
-  brannoc: { skin: "#d4a888", skinS: "#ac8466", hair: "#6a6560", hairL: "#8a8580", coat: "#5a4a38", coatS: "#42362a", pants: "#3a3028", boot: "#221a14", eye: "#4a5a6a", style: "bald", beard: "#8a8580", weapon: "spear", long: true },
+  brannoc: { skin: "#d4a888", skinS: "#ac8466", hair: "#6a6560", hairL: "#8a8580", coat: "#4e5236", coatS: "#3a3e28", pants: "#3a3028", boot: "#221a14", eye: "#4a5a6a", style: "bald", beard: "#8a8580", weapon: "spear", long: true },
   ketti: { skin: "#f0cfb2", skinS: "#d2a88a", hair: "#8a3a1e", hairL: "#b4562e", coat: "#5a5a36", coatS: "#44442a", pants: "#3a3228", boot: "#241c16", eye: "#6a8a4a", style: "braid", weapon: "dart", lash: true },
   ferris: { skin: "#d8aa80", skinS: "#b08460", hair: "#1e1a18", hairL: "#3a3430", coat: "#3e5a32", coatS: "#2e4426", pants: "#3a3a2a", boot: "#24221a", eye: "#5a4a32", style: "cap", cap: "#4a5a34", weapon: "bow", lash: false, long: true },
   // a Guild cart warden: an officer's long grey coat and a red sash
