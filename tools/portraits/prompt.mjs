@@ -17,3 +17,10 @@ export const prompt = (name, look) =>
 const arg = process.argv[2];
 for (const [id, look] of Object.entries(looks))
   if (arg === "--all" || id === arg) console.log(`${id}\n${prompt(id[0].toUpperCase() + id.slice(1), look)}\n`);
+
+// Kith portraits share the cast's style. Looks live in data/kith/portrait-looks.json; save as public/portraits/kith-<species>.jpg
+// and list "kith-<species>" in public/portraits/index.json.
+export const kithPrompt = (name, look) =>
+  `Creature portrait for a story-driven RPG. An invented creature called a ${name}, clearly fictional and not resembling any real-world animal: ${look}. ` +
+  "Head and upper body, three-quarter view, centered. Rich, detailed modern anime illustration: fine crisp linework, cel shading with soft painted gradients, glossy highlights, warm golden key light from the upper right. Bright, vibrant, saturated colours on the creature. " +
+  "The background is a completely plain flat light warm grey, with no scenery, gradient, sky, pattern or light effects. No text, no frame, no logo.";
