@@ -138,6 +138,51 @@
       "fitting": "head-hatchery",
       "text": "A tray-iron from the burnt brood house, cooled in the ditch. Heavy enough to forge into something.",
       "map": "land-vale"
+    },
+    {
+      "id": "pedlar-linen",
+      "x": 38,
+      "y": 27,
+      "from": "a1",
+      "item": "bandage",
+      "text": "A bundle of boiled linen in the grass by the road, dropped from some pedlar's pack.",
+      "map": "land-cloudline"
+    },
+    {
+      "id": "pass-willow",
+      "x": 15,
+      "y": 15,
+      "from": "a1",
+      "item": "willowbark",
+      "text": "A twist of willowbark in waxed paper, wedged in the cairn at the top of the climb. Left for whoever needs it.",
+      "map": "land-cloudline"
+    },
+    {
+      "id": "orchard-salve",
+      "x": 20,
+      "y": 21,
+      "from": "a2",
+      "item": "salve",
+      "text": "A small pot of honey salve, sealed with wax, set on a fence post. Someone's kindness to travellers.",
+      "map": "land-vale"
+    },
+    {
+      "id": "road-linen",
+      "x": 48,
+      "y": 29,
+      "from": "a2",
+      "item": "bandage",
+      "text": "Clean bandages in an oilcloth roll, fallen from a cart.",
+      "map": "land-vale"
+    },
+    {
+      "id": "camp-willow",
+      "x": 62,
+      "y": 25,
+      "from": "a2",
+      "item": "willowbark",
+      "text": "Willowbark, stripped and drying on a stone. Whoever left it has gone on.",
+      "map": "land-vale"
     }
   ]
 }

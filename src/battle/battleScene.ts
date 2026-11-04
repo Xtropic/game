@@ -3,6 +3,7 @@
 // fixed-step update, so animations, waits and timing windows read top to bottom.
 import type { Loadout } from "../gear/weapons";
 import { sfx } from "../audio/music";
+import { settings } from "../core/settings";
 import { buildOf, type Build } from "../art/build";
 import { kithBaseline, type Kith } from "../kith/kith";
 import { attrsAt, person } from "../cast/attributes";
@@ -27,8 +28,7 @@ type Co = Generator<number | Qte, void, unknown>;
 export type BattleResult = "won" | "lost";
 export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
 
-const AUTO_KEY = "lull.autoTiming";
-const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } };
+const readAuto = (): boolean => settings.get("autoTiming");
 
 export class BattleScene implements Scene {
   readonly id = "battle";
@@ -371,7 +371,7 @@ export class BattleScene implements Scene {
 
   private toggleAuto(): void {
     this.autoTiming = !this.autoTiming;
-    try { localStorage.setItem(AUTO_KEY, this.autoTiming ? "1" : "0"); } catch { /* storage may be blocked */ }
+    settings.set("autoTiming", this.autoTiming);
     this.say(this.autoTiming ? "Auto timing on" : "Auto timing off", true);
   }
 
@@ -419,6 +419,8 @@ export class BattleScene implements Scene {
       }
     } else if (this.mode === "over" && inp.wasPressed("confirm")) { this.done(); return; }
 
+    // the battle speed setting hurries the animations along, but never a timing ring
+    if (!this.qte) { dt *= settings.get("battleSpeed"); this.dt = dt; }
     // coroutines
     this.co2 = this.co2.filter((c) => !c.next().done);
     if (this.co) {

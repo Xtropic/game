@@ -28,7 +28,7 @@ export function joinerFor(id: string, kith: Record<string, Kith>, names: Record<
 }
 
 /** A portrait as a sprite: painted art, or the drawn bust; a kith with no painted portrait yet shows its map figure. */
-function portrait(j: Joiner, size: number): Container {
+export function portrait(j: Joiner, size: number): Container {
   const c = new Container();
   if (j.kith && !hasPainted(j.id)) {
     c.addChild(new Graphics().rect(0, 0, size, size).fill(0x3a3428));

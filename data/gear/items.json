@@ -1,0 +1,8 @@
+{
+  "note": "Things the company carries and uses from the menu. Owned counts live in the flags as have.<id>, like fittings. heal is the share of full health given back; who is one person or the whole party travelling.",
+  "items": {
+    "bandage":    { "name": "Clean bandages", "heal": 0.3, "who": "one", "text": "Boiled linen, rolled tight. Binds one person's cuts." },
+    "salve":      { "name": "Honey salve", "heal": 0.55, "who": "one", "text": "Thick and golden. Keeps a deep wound clean while it closes." },
+    "willowbark": { "name": "Willowbark tea", "heal": 0.2, "who": "all", "text": "Bitter, but it eases every ache. Enough for everyone travelling together." }
+  }
+}

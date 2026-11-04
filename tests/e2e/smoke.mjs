@@ -51,8 +51,9 @@ if (!(await at()).dialog) fail("dialogue closed before the line was shown in ful
 await page.keyboard.press("Enter"); await page.waitForTimeout(100);
 if ((await at()).dialog) fail("dialogue did not close");
 
-// save to slot 1, then reload from the autosave path by copying slot 1 over auto
-await page.keyboard.press("KeyM"); await page.waitForTimeout(100);
+// save to slot 1 from the menu (M, up to the pages, left to wrap round to Save, down, Enter), then close it;
+// then reload from the autosave path by copying slot 1 over auto
+for (const k of ["KeyM", "ArrowUp", "ArrowLeft", "ArrowDown", "Enter", "Escape"]) { await page.keyboard.press(k); await page.waitForTimeout(80); }
 const saved = await page.evaluate(() => window.__lull.saves());
 const s1 = saved.find((s) => s.slot === "1"); if (!s1) fail("no slot 1 save");
 const before = await at();

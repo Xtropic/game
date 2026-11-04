@@ -14,6 +14,8 @@ export class Voices {
   private index: Record<string, string> = {};
   private current: { audio: HTMLAudioElement; env: string } | null = null;
   muted = false;
+  /** 0..1 from the settings; 0 means no recorded voices at all. */
+  volume = 1;
 
   async load(base = "vo/"): Promise<void> {
     try { const r = await fetch(base + "index.json"); if (r.ok) this.index = await r.json(); } catch { /* voices are optional */ }
@@ -27,8 +29,8 @@ export class Voices {
   play(who: string, text: string): boolean {
     this.stop();
     const h = lineHash(who, text), env = this.index[h];
-    if (env === undefined || this.muted) return false;
-    const audio = new Audio(this.base + h + ".mp3");
+    if (env === undefined || this.muted || this.volume <= 0) return false;
+    const audio = new Audio(this.base + h + ".mp3"); audio.volume = this.volume;
     audio.play().catch(() => { /* blocked until the player interacts; the line still shows */ });
     this.current = { audio, env };
     return true;

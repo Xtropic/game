@@ -44,6 +44,9 @@ export function sceneryFor(t: TileKind | null): string {
 
 export interface Traveller { id: string; name: string; }
 
+/** A traveller's id in battle (and in the wounds they carry out of it), where it differs from their story id. */
+export const unitIdOf = (id: string): string => (id === "tamsin" ? "tam" : id);
+
 // Where each side stands, in stage units: allies on the left, foes on the right.
 const ALLY_FRONT: [number, number][] = [[86, 94], [100, 122]], ALLY_BACK: [number, number][] = [[42, 104], [28, 128]];
 const FOE_AT: [number, number][] = [[168, 92], [160, 126], [194, 110], [226, 98]];

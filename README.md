@@ -26,7 +26,7 @@ A story-driven RPG built in TypeScript with PixiJS. The world is drawn as pixel 
 
 ## Controls
 
-Arrows or WASD to move, Shift to run, Enter / Space / E to talk or look, Q to sing, M to save. In a choice, Up/Down and Enter, or tap an option.
+Arrows or WASD to move, Shift to run, Enter / Space / E to talk or look, Q to sing, Tab or M for the menu (party, gear, items, settings, save and load), R for your company, J for notes, N for sound. In a choice, Up/Down and Enter, or tap an option.
 
 Battles: Up/Down to pick a move, Enter to choose, then Left/Right to pick a target and Enter. When a ring closes on someone, press Space (or tap) as it meets the inner ring: on your hits for more damage, on enemy hits to brace. T turns on auto timing. Taps work for everything on a phone.
 

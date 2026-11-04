@@ -1,3 +1,4 @@
+import { ITEMS } from "../../src/gear/items";
 import { describe, expect, it } from "vitest";
 import { MAPS, REGIONS, STORY } from "../../src/world/content";
 import { TILE_DEFS, WILD, WorldMap } from "../../src/world/map";
@@ -94,11 +95,11 @@ describe("the lands of Ostrel", () => {
   it("puts each rare find where Rhea can reach it, and only from its stage until she picks it up", () => {
     for (const f of GATES.finds) {
       const w = new WorldMap(MAPS[f.map]), s = w.spawn();
-      expect(FITTINGS[f.fitting], f.fitting).toBeDefined();
+      if (f.item) expect(ITEMS[f.item], f.item).toBeDefined(); else expect(FITTINGS[f.fitting!], f.fitting).toBeDefined();
       expect(w.solidAt(f.x, f.y), f.id).toBe(false);
       expect(reach(w, s.x, s.y).has(`${f.x},${f.y}`), f.id).toBe(true);
     }
-    expect(findsNow({ stage: "a1" }).map((f) => f.id)).toEqual(["duskwort"]);
+    expect(findsNow({ stage: "a1" }).map((f) => f.id)).toEqual(["duskwort", "pedlar-linen", "pass-willow"]);
     expect(findsNow({ stage: "a3c" }, "land-vale").map((f) => f.id)).toContain("indenture");
     expect(findsNow({ stage: "a3" }).map((f) => f.id)).not.toContain("indenture");
     expect(findsNow({ stage: "a7", "found.trayiron": true }).map((f) => f.id)).not.toContain("trayiron");

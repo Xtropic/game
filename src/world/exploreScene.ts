@@ -31,6 +31,9 @@ import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
+import { GameMenu } from "../ui/gameMenu";
+import { ITEMS } from "../gear/items";
+import type { Slot } from "../core/save";
 import { StoryRunner, holds, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
 
 export const VIEW_W = 320, VIEW_H = 180;
@@ -77,6 +80,8 @@ export class ExploreScene implements Scene, StoryHost {
   private joins = new JoinCards();
   private company = new CompanyPanel();
   private notes = new NotesPanel();
+  private menu = new GameMenu();
+  private menuButton = new Text({ text: "☰ Menu", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private map!: WorldMap;
   private game!: Game;
   private zoom = 1;
@@ -138,7 +143,9 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view);
+    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view);
+    this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
+    this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
@@ -218,7 +225,8 @@ export class ExploreScene implements Scene, StoryHost {
     if (!this.map.file.world) return [];
     return findsNow(this.flags, this.map.file.id).map((f) => ({
       id: `find.${f.id}`, map: this.map.file.id, x: f.x, y: f.y, look: "glint", pickup: true,
-      talk: [{ set: { [`found.${f.id}`]: true }, add: { [`have.${f.fitting}`]: 1 } }, { say: "", text: f.text }, { toast: `Found: ${FITTINGS[f.fitting]?.name ?? f.fitting}. A fitting for the forge.` }],
+      talk: [{ set: { [`found.${f.id}`]: true }, add: { [`have.${f.item ?? f.fitting}`]: 1 } }, { say: "", text: f.text },
+        { toast: f.item ? `Found: ${ITEMS[f.item]?.name ?? f.item}. In the pack now (Tab or M).` : `Found: ${FITTINGS[f.fitting!]?.name ?? f.fitting}. A fitting for a weapon (Tab or M).` }],
     }));
   }
 
@@ -322,6 +330,8 @@ export class ExploreScene implements Scene, StoryHost {
     this.meter.x = w - 160; this.meter.y = 34;
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
+    this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
+    this.menu.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
@@ -333,7 +343,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   snapshot(): ExploreState { return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing }; }
 
-  save(slot: "auto" | "1"): void {
+  save(slot: Slot): void {
     const s = this.snapshot();
     this.game.saves.write(slot, { playSeconds: this.game.playSeconds, place: { map: s.map, x: s.x, y: s.y, facing: s.facing }, flags: { ...this.game.flags, follow: this.followers.map((f) => f.id).join(",") }, party: { ...this.game.party }, gear: { ...this.game.gear }, coin: this.game.coin, kith: structuredClone(this.game.kith) });
   }
@@ -376,6 +386,21 @@ export class ExploreScene implements Scene, StoryHost {
       if (!quiet && id !== "ash") this.joins.push(joinerFor(id, game.kith, this.story.cast));
     }
     f.company = have.join(",");
+  }
+
+  /** Nothing else is on screen or running: the menu can open. */
+  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && this.game.scenes.top === this; }
+
+  openMenu(): void {
+    const trav = [this.hero(), ...this.followers.map((f) => f.id)];
+    this.menu.show({
+      game: this.game, names: this.story.cast,
+      travelling: () => trav,
+      company: () => this.joinedIds(),
+      health: () => this.health(), setHealth: (h) => this.setHealth(h),
+      save: (slot) => this.save(slot),
+      load: (slot) => { const d = this.game.saves.read(slot); if (!d) return; const { version: _v, savedAt: _s, ...rest } = d; this.game.saves.write("auto", rest); location.reload(); },
+    }, this.screen.w, this.screen.h);
   }
 
   private toggleNotes(): void { this.notes.toggle((id) => !!this.flags[`learned.${id}`], this.screen.w, this.screen.h); }
@@ -438,6 +463,8 @@ export class ExploreScene implements Scene, StoryHost {
         const ups = s.units.filter((u) => u.side === "ally" && u.cast).flatMap((u) => this.game.giveXp(u.cast!, xp, u.name));
         // owned kith that fought learn from what they did, and grow
         for (const u of s.units) if (u.side === "ally" && u.kith && this.game.kith[u.id]) ups.push(...this.game.kithFought(u.id, s.deeds[u.id], xp));
+        // Wardens carry field dressings; now and then one is left on the road
+        if (id.startsWith("patrol-") && this.rng() < 0.35) { this.game.flags["have.bandage"] = Number(this.game.flags["have.bandage"] ?? 0) + 1; ups.push("A roll of clean bandages lies where one of the Wardens fell. You take it."); }
         this.refresh();
         onWin?.();
         this.runner.run([...ups.map((text) => ({ say: "", text })), ...this.befriendSteps(s)]);
@@ -617,6 +644,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.joins.showing) { if (this.joins.canClose && (inp.wasPressed("confirm") || inp.wasPressed("cancel"))) this.joins.close(); return; }
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
     if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
+    if (this.menu.open) { if (!this.menu.update(inp)) this.settle = true; return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
@@ -636,7 +664,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (inp.wasPressed("sing")) { this.sing(); return; }
     if (inp.wasPressed("company")) { this.toggleCompany(); return; }
     if (inp.wasPressed("notes")) { this.toggleNotes(); return; }
-    if (inp.wasPressed("menu")) { this.save("1"); this.toast("Saved"); }
+    if (inp.wasPressed("menu")) { this.openMenu(); return; }
     const a = inp.axis();
     if (this.settle) { if (a.x || a.y) return; this.settle = false; }
     this.player.moving = a.x !== 0 || a.y !== 0;
