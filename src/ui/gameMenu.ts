@@ -176,6 +176,7 @@ export class GameMenu {
     if (tab === "Gear") { if (this.armed()[this.i]) { this.focus = "slots"; this.slot = 0; } }
     else if (tab === "Items") {
       const id = itemsOwned(this.host.game.flags)[this.i]; if (!id) return;
+      if (ITEMS[id].battle) { this.msg = "That one is for fights: choose it on someone's turn."; return; }
       if (ITEMS[id].who === "all") this.useOn(-1); else { this.focus = "target"; this.pick = 0; }
     } else if (tab === "Settings") this.settingRows()[this.i]?.change(1);
     else if (tab === "Save") this.saveRows()[this.i]?.act();
@@ -391,12 +392,12 @@ export class GameMenu {
     let y = b.y;
     y += this.text(it.name, x, y, fs + 5, "#fff4dc", true, w).height + 6;
     y += this.text(it.text, x, y, fs, "#d8ccb4", false, w).height + 10;
-    y += this.text(it.who === "all" ? `Gives back ${pct(it.heal)} of everyone's health. Enter to use.` : `Gives back ${pct(it.heal)} of one person's health. Enter, then choose who.`, x, y, fs - 1, "#bfae8e", false, w).height + 12;
+    y += this.text(it.battle ? "Used in fights: anyone can throw it on their turn, and the sharper their wits, the more it does." : it.who === "all" ? `Gives back ${pct(it.heal)} of everyone's health. Enter to use.` : `Gives back ${pct(it.heal)} of one person's health. Enter, then choose who.`, x, y, fs - 1, "#bfae8e", false, w).height + 12;
     const hl = this.host.health(), trav = this.travellers();
     this.text(this.focus === "target" ? "Use it on:" : "Travelling with you:", x, y, fs - 1, "#e0c070", true); y += fs + 10;
     trav.forEach((m, i) => {
       const on = this.focus === "target" && i === this.pick, life = hl[m.unit] ?? 1, rh = fs + 14;
-      this.hit(x, y, w, rh, () => { if (it.who === "all") this.useOn(-1); else { this.pick = i; this.useOn(i); } }, on);
+      this.hit(x, y, w, rh, () => { if (it.battle) return; if (it.who === "all") this.useOn(-1); else { this.pick = i; this.useOn(i); } }, on);
       this.text(m.name, x + 10, y + 5, fs, on ? "#fff4dc" : "#e8dcc0", on);
       this.text(`Health ${pct(life)}`, x + w * 0.45, y + 5, fs - 1, life < 1 ? "#e8b8a0" : "#b8d0a0");
       this.bar(x + w * 0.45 + fs * 7, y + fs / 2 + 2, Math.max(30, w * 0.55 - fs * 7 - 14), life, life < 0.3 ? 0xd06a5a : 0x7fb069);

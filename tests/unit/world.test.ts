@@ -99,7 +99,7 @@ describe("the lands of Ostrel", () => {
       expect(w.solidAt(f.x, f.y), f.id).toBe(false);
       expect(reach(w, s.x, s.y).has(`${f.x},${f.y}`), f.id).toBe(true);
     }
-    expect(findsNow({ stage: "a1" }).map((f) => f.id)).toEqual(["duskwort", "pedlar-linen", "pass-willow"]);
+    expect(findsNow({ stage: "a1" }).map((f) => f.id)).toEqual(["duskwort", "pedlar-linen", "pass-willow", "pedlar-pots"]);
     expect(findsNow({ stage: "a3c" }, "land-vale").map((f) => f.id)).toContain("indenture");
     expect(findsNow({ stage: "a3" }).map((f) => f.id)).not.toContain("indenture");
     expect(findsNow({ stage: "a7", "found.trayiron": true }).map((f) => f.id)).not.toContain("trayiron");

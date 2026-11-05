@@ -3,7 +3,7 @@
 // Counts are kept in the story flags as have.<id> (fittings are counted the same way).
 import data from "../../data/gear/items.json";
 
-export interface Item { name: string; heal: number; who: "one" | "all"; text: string; }
+export interface Item { name: string; heal: number; who: "one" | "all"; text: string; /** Thrown in fights instead (a crafted art), not used from the menu. */ battle?: boolean; }
 export const ITEMS = data.items as Record<string, Item>;
 
 type Flags = Record<string, boolean | number | string>;
@@ -30,7 +30,7 @@ export function applyItem(health: Record<string, number>, item: Item, on: string
 
 /** Uses one of an item: takes it from the flags and returns the new health, or null (and keeps it) if it would do nothing. */
 export function useItem(flags: Flags, id: string, health: Record<string, number>, on: string, party: string[]): Record<string, number> | null {
-  const item = ITEMS[id]; if (!item || owned(flags, id) < 1) return null;
+  const item = ITEMS[id]; if (!item || item.battle || owned(flags, id) < 1) return null;
   const out = applyItem(health, item, on, party); if (!out) return null;
   flags[`have.${id}`] = owned(flags, id) - 1;
   return out;

@@ -1,8 +1,44 @@
 {
-  "note": "Things the company carries and uses from the menu. Owned counts live in the flags as have.<id>, like fittings. heal is the share of full health given back; who is one person or the whole party travelling.",
+  "note": "Things the company carries and uses from the menu. Owned counts live in the flags as have.<id>, like fittings. heal is the share of full health given back; who is one person or the whole party travelling. battle: the item is thrown in a fight (its skill in data/battle/skills.json); heal is 0 for those.",
   "items": {
-    "bandage":    { "name": "Clean bandages", "heal": 0.3, "who": "one", "text": "Boiled linen, rolled tight. Binds one person's cuts." },
-    "salve":      { "name": "Honey salve", "heal": 0.55, "who": "one", "text": "Thick and golden. Keeps a deep wound clean while it closes." },
-    "willowbark": { "name": "Willowbark tea", "heal": 0.2, "who": "all", "text": "Bitter, but it eases every ache. Enough for everyone travelling together." }
+    "bandage": {
+      "name": "Clean bandages",
+      "heal": 0.3,
+      "who": "one",
+      "text": "Boiled linen, rolled tight. Binds one person's cuts."
+    },
+    "salve": {
+      "name": "Honey salve",
+      "heal": 0.55,
+      "who": "one",
+      "text": "Thick and golden. Keeps a deep wound clean while it closes."
+    },
+    "willowbark": {
+      "name": "Willowbark tea",
+      "heal": 0.2,
+      "who": "all",
+      "text": "Bitter, but it eases every ache. Enough for everyone travelling together."
+    },
+    "firepot": {
+      "name": "Fire pot",
+      "heal": 0,
+      "who": "one",
+      "battle": true,
+      "text": "Lamp oil and pitch in a clay pot, a rag for a wick. Thrown in a fight; the cleverer the hand, the better the throw."
+    },
+    "dart": {
+      "name": "Numbing dart",
+      "heal": 0,
+      "who": "one",
+      "battle": true,
+      "text": "Tipped with venom milked from a wadeskin. It numbs whatever it strikes. Thrown in a fight."
+    },
+    "snare": {
+      "name": "Snare charge",
+      "heal": 0,
+      "who": "one",
+      "battle": true,
+      "text": "A coiled spring and a hook, set to go off underfoot. Thrown in a fight."
+    }
   }
 }

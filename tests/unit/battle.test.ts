@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { act, afterBattle, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
 import { BATTLES, SKILLS } from "../../src/battle/data";
 import { initiativeOf, intentRead, statsOf } from "../../src/battle/rules";
-import { party } from "../../src/cast/attributes";
+import { NEUTRAL, party } from "../../src/cast/attributes";
+import { ART_COST, FOCUS_FULL, alive, artStat } from "../../src/battle/rules";
+import { KEEPSAKES } from "../../src/gear/weapons";
+import { FAMILIES } from "../../src/kith/kith";
 
 const book: SkillBook = SKILLS;
 const def: BattleDef = BATTLES["trail-wardens"];
@@ -218,5 +221,55 @@ describe("wounds carry over", () => {
     const h = afterBattle(s);
     expect(h.rhea).toBeGreaterThan(0.4); expect(h.rhea).toBeLessThan(1);
     expect(h[other.id]).toBeCloseTo(0.25 + 0.75 * 0.35, 2);
+  });
+});
+
+describe("heavy moves for those who aren't fighters", () => {
+  const book = SKILLS as SkillBook;
+  const fight = (pack: Record<string, number> = {}) => createBattle({ id: "t", name: "t", backdrop: "trail", intro: [], units: [
+    { id: "rhea", name: "Rhea", look: "rhea", side: "ally", row: "front", cast: "rhea", skills: ["strike", "sing", "rally"], at: [86, 94] },
+    { id: "ash", name: "Ash", look: "ash", side: "ally", row: "front", hp: 30, skills: [], kith: true, bonded: "rhea", at: [62, 124] },
+    { id: "w1", name: "Warden", look: "warden", side: "foe", row: "front", cast: "warden", level: 3, skills: ["wstrike"], at: [168, 92] },
+    { id: "w2", name: "Warden", look: "warden", side: "foe", row: "front", cast: "warden", level: 3, skills: ["wstrike"], at: [160, 126] },
+  ] }, book, seeded(3), {}, {}, {}, {}, pack);
+
+  it("builds focus from timing and support, and full focus offers the keepsake's finisher", () => {
+    const s = fight();
+    expect(skillsFor(s, unit(s, "rhea"), book)).not.toContain("fin.knife");
+    act(s, book, "rhea", "rally", "rhea", [], seeded(1));
+    expect(s.focus.rhea).toBe(25);
+    s.focus.rhea = FOCUS_FULL; s.phase = "ally"; s.turn = 0;
+    expect(skillsFor(s, unit(s, "rhea"), book)[0]).toBe("fin.knife");
+    const before = unit(s, "w1").hp;
+    act(s, book, "rhea", "fin.knife", "w1", ["perfect"], () => 0.99);
+    expect(s.focus.rhea).toBe(0);
+    expect(before - unit(s, "w1").hp).toBeGreaterThan(20);
+  });
+
+  it("a kith art spends part of the bond and hits the front line, harder with heart", () => {
+    const s = fight();
+    s.bond = 50;
+    expect(skillsFor(s, unit(s, "rhea"), book)).toContain("art.loftbuck");
+    act(s, book, "rhea", "art.loftbuck", "w1", ["good"], () => 0.99);
+    expect(s.bond).toBe(50 - ART_COST);
+    expect(unit(s, "w1").hp).toBeLessThan(unit(s, "w1").maxHp);
+    expect(unit(s, "w2").hp).toBeLessThan(unit(s, "w2").maxHp);
+  });
+
+  it("crafted arts come from the pack, are used up, scale with wits and can stop a foe's move", () => {
+    const s = fight({ dart: 1, bandage: 3 });
+    expect(s.pack).toEqual({ dart: 1 });
+    expect(skillsFor(s, unit(s, "rhea"), book)).toContain("dart");
+    act(s, book, "rhea", "dart", "w1", ["good"], () => 0.99);
+    expect(s.pack.dart).toBe(0); expect(s.used.dart).toBe(1);
+    expect(unit(s, "w1").stunned || !alive(unit(s, "w1"))).toBe(true);
+    expect(skillsFor(s, unit(s, "rhea"), book)).not.toContain("dart");
+    const sharp = { ...NEUTRAL, wits: 20 }, dull = { ...NEUTRAL, wits: 4 };
+    expect(artStat(book.dart, sharp)).toBeGreaterThan(artStat(book.dart, dull));
+  });
+
+  it("every keepsake weapon type has a finisher, and every kith family an art", () => {
+    for (const t of new Set(Object.values(KEEPSAKES).map((k) => k.type))) expect(book[`fin.${t}`], t).toBeDefined();
+    for (const f of Object.keys(FAMILIES)) expect(book[`art.${f}`], f).toBeDefined();
   });
 });

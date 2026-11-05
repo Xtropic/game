@@ -225,7 +225,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (!this.map.file.world) return [];
     return findsNow(this.flags, this.map.file.id).map((f) => ({
       id: `find.${f.id}`, map: this.map.file.id, x: f.x, y: f.y, look: "glint", pickup: true,
-      talk: [{ set: { [`found.${f.id}`]: true }, add: { [`have.${f.item ?? f.fitting}`]: 1 } }, { say: "", text: f.text },
+      talk: [{ set: { [`found.${f.id}`]: true }, add: { [`have.${f.item ?? f.fitting}`]: f.count ?? 1 } }, { say: "", text: f.text },
         { toast: f.item ? `Found: ${ITEMS[f.item]?.name ?? f.item}. In the pack now (Tab or M).` : `Found: ${FITTINGS[f.fitting!]?.name ?? f.fitting}. A fitting for a weapon (Tab or M).` }],
     }));
   }
@@ -455,7 +455,9 @@ export class ExploreScene implements Scene, StoryHost {
       gear: this.game.gear,
       kith: this.game.kith,
       health: this.health(),
+      pack: Object.fromEntries(Object.keys(ITEMS).filter((k) => ITEMS[k].battle).map((k) => [k, Number(this.game.flags[`have.${k}`] ?? 0)])),
       onDone: (_r, s) => {
+        for (const [k, n] of Object.entries(s.used)) this.game.flags[`have.${k}`] = Math.max(0, Number(this.game.flags[`have.${k}`] ?? 0) - n);
         this.setHealth(afterBattle(s));
         if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought

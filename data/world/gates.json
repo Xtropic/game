@@ -183,6 +183,35 @@
       "item": "willowbark",
       "text": "Willowbark, stripped and drying on a stone. Whoever left it has gone on.",
       "map": "land-vale"
+    },
+    {
+      "id": "pedlar-pots",
+      "x": 36,
+      "y": 27,
+      "from": "a1",
+      "item": "firepot",
+      "text": "Two clay pots of lamp oil and pitch, rag wicks tucked in the necks, hidden under a stone by the road. Someone meant to use them on a Guild cart.",
+      "map": "land-cloudline",
+      "count": 2
+    },
+    {
+      "id": "drover-snare",
+      "x": 21,
+      "y": 22,
+      "from": "a2",
+      "item": "snare",
+      "text": "A drover's snare charge, still set, spring coiled. You ease it closed and keep it.",
+      "map": "land-vale"
+    },
+    {
+      "id": "wadeskin-darts",
+      "x": 49,
+      "y": 30,
+      "from": "a2",
+      "item": "dart",
+      "text": "A hunter's case of numbing darts, tips sealed in wax, dropped in the reeds.",
+      "map": "land-vale",
+      "count": 3
     }
   ]
 }
