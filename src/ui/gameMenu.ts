@@ -215,6 +215,7 @@ export class GameMenu {
       { label: "Text speed", value: () => TEXT_LABEL[settings.get("textSpeed")] ?? "Normal", change: (d) => settings.set("textSpeed", cycle(TEXT_SPEEDS, settings.get("textSpeed"), d)) },
       { label: "Battle speed", value: () => `x${settings.get("battleSpeed")}`, change: (d) => settings.set("battleSpeed", cycle(BATTLE_SPEEDS, settings.get("battleSpeed"), d)) },
       { label: "Auto timing", value: () => (settings.get("autoTiming") ? "On" : "Off"), change: () => settings.set("autoTiming", !settings.get("autoTiming")) },
+      { label: "Auto battle", value: () => (settings.get("autoBattle") ? "On" : "Off"), change: () => settings.set("autoBattle", !settings.get("autoBattle")) },
       { label: "Always run", value: () => (settings.get("alwaysRun") ? "On" : "Off"), change: () => settings.set("alwaysRun", !settings.get("alwaysRun")) },
     ];
   }

@@ -14,7 +14,8 @@
   "nightWatch",
   "brannocDown",
   "sectionVote",
-  "quietTamsin"
+  "quietTamsin",
+  "firstWeek"
  ],
  "moods": {
   "scenes": {
@@ -1697,17 +1698,26 @@
     "text": "\"You won't find him on the roads. The Guild's records are burned and its hatcheries have walls. One woman with a staff can't open a hatchery. An army can.\""
    },
    {
+    "say": "brannoc",
+    "text": "\"Every child we pull out of a hatchery goes in a book at our camp. Name, village, the cart they came on. Some of the names we've had off Guild clerks.\""
+   },
+   {
     "choose": "Brannoc waits.",
     "options": [
      {
-      "label": "\"Then I'll join your army.\"",
+      "label": "\"I'm not joining anybody's army.\"",
+      "by": "rhea",
       "do": [
        {
         "say": "brannoc",
-        "text": "\"Good. You'll be a Recruit, and I'll be your sergeant, and you'll hate me for a month.\""
+        "text": "\"I didn't ask you to. I asked you to come and read a book.\""
+       },
+       {
+        "set": {
+         "doubtCommons": true
+        }
        }
-      ],
-      "by": "rhea"
+      ]
      },
      {
       "label": "\"Why should I trust an army?\"",
@@ -1735,6 +1745,14 @@
       "by": "rhea"
      }
     ]
+   },
+   {
+    "say": "rhea",
+    "text": "\"I'll read your book. Then I'm back on the road.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"That's all I'm asking.\""
    },
    {
     "say": "tamsin",
@@ -1875,11 +1893,19 @@
    },
    {
     "say": "kane",
-    "text": "\"Brannoc says you've walked every cart road in the highlands for a year. That's either devotion or madness. I need both.\""
+    "text": "\"Brannoc says you've walked every cart road in the highlands for a year. He says you want to read our book.\""
+   },
+   {
+    "say": "",
+    "text": "The book is three fingers thick. Rhea reads every page from the spring of the raid onwards, and then reads them again. Finch isn't in it."
+   },
+   {
+    "say": "rhea",
+    "text": "\"He's not here.\""
    },
    {
     "say": "kane",
-    "text": "\"Why are you here, Rhea Caddow?\""
+    "text": "\"Not yet. Every hatchery we open adds pages.\""
    },
    {
     "choose": "Tell him.",
@@ -1932,20 +1958,12 @@
     ]
    },
    {
-    "set": {
-     "rank": "Recruit"
-    }
-   },
-   {
-    "toast": "You enlist in the Commons Army as a Recruit."
+    "say": "rhea",
+    "text": "\"I came to read a book, Marshal. I've read it.\""
    },
    {
     "say": "kane",
-    "text": "\"You'll be in Brannoc's section. Eight of them, nine with you. They'll teach you more than I can.\""
-   },
-   {
-    "say": "kane",
-    "text": "\"Have a look round before you unpack. The nurses' tent, the drill yard, the kith lines. Then come back and tell me what you saw.\""
+    "text": "\"Then stay one night before you go. Brannoc tells me you're a doctor, and my nurses are stitching scalps with sailmaker's thread. Have a look round: the nurses' tent, the drill yard, the kith lines. Then come and tell me what you saw.\""
    },
    {
     "stage": "a2b"
@@ -2160,6 +2178,10 @@
     "text": "\"Eleven of ours died in their sleep last harvest, Caddow. Every one of them wore a Larkfold greenling. My own sister. Tell us why.\""
    },
    {
+    "say": "",
+    "text": "A broad man in a stonemason's apron pushes to the front of the crowd. His hands are white with stone dust."
+   },
+   {
     "say": "oren",
     "text": "\"My Anna was one of them. Thirty-one years married. She was getting better.\""
    },
@@ -2183,11 +2205,15 @@
        },
        {
         "say": "oren",
-        "text": "\"Larkfold killed my wife. I'll say it to her face, and she hasn't run. That's more than the Guild ever did. I'll hear what the Commons has to offer.\""
+        "text": "\"My wife died wearing one of your greenlings, Caddow. And you've stood up there in front of all of us and said so, when you could have blamed the Guild and been cheered for it.\""
+       },
+       {
+        "say": "oren",
+        "text": "\"The Guild has never once told us the truth about anything it sold us. I'll hear what the Commons has to offer.\""
        },
        {
         "say": "",
-        "text": "Rhea doesn't step away from him. She stays at his side while he says it again, louder, so the whole square hears: Larkfold."
+        "text": "One by one, a few others come and stand beside him. Not many. Enough to keep the meeting going."
        },
        {
         "set": {
@@ -2383,7 +2409,7 @@
    },
    {
     "say": "",
-    "text": "The terraces have gone back to weeds. The houses are black shells. Somebody has stolen the drying house roof."
+    "text": "The terraces have gone back to weeds. The houses are black shells. The drying house is a black frame against the cloud."
    },
    {
     "say": "",
@@ -2533,7 +2559,7 @@
    },
    {
     "say": "soldier",
-    "text": "\"You're the new one in Brannoc's section? You'll like him. He makes you run up the drove road with a sack of stones, and then he carries your sack back down.\""
+    "text": "\"You're the doctor Brannoc walked up? If you stay, pray you get his section. He makes you run up the drove road with a sack of stones, and then he carries your sack back down.\""
    },
    {
     "say": "soldier",
@@ -2632,7 +2658,74 @@
    },
    {
     "say": "kane",
-    "text": "\"Good. Get some sleep. Your tent's the one in the top corner, by the west fence. Brannoc wants to see what you can do with that staff, at dawn. Don't let him be gentle with you.\""
+    "text": "\"So. The road in the morning, or here?\""
+   },
+   {
+    "choose": "Rhea doesn't answer at once.",
+    "options": [
+     {
+      "label": "\"Armies take children too. I saw your drill yard.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"So did I, the first time. Nobody under fifteen here carries more than a broom handle, and every one of them can walk out of that gate tonight. The children in a hatchery can't.\""
+       }
+      ]
+     },
+     {
+      "label": "\"I came for Finch, not for your war.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"Then use us. One woman can't open a hatchery. When we open the one he's in, you'll want to be first through the door, and you won't be, unless you're with us.\""
+       }
+      ]
+     },
+     {
+      "label": "\"What does it cost me?\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"A year of your life, most likely. No pay. A vote in your section, which you'll get sick of. And orders from Brannoc, which is the hard part.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Outside the tent flap, a boy from the nurses' tent has fallen asleep against a pole, with a pale new ring on his neck. He can't be much older than Finch. Nobody here is making him stay."
+   },
+   {
+    "say": "rhea",
+    "text": "\"Somebody opened a door for him.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"One year, Marshal. If Finch turns up in your book, I go to him, whatever my orders say.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"If he turns up in my book, I'll lend you the cart.\""
+   },
+   {
+    "set": {
+     "rank": "Recruit"
+    }
+   },
+   {
+    "toast": "You enlist in the Commons Army as a Recruit."
+   },
+   {
+    "say": "kane",
+    "text": "\"You'll be in Brannoc's section. Eight of them, nine with you. They'll teach you more than I can.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Get some sleep. Your tent's the one in the top corner, by the west fence. Brannoc wants to see what you can do with that staff, at dawn. Don't let him be gentle with you.\""
    },
    {
     "set": {
@@ -2654,7 +2747,7 @@
    },
    {
     "say": "ferris",
-    "text": "\"I drove for the Guild, you know. Four years. Carts of greenlings down to Millbridge, carts of children back. They pay the drivers by the trip, so you don't ask what's under the canvas.\""
+    "text": "\"I drove for the Guild, you know. Four years. Carts of Guild lulls down to Millbridge, carts of children back. They pay the drivers by the trip, so you don't ask what's under the canvas.\""
    },
    {
     "choose": "Ferris drinks his tea and doesn't look at you.",

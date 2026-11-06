@@ -13,7 +13,7 @@ import type { Scene } from "../core/scene";
 import {
   FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
-} from "./rules";
+  autoChoice, canRelease, fleeChance, release, tryFlee } from "./rules";
 import { paintedHeight, paintedLook } from "./painted";
 import {
   CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
@@ -26,8 +26,8 @@ interface Fx { kind: string; x: number; y: number; x2?: number; y2?: number; t: 
 interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" | "note"; grade: Grade | null; }
 type Co = Generator<number | Qte, void, unknown>;
 
-export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export type BattleResult = "won" | "lost" | "fled" | "released";
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; /** A fight the story doesn't need: the party may run, or let much weaker foes go. */ escape?: boolean; }
 
 const readAuto = (): boolean => settings.get("autoTiming");
 
@@ -64,6 +64,8 @@ export class BattleScene implements Scene {
   cursor = 0;
   tcursor = 0;
   private choice: { skill: string; target: string } | null = null;
+  /** Auto battle: each ally's move is chosen for them (and timing is automatic). */
+  private autoBattle = settings.get("autoBattle");
 
   // HUD
   private hud = new Container();
@@ -97,7 +99,7 @@ export class BattleScene implements Scene {
     this.backFill.eventMode = "static"; // also stops taps reaching the map underneath
     this.view.addChild(this.backFill, this.stageSprite, this.hud);
     this.hud.addChild(this.panel, this.cmdTitle, this.cmdNote, this.logText, this.party, this.hint);
-    this.hint.eventMode = "static"; this.hint.cursor = "pointer"; this.hint.on("pointertap", () => this.toggleAuto());
+    this.hint.eventMode = "static"; this.hint.cursor = "pointer"; this.hint.on("pointertap", (e: FederatedPointerEvent) => { const lx = e.global.x - this.hint.x; if (lx > this.hint.width / 2) this.toggleAutoBattle(); else this.toggleAuto(); });
     this.stageSprite.eventMode = "static";
     this.stageSprite.on("pointerdown", (e: FederatedPointerEvent) => this.tapStage(e.global.x, e.global.y));
     this.reset();
@@ -186,10 +188,12 @@ export class BattleScene implements Scene {
       if (this.s.phase === "ally") {
         const u = acting(this.s)!;
         this.say(`${u.name}'s turn`, true);
-        this.mode = "menu"; this.cursor = Math.min(this.cursor, skillsFor(this.s, u, this.book).length - 1); this.choice = null;
-        while (!this.choice) yield 0;
+        this.mode = "menu"; this.cursor = Math.min(this.cursor, this.cmds(u).length - 1); this.choice = null;
+        let waited = 0;
+        while (!this.choice) { if (this.autoBattle && (waited += this.dt) > 0.35) this.choice = autoChoice(this.s, this.book, u); yield 0; }
         this.mode = "busy";
         const c = this.choice as { skill: string; target: string };
+        if (c.skill === "run" || c.skill === "release") { if (yield* this.leave(c.skill)) return; continue; }
         yield* this.allyMove(u, c.skill, c.target);
       } else if (this.s.phase === "foe") {
         this.say(this.s.firstStrike ? "They move first" : "Their move", false);
@@ -212,6 +216,33 @@ export class BattleScene implements Scene {
       }
     }
   }
+  /** Running, or letting the foes go. True when the fight is over. */
+  private *leave(how: "run" | "release"): Generator<number | Qte, boolean, unknown> {
+    if (how === "release") {
+      for (const id of release(this.s)) { const u = unit(this.s, id); this.vis.get(id)!.flee = true; this.co2.push(this.moveTo(id, u.at[0] + 160, u.at[1], 1.1)); }
+      this.say("You let them go", true); yield 1.2;
+    } else {
+      if (!tryFlee(this.s, this.rng)) { this.say("No way out!", false); yield 0.6; return false; }
+      for (const u of this.s.units) if (u.side === "ally" && alive(u)) { this.vis.get(u.id)!.pose = "run"; this.co2.push(this.moveTo(u.id, u.at[0] - 150, u.at[1], 0.8)); }
+      this.say("You get away", false); yield 1;
+    }
+    this.mode = "over";
+    return true;
+  }
+
+  /** What the acting ally can choose: their skills, then Run and Let them go in fights the story doesn't need. */
+  private cmds(u: Unit): string[] {
+    const ks = skillsFor(this.s, u, this.book);
+    if (!this.opts.escape) return ks;
+    return [...ks, "run", ...(canRelease(this.s) ? ["release"] : [])];
+  }
+  private entry(k: string): { name: string; note: string; kind?: string } {
+    if (k === "run") return { name: "Run", note: `Try to get away (about ${Math.round(fleeChance(this.s) * 100)}% chance). If it fails, they get a free turn.` };
+    if (k === "release") return { name: "Let them go", note: "They're no match for you. Stand aside and let them leave. No fight, and nothing learned from it." };
+    return this.book[k];
+  }
+  private isCmd(k: string): boolean { return k === "run" || k === "release"; }
+
   /** Side coroutines that run alongside the main flow (e.g. everyone walking home at once). */
   private co2: Co[] = [];
 
@@ -409,12 +440,19 @@ export class BattleScene implements Scene {
     this.say(this.autoTiming ? "Auto timing on" : "Auto timing off", true);
   }
 
+  private toggleAutoBattle(): void {
+    this.autoBattle = !this.autoBattle;
+    settings.set("autoBattle", this.autoBattle);
+    this.say(this.autoBattle ? "Auto battle on" : "Auto battle off", true);
+  }
+
   private tapStage(gx: number, gy: number): void {
     if (this.qte) { this.press(); return; }
     if (this.mode === "over") { this.done(); return; }
     if (this.mode !== "target" && this.mode !== "menu") return;
     const u = acting(this.s); if (!u) return;
-    const k = skillsFor(this.s, u, this.book)[this.cursor], ts = targetsFor(this.s, this.book, u, k);
+    const k = this.cmds(u)[this.cursor]; if (this.isCmd(k)) return;
+    const ts = targetsFor(this.s, this.book, u, k);
     const sx = ((gx - this.sx) / this.sw) * CW, sy = ((gy - this.sy) / this.sh) * CH;
     let best: Unit | null = null, bd = 30;
     for (const t of ts) { const [x, y] = this.pos(t), d = Math.hypot(x - sx, y - 18 - sy); if (d < bd) { bd = d; best = t; } }
@@ -422,28 +460,30 @@ export class BattleScene implements Scene {
   }
 
   private done(): void {
-    if (this.s.phase === "lost") { this.reset(); return; }
+    if (this.s.phase === "lost" && !this.s.escaped) { this.reset(); return; }
     const s = this.s, cb = this.opts.onDone;
     this.game.scenes.pop();
-    cb?.("won", s);
+    cb?.(s.escaped ?? "won", s);
   }
 
   update(dt: number): void {
     const inp = this.game.input;
     this.dt = dt; this.time += dt;
     if (inp.wasPressed("timing")) this.toggleAuto();
+    if (inp.wasPressed("auto")) this.toggleAutoBattle();
     // timing window
     if (this.qte) {
       const q = this.qte; q.t += dt;
       if (inp.wasPressed("confirm")) this.press();
-      if (!q.grade && this.autoTiming && q.t >= q.lead) q.grade = "good";
+      if (!q.grade && (this.autoTiming || this.autoBattle) && q.t >= q.lead) q.grade = "good";
       if (!q.grade && q.t >= q.lead + 0.17) q.grade = "none";
     } else if (this.mode === "menu" || this.mode === "target") {
-      const u = acting(this.s)!, ks = skillsFor(this.s, u, this.book);
+      const u = acting(this.s)!, ks = this.cmds(u);
       if (this.mode === "menu") {
         if (inp.wasPressed("up")) this.cursor = (this.cursor + ks.length - 1) % ks.length;
         if (inp.wasPressed("down")) this.cursor = (this.cursor + 1) % ks.length;
-        if (inp.wasPressed("confirm")) { this.mode = "target"; const ts = targetsFor(this.s, this.book, u, ks[this.cursor]); this.tcursor = Math.max(0, ts.findIndex((t) => t.side !== u.side)); }
+        if (inp.wasPressed("confirm") && this.isCmd(ks[this.cursor])) this.choice = { skill: ks[this.cursor], target: "" };
+        else if (inp.wasPressed("confirm")) { this.mode = "target"; const ts = targetsFor(this.s, this.book, u, ks[this.cursor]); this.tcursor = Math.max(0, ts.findIndex((t) => t.side !== u.side)); }
       } else {
         const ts = targetsFor(this.s, this.book, u, ks[this.cursor]);
         if (inp.wasPressed("left") || inp.wasPressed("up")) this.tcursor = (this.tcursor + ts.length - 1) % ts.length;
@@ -558,23 +598,23 @@ export class BattleScene implements Scene {
   private drawHud(): void {
     const s = this.s, u = acting(s), { x, y } = this.hudRect;
     // commands
-    const ks = u && (this.mode === "menu" || this.mode === "target") ? skillsFor(s, u, this.book) : [];
-    this.cmdTitle.text = this.mode === "over" ? (s.phase === "won" ? "Victory" : "Defeat") : u && ks.length ? `${this.mode === "target" ? (this.narrow ? "Choose a target" : `${u.name}: choose a target`) : u.name}` : this.qte ? (this.qte.mode === "brace" ? "Brace!" : "Time it!") : s.phase === "foe" ? "Their move" : "";
+    const ks = u && (this.mode === "menu" || this.mode === "target") ? this.cmds(u) : [];
+    this.cmdTitle.text = this.mode === "over" ? (s.escaped === "fled" ? "Got away" : s.escaped === "released" ? "Let go" : s.phase === "won" ? "Victory" : "Defeat") : u && ks.length ? `${this.mode === "target" ? (this.narrow ? "Choose a target" : `${u.name}: choose a target`) : u.name}` : this.qte ? (this.qte.mode === "brace" ? "Brace!" : "Time it!") : s.phase === "foe" ? "Their move" : "";
     while (this.cmdItems.length < ks.length) {
       const i = this.cmdItems.length, t = new Text({ text: "", style: { fontFamily: HUD_FONT, fontSize: 17, fill: "#e8dcc2" } });
       t.eventMode = "static"; t.cursor = "pointer";
-      t.on("pointertap", () => { if (this.mode !== "menu" && this.mode !== "target") return; if (this.cursor === i && this.mode === "target") return; this.cursor = i; const uu = acting(this.s); if (!uu) return; this.mode = "target"; const ts = targetsFor(this.s, this.book, uu, skillsFor(this.s, uu, this.book)[i]); this.tcursor = Math.max(0, ts.findIndex((tt) => tt.side !== uu.side)); });
+      t.on("pointertap", () => { if (this.mode !== "menu" && this.mode !== "target") return; if (this.cursor === i && this.mode === "target") return; this.cursor = i; const uu = acting(this.s); if (!uu) return; const kk = this.cmds(uu)[i]; if (this.isCmd(kk)) { this.choice = { skill: kk, target: "" }; return; } this.mode = "target"; const ts = targetsFor(this.s, this.book, uu, kk); this.tcursor = Math.max(0, ts.findIndex((tt) => tt.side !== uu.side)); });
       this.hud.addChild(t); this.cmdItems.push(t);
     }
     this.cmdItems.forEach((t, i) => {
       t.visible = i < ks.length; if (!t.visible) return;
-      const sk = this.book[ks[i]], on = i === this.cursor;
+      const sk = this.entry(ks[i]), on = i === this.cursor;
       const big = ks[i] === "call" || sk.kind === "finisher" || sk.kind === "art";
-      t.text = `${on ? "▸ " : "   "}${sk.name}${sk.kind === "craft" ? ` ×${s.pack[ks[i]] ?? 0}` : ""}`; t.style.fill = big ? "#ffd890" : on ? "#ffe39a" : "#cfc3aa";
+      t.text = `${on ? "▸ " : "   "}${sk.name}${sk.kind === "craft" ? ` ×${s.pack[ks[i]] ?? 0}` : ""}`; t.style.fill = big ? "#ffd890" : this.isCmd(ks[i]) ? (on ? "#bfe0ff" : "#9ab8d0") : on ? "#ffe39a" : "#cfc3aa";
       const per = Math.max(3, Math.floor((this.hudRect.h - 76) / 24)), col = Math.floor(i / per);
       t.x = x + 20 + col * (this.narrow ? 150 : 180); t.y = y + 42 + (i % per) * 24;
     });
-    this.cmdNote.text = this.mode === "over" ? (s.phase === "won" ? "Press Enter or tap to go on" : "Press Enter or tap to try again") : ks.length ? this.book[ks[this.cursor]].note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
+    this.cmdNote.text = this.mode === "over" ? (s.phase === "won" || s.escaped ? "Press Enter or tap to go on" : "Press Enter or tap to try again") : ks.length ? this.entry(ks[this.cursor]).note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
     // log
     this.logText.text = s.log.slice(-4).join("\n");
     // party
@@ -591,7 +631,7 @@ export class BattleScene implements Scene {
     });
     const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
     p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
-    this.hint.text = `${this.narrow ? "Tap" : "T"}: auto timing ${this.autoTiming ? "on" : "off"}`;
+    this.hint.text = `${this.narrow ? "Tap" : "T"}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow ? "" : "B: "}auto battle ${this.autoBattle ? "on" : "off"}`;
   }
 
   /** Read-only view for tests and debugging. */
@@ -599,7 +639,7 @@ export class BattleScene implements Scene {
     const u = acting(this.s);
     return {
       phase: this.s.phase, mode: this.mode, round: this.s.round, bond: this.s.bond, resolve: this.s.resolve, routed: this.s.routed,
-      acting: u?.id ?? null, skills: u ? skillsFor(this.s, u, this.book) : [], cursor: this.cursor, qte: this.qte ? { target: this.qte.target, mode: this.qte.mode } : null,
+      acting: u?.id ?? null, skills: u ? this.cmds(u) : [], auto: this.autoBattle, escaped: this.s.escaped ?? null, cursor: this.cursor, qte: this.qte ? { target: this.qte.target, mode: this.qte.mode } : null,
       units: this.s.units.map((x) => ({ id: x.id, hp: x.hp, gone: x.gone })), log: this.s.log.slice(-3), presses: pressesFor(this.book, u ? skillsFor(this.s, u, this.book)[this.cursor] ?? "strike" : "strike"),
     };
   }

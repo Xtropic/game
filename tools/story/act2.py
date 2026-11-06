@@ -45,7 +45,7 @@ objectives = {
     "ab3": "Wild loftbucks have taken the old bathhouse in the north-west corner. Get them out: sing (Q), or drive them out.",
     "ab4": "Brannoc wants a word about the work before the snow. He's by the fire.",
     "ab5": "Dorrit's supply cart has come up from the camp. She's at the gate.",
-    "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to her (Q).",
+    "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to him (Q).",
     "ab7": "Turn in. Your tent is the one in the south-west corner.",
     "ab8": "The first snow. Oda is at the cellar door by the spring. She's sent for you.",
     "ab9": "Go to Ume's terraces, west of Larkfold on the Cloudline, and ask the clan for moss.",
@@ -86,7 +86,9 @@ S = {}  # scripts
 # ------------------------------------------------------------------ the camp, autumn
 S["act2Start"] = [
     setf({"act2": True, "light": "dusk", "noWild": False, "hero": "rhea"}),
-    say("rhea", R("Back to the camp. Oda's trays won't keep in a cave on their own all winter, and I'm not leaving them there.")),
+    iff({"flag": "recruited.oda"},
+        [say("rhea", R("Back to the camp. Oda's trays won't keep in a cave on their own all winter, and I'm not leaving them there."))],
+        [say("rhea", R("Back to the camp. There's nothing left up there."))]),
     say("brannoc", R("Then back to the camp it is. Slowly, if nobody minds. My back minds.")),
     fade("A week on the road, down the mountain and east along the drove road."),
     setf({"light": "day"}),
@@ -114,7 +116,7 @@ S["kane2"] = [
     iff({"stage": "ab1"}, [run("kaneThornwick")], [
         iff({"stage": "ab14"}, [run("kaneCrates")], [
             iff({"stage": "ab2"}, [say("kane", R("Thornwick, Caddow. Before the snow."))], [
-                say("kane", R("You've a post to hold, Sergeant. Go and hold it."))])])]),
+                say("kane", R("You've a post to hold, Caddow. Go and hold it."))])])]),
 ]
 S["kaneThornwick"] = [
     n("Kane is at his map table, with a list of the camp's winter stores weighted down under his knife."),
@@ -247,7 +249,7 @@ S["evenings"] = [
 ]
 S["halloranPromote"] = [
     iff({"stage": "ac1"}, [
-        say("halloran", R("Dace. A year on the night watch and not one boiler lost. Do you know how rare that is?")),
+        say("halloran", R("Dace. A year on the night watch. One bad night with the boilers, and you went into the steam yourself instead of running for help. Do you know how rare that is?")),
         say("halloran", R("The Houses have noticed. They want the watch officers to be men who can keep a boiler room quiet. I want you to have a lieutenant's tabs and three hatcheries to keep quiet instead of one.")),
         choose("Halloran holds out the tabs.",
                opt(R("Thank you, Captain."), [add({"hold": -2})], by="corran", hint="Take them."),
@@ -338,7 +340,7 @@ S["umeMeet"] = [
         say("rhea", R("She bred greenlings from what you told her. In Larkfold. For people coming off Guild lulls.")),
         say("ume", R("I heard. I heard what it cost, too.")),
         n("Someone is sitting in the doorway behind her: a man of forty in a miner's coat, with his arms wrapped round himself. He's shaking. His neck is ringed with scars from his collar to his ear."),
-        say("ume", R("My son Tobin. He went down to the Coldharrow pits at sixteen, and a foreman set a Guild lull on him after a rock fall so he'd finish the shift. Twenty years. Nine rings. He came home in the summer with nothing left to buy one with.")),
+        say("ume", R("My son Tobin. He went down to the Coldharrow pits at sixteen, and a foreman set a Guild lull on him after a rock fall so he'd finish the shift. Twenty years. There's no counting his rings any more, they've run together. He came home in the summer with nothing left to buy one with.")),
         say("tobin", R("Ma.")),
         say("ume", R("He's tried three times to come off them on his own, up here, in the cold. The raw sends him back down the mountain every time.")),
         choose("What does Rhea ask for?",
@@ -347,7 +349,7 @@ S["umeMeet"] = [
         say("ume", R("The Guild's factor counts every basket. He doesn't count the gleanings, the scraps we pick off the terraces after the harvest. They're ours by clan law. He doesn't know they're worth anything.")),
         say("ume", R("You can have the gleanings, a basket every month, for as long as you need them. And you take my son, and you bring him back to me clean. That's the price.")),
         say("tobin", R("I've had the raw three times, Ma. I can't do it a fourth.")),
-        say("rhea", R("It won't be the raw. That's what greenlings are for. Every month you wear a weaker one, and your body learns to manage without, a little at a time.")),
+        say("rhea", R("It won't be the raw. That's what greenlings are for. You wear a weaker one, then a weaker one, as slowly as you need, and your body learns to manage without, a little at a time.")),
         n("Tobin looks at his mother for a long time. Then he gets up, slowly, and goes to get his coat."),
         setf({"umeMet": True, "recruited.tobin": True}),
         {"follow": ["tobin"]},
@@ -367,7 +369,7 @@ S["tobinHome"] = [
 ]
 S["tobinFirst"] = [
     n("Down in the warm cellar, Oda has a greenling ready on a square of damp moss: the strongest of her strengths, the first."),
-    say("oda", R("Sit down, Tobin. Head forward. You've done this a thousand times. This is the last time it'll be this strong.")),
+    say("oda", R("Sit down, Tobin. Head forward. You've done this hundreds of times. This is the last time it'll be this strong. In Larkfold we stepped people down every fortnight. Twenty years on Guild lulls, you'll go by the month.")),
     n("Oda takes the Guild lull off the back of his neck, the dying one he came up the mountain wearing, and sets the greenling in its place before the raw can start."),
     say("tobin", R("It's weaker.")),
     say("oda", R("It's meant to be. Next month it'll be weaker still. By the thaw you won't need one.")),
@@ -395,22 +397,25 @@ S["birthday"] = [
     stage("ac5"), goto("rooms", 2, 3, "right"),
     iff({"eq": {"evenings": "lull"}}, [
         n("A fresh tin from Lisle on the table. You've been back for one every month since the autumn. It makes the evenings quiet, and lately the mornings too."),
-    ], [n("Lisle's tin is still on the shelf, unopened, where you put it in the autumn. You look at it most evenings.")]),
+    ], [n("You told Lisle nothing hurt, in the autumn, and you've kept to it. Some evenings it takes the whole evening.")]),
     n("Finch is fourteen today. A year ago you promised to take him up to the high passes above the city, to see the wild loftbucks come down to graze. You said: when you're fourteen."),
 ]
 S["finchBirthday"] = [
     iff({"stage": "ac5"}, [
         say("finch", R("You said the high passes. When I was fourteen.")),
         n("He says it as if he doesn't care either way. He's been ready since dawn: boots on, coat buttoned wrong."),
-        choose("It's a long climb, and your head aches, and there's the tin on the table.",
+        choose("It's a long climb, and your head aches.",
                opt(R("Get your scarf. It's cold up there."), [setf({"birthday": "kept"}), run("passClimb")], by="corran", hint="Keep the promise."),
-               opt(R("Not today. Next week. I've a report to write."), [run("birthdayBroken")], by="corran", hint="Stay home with a fresh lull.")),
+               opt(R("Not today. Next week. I've a report to write."), [run("birthdayBroken")], by="corran", hint="Stay home.")),
     ]),
 ]
 S["birthdayBroken"] = [
-    setf({"birthday": "broken", "mods.corran": "lull"}), add({"hold": -10, "rings.corran": 1, "finchCorran": -12}),
+    setf({"birthday": "broken"}), add({"finchCorran": -12}),
     say("finch", R("All right.")),
-    n("He goes out alone. You put the fresh lull on, for the headache, and the afternoon goes by very smoothly."),
+    iff({"eq": {"evenings": "lull"}}, [
+        setf({"mods.corran": "lull"}), add({"hold": -10, "rings.corran": 1}),
+        n("He goes out alone. You put the fresh lull on, for the headache, and the afternoon goes by very smoothly."),
+    ], [n("He goes out alone. You sit over the report all afternoon and don't write a word of it.")]),
     n("He comes back after dark with snow in his hair, and doesn't say where he's been. You don't ask. He never asks you for anything again."),
     run("backToRhea2"),
 ]
@@ -484,7 +489,7 @@ S["kaneCrates"] = [
 S["raidHome"] = [
     goto("thornwick", 13, 13, "up"),
     setf({"light": "night"}),
-    n("Thornwick, after dark. The section is round the fire. Ferris's reedcat is pacing the wall, ears flat."),
+    n("Thornwick, after dark. The section is round the fire. Hesk's kith are pacing their pens, ears flat."),
     say("tamsin", R("Rhea. Lamps on the road. Five of them, and kith.")),
     say("brannoc", R("Wardens. They've followed the smoke.")),
     n("You were told not to light big fires the valley could see. Somebody did, on the coldest night of the winter, and you didn't stop them."),
@@ -525,7 +530,7 @@ S["lyleTalk"] = [
 S["verdict"] = [
     n("The section sits round the fire. Nobody is eating."),
     say("soldier", R("He held the torches at Larkfold. He said so himself.")),
-    say("soldier", R("They hanged your elders in their own square, Sergeant. We all heard. What do you want to do with the men who held the light for it?")),
+    say("soldier", R("They hanged your elders from their own drying house, Sergeant. We all heard. What do you want to do with the men who held the light for it?")),
     iff({"flag": "recruited.oren"}, [say("oren", R("Whatever you decide, decide it so you can live with it in a year. That's all I'll say."))]),
     say("brannoc", R("It's your section, Caddow. They'll do what you say. That's what it means.")),
     choose("Two Wardens in the chapel. What does Rhea say?",
@@ -557,7 +562,7 @@ S["springRider"] = [
 ]
 S["rider"] = [
     iff({"stage": "ab19"}, [
-        say("rider", R("From the Marshal, Sergeant. There's to be an exchange of prisoners at Kell's Bridge on the Kerrow, under a truce flag. Five of ours the Guild took at Sallow, for five of theirs we hold.")),
+        say("rider", R("From the Marshal, Sergeant. There's to be an exchange of prisoners at Kell's Bridge on the Kerrow, under a truce flag. Five of ours the Guild has taken on the Vantry road this winter, for five of theirs we hold.")),
         iff({"eq": {"wardens": "spared"}}, [say("rider", R("Two of theirs are yours. The Marshal wants them brought down, and you with them, as their escort."))],
             [say("rider", R("The Marshal wants you with the escort. You've seen Wardens up close."))]),
         say("rider", R("Lieutenant Varro does the talking. The Guild has named its own officer for the bridge.")),
@@ -584,8 +589,8 @@ S["varroBridge"] = [
 ]
 S["bridge"] = [
     iff({"stage": "ab20"}, [
-        n("It's hot on the bridge. The river is loud under the arches."),
-        n("Corran is thinner. His hair is cut short, the Warden way. He has a lieutenant's tabs on a grey coat, and the collar is buttoned high up his neck, in the summer heat."),
+        n("The spring sun is hot on the bridge. The river is loud under the arches."),
+        n("Corran is thinner. His hair is cut short, the Warden way. He has a lieutenant's tabs on a grey coat, and the collar is buttoned high up his neck, in the heat."),
         say("corran", R("Rhea.")),
         n("He says it the way he used to say it across the drying-house roof, and she hates him for that more than for anything."),
         say("corran", R("Five of ours. Five of yours. I need to count them.")),
@@ -638,13 +643,20 @@ S["hiding"] = [
     iff({"eq": {"parley": "toldoff"}}, [
         setf({"mods.corran": "lull"}), add({"hold": -6, "rings.corran": 1}),
         n("You put a fresh lull on the night you came back from the bridge, and the night after that. You were going to make the tin last the month. It has lasted nine days."),
-    ], [n("You've been sleeping, since the bridge. Not well. But sleeping. The tin from Lisle has run out early anyway. It always does now.")]),
+    ], [iff({"eq": {"evenings": "lull"}},
+            [n("You've been sleeping, since the bridge. Not well. But sleeping. The tin from Lisle has run out early anyway. It always does now.")],
+            [n("Since the bridge you haven't slept. Three nights. Four. Every time you close your eyes she says it again: you walked them in with a lamp.")])]),
 ]
 S["lisleHiding"] = [
     iff({"stage": "ac7"}, [
-        say("corran", R("The field line doesn't do anything any more. I need the house line.")),
-        say("lisle", R("You need less, Lieutenant. Not more. The Guild counts every line I set, and every officer I set them on. Your name is in that ledger nine times since the autumn.")),
-        say("lisle", R("No. Come back in a month.")),
+        iff({"eq": {"evenings": "lull"}}, [
+            say("corran", R("The field line doesn't do anything any more. I need the house line.")),
+            say("lisle", R("You need less, Lieutenant. Not more. The Guild counts every line I set, and every officer I set them on. Your name is in that ledger nine times since the autumn.")),
+            say("lisle", R("No. Come back in a month.")),
+        ], [
+            say("corran", R("I can't sleep. You offered me something for the evenings, in the autumn.")),
+            say("lisle", R("And you told me nothing hurt. The Guild counts every line I set now. New names wait a month for the ledger. Come back in a month.")),
+        ]),
         n("Out in the street, a Warden you've seen in the yard catches your eye and walks with you a while. He knows a place, he says. On the Spindle canal. They don't keep ledgers."),
         stage("ac8"), goto("backroom", 5, 5, "up"),
         n("A low room that smells of canal water and moss. Crates along the walls. A man at the table with a stack of tins and a ledger he isn't writing in."),
@@ -695,7 +707,7 @@ S["backToRhea3"] = [
 # ------------------------------------------------------------------ late spring: Tobin walks down clean
 S["tobinClean"] = [
     iff({"stage": "ab22"}, [
-        n("Tobin stands at the gate with his pack on, in his mended miner's coat. There's nothing on the back of his neck. Nine rings, pale now, and no tenth."),
+        n("Tobin stands at the gate with his pack on, in his mended miner's coat. There's nothing on the back of his neck. The rings on his neck have gone pale, and there's no new one."),
         n("Ume has come down from the terraces on a loftbuck, with her stick across her knees, to see it."),
         say("ume", R("Turn round. Let me look.")),
         n("He turns round. She looks at the back of his neck for a long time, and touches each ring once, the way you'd count beads."),
@@ -718,9 +730,10 @@ S["summer"] = [
 ]
 S["promotion"] = [
     iff({"stage": "ab24"}, [
-        n("Kane is in the chapel, looking up at the new roof. Brannoc is with him, standing straight for the first time in a year. Varro is sitting on the altar step with a ledger."),
+        n("Kane is in the chapel, looking up at the new roof. Brannoc is with him, standing straight for the first time since Sallow. Varro is sitting on the altar step with a ledger."),
         say("kane", R("Caddow. Look at this place. I gave you a section and a ruin.")),
-        say("kane", R("Thornwick weans more people than every tent at the camp. The clans send moss. There's a Warden sergeant in your company who walked away from the Guild on a bridge. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you.")),
+        say("kane", R("Thornwick weans more people than every tent at the camp. The clans send moss. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you.")),
+        iff({"flag": "recruited.oakes"}, [say("kane", R("And there's a Warden sergeant in your company who walked away from the Guild on a bridge. Nobody's done that in ten years."))]),
         say("kane", R("It's not a section's post any more. It's a company's. A company needs a lieutenant, and the officers have to agree on who.")),
         say("varro", R("I've put my name to it. For what that's worth.")),
         say("brannoc", R("And I've put mine. I was her sergeant. I told the council she's the only recruit I ever had who stitched my back and then outvoted me.")),
@@ -833,7 +846,7 @@ S["halloranBell"] = [
     ], [say("halloran", R("Go home, Dace."))]),
 ]
 S["backToRhea4"] = [
-    fade("Thornwick. A week later."),
+    fade("Thornwick. A fortnight later."),
     {"hero": "rhea"}, setf({"light": "day", "showHold": False, "mods.corran": ""}),
     stage("ab26"), goto("thornwick", 13, 12, "down"),
 ]
@@ -914,8 +927,8 @@ actors = [
     actor("oren-tw", TW, 18, 14, "oren", [say("oren", R("Anna would have liked this place. She liked anywhere with a view and a kettle."))], {"stage": AFTER(3), "flag": "recruited.oren"}),
     actor("dorrit", TW, 12, 14, "dorrit", [run("dorrit")], stages("ab5")),
     actor("dorrit-tw", TW, 6, 11, "dorrit", [iff({"flag": "kaneTold"}, [say("dorrit", R("I tie that knot on everything that leaves the camp. I never once asked what was under the moss. I'm asking now."))], [say("dorrit", R("Flour, eighty-one measures. Lamp oil, eleven. Nails, not enough. Never enough nails."))])], {"stage": AFTER(6), "flag": "recruited.dorrit"}),
-    actor("ash-pen", TW, 21, 9, "loftbuck", [n("Ash paces the new fence, turning at each corner. She doesn't like a pen she hasn't slept in yet.")], stages("ab6")),
-    actor("hesk-tw", TW, 22, 10, "hesk", [iff({"eq": {"bathhouse": "sung"}}, [say("hesk", R("Your Burr's a good one. Wild-born, and she'll take a halter from you already. I'd breed from her one day, if I live that long."))], [say("hesk", R("Pens are mended. Feed's in. Nobody touches my kith without asking me first, Lieutenant. That includes you."))])], {"stage": AFTER(7), "flag": "recruited.hesk"}),
+    actor("ash-pen", TW, 21, 9, "loftbuck", [n("Ash paces the new fence, turning at each corner. He doesn't like a pen he hasn't slept in yet.")], stages("ab6")),
+    actor("hesk-tw", TW, 22, 10, "hesk", [iff({"eq": {"bathhouse": "sung"}}, [say("hesk", R("Your Burr's a good one. Wild-born, and she'll take a halter from you already. I'd breed from her one day, if I live that long."))], [say("hesk", R("Pens are mended. Feed's in. Nobody touches my kith without asking me first, Caddow. That includes you."))])], {"stage": AFTER(7), "flag": "recruited.hesk"}),
     actor("tobin-tw", TW, 9, 10, "tobin", [run("tobinVisit")], {"stage": AFTER(12)[:10]}),
     actor("carter", TW, 15, 14, "folk", [run("carter")], stages("ab13")),
     actor("crate", TW, 12, 13, "glint", [run("carter")], stages("ab13")),
@@ -927,7 +940,7 @@ actors = [
     actor("ume-gate", TW, 15, 13, "ume", [run("tobinClean")], stages("ab22")),
     actor("kane-tw", TW, 14, 3, "kane", [run("promotion")], stages("ab24")),
     actor("brannoc-ch", TW, 12, 4, "brannoc", [say("brannoc", R("Go on. He's going to say something nice. Try to look surprised."))], stages("ab24")),
-    actor("varro-tw", TW, 16, 3, "varro", [say("varro", R("I keep the ledgers for this company now as well, apparently. Kane's idea of a reward."))], stages("ab24")),
+    actor("varro-tw", TW, 16, 3, "varro", [say("varro", R("Kane brought me up to see what you've done with his ruin. I'm impressed. Don't tell him I said so."))], stages("ab24")),
     actor("weaner1", TW, 16, 10, "vil2", [say("", "A weaver from Millbridge, on her second greenling. She waves at you with both hands, to show you they don't shake.")], {"stage": AFTER(24)}),
     actor("weaner2", TW, 9, 9, "vil4", [say("", "A miner from Coldharrow. He says Tobin sent him.")], {"stage": AFTER(24)}),
     actor("child-gate", TW, 13, 13, "kid3", [run("childGate")], stages("ab26")),
@@ -940,7 +953,7 @@ actors = [
     actor("corran-bridge", "kellsbridge", 12, 6, "corran", [run("bridge")], stages("ab20")),
     actor("varro-bridge", "kellsbridge", 10, 10, "varro", [run("varroBridge")], stages("ab20", "ab21")),
     actor("oakes-bridge", "kellsbridge", 11, 9, "oakes", [say("oakes", R("Go on, Caddow. Get it over with."))], {"stage": "ab20", "eq": {"wardens": "spared"}}),
-    actor("lyle-bridge", "kellsbridge", 14, 9, "lyle", [say("lyle", R("Is that him? The lieutenant? They say he was Commons once. Or the other way round."))], {"stage": "ab20", "eq": {"wardens": "spared"}}),
+    actor("lyle-bridge", "kellsbridge", 14, 9, "lyle", [say("lyle", R("Is that him? The lieutenant? They say he lived up in the highlands once. With the smugglers."))], {"stage": "ab20", "eq": {"wardens": "spared"}}),
     actor("warden-n1", "kellsbridge", 11, 2, "warden", [say("warden2", R("Truce flag, Commons. Stay your side."))], stages("ab20")),
     actor("warden-n2", "kellsbridge", 14, 2, "warden", [say("warden2", R("Truce flag, Commons. Stay your side."))], stages("ab20")),
     # Corran's Vantry

@@ -114,7 +114,7 @@
   "ab3": "Wild loftbucks have taken the old bathhouse in the north-west corner. Get them out: sing (Q), or drive them out.",
   "ab4": "Brannoc wants a word about the work before the snow. He's by the fire.",
   "ab5": "Dorrit's supply cart has come up from the camp. She's at the gate.",
-  "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to her (Q).",
+  "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to him (Q).",
   "ab7": "Turn in. Your tent is the one in the south-west corner.",
   "ab8": "The first snow. Oda is at the cellar door by the spring. She's sent for you.",
   "ab9": "Go to Ume's terraces, west of Larkfold on the Cloudline, and ask the clan for moss.",
@@ -622,7 +622,7 @@
    "talk": [
     {
      "say": "",
-     "text": "Ash paces the new fence, turning at each corner. She doesn't like a pen she hasn't slept in yet."
+     "text": "Ash paces the new fence, turning at each corner. He doesn't like a pen he hasn't slept in yet."
     }
    ]
   },
@@ -673,7 +673,7 @@
      "else": [
       {
        "say": "hesk",
-       "text": "\"Pens are mended. Feed's in. Nobody touches my kith without asking me first, Lieutenant. That includes you.\""
+       "text": "\"Pens are mended. Feed's in. Nobody touches my kith without asking me first, Caddow. That includes you.\""
       }
      ]
     }
@@ -900,7 +900,7 @@
    "talk": [
     {
      "say": "varro",
-     "text": "\"I keep the ledgers for this company now as well, apparently. Kane's idea of a reward.\""
+     "text": "\"Kane brought me up to see what you've done with his ruin. I'm impressed. Don't tell him I said so.\""
     }
    ]
   },
@@ -1094,7 +1094,7 @@
    "talk": [
     {
      "say": "lyle",
-     "text": "\"Is that him? The lieutenant? They say he was Commons once. Or the other way round.\""
+     "text": "\"Is that him? The lieutenant? They say he lived up in the highlands once. With the smugglers.\""
     }
    ]
   },
@@ -2138,8 +2138,21 @@
     }
    },
    {
-    "say": "rhea",
-    "text": "\"Back to the camp. Oda's trays won't keep in a cave on their own all winter, and I'm not leaving them there.\""
+    "if": {
+     "flag": "recruited.oda"
+    },
+    "then": [
+     {
+      "say": "rhea",
+      "text": "\"Back to the camp. Oda's trays won't keep in a cave on their own all winter, and I'm not leaving them there.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "rhea",
+      "text": "\"Back to the camp. There's nothing left up there.\""
+     }
+    ]
    },
    {
     "say": "brannoc",
@@ -2268,7 +2281,7 @@
         "else": [
          {
           "say": "kane",
-          "text": "\"You've a post to hold, Sergeant. Go and hold it.\""
+          "text": "\"You've a post to hold, Caddow. Go and hold it.\""
          }
         ]
        }
@@ -2876,7 +2889,7 @@
     "then": [
      {
       "say": "halloran",
-      "text": "\"Dace. A year on the night watch and not one boiler lost. Do you know how rare that is?\""
+      "text": "\"Dace. A year on the night watch. One bad night with the boilers, and you went into the steam yourself instead of running for help. Do you know how rare that is?\""
      },
      {
       "say": "halloran",
@@ -3315,7 +3328,7 @@
      },
      {
       "say": "ume",
-      "text": "\"My son Tobin. He went down to the Coldharrow pits at sixteen, and a foreman set a Guild lull on him after a rock fall so he'd finish the shift. Twenty years. Nine rings. He came home in the summer with nothing left to buy one with.\""
+      "text": "\"My son Tobin. He went down to the Coldharrow pits at sixteen, and a foreman set a Guild lull on him after a rock fall so he'd finish the shift. Twenty years. There's no counting his rings any more, they've run together. He came home in the summer with nothing left to buy one with.\""
      },
      {
       "say": "tobin",
@@ -3354,7 +3367,7 @@
      },
      {
       "say": "rhea",
-      "text": "\"It won't be the raw. That's what greenlings are for. Every month you wear a weaker one, and your body learns to manage without, a little at a time.\""
+      "text": "\"It won't be the raw. That's what greenlings are for. You wear a weaker one, then a weaker one, as slowly as you need, and your body learns to manage without, a little at a time.\""
      },
      {
       "say": "",
@@ -3437,7 +3450,7 @@
    },
    {
     "say": "oda",
-    "text": "\"Sit down, Tobin. Head forward. You've done this a thousand times. This is the last time it'll be this strong.\""
+    "text": "\"Sit down, Tobin. Head forward. You've done this hundreds of times. This is the last time it'll be this strong. In Larkfold we stepped people down every fortnight. Twenty years on Guild lulls, you'll go by the month.\""
    },
    {
     "say": "",
@@ -3576,7 +3589,7 @@
     "else": [
      {
       "say": "",
-      "text": "Lisle's tin is still on the shelf, unopened, where you put it in the autumn. You look at it most evenings."
+      "text": "You told Lisle nothing hurt, in the autumn, and you've kept to it. Some evenings it takes the whole evening."
      }
     ]
    },
@@ -3600,7 +3613,7 @@
       "text": "He says it as if he doesn't care either way. He's been ready since dawn: boots on, coat buttoned wrong."
      },
      {
-      "choose": "It's a long climb, and your head aches, and there's the tin on the table.",
+      "choose": "It's a long climb, and your head aches.",
       "options": [
        {
         "label": "\"Get your scarf. It's cold up there.\"",
@@ -3619,7 +3632,7 @@
        },
        {
         "label": "\"Not today. Next week. I've a report to write.\"",
-        "hint": "Stay home with a fresh lull.",
+        "hint": "Stay home.",
         "by": "corran",
         "do": [
          {
@@ -3635,14 +3648,11 @@
   "birthdayBroken": [
    {
     "set": {
-     "birthday": "broken",
-     "mods.corran": "lull"
+     "birthday": "broken"
     }
    },
    {
     "add": {
-     "hold": -10,
-     "rings.corran": 1,
      "finchCorran": -12
     }
    },
@@ -3651,8 +3661,34 @@
     "text": "\"All right.\""
    },
    {
-    "say": "",
-    "text": "He goes out alone. You put the fresh lull on, for the headache, and the afternoon goes by very smoothly."
+    "if": {
+     "eq": {
+      "evenings": "lull"
+     }
+    },
+    "then": [
+     {
+      "set": {
+       "mods.corran": "lull"
+      }
+     },
+     {
+      "add": {
+       "hold": -10,
+       "rings.corran": 1
+      }
+     },
+     {
+      "say": "",
+      "text": "He goes out alone. You put the fresh lull on, for the headache, and the afternoon goes by very smoothly."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "He goes out alone. You sit over the report all afternoon and don't write a word of it."
+     }
+    ]
    },
    {
     "say": "",
@@ -3977,7 +4013,7 @@
    },
    {
     "say": "",
-    "text": "Thornwick, after dark. The section is round the fire. Ferris's reedcat is pacing the wall, ears flat."
+    "text": "Thornwick, after dark. The section is round the fire. Hesk's kith are pacing their pens, ears flat."
    },
    {
     "say": "tamsin",
@@ -4147,7 +4183,7 @@
    },
    {
     "say": "soldier",
-    "text": "\"They hanged your elders in their own square, Sergeant. We all heard. What do you want to do with the men who held the light for it?\""
+    "text": "\"They hanged your elders from their own drying house, Sergeant. We all heard. What do you want to do with the men who held the light for it?\""
    },
    {
     "if": {
@@ -4275,7 +4311,7 @@
     "then": [
      {
       "say": "rider",
-      "text": "\"From the Marshal, Sergeant. There's to be an exchange of prisoners at Kell's Bridge on the Kerrow, under a truce flag. Five of ours the Guild took at Sallow, for five of theirs we hold.\""
+      "text": "\"From the Marshal, Sergeant. There's to be an exchange of prisoners at Kell's Bridge on the Kerrow, under a truce flag. Five of ours the Guild has taken on the Vantry road this winter, for five of theirs we hold.\""
      },
      {
       "if": {
@@ -4401,11 +4437,11 @@
     "then": [
      {
       "say": "",
-      "text": "It's hot on the bridge. The river is loud under the arches."
+      "text": "The spring sun is hot on the bridge. The river is loud under the arches."
      },
      {
       "say": "",
-      "text": "Corran is thinner. His hair is cut short, the Warden way. He has a lieutenant's tabs on a grey coat, and the collar is buttoned high up his neck, in the summer heat."
+      "text": "Corran is thinner. His hair is cut short, the Warden way. He has a lieutenant's tabs on a grey coat, and the collar is buttoned high up his neck, in the heat."
      },
      {
       "say": "corran",
@@ -4669,8 +4705,23 @@
     ],
     "else": [
      {
-      "say": "",
-      "text": "You've been sleeping, since the bridge. Not well. But sleeping. The tin from Lisle has run out early anyway. It always does now."
+      "if": {
+       "eq": {
+        "evenings": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "You've been sleeping, since the bridge. Not well. But sleeping. The tin from Lisle has run out early anyway. It always does now."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Since the bridge you haven't slept. Three nights. Four. Every time you close your eyes she says it again: you walked them in with a lamp."
+       }
+      ]
      }
     ]
    }
@@ -4682,16 +4733,35 @@
     },
     "then": [
      {
-      "say": "corran",
-      "text": "\"The field line doesn't do anything any more. I need the house line.\""
-     },
-     {
-      "say": "lisle",
-      "text": "\"You need less, Lieutenant. Not more. The Guild counts every line I set, and every officer I set them on. Your name is in that ledger nine times since the autumn.\""
-     },
-     {
-      "say": "lisle",
-      "text": "\"No. Come back in a month.\""
+      "if": {
+       "eq": {
+        "evenings": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "corran",
+        "text": "\"The field line doesn't do anything any more. I need the house line.\""
+       },
+       {
+        "say": "lisle",
+        "text": "\"You need less, Lieutenant. Not more. The Guild counts every line I set, and every officer I set them on. Your name is in that ledger nine times since the autumn.\""
+       },
+       {
+        "say": "lisle",
+        "text": "\"No. Come back in a month.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "corran",
+        "text": "\"I can't sleep. You offered me something for the evenings, in the autumn.\""
+       },
+       {
+        "say": "lisle",
+        "text": "\"And you told me nothing hurt. The Guild counts every line I set now. New names wait a month for the ledger. Come back in a month.\""
+       }
+      ]
      },
      {
       "say": "",
@@ -4909,7 +4979,7 @@
     "then": [
      {
       "say": "",
-      "text": "Tobin stands at the gate with his pack on, in his mended miner's coat. There's nothing on the back of his neck. Nine rings, pale now, and no tenth."
+      "text": "Tobin stands at the gate with his pack on, in his mended miner's coat. There's nothing on the back of his neck. The rings on his neck have gone pale, and there's no new one."
      },
      {
       "say": "",
@@ -4993,7 +5063,7 @@
     "then": [
      {
       "say": "",
-      "text": "Kane is in the chapel, looking up at the new roof. Brannoc is with him, standing straight for the first time in a year. Varro is sitting on the altar step with a ledger."
+      "text": "Kane is in the chapel, looking up at the new roof. Brannoc is with him, standing straight for the first time since Sallow. Varro is sitting on the altar step with a ledger."
      },
      {
       "say": "kane",
@@ -5001,7 +5071,18 @@
      },
      {
       "say": "kane",
-      "text": "\"Thornwick weans more people than every tent at the camp. The clans send moss. There's a Warden sergeant in your company who walked away from the Guild on a bridge. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you.\""
+      "text": "\"Thornwick weans more people than every tent at the camp. The clans send moss. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you.\""
+     },
+     {
+      "if": {
+       "flag": "recruited.oakes"
+      },
+      "then": [
+       {
+        "say": "kane",
+        "text": "\"And there's a Warden sergeant in your company who walked away from the Guild on a bridge. Nobody's done that in ten years.\""
+       }
+      ]
      },
      {
       "say": "kane",
@@ -5483,7 +5564,7 @@
   ],
   "backToRhea4": [
    {
-    "fade": "Thornwick. A week later."
+    "fade": "Thornwick. A fortnight later."
    },
    {
     "hero": "rhea"

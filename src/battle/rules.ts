@@ -91,6 +91,8 @@ export interface BattleState {
   /** Foes quick enough to strike before the party this round, and whether they are doing so now. */
   early: string[];
   firstStrike: boolean;
+  /** Ended without a win: the party got away, or let much weaker foes go. */
+  escaped?: "fled" | "released";
 }
 
 export type BattleEvent =
@@ -434,4 +436,59 @@ export function afterBattle(s: BattleState): Record<string, number> {
     if (left < 0.995) out[u.id] = Math.round(left * 100) / 100;
   }
   return out;
+}
+
+// ---------------- leaving a fight the story doesn't need ----------------
+const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+const finesseOf = (u: Unit) => u.stats?.finesse ?? NEUTRAL.finesse;
+
+/** The chance that the party gets clear: about even, better the quicker the party is than the foes. */
+export function fleeChance(s: BattleState): number {
+  const d = avg(fighters(s, "ally").map(finesseOf)) - avg(fighters(s, "foe").map(finesseOf));
+  return Math.max(0.25, Math.min(0.95, 0.55 + d * 0.03));
+}
+
+/** Tries to run. Success ends the fight; failure costs the party the rest of its turn. */
+export function tryFlee(s: BattleState, rng: Rng): boolean {
+  if (s.phase !== "ally") return false;
+  if (rng() < fleeChance(s)) { s.escaped = "fled"; s.log.push("You get clear of them."); return true; }
+  s.log.push("They cut you off. There's no way out this turn.");
+  s.phase = "foe"; s.turn = 0;
+  return false;
+}
+
+/** Foes so much weaker than the party that it can simply let them go: five levels below its weakest, or a quarter of its strength. */
+export function canRelease(s: BattleState): boolean {
+  const foes = fighters(s, "foe"), allies = fighters(s, "ally");
+  if (!foes.length || !allies.length) return false;
+  const byLevel = Math.min(...allies.map((u) => u.level)) >= Math.max(...foes.map((u) => u.level)) + 5;
+  const byStrength = allies.reduce((n, u) => n + u.hp, 0) >= 4 * foes.reduce((n, u) => n + u.hp, 0);
+  return byLevel || byStrength;
+}
+
+/** Lets the foes go: they back away and leave the field. */
+export function release(s: BattleState): string[] {
+  const ids = fighters(s, "foe").map((u) => u.id);
+  for (const id of ids) unit(s, id).gone = true;
+  s.escaped = "released"; s.log.push("They see the odds, and back away. You let them go.");
+  return ids;
+}
+
+/** What auto battle does for an ally: a ready finisher or art first, a heal for anyone badly hurt, else the first plain attack on the weakest foe. */
+export function autoChoice(s: BattleState, book: SkillBook, u: Unit): { skill: string; target: string } | null {
+  const ks = skillsFor(s, u, book).filter((k) => book[k]?.kind !== "craft");
+  const pick = (k: string, prefer: (t: Unit) => number) => {
+    const ts = targetsFor(s, book, u, k); if (!ts.length) return null;
+    return { skill: k, target: ts.slice().sort((a, b) => prefer(a) - prefer(b))[0].id };
+  };
+  const foeFirst = (t: Unit) => (t.side === u.side ? 1e6 : 0) + t.hp;
+  const hurt = fighters(s, "ally").some((a) => a.hp < a.maxHp * 0.35);
+  const heal = ks.find((k) => book[k].kind === "heal");
+  if (hurt && heal) { const c = pick(heal, (t) => (t.side === u.side ? t.hp / t.maxHp : 9)); if (c) return c; }
+  for (const kind of ["finisher", "art", "melee", "ranged", "pounce"]) {
+    const k = ks.find((x) => book[x].kind === kind); if (!k) continue;
+    const c = pick(k, foeFirst); if (c && unit(s, c.target).side !== u.side) return c;
+  }
+  for (const k of ks) { const c = pick(k, foeFirst); if (c) return c; }
+  return null;
 }

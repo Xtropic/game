@@ -5,7 +5,7 @@
  "cast": {
   "hm-gatherer": "Moss gatherer",
   "hm-widow": "Widow Sorrel",
-  "hm-boy": "Tobin",
+  "hm-boy": "Wim",
   "ds-keeper": "Spring keeper",
   "ds-seller": "Water seller",
   "ds-girl": "Nell",
@@ -172,7 +172,7 @@
    "talk": [
     {
      "say": "",
-     "text": "A big loftbuck, half asleep in the mist. It sniffs Ash, decides she's no trouble, and goes back to sleep."
+     "text": "A big loftbuck, half asleep in the mist. It sniffs Ash, decides he's no trouble, and goes back to sleep."
     }
    ]
   },

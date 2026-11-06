@@ -127,18 +127,18 @@ describe("story", () => {
   });
 
   it("Act I: the empty cart, Brannoc, enlisting, the camp, training, the night watch, the cart warden and Sela", () => {
-    const f: Flags = { ...fresh(), stage: "i4", hero: "corran", sela: true, ash: true }, { h, log, map } = host(f, [0, 1, 0, 0, 0]);
+    const f: Flags = { ...fresh(), stage: "i4", hero: "corran", sela: true, ash: true }, { h, log, map } = host(f, [0, 1, 0, 0, 0, 0]);
     const r = new StoryRunner(STORY, h);
     r.run([{ run: "act1Start" }]);
     expect(f.hero).toBe("rhea"); expect(f.chapter).toBeUndefined(); expect(f.party).toBe("tamsin,ash"); expect(map()).toBe("land-cloudline"); expect(f.stage).toBe("a1");
     r.run([{ run: "emptyCart" }]); expect(f.stage).toBe("a1b");
-    r.run([{ run: "meetBrannoc" }]); // "Then I'll join your army."
+    r.run([{ run: "meetBrannoc" }]); // "I'm not joining anybody's army." She comes to read the book
     expect(f.party).toBe("tamsin,ash,brannoc"); expect(f["party.brannoc"]).toBe(true); expect(f.stage).toBe("a2");
     r.run([{ run: "kane" }]); // "I want every hatchery in Ostrel burned."
-    expect(f.why).toBe("burn"); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a2b");
+    expect(f.why).toBe("burn"); expect(f.rank).toBeFalsy(); expect(f.stage).toBe("a2b"); // not enlisted yet: Finch is not in the book
     r.run([{ run: "kane" }]); expect(log.at(-1)).toContain("nurses' tent"); // see the camp first
     r.run([{ run: "tourNurse" }, { run: "tourYard" }, { run: "tourKith" }]); expect(f.nurseFriend).toBe(true);
-    r.run([{ run: "kane" }]); expect(f.stage).toBe("a2e"); expect(log).not.toContain("battle spar-brannoc"); // a day ends in her tent, not on the spot
+    r.run([{ run: "kane" }]); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a2e"); expect(log).not.toContain("battle spar-brannoc"); // a day ends in her tent, not on the spot
     r.run([{ run: "tent" }]); expect(f.stage).toBe("a2f"); expect(f.light).toBe("day");
     r.run([{ run: "sparDawn" }]); expect(log).toContain("battle spar-brannoc"); expect(f.stage).toBe("a2g");
     r.run([{ run: "tent" }]); expect(f.stage).toBe("a2c"); expect(f.light).toBe("night");

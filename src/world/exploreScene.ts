@@ -463,9 +463,11 @@ export class ExploreScene implements Scene, StoryHost {
       kith: this.game.kith,
       health: this.health(),
       pack: Object.fromEntries(Object.keys(ITEMS).filter((k) => ITEMS[k].battle).map((k) => [k, Number(this.game.flags[`have.${k}`] ?? 0)])),
-      onDone: (_r, s) => {
+      escape: typeof which !== "string", // chance meetings on the road; never a fight the story needs
+      onDone: (r, s) => {
         for (const [k, n] of Object.entries(s.used)) this.game.flags[`have.${k}`] = Math.max(0, Number(this.game.flags[`have.${k}`] ?? 0) - n);
         this.setHealth(afterBattle(s));
+        if (r !== "won") { this.refresh(); this.save("auto"); return; } // ran, or let them go: nothing won, nothing learned
         if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
