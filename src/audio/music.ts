@@ -24,6 +24,9 @@ class Engine {
   errors = 0;
   lastError = "";
   private listeners: ((on: boolean) => void)[] = [];
+  /** Music and effects levels from the settings, 0..1. */
+  musicLevel = 0.8;
+  effectsLevel = 0.8;
 
   constructor() { try { this.on = localStorage.getItem("lull-sound") !== "off"; } catch { /* storage may be blocked */ } }
 
@@ -40,7 +43,7 @@ class Engine {
       const len = Math.floor(a.sampleRate * 3.4), ir = a.createBuffer(2, len, a.sampleRate);
       for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (rand() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
       this.verb = a.createConvolver(); this.verb.buffer = ir; const vg = a.createGain(); vg.gain.value = 0.5; this.verb.connect(vg); vg.connect(this.master);
-      this.sfxBus = a.createGain(); this.sfxBus.gain.value = 0.8; this.sfxBus.connect(this.master); const ss = a.createGain(); ss.gain.value = 0.25; this.sfxBus.connect(ss); ss.connect(this.verb);
+      this.sfxBus = a.createGain(); this.sfxBus.gain.value = 0.8 * this.effectsLevel; this.sfxBus.connect(this.master); const ss = a.createGain(); ss.gain.value = 0.25; this.sfxBus.connect(ss); ss.connect(this.verb);
       const nb = a.createBuffer(1, a.sampleRate * 2, a.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = rand() * 2 - 1; this.noise = nb;
       setInterval(() => this.schedule(), 35);
       const want = this.cur; this.cur = null; this.track(want);
@@ -55,10 +58,18 @@ class Engine {
   }
   onChange(fn: (on: boolean) => void): void { this.listeners.push(fn); }
 
+  /** Sets the music and effects levels (0..1) from the settings. */
+  setLevels(music: number, effects: number): void {
+    this.musicLevel = music; this.effectsLevel = effects;
+    const a = this.ctx; if (!a) return;
+    this.sfxBus.gain.setTargetAtTime(0.8 * effects, a.currentTime, 0.05);
+    if (this.bus && this.cur) { this.bus.gain.cancelScheduledValues(a.currentTime); this.bus.gain.setTargetAtTime((TRACKS[this.cur]?.vol ?? 0.5) * music, a.currentTime, 0.1); }
+  }
+
   /** Pulls the music back for a few seconds (a fanfare, a big moment), then lets it return. */
   duck(seconds: number): void {
     const a = this.ctx; if (!a || !this.bus) return;
-    const g = this.bus.gain, now = a.currentTime, full = this.cur ? TRACKS[this.cur]?.vol ?? 0.5 : 0.5;
+    const g = this.bus.gain, now = a.currentTime, full = (this.cur ? TRACKS[this.cur]?.vol ?? 0.5 : 0.5) * this.musicLevel;
     g.cancelScheduledValues(now); g.setTargetAtTime(full * 0.15, now, 0.15); g.setTargetAtTime(full, now + seconds, 0.8);
   }
 
@@ -71,7 +82,7 @@ class Engine {
     const now = a.currentTime;
     if (this.bus) { const old = this.bus; old.gain.cancelScheduledValues(now); old.gain.setTargetAtTime(0, now, 0.6); setTimeout(() => old.disconnect(), 4000); }
     if (!name) { this.bus = null; return; }
-    const bus = a.createGain(); bus.gain.value = 0; bus.gain.setTargetAtTime(TRACKS[name].vol, now + 0.1, 0.8);
+    const bus = a.createGain(); bus.gain.value = 0; bus.gain.setTargetAtTime(TRACKS[name].vol * this.musicLevel, now + 0.1, 0.8);
     bus.connect(this.master); const send = a.createGain(); send.gain.value = 0.45; bus.connect(send); send.connect(this.verb);
     this.bus = bus; this.step = 0; this.next = now + 0.12;
   }

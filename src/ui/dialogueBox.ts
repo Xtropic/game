@@ -5,6 +5,7 @@ import { drawPortrait, hasPortrait } from "../art/portraits";
 import { EVEN, type Build } from "../art/build";
 import type { Voices } from "../audio/voice";
 import { sfx } from "../audio/music";
+import { settings } from "../core/settings";
 import type { Line } from "../world/lines";
 
 const CPS = 48; // characters per second when typing out a line with no recording
@@ -122,7 +123,7 @@ export class DialogueBox {
   update(dt: number): void {
     if (!this.line) return;
     this.time += dt;
-    this.shown = Math.min(this.line.text.length, this.shown + dt * CPS);
+    this.shown = Math.min(this.line.text.length, this.shown + dt * CPS * settings.get("textSpeed"));
   }
 
   render(): void {

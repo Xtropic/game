@@ -17,18 +17,29 @@
 // - Dodge (finesse against the attacker's finesse) can slip a blow entirely.
 // - Read (the party's best wits against each foe's wits) decides how much of a foe's next move shows:
 //   move and target, the move only, or nothing.
+//
+// Three ways to deal heavy damage that don't need might or finesse:
+// - Focus finishers: every character builds focus (good timing, braces, healing, guarding, smoke, song).
+//   Full focus unlocks the finisher of their keepsake weapon, which scales with nerve and wits.
+// - Kith arts: a handler with a bonded kith spends part of the bond meter on its family's art. Heart.
+// - Crafted arts: fire pots, numbing darts and snare charges from the pack, thrown by anyone. Wits.
 
 import { NEUTRAL, attrsAt, party, person, type Attrs } from "../cast/attributes";
 import { gearTiming, weaponPower, withGear, type Loadout } from "../gear/weapons";
 import { kithAttrs, type Kith, type Temperament } from "../kith/kith";
 import { songReach } from "../kith/befriend";
+import { keepsake } from "../gear/weapons";
+import { SPECIES } from "../kith/kith";
 
 export type Side = "ally" | "foe";
 export type Row = "front" | "back";
 export type Grade = "perfect" | "good" | "early" | "late" | "none";
-export type SkillKind = "melee" | "ranged" | "pounce" | "heal" | "stun" | "guard" | "song" | "call";
+export type SkillKind = "melee" | "ranged" | "pounce" | "heal" | "stun" | "guard" | "song" | "call" | "finisher" | "art" | "craft";
 
-export interface SkillDef { name: string; note: string; kind: SkillKind; dmg?: [number, number]; amt?: number; ally?: boolean; proj?: string; icon?: string; }
+export interface SkillDef { name: string; note: string; kind: SkillKind; dmg?: [number, number]; amt?: number; ally?: boolean; proj?: string; icon?: string;
+  /** Finishers, arts and crafted arts: who they reach (the chosen foe, the front line, or every foe), whether the
+   *  chosen foe also loses its move, and how much harder they shake the foes' nerve. */
+  area?: "one" | "front" | "all"; stun?: boolean; shake?: number; }
 export type SkillBook = Record<string, SkillDef>;
 
 /** A fighter. `cast` links a character's attributes (data/cast/attributes.json); without one (kith), it counts
@@ -71,6 +82,11 @@ export interface BattleState {
   log: string[];
   /** What each unit did, for what a kith learns from the fight: strike, cover, struck, call. */
   deeds: Record<string, Record<string, number>>;
+  /** Each ally's focus, 0..100: full unlocks their finisher. */
+  focus: Record<string, number>;
+  /** Crafted arts carried (fire pots, darts, snares) by item id, and how many were thrown this fight. */
+  pack: Record<string, number>;
+  used: Record<string, number>;
   /** Foes quick enough to strike before the party this round, and whether they are doing so now. */
   early: string[];
   firstStrike: boolean;
@@ -109,7 +125,7 @@ export function gradePress(offset: number, widen = 1): Grade {
 /** `levels` overrides cast members' levels (the party's current levels from the save). */
 /** `kith` gives owned kith (by unit id) their real attributes and level, as they have been raised. */
 /** `health` is how much of each ally's health (by unit id, 0..1) is left from earlier fights; missing means whole. */
-export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}, kith: Record<string, Kith> = {}, health: Record<string, number> = {}): BattleState {
+export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: Record<string, number> = {}, gear: Record<string, Loadout> = {}, kith: Record<string, Kith> = {}, health: Record<string, number> = {}, pack: Record<string, number> = {}): BattleState {
   const units: Unit[] = def.units.map((u) => {
     const owned = u.kith ? kith[u.id] : undefined;
     const level = owned?.level || (u.cast && levels[u.cast]) || u.level || (u.cast ? person(u.cast)?.level : undefined) || 1;
@@ -118,9 +134,9 @@ export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: 
     const max = u.hp ?? (stats ? party.maxHp(stats, level) : 20);
     const left = u.side === "ally" && health[u.id] !== undefined ? Math.min(1, Math.max(0, health[u.id])) : 1;
     const hp = Math.max(1, Math.round(max * left));
-    return { ...u, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, calmed: false, soothe: 0, gone: false, steady: false, intent: null };
+    return { ...u, species: u.species ?? owned?.species, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, calmed: false, soothe: 0, gone: false, steady: false, intent: null };
   });
-  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, early: [], firstStrike: false };
+  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, focus: {}, pack: Object.fromEntries(Object.entries(pack).filter(([k, n]) => n > 0 && book[k]?.kind === "craft")), used: {}, early: [], firstStrike: false };
   planIntents(s, book, rng);
   startRound(s);
   return s;
@@ -155,14 +171,38 @@ const frontUp = (s: BattleState, side: Side) => sideOf(s, side).some((u) => aliv
 /** The ally whose turn it is, if any. */
 export function acting(s: BattleState): Unit | null { return s.phase === "ally" ? fighters(s, "ally")[s.turn] ?? null : null; }
 
-export function skillsFor(s: BattleState, u: Unit): string[] {
+/** Focus needed for a finisher, and bond spent on a kith art. */
+export const FOCUS_FULL = 100, ART_COST = 40;
+
+/** A character's finisher: their keepsake weapon's (fin.<type>), or the plain one. */
+export function finisherOf(book: SkillBook, u: Unit): string {
+  const type = u.cast ? keepsake(u.cast)?.type : undefined;
+  return type && book[`fin.${type}`] ? `fin.${type}` : "finisher";
+}
+/** The art a bonded kith can be asked for: its family's (art.<family>), or the plain one. */
+export function artOf(book: SkillBook, kin: Unit): string {
+  const fam = kin.species ? SPECIES[kin.species]?.family : kin.look === "ash" ? "loftbuck" : undefined;
+  return fam && book[`art.${fam}`] ? `art.${fam}` : "art.kith";
+}
+
+export function skillsFor(s: BattleState, u: Unit, book?: SkillBook): string[] {
   const ks = u.skills.slice();
-  if (s.bond >= 100 && kithOf(s, u)) ks.unshift("call");
+  if (u.side !== "ally") return ks;
+  const kin = kithOf(s, u);
+  if (book && kin && s.bond >= ART_COST) ks.unshift(artOf(book, kin));
+  if (s.bond >= 100 && kin) ks.unshift("call");
+  if (book && (s.focus[u.id] ?? 0) >= FOCUS_FULL) ks.unshift(finisherOf(book, u));
+  if (book) for (const [k, n] of Object.entries(s.pack)) if (n > 0) ks.push(k);
   return ks;
 }
 
+/** Builds an ally's focus. */
+function addFocus(s: BattleState, u: Unit, n: number): void { if (u.side === "ally" && !u.bonded && n > 0) s.focus[u.id] = Math.min(FOCUS_FULL, (s.focus[u.id] ?? 0) + n); }
+const focusFor = (g: Grade, perfect: number, good: number): number => (g === "perfect" ? perfect : g === "good" ? good : 0);
+
 export function targetsFor(s: BattleState, book: SkillBook, u: Unit, k: string): Unit[] {
   const sk = book[k];
+  if (sk.kind === "finisher" || sk.kind === "art" || sk.kind === "craft") return sideOf(s, u.side === "ally" ? "foe" : "ally").filter((x) => alive(x) && !x.bonded);
   if (sk.kind === "song") return s.units.filter((x) => alive(x) && x.kith);
   if (sk.kind === "call") { const pool = sideOf(s, "foe").filter(alive); return frontUp(s, "foe") ? pool.filter((x) => x.row === "front") : pool; }
   if (sk.ally) return sideOf(s, u.side).filter((x) => alive(x) && (sk.kind !== "guard" || x.id !== u.id) && !(sk.kind === "guard" && x.bonded));
@@ -176,7 +216,7 @@ export function targetsFor(s: BattleState, book: SkillBook, u: Unit, k: string):
 /** How many timed presses a move asks for (0 means it just happens). */
 export function pressesFor(book: SkillBook, k: string): number {
   const kind = book[k].kind;
-  return kind === "song" ? 3 : kind === "melee" || kind === "ranged" || kind === "pounce" || kind === "call" ? 1 : 0;
+  return kind === "song" ? 3 : kind === "melee" || kind === "ranged" || kind === "pounce" || kind === "call" || kind === "finisher" || kind === "art" || kind === "craft" ? 1 : 0;
 }
 
 export function planIntents(s: BattleState, book: SkillBook, rng: Rng): void {
@@ -204,6 +244,26 @@ function damage(book: SkillBook, u: Unit, k: string, t: Unit, g: Grade, rng: Rng
   return { amt: Math.round(roll(rng, book[k].dmg ?? [1, 1]) * m), tags };
 }
 
+/** Who a finisher, art or crafted art reaches: the chosen foe, the chosen foe's row, or every foe. */
+function areaOf(s: BattleState, sk: SkillDef, t: Unit): Unit[] {
+  const pool = sideOf(s, t.side).filter((x) => alive(x) && !x.bonded);
+  const rest = sk.area === "all" ? pool : sk.area === "front" ? pool.filter((x) => x.row === t.row) : [];
+  return [t, ...rest.filter((x) => x !== t)];
+}
+
+/** The attribute each heavy move draws on: finishers nerve and wits, kith arts heart, crafted arts wits. */
+export function artStat(sk: SkillDef, a: Attrs): number {
+  return sk.kind === "finisher" ? (a.nerve + a.wits) / 2 + Math.max(a.might, a.finesse) / 4 : sk.kind === "art" ? a.heart : a.wits;
+}
+/** Damage for a finisher, art or crafted art: the move's attribute against the target's nerve (arts) or grit. */
+function bigDamage(sk: SkillDef, u: Unit, t: Unit, g: Grade, rng: Rng, weapon: number): { amt: number; tags: string[] } {
+  const a = statsOf(u), tg = statsOf(t), tags: string[] = [];
+  let m = gradeMult(g) * Math.max(0.6, Math.min(2.6, (artStat(sk, a) + 12) / ((sk.kind === "art" ? tg.nerve : tg.grit) + 12)));
+  if (sk.kind === "finisher") m *= weapon;
+  if (t.stunned) { m *= party.ambush(a); tags.push("Ambush"); }
+  return { amt: Math.round(roll(rng, sk.dmg ?? [10, 14]) * m), tags };
+}
+
 function deed(s: BattleState, id: string, kind: string): void { const d = (s.deeds[id] ??= {}); d[kind] = (d[kind] ?? 0) + 1; }
 
 /** Deals damage, applying a kith's cover or a guard. Returns the unit actually hit. */
@@ -227,7 +287,7 @@ function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[]
 export function act(s: BattleState, book: SkillBook, actorId: string, k: string, targetId: string, grades: Grade[], rng: Rng): BattleEvent[] {
   const u = unit(s, actorId), t = unit(s, targetId), ev: BattleEvent[] = [];
   if (s.phase !== "ally" || acting(s) !== u) throw new Error(`not ${actorId}'s turn`);
-  if (!skillsFor(s, u).includes(k)) throw new Error(`${actorId} can't use ${k}`);
+  if (!skillsFor(s, u, book).includes(k)) throw new Error(`${actorId} can't use ${k}`);
   if (!targetsFor(s, book, u, k).includes(t)) throw new Error(`${targetId} is not a target for ${k}`);
   perform(s, book, u, k, t, grades, rng, ev);
   if (!checkEnd(s, ev)) {
@@ -245,20 +305,23 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
         const d = damage(book, u, k, t, g, rng);
         const landed = hit(s, u, t, d.amt, d.tags, ev, rng);
         addBond(s, g === "perfect" ? 25 : g === "good" ? 10 : 0, ev);
+        addFocus(s, u, focusFor(g, 30, 15));
         const kin = isGood(g) && alive(landed) && sk.kind === "melee" ? kithOf(s, u) : undefined;
         if (kin) { ev.push({ t: "follow", by: kin.id, target: landed.id }); const f = damage(book, kin, "follow", landed, "none", rng); hit(s, kin, landed, f.amt, ["Follow-up", ...f.tags], ev, rng); }
       } else {
         const brace = braceMult(g) * (g === "perfect" || g === "good" ? party.brace(statsOf(t)) : 1);
         hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * brace * party.power(statsOf(u), statsOf(t), sk.kind === "ranged" ? "ranged" : "melee"))), [], ev, rng);
         addBond(s, g === "perfect" ? 20 : g === "good" ? 8 : 0, ev);
+        addFocus(s, t, focusFor(g, 25, 12));
       }
       break;
     }
-    case "heal": { const n = Math.min(Math.round((sk.amt ?? 0) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; ev.push({ t: "heal", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} rallies ${t.name} (+${n}).`); break; }
-    case "stun": { t.stunned = true; ev.push({ t: "stun", by: u.id, target: t.id }); s.log.push(`${u.name} throws a smoke pot. ${t.name} is blinded and loses its move.`); break; }
-    case "guard": { for (const x of sideOf(s, u.side)) if (x.guardedBy === u.id) x.guardedBy = null; t.guardedBy = u.id; ev.push({ t: "guard", by: u.id, target: t.id }); s.log.push(`${u.name} stands in front of ${t.name}.`); break; }
+    case "heal": { const n = Math.min(Math.round((sk.amt ?? 0) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; ev.push({ t: "heal", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} rallies ${t.name} (+${n}).`); addFocus(s, u, 25); break; }
+    case "stun": { t.stunned = true; ev.push({ t: "stun", by: u.id, target: t.id }); s.log.push(`${u.name} throws a smoke pot. ${t.name} is blinded and loses its move.`); addFocus(s, u, 25); break; }
+    case "guard": { for (const x of sideOf(s, u.side)) if (x.guardedBy === u.id) x.guardedBy = null; t.guardedBy = u.id; ev.push({ t: "guard", by: u.id, target: t.id }); s.log.push(`${u.name} stands in front of ${t.name}.`); addFocus(s, u, 20); break; }
     case "song": {
       const hits = grades.filter(isGood).length, perfects = grades.filter((x) => x === "perfect").length;
+      addFocus(s, u, 8 * hits);
       if (t.side === u.side) {
         t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
         ev.push({ t: "steady", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} sings. ${t.name} steadies.`);
@@ -278,6 +341,23 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
       s.bond = 0; deed(s, kin.id, "call"); ev.push({ t: "call", by: u.id, kith: kin.id }); s.log.push(`${u.name} calls. ${kin.name} comes.`);
       const line = targetsFor(s, book, u, "call");
       line.forEach((t2, i) => { if (!alive(t2)) return; const d = damage(book, kin, "call", t2, g, rng); hit(s, kin, t2, d.amt, i === 0 ? ["Call", ...d.tags] : d.tags, ev, rng); });
+      break;
+    }
+    case "finisher": case "art": case "craft": {
+      const kin = sk.kind === "art" ? kithOf(s, u) : undefined;
+      if (sk.kind === "art" && !kin) break;
+      if (sk.kind === "finisher") { s.focus[u.id] = 0; s.log.push(`${u.name}: ${sk.name}!`); }
+      if (sk.kind === "art") { s.bond = Math.max(0, s.bond - ART_COST); deed(s, kin!.id, "call"); s.log.push(`${u.name} asks ${kin!.name} for everything. ${sk.name}!`); }
+      if (sk.kind === "craft") { s.pack[k] = (s.pack[k] ?? 1) - 1; s.used[k] = (s.used[k] ?? 0) + 1; s.log.push(`${u.name} throws a ${sk.name.toLowerCase()}.`); }
+      const by = kin ?? u, tag = sk.kind === "finisher" ? sk.name : sk.kind === "art" ? "Kith art" : sk.name;
+      const shakeWas = s.resolve;
+      for (const [i, t2] of areaOf(s, sk, t).entries()) {
+        if (!alive(t2)) continue;
+        const d = bigDamage(sk, u, t2, g, rng, by.weapon);
+        const landed = hit(s, by, t2, d.amt, i === 0 ? [tag, ...d.tags] : d.tags, ev, rng);
+        if (sk.stun && landed === t2 && alive(t2) && t2.id === t.id) { t2.stunned = true; ev.push({ t: "stun", by: by.id, target: t2.id }); }
+      }
+      if (sk.shake) s.resolve = Math.max(0, s.resolve - (shakeWas - s.resolve) * (sk.shake - 1));
       break;
     }
   }

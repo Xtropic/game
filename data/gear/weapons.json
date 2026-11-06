@@ -66,7 +66,7 @@
     "boss-mine":         { "slot": "work", "name": "Mine-cart boss", "mods": { "grit": 2, "nerve": 1 } },
     "grip-wrapped":      { "slot": "work", "name": "Wrapped grip", "mods": { "finesse": 1 }, "timing": 1.05 },
     "charm-moss":        { "slot": "charm", "name": "Duskwort sprig", "mods": { "heart": 2 } },
-    "charm-ring":        { "slot": "charm", "name": "Ring on a cord", "mods": { "nerve": 2 }, "note": "Rhea's. Hers alone." },
+    "charm-ring":        { "slot": "charm", "name": "Ring on a cord", "mods": { "nerve": 2 }, "note": "Rhea's. Hers alone.", "only": "rhea" },
     "charm-song-bead":   { "slot": "charm", "name": "Spire song-bead", "mods": { "heart": 1, "presence": 1 }, "bond": 1.25 },
     "charm-ribbon":      { "slot": "charm", "name": "Fair ribbon", "mods": { "presence": 2 } },
     "charm-tooth":       { "slot": "charm", "name": "Ironback tooth", "mods": { "grit": 1, "nerve": 1 } },

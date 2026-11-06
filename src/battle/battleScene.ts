@@ -3,6 +3,7 @@
 // fixed-step update, so animations, waits and timing windows read top to bottom.
 import type { Loadout } from "../gear/weapons";
 import { sfx } from "../audio/music";
+import { settings } from "../core/settings";
 import { buildOf, type Build } from "../art/build";
 import { kithBaseline, type Kith } from "../kith/kith";
 import { attrsAt, person } from "../cast/attributes";
@@ -10,9 +11,10 @@ import { Container, Graphics, Sprite, Text, Texture, type FederatedPointerEvent 
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import {
-  act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
+  FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
 } from "./rules";
+import { paintedHeight, paintedLook } from "./painted";
 import {
   CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
@@ -25,10 +27,9 @@ interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" |
 type Co = Generator<number | Qte, void, unknown>;
 
 export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
 
-const AUTO_KEY = "lull.autoTiming";
-const readAuto = (): boolean => { try { return localStorage.getItem(AUTO_KEY) === "1"; } catch { return false; } };
+const readAuto = (): boolean => settings.get("autoTiming");
 
 export class BattleScene implements Scene {
   readonly id = "battle";
@@ -82,7 +83,7 @@ export class BattleScene implements Scene {
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health, opts.pack);
     // each fighter's look follows their attributes (cast and owned kith); the rest are drawn as designed
     for (const u of this.s.units) {
       const k = u.kith ? opts.kith?.[u.id] : undefined, start = u.cast ? person(u.cast)?.level : undefined;
@@ -104,7 +105,7 @@ export class BattleScene implements Scene {
   exit(): void { this.tex?.destroy(true); }
 
   private reset(): void {
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith); // after a loss the party falls back and binds its wounds: the retry starts whole
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, {}, this.opts.pack); // after a loss the party falls back and binds its wounds: the retry starts whole
     this.vis.clear(); this.fx = [];
     for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;
@@ -150,7 +151,7 @@ export class BattleScene implements Scene {
 
   // ---------------- positions ----------------
   private pos(u: Unit): [number, number] { const v = this.vis.get(u.id)!; return [u.at[0] + v.ox + v.kx, u.at[1] + v.oy - v.hop]; }
-  private top(u: Unit): number { return this.pos(u)[1] - (LOOK_TOP[lookKind(u.look)] ?? 40); }
+  private top(u: Unit): number { return this.pos(u)[1] - (paintedHeight(lookKind(paintedLook(u.look, u.species) ?? "")) ?? LOOK_TOP[lookKind(u.look)] ?? 40); }
   private dirOf(u: Unit): number { return u.side === "ally" ? 1 : -1; }
 
   // ---------------- coroutines ----------------
@@ -185,7 +186,7 @@ export class BattleScene implements Scene {
       if (this.s.phase === "ally") {
         const u = acting(this.s)!;
         this.say(`${u.name}'s turn`, true);
-        this.mode = "menu"; this.cursor = Math.min(this.cursor, skillsFor(this.s, u).length - 1); this.choice = null;
+        this.mode = "menu"; this.cursor = Math.min(this.cursor, skillsFor(this.s, u, this.book).length - 1); this.choice = null;
         while (!this.choice) yield 0;
         this.mode = "busy";
         const c = this.choice as { skill: string; target: string };
@@ -256,6 +257,39 @@ export class BattleScene implements Scene {
       }
       v.pose = "idle";
       yield* run(grades); yield 0.5;
+    } else if (sk.kind === "finisher" || sk.kind === "craft") {
+      // a moment of stillness, a flash of the move's name, then the blow or the throw
+      const [ux, uy] = this.pos(u);
+      v.pose = sk.kind === "craft" || sk.proj ? "aim" : "cast";
+      this.addFx({ kind: "ring", x: ux, y: uy, dur: 0.5 });
+      this.addFx({ kind: "grade", x: ux, y: this.top(u) - 6, text: sk.name, col: "#ffd890", dur: 1, size: 7.5 });
+      yield 0.34;
+      if (sk.kind === "craft" || sk.proj) {
+        const [tx, ty] = this.pos(t);
+        this.addFx({ kind: "proj", proj: sk.proj ?? "pot", x: ux + dir * 6, y: uy - 30, x2: tx, y2: ty - 18, dur: 0.5 });
+        const g = yield* this.timed(tid, 0.5, "hit");
+        if (sk.kind === "craft" && sk.proj === "pot") this.addFx({ kind: sk.stun ? "smoke" : "spark", x: tx, y: ty - 10, dur: 0.8, big: true });
+        yield* run([g]); v.pose = "idle"; yield 0.4;
+      } else {
+        const [tx, ty] = this.pos(t);
+        yield* this.moveTo(u.id, tx - dir * 17, ty + 1, 0.28);
+        v.pose = "lunge";
+        const g = yield* this.timed(tid, 0.42, "hit");
+        const [hx, hy] = this.pos(t); this.addFx({ kind: "slash", x: hx, y: hy, dir, dur: 0.32, big: true });
+        if (g === "perfect") yield 0.12;
+        yield* run([g]); yield 0.3; yield* this.goHome(u.id);
+      }
+    } else if (sk.kind === "art") {
+      const kin = kithOf(this.s, u)!;
+      v.pose = "cast"; const [ux, uy] = this.pos(u); this.addFx({ kind: "note", x: ux + 5, y: uy - 46, x2: this.pos(kin)[0], y2: this.pos(kin)[1] - 24, dur: 0.7 });
+      this.addFx({ kind: "grade", x: ux, y: this.top(u) - 6, text: sk.name, col: "#ffd890", dur: 1, size: 7.5 });
+      yield 0.38; v.pose = "idle";
+      const [fx0, fy0] = this.pos(t); yield* this.moveTo(kin.id, fx0 - 30, fy0 + 4, 0.34);
+      const g = yield* this.timed(tid, 0.42, "hit");
+      this.charging = kin.id;
+      yield* run([g]);
+      this.charging = null;
+      yield 0.3; yield* this.goHome(kin.id);
     } else if (sk.kind === "call") {
       const kin = kithOf(this.s, u)!, first = targetsFor(this.s, this.book, u, "call")[0];
       v.pose = "cast"; const [ux, uy] = this.pos(u); this.addFx({ kind: "note", x: ux + 5, y: uy - 46, x2: this.pos(kin)[0], y2: this.pos(kin)[1] - 24, dur: 0.7 });
@@ -371,7 +405,7 @@ export class BattleScene implements Scene {
 
   private toggleAuto(): void {
     this.autoTiming = !this.autoTiming;
-    try { localStorage.setItem(AUTO_KEY, this.autoTiming ? "1" : "0"); } catch { /* storage may be blocked */ }
+    settings.set("autoTiming", this.autoTiming);
     this.say(this.autoTiming ? "Auto timing on" : "Auto timing off", true);
   }
 
@@ -380,7 +414,7 @@ export class BattleScene implements Scene {
     if (this.mode === "over") { this.done(); return; }
     if (this.mode !== "target" && this.mode !== "menu") return;
     const u = acting(this.s); if (!u) return;
-    const k = skillsFor(this.s, u)[this.cursor], ts = targetsFor(this.s, this.book, u, k);
+    const k = skillsFor(this.s, u, this.book)[this.cursor], ts = targetsFor(this.s, this.book, u, k);
     const sx = ((gx - this.sx) / this.sw) * CW, sy = ((gy - this.sy) / this.sh) * CH;
     let best: Unit | null = null, bd = 30;
     for (const t of ts) { const [x, y] = this.pos(t), d = Math.hypot(x - sx, y - 18 - sy); if (d < bd) { bd = d; best = t; } }
@@ -405,7 +439,7 @@ export class BattleScene implements Scene {
       if (!q.grade && this.autoTiming && q.t >= q.lead) q.grade = "good";
       if (!q.grade && q.t >= q.lead + 0.17) q.grade = "none";
     } else if (this.mode === "menu" || this.mode === "target") {
-      const u = acting(this.s)!, ks = skillsFor(this.s, u);
+      const u = acting(this.s)!, ks = skillsFor(this.s, u, this.book);
       if (this.mode === "menu") {
         if (inp.wasPressed("up")) this.cursor = (this.cursor + ks.length - 1) % ks.length;
         if (inp.wasPressed("down")) this.cursor = (this.cursor + 1) % ks.length;
@@ -419,6 +453,8 @@ export class BattleScene implements Scene {
       }
     } else if (this.mode === "over" && inp.wasPressed("confirm")) { this.done(); return; }
 
+    // the battle speed setting hurries the animations along, but never a timing ring
+    if (!this.qte) { dt *= settings.get("battleSpeed"); this.dt = dt; }
     // coroutines
     this.co2 = this.co2.filter((c) => !c.next().done);
     if (this.co) {
@@ -456,10 +492,11 @@ export class BattleScene implements Scene {
     for (const u of order) {
       const v = this.vis.get(u.id)!, [x, y] = this.pos(u);
       const lk = lookKind(u.look);
-      const flip = lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
+      const paint = paintedLook(u.look, u.species);
+      const flip = paint ? (u.side === "foe" ? !v.flee : v.flee) : lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
       const pose = { t: T + x * 0.1, run: v.pose === "run" ? v.run : 0, lunge: v.pose === "lunge", brace: v.pose === "brace" || v.pose === "guard" || (this.qte?.mode === "brace" && this.qte.target === u.id), bow: v.pose === "aim" && u.look === "archer" ? 1 : undefined, cast: v.pose === "cast" || v.pose === "aim" && u.look !== "archer" || v.pose === "cheer", shout: v.pose === "cheer", flash: v.flash, flip, fall: v.fall };
       g.save(); g.globalAlpha = v.fade;
-      withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose, this.builds[u.id]));
+      withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, paint ?? u.look, xx, yy, pose, this.builds[u.id]));
       g.restore();
     }
     // foe HP bars and intents
@@ -482,7 +519,7 @@ export class BattleScene implements Scene {
     if (u && (this.mode === "menu" || this.mode === "target")) {
       const [ax] = this.pos(u); markerFX(g, ax, this.top(u) - 8 + Math.sin(T * 5) * 0.8);
       if (this.mode === "target") {
-        const ts = targetsFor(s, this.book, u, skillsFor(s, u)[this.cursor]);
+        const ts = targetsFor(s, this.book, u, skillsFor(s, u, this.book)[this.cursor]);
         ts.forEach((t, i) => { const [tx, ty] = this.pos(t); if (i === this.tcursor) { ringFX(g, tx, ty, 8 + Math.sin(T * 6) * 0.6, "#ffe39a"); markerFX(g, tx, this.top(t) - 8 + Math.sin(T * 5) * 0.8, "#fff2c8"); } else ringFX(g, tx, ty, 7, "rgba(255,227,154,.35)", true); });
       }
     }
@@ -521,19 +558,21 @@ export class BattleScene implements Scene {
   private drawHud(): void {
     const s = this.s, u = acting(s), { x, y } = this.hudRect;
     // commands
-    const ks = u && (this.mode === "menu" || this.mode === "target") ? skillsFor(s, u) : [];
+    const ks = u && (this.mode === "menu" || this.mode === "target") ? skillsFor(s, u, this.book) : [];
     this.cmdTitle.text = this.mode === "over" ? (s.phase === "won" ? "Victory" : "Defeat") : u && ks.length ? `${this.mode === "target" ? (this.narrow ? "Choose a target" : `${u.name}: choose a target`) : u.name}` : this.qte ? (this.qte.mode === "brace" ? "Brace!" : "Time it!") : s.phase === "foe" ? "Their move" : "";
     while (this.cmdItems.length < ks.length) {
       const i = this.cmdItems.length, t = new Text({ text: "", style: { fontFamily: HUD_FONT, fontSize: 17, fill: "#e8dcc2" } });
       t.eventMode = "static"; t.cursor = "pointer";
-      t.on("pointertap", () => { if (this.mode !== "menu" && this.mode !== "target") return; if (this.cursor === i && this.mode === "target") return; this.cursor = i; const uu = acting(this.s); if (!uu) return; this.mode = "target"; const ts = targetsFor(this.s, this.book, uu, skillsFor(this.s, uu)[i]); this.tcursor = Math.max(0, ts.findIndex((tt) => tt.side !== uu.side)); });
+      t.on("pointertap", () => { if (this.mode !== "menu" && this.mode !== "target") return; if (this.cursor === i && this.mode === "target") return; this.cursor = i; const uu = acting(this.s); if (!uu) return; this.mode = "target"; const ts = targetsFor(this.s, this.book, uu, skillsFor(this.s, uu, this.book)[i]); this.tcursor = Math.max(0, ts.findIndex((tt) => tt.side !== uu.side)); });
       this.hud.addChild(t); this.cmdItems.push(t);
     }
     this.cmdItems.forEach((t, i) => {
       t.visible = i < ks.length; if (!t.visible) return;
       const sk = this.book[ks[i]], on = i === this.cursor;
-      t.text = `${on ? "▸ " : "   "}${sk.name}`; t.style.fill = ks[i] === "call" ? "#ffd890" : on ? "#ffe39a" : "#cfc3aa";
-      t.x = x + 20; t.y = y + 42 + i * 24;
+      const big = ks[i] === "call" || sk.kind === "finisher" || sk.kind === "art";
+      t.text = `${on ? "▸ " : "   "}${sk.name}${sk.kind === "craft" ? ` ×${s.pack[ks[i]] ?? 0}` : ""}`; t.style.fill = big ? "#ffd890" : on ? "#ffe39a" : "#cfc3aa";
+      const per = Math.max(3, Math.floor((this.hudRect.h - 76) / 24)), col = Math.floor(i / per);
+      t.x = x + 20 + col * (this.narrow ? 150 : 180); t.y = y + 42 + (i % per) * 24;
     });
     this.cmdNote.text = this.mode === "over" ? (s.phase === "won" ? "Press Enter or tap to go on" : "Press Enter or tap to try again") : ks.length ? this.book[ks[this.cursor]].note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
     // log
@@ -547,6 +586,8 @@ export class BattleScene implements Scene {
       const t = this.partyText[i], yy = i * 26, on = a === u;
       t.text = `${a.name}${a.gone ? " (away)" : ""}`; t.style.fill = on ? "#ffe39a" : alive(a) ? "#e8dcc2" : "#7a7060"; t.x = this.party.x; t.y = this.party.y + yy;
       p.roundRect(bx, yy + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (a.hp > 0) p.roundRect(bx, yy + 5, (bw * a.hp) / a.maxHp, 9, 4).fill({ color: a.hp / a.maxHp < 0.3 ? 0xd06a5a : 0x7fb069 });
+      // focus: a thin bar under the health; gold when the finisher is ready
+      if (!a.bonded) { const f = (s.focus[a.id] ?? 0) / FOCUS_FULL; p.roundRect(bx, yy + 16, bw, 3, 1.5).fill({ color: 0x2a201a }); if (f > 0) p.roundRect(bx, yy + 16, bw * f, 3, 1.5).fill({ color: f >= 1 ? 0xffd060 : 0x8ab0d0 }); }
     });
     const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
     p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
@@ -558,8 +599,8 @@ export class BattleScene implements Scene {
     const u = acting(this.s);
     return {
       phase: this.s.phase, mode: this.mode, round: this.s.round, bond: this.s.bond, resolve: this.s.resolve, routed: this.s.routed,
-      acting: u?.id ?? null, skills: u ? skillsFor(this.s, u) : [], cursor: this.cursor, qte: this.qte ? { target: this.qte.target, mode: this.qte.mode } : null,
-      units: this.s.units.map((x) => ({ id: x.id, hp: x.hp, gone: x.gone })), log: this.s.log.slice(-3), presses: pressesFor(this.book, u ? skillsFor(this.s, u)[this.cursor] ?? "strike" : "strike"),
+      acting: u?.id ?? null, skills: u ? skillsFor(this.s, u, this.book) : [], cursor: this.cursor, qte: this.qte ? { target: this.qte.target, mode: this.qte.mode } : null,
+      units: this.s.units.map((x) => ({ id: x.id, hp: x.hp, gone: x.gone })), log: this.s.log.slice(-3), presses: pressesFor(this.book, u ? skillsFor(this.s, u, this.book)[this.cursor] ?? "strike" : "strike"),
     };
   }
 }

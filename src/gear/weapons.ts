@@ -6,7 +6,7 @@ import { ATTRS, jobSkill, type Attr, type Attrs } from "../cast/attributes";
 
 export interface Branch { id: string; name: string; note: string; }
 export interface Keepsake { name: string; type: string; branches: Branch[]; techniques: string[]; }
-export interface Fitting { slot: "work" | "charm"; name: string; mods: Partial<Record<Attr, number>>; timing?: number; bond?: number; vsWardens?: number; note?: string; }
+export interface Fitting { slot: "work" | "charm"; name: string; mods: Partial<Record<Attr, number>>; timing?: number; bond?: number; vsWardens?: number; note?: string; /** Only this character can carry it. */ only?: string; }
 export interface Tier { name: string; power: number; forge: number; cost: number; }
 /** What a character carries: the tier their keepsake has reached, its branch, and its fittings. */
 export interface Loadout { tier: number; branch?: string; work?: string; charm?: string; }
@@ -67,4 +67,41 @@ export function canReforge(l: Loadout, opts: { forgeLevel: number; coin: number;
 export function reforge(l: Loadout, opts: Parameters<typeof canReforge>[1]): { loadout: Loadout; cost: number } {
   const c = canReforge(l, opts); if (!c.ok) throw new Error(c.why);
   return { loadout: { ...l, tier: l.tier + 1, branch: l.branch ?? opts.branch }, cost: c.cost };
+}
+
+// ---- Changing fittings (the menu) ------------------------------------------------------------------------
+
+type Flags = Record<string, boolean | number | string>;
+const have = (flags: Flags, f: string): number => { const n = flags[`have.${f}`]; return typeof n === "number" ? n : 0; };
+
+/** How many of a fitting are lying spare: owned (have.<id>) less those fitted to someone's weapon. */
+export function spare(flags: Flags, gear: Record<string, Loadout>, fitting: string): number {
+  const used = Object.values(gear).filter((l) => l.work === fitting || l.charm === fitting).length;
+  return Math.max(0, have(flags, fitting) - used);
+}
+
+/** Fittings a character could put in a slot now: spare ones that fit the slot and that they are allowed to carry. */
+export function fittingsFor(flags: Flags, gear: Record<string, Loadout>, id: string, slot: "work" | "charm"): string[] {
+  return Object.keys(FITTINGS).filter((f) => fits(f, slot) && (!FITTINGS[f].only || FITTINGS[f].only === id) && spare(flags, gear, f) > 0);
+}
+
+/** Puts a fitting in a character's slot (or takes it off with undefined). The one it replaces goes back to the spares. */
+export function equip(flags: Flags, gear: Record<string, Loadout>, id: string, slot: "work" | "charm", fitting: string | undefined): Record<string, Loadout> {
+  const now: Loadout = { ...(gear[id] ?? { tier: 0 }) };
+  if (fitting !== undefined) {
+    if (!fits(fitting, slot)) throw new Error(`${fitting} doesn't fit the ${slot} slot`);
+    if (FITTINGS[fitting].only && FITTINGS[fitting].only !== id) throw new Error(`${fitting} is not for ${id}`);
+    if (now[slot] !== fitting && spare(flags, gear, fitting) < 1) throw new Error(`no spare ${fitting}`);
+  }
+  if (fitting === undefined) delete now[slot]; else now[slot] = fitting;
+  return { ...gear, [id]: now };
+}
+
+/** What a fitting does, in a few words: "Might +3, timing +8%". */
+export function fittingSummary(f: Fitting): string {
+  const parts = Object.entries(f.mods).map(([k, v]) => `${k[0].toUpperCase()}${k.slice(1)} ${v! > 0 ? "+" : ""}${v}`);
+  if (f.timing) parts.push(`timing window +${Math.round((f.timing - 1) * 100)}%`);
+  if (f.bond) parts.push(`kith bond +${Math.round((f.bond - 1) * 100)}%`);
+  if (f.vsWardens) parts.push(`+${Math.round((f.vsWardens - 1) * 100)}% against Wardens`);
+  return parts.join(", ");
 }

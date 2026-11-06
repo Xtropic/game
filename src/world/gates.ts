@@ -8,7 +8,7 @@ import type { Way, WorldMap } from "./map";
 
 export type Blocker = "none" | "snow" | "mist" | "riders" | "gate" | "toll" | "checkpoint" | "smugglers" | "desert" | "walls";
 export interface WayGate { from?: string; until?: string; when?: Cond; blocker: Blocker; why: string; }
-export interface Find { id: string; map: string; x: number; y: number; from?: string; until?: string; when?: Cond; fitting: string; text: string; }
+export interface Find { id: string; map: string; x: number; y: number; from?: string; until?: string; when?: Cond; /** A fitting for a weapon, or else an item (data/gear/items.json). */ fitting?: string; item?: string; /** How many are found together (default 1). */ count?: number; text: string; }
 
 interface Gates { order: string[]; ways: Record<string, WayGate>; finds: Find[]; }
 export const GATES = gates as unknown as Gates;

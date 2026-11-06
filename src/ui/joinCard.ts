@@ -28,7 +28,7 @@ export function joinerFor(id: string, kith: Record<string, Kith>, names: Record<
 }
 
 /** A portrait as a sprite: painted art, or the drawn bust; a kith with no painted portrait yet shows its map figure. */
-function portrait(j: Joiner, size: number): Container {
+export function portrait(j: Joiner, size: number): Container {
   const c = new Container();
   // a kith shows its own painted portrait, else its species', else its family's base kind
   const key = !j.kith || hasPainted(j.id) ? j.id : [`kith-${j.species}`, `kith-${j.species ? familyOf(j.species) : ""}`].find(hasPainted);
