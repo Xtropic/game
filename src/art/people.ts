@@ -13,19 +13,19 @@ export interface Look {
 }
 
 export const LOOKS: Record<string, Look> = {
-  rhea: { hair: "#3a2418", hairLight: "#5c3a26", skin: "#e8c0a0", skinShade: "#c09272", coat: "#6b4a3a", coatShade: "#4f3428", accent: "#b03a2a", legs: "#3b2e26", boots: "#221a15", style: "braid" },
+  rhea: { hair: "#3a2418", hairLight: "#5c3a26", skin: "#e8c0a0", skinShade: "#c09272", coat: "#8e7a5c", coatShade: "#6e5c44", accent: "#c0262a", legs: "#3b2e26", boots: "#221a15", style: "braid" },
   warden: { hair: "#2b2b2b", hairLight: "#8e959b", skin: "#e0b896", skinShade: "#b88e6c", coat: "#7c8389", coatShade: "#5c6268", accent: "#3a3d40", legs: "#3a3d40", boots: "#1e1e1e" },
   elder: { hair: "#dcd6ca", hairLight: "#b9b2a4", skin: "#d7ad88", skinShade: "#ae8462", coat: "#6d5f4e", coatShade: "#504538", accent: "#7a5a48", legs: "#3e352c", boots: "#2a221c" },
   elder2: { hair: "#9a948a", hairLight: "#bdb6aa", skin: "#d4a882", skinShade: "#a87e5e", coat: "#4a5a6a", coatShade: "#38444f", accent: "#7a6a58", legs: "#3e352c", boots: "#2a221c" },
   corran: { hair: "#2a221c", hairLight: "#463a30", skin: "#dcb38e", skinShade: "#b0886a", coat: "#5d6266", coatShade: "#44484b", accent: "#3a3e42", legs: "#2f3235", boots: "#1c1c1c" },
-  tamsin: { hair: "#1a1512", hairLight: "#3a3029", skin: "#c99f7a", skinShade: "#a07a58", coat: "#3e5a46", coatShade: "#2e4434", accent: "#a88a5a", legs: "#2e3a33", boots: "#1f1a16", style: "bun" },
-  halloran: { hair: "#9a9a98", hairLight: "#c8c8c6", skin: "#cfa985", skinShade: "#a6805f", coat: "#26282c", coatShade: "#1a1c20", accent: "#3a3d42", legs: "#222428", boots: "#121214", beardStyle: "moustache", beard: "#8a8a88" },
+  tamsin: { hair: "#1a1512", hairLight: "#3a3029", skin: "#c99f7a", skinShade: "#a07a58", coat: "#5a6a2e", coatShade: "#444f22", accent: "#a88a5a", legs: "#2e3a33", boots: "#1f1a16", style: "bun" },
+  halloran: { hair: "#9a9a98", hairLight: "#c8c8c6", skin: "#cfa985", skinShade: "#a6805f", coat: "#26282c", coatShade: "#1a1c20", accent: "#9a2a24", legs: "#222428", boots: "#121214", beardStyle: "moustache", beard: "#8a8a88" },
   lisle: { hair: "#6a4a32", hairLight: "#8a6648", skin: "#e8c4a4", skinShade: "#c09c80", coat: "#e4e0d8", coatShade: "#bab4a8", accent: "#d0ccc2", legs: "#4a4540", boots: "#2a2622", style: "bun" },
   finch: { hair: "#8a5a26", hairLight: "#b07a38", skin: "#e8c39c", skinShade: "#c09772", coat: "#c09a3a", coatShade: "#9a7a2a", accent: "#e8dcc0", legs: "#4a3a2a", boots: "#2a2018" },
   kid: { hair: "#4a3020", hairLight: "#6a4630", skin: "#e0bb94", skinShade: "#b8916c", coat: "#7d6aa0", coatShade: "#5f4f80", accent: "#c9b98a", legs: "#3e352c", boots: "#2a221c" },
   kid2: { hair: "#c0904a", hairLight: "#d8aa62", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#a05a4a", coatShade: "#7e4538", accent: "#e0d0a8", legs: "#3e352c", boots: "#2a221c" },
   // the prologue's named villagers, matched to their portraits
-  maren: { hair: "#e0dcd4", hairLight: "#f4f0ea", skin: "#e6c4a4", skinShade: "#c29c7c", coat: "#6a4a36", coatShade: "#4e3628", accent: "#5a4030", legs: "#3e352c", boots: "#2a221c", style: "bun" },
+  maren: { hair: "#e0dcd4", hairLight: "#f4f0ea", skin: "#e6c4a4", skinShade: "#c29c7c", coat: "#8a3e22", coatShade: "#6a2e18", accent: "#2e2a2a", legs: "#3e352c", boots: "#2a221c", style: "bun" },
   rook: { hair: "#c8c4bc", hairLight: "#e8e4dc", skin: "#d4a882", skinShade: "#a87e5e", coat: "#5e4632", coatShade: "#463424", accent: "#4a3a2c", legs: "#3e352c", boots: "#2a221c", style: "bald", beardStyle: "full", beard: "#e8e4dc" },
   oda: { hair: "#e8e4dc", hairLight: "#ffffff", skin: "#a87450", skinShade: "#86583a", coat: "#5a4838", coatShade: "#44362a", accent: "#7a6a52", legs: "#3e352c", boots: "#2a221c", style: "braid" },
   pell: { hair: "#c8a868", hairLight: "#e0c488", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#7a7870", coatShade: "#5e5c56", accent: "#8a8880", legs: "#3e3a34", boots: "#2a221c" },
@@ -33,13 +33,13 @@ export const LOOKS: Record<string, Look> = {
   // Hessa, the pilgrim from Millbridge: eight lull rings, a town coat, her hair pinned up
   hessa: { hair: "#6a4a3a", hairLight: "#8a6a52", skin: "#e2bc9a", skinShade: "#ba9476", coat: "#5a6a7a", coatShade: "#44505e", accent: "#a89a80", legs: "#3a3a3a", boots: "#222", style: "bun" },
   // Act I
-  brannoc: { hair: "#6a6560", hairLight: "#8a8580", skin: "#d4a888", skinShade: "#ac8466", coat: "#5a4a38", coatShade: "#42362a", accent: "#4a3e30", legs: "#3a3028", boots: "#221a14", style: "bald", beardStyle: "full", beard: "#8a8580" },
+  brannoc: { hair: "#6a6560", hairLight: "#8a8580", skin: "#d4a888", skinShade: "#ac8466", coat: "#4e5236", coatShade: "#3a3e28", accent: "#4a3e30", legs: "#3a3028", boots: "#221a14", style: "bald", beardStyle: "full", beard: "#8a8580" },
   // Lieutenant Varro: tall, close-cropped grey-streaked hair, the Commons green coat with a red collar
   varro: { hair: "#4a4440", hairLight: "#8a8480", skin: "#c89a74", skinShade: "#a07656", coat: "#2e4a34", coatShade: "#223828", accent: "#a83a2a", legs: "#2a2e2a", boots: "#1a1614" },
   kane: { hair: "#3e3c3a", hairLight: "#8a8886", skin: "#d8b08a", skinShade: "#b08866", coat: "#2e4434", coatShade: "#22332a", accent: "#9a2a24", legs: "#2a2e2a", boots: "#1a1614", beardStyle: "full", beard: "#3e3c3a" },
   ketti: { hair: "#8a3a1e", hairLight: "#b4562e", skin: "#f0cfb2", skinShade: "#d2a88a", coat: "#5a5a36", coatShade: "#44442a", accent: "#9a8a6a", legs: "#3a3228", boots: "#241c16", style: "braid" },
   ferris: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#d8aa80", skinShade: "#b08460", coat: "#3e5a32", coatShade: "#2e4426", accent: "#5a6a3a", legs: "#3a3a2a", boots: "#24221a", style: "cap", cap: "#4a5a34" },
-  oren: { hair: "#7a746c", hairLight: "#9a948a", skin: "#d0a884", skinShade: "#a88262", coat: "#5e4a3a", coatShade: "#46382c", accent: "#2a2420", legs: "#4a4238", boots: "#2a241e", beardStyle: "full", beard: "#8a847a" },
+  oren: { hair: "#7a746c", hairLight: "#9a948a", skin: "#d0a884", skinShade: "#a88262", coat: "#3e5274", coatShade: "#2e3e58", accent: "#2a2420", legs: "#4a4238", boots: "#2a241e", beardStyle: "full", beard: "#8a847a" },
   folk: { hair: "#5a3a2a", hairLight: "#7a5a42", skin: "#dcb090", skinShade: "#b48a6c", coat: "#7a6a4a", coatShade: "#5e5038", accent: "#d8ccb0", legs: "#4a3e30", boots: "#2a221a" },
   folk2: { hair: "#c8b890", hairLight: "#e0d4b0", skin: "#e8c4a4", skinShade: "#c09c80", coat: "#4a6a7a", coatShade: "#38525e", accent: "#a84a3a", legs: "#3a3a3a", boots: "#222" },
   reeve: { hair: "#3a3a3a", hairLight: "#5a5a5a", skin: "#d4aa86", skinShade: "#ac8464", coat: "#2a3a5a", coatShade: "#1e2a44", accent: "#c9a86a", legs: "#2a2a30", boots: "#18181c" },

@@ -27,7 +27,7 @@ describe("regions", () => {
 
   it("each regional form lives in a real region, and the new species describe their looks", () => {
     for (const s of Object.values(SPECIES)) if (s.kind === "regional") expect(REGIONS[s.region!], s.id).toBeDefined();
-    expect(Object.values(SPECIES).filter((s) => s.look).length).toBe(114); // every species added this round, every hybrid and every heir describes its look
+    expect(Object.values(SPECIES).filter((s) => s.look).length).toBe(121); // every species added this round, every hybrid and every heir describes its look
   });
 });
 
