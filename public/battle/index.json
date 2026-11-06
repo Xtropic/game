@@ -1,0 +1,4 @@
+{
+  "rhea": { "file": "rhea.png", "rig": "person", "h": 52 },
+  "ash": { "file": "ash.png", "rig": "beast", "h": 35 }
+}

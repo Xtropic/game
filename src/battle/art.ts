@@ -6,6 +6,7 @@ import { EVEN, type Build } from "../art/build";
 import { BODY_SHAPE, bodyOf } from "../art/bodies";
 import { saturate } from "../art/people";
 import { RECRUITS } from "../cast/recruits";
+import { drawPainted, hasPaintedFig } from "./painted";
 
 export const CW = 256, CH = 144;
 let K = 4;
@@ -285,7 +286,8 @@ export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Po
 
 export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
   const kind = lookKind(look), coat = lookCoat(look);
-  if (kind === "ash") drawAsh(g, x, y, o, b);
+  if (!coat && hasPaintedFig(kind)) drawPainted(g, kind, x, y, o, K);
+  else if (kind === "ash") drawAsh(g, x, y, o, b);
   else if (kind === "loftbuck") drawAsh(g, x, y, o, b, coat ?? "#9a8a70", false);
   else if (kind === "reedcat") drawCat(g, x, y, o, b, coat);
   else drawFig(g, kind, x, y, o, b);

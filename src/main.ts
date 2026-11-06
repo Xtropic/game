@@ -2,6 +2,7 @@ import { Game } from "./core/game";
 import { ExploreScene } from "./world/exploreScene";
 import { BattleScene } from "./battle/battleScene";
 import { drawPortrait, loadPortraits } from "./art/portraits";
+import { loadBattleArt } from "./battle/painted";
 import { castSheet, looksSheet } from "./art/gallery";
 import { MAPS, STORY } from "./world/content";
 import { bakeWorld } from "./art/worldTiles";
@@ -13,7 +14,7 @@ import { settings, type Settings } from "./core/settings";
 async function boot(): Promise<void> {
   const game = new Game();
   await game.init(document.getElementById("game")!);
-  await Promise.all([game.voices.load(), loadPortraits()]);
+  await Promise.all([game.voices.load(), loadPortraits(), loadBattleArt()]);
   const saved = game.saves.read("auto");
   if (saved?.place.map === "ostrel") { const at = fromOldWorld(saved.place.x, saved.place.y, MAPS); if (at) saved.place = at; }
   const scene = new ExploreScene(STORY, MAPS, saved && MAPS[saved.place.map] && saved.flags.stage ? saved.place : undefined);

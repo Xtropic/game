@@ -14,6 +14,7 @@ import {
   FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
 } from "./rules";
+import { paintedHeight } from "./painted";
 import {
   CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
@@ -150,7 +151,7 @@ export class BattleScene implements Scene {
 
   // ---------------- positions ----------------
   private pos(u: Unit): [number, number] { const v = this.vis.get(u.id)!; return [u.at[0] + v.ox + v.kx, u.at[1] + v.oy - v.hop]; }
-  private top(u: Unit): number { return this.pos(u)[1] - (LOOK_TOP[lookKind(u.look)] ?? 40); }
+  private top(u: Unit): number { return this.pos(u)[1] - (paintedHeight(u.look) ?? LOOK_TOP[lookKind(u.look)] ?? 40); }
   private dirOf(u: Unit): number { return u.side === "ally" ? 1 : -1; }
 
   // ---------------- coroutines ----------------
