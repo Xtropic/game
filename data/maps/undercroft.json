@@ -1,0 +1,37 @@
+{
+ "id": "undercroft",
+ "name": "Under Thornwick",
+ "music": "dusk",
+ "legend": {
+  "X": "rock",
+  ":": "cavefloor",
+  "S": "ladder",
+  "~": "water",
+  "w": "wetfloor",
+  "R": "rock"
+ },
+ "rows": [
+  "XXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "XXSSXXXXXXXXXXXXXXXXXXXXXX",
+  "X:::::::::XX:::::::::X:RRX",
+  "X:::::::::XX:::::::::X:RRX",
+  "X:::RR::::XX:::::::::X:::X",
+  "X:::RR::::XX:::::::::X:::X",
+  "X:::::::::::::::RR:::::::X",
+  "X::::::::::::::::::::X:::X",
+  "X:::::::::XX:::::::::X~~~X",
+  "X:::::::::XX:wwwwww::X~~~X",
+  "X::wwwwww:XX:wwwwww::X~~~X",
+  "X~~~~~~~~~~~~~~~~~~~~~~~~X",
+  "X~~~~~~~~~~~~~~~~~~~~~~~~X",
+  "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 2,
+   "y": 2
+  }
+ ]
+}

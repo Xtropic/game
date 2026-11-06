@@ -43,6 +43,8 @@ objectives = {
     "ab1": "Kane will want to hear about Oda's trays. He's in his tent at the top of the camp.",
     "ab2": "Take the section up to Thornwick, the ruined monastery on the Cloudline: up the mountain road, then east of Larkfold.",
     "ab3": "Wild loftbucks have taken the old bathhouse in the north-west corner. Get them out: sing (Q), or drive them out.",
+    "ab3c": "The spring is only a trickle. Take the stair behind the altar stone in the chapel, and find what's blocking the monks' channel.",
+    "ab3e": "The water's running. Something is screaming in the cistern behind the grate, at the east end of the passage.",
     "ab4": "Brannoc wants a word about the work before the snow. He's by the fire.",
     "ab5": "Dorrit's supply cart has come up from the camp. She's at the gate.",
     "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to him (Q).",
@@ -136,10 +138,30 @@ S["kaneThornwick"] = [
 
 # ------------------------------------------------------------------ Thornwick, autumn
 S["thornArrive"] = [
+    n("The mountain road gives out a mile short of Thornwick. A whole shoulder of the hill has come down across it: scree, split boulders, a pine lying with its roots in the air."),
+    say("brannoc", R("Spring melt. Took the road with it. Nobody's been up here in years, Sergeant, and this is why.")),
+    choose("How do you get the carts across?",
+           opt("Dig a ledge across the slide", [setf({"road": "dug"}), fade("Two days with picks and crowbars, and a ledge just wide enough for a cart."),
+                                                 say("tamsin", R("My hands have stopped being hands."))], hint="Slow and safe."),
+           opt("Rope the carts across", [setf({"road": "roped"}),
+                                          n("Tamsin runs a line from the pine's roots to a spur of rock on the far side, and the section walks the carts over one at a time, holding their breath."),
+                                          n("The last cart's back wheel goes over the edge. Brannoc holds it on the rope, red to the ears, until the others drag it back.")], hint="Quick, and risky.")),
+    n("Halfway across, the scree moves where nobody has stepped. Grey backs among the grey stones. Eyes."),
+    say("tamsin", R("Reedcats. A whole den of them in the slide, and we're walking on their roof.")),
+    {"battle": "thornwick-road", "win": [
+        n("The reedcats scatter up the slope and watch you go from the rocks."),
+        run("thornGate"),
+    ]},
+]
+S["thornGate"] = [
+    n("Thornwick's gate is choked to the lintel with fallen stone, and the lintel itself has cracked and dropped across the gap."),
+    say("brannoc", R("Stand back.")),
+    n("Brannoc gets his shoulder under the broken lintel, and lifts, and holds it, shaking, while the rest of you drag the rubble out from under him a stone at a time."),
+    fade("An afternoon of shifting stone."),
     goto("thornwick", 13, 13, "up"),
     {"alone": True},
     n("Thornwick sits on a shelf of rock over the cloud. A chapel with no roof. A bathhouse with no door. Walls the frost has been pulling apart for a hundred years."),
-    n("In the middle of it all, a pool steams in the cold, and the air smells of wet stone and warm water."),
+    n("In the middle of it all, a shallow pool steams in the cold, and the air smells of wet stone and warm water."),
     say("tamsin", R("It's a ruin, Rhea.")),
     say("rhea", R("It's a warm ruin.")),
     n("Something bellows from the old bathhouse in the north-west corner, and hooves skitter on stone."),
@@ -174,7 +196,79 @@ S["bathSong"] = [
     run("bathDone"),
 ]
 S["bathDone"] = [
-    say("brannoc", R("Right. Now the work starts. Come and find me by the fire when you've had a look round.")),
+    n("Rhea kneels by the spring. It's warm, but it's hardly a pool: a skin of water over the stones, fed by a trickle from a pipe in the chapel wall."),
+    say("oda", R("That won't keep trays warm through a winter, child. There's more water than that under this hill. Listen.")),
+    n("She's right. Put an ear to the stones and there's a roar down there, somewhere under the chapel."),
+    say("brannoc", R("The monks will have cut a channel to bring it up. It'll be blocked. There's a stair under the chapel floor, behind the altar stone. Take the lamps.")),
+    setf({"sluice": 0}),
+    stage("ab3c"),
+]
+S["underDown"] = [
+    {"regroup": True},
+    goto("undercroft", 2, 2, "down"),
+    iff({"not": "underSeen"}, [
+        setf({"underSeen": True}),
+        n("Thirty steps down, the air turns warm and wet. The lamps show a long stone passage, a channel running black along one side of it, and a hundred years of fallen roof."),
+        say("tamsin", R("Something lives down here. Smell that?")),
+    ]),
+]
+S["underUp"] = [goto("thornwick", 14, 4, "down"), {"alone": True}]
+S["kits"] = [
+    n("Two half-grown reedcats, big as hounds, stand in the gap in the rubble with their backs up. Behind them, the passage goes on into the dark."),
+    choose("They spit at the lamps.",
+           opt("Drive them off", [run("kitsFight")], hint="A fight."),
+           opt("Step back and sing", [n("You back off a few steps and set the lamps down. The foal song works best when they can see you aren't coming closer. Press Q.")], hint="The foal song (Q).")),
+]
+S["kitsFight"] = [
+    {"battle": "thornwick-kits", "win": [n("The kits bolt away past the sluices and through the bars of an iron grate at the far end."), setf({"kits": True})]},
+]
+S["kitsSong"] = [
+    n("Rhea sings low. The kits' ears come round. One sits. The other yawns, enormously, the way frightened cats do, and then they both slip away through the bars of an iron grate at the far end of the passage."),
+    setf({"kits": True}),
+]
+S["carving"] = [
+    n("Words cut into the wall over three iron wheels, worn shallow, filled with green: THE HIGH WATER FIRST. THE LOW WATER AFTER. LAST, THE WHEEL THAT SINGS."),
+    say("brannoc", R("Monks. Couldn't just paint an arrow.")),
+]
+def valve(desc, need, after):
+    return [choose(desc,
+                   opt("Turn it", [iff({"eq": {"sluice": need}}, after, [run("sluiceWrong")])]),
+                   opt("Leave it", []))]
+S["valveHigh"] = valve("A wheel on a pipe that climbs into the roof, up toward the spring.", 0,
+                       [setf({"sluice": 1}), n("It grinds round. Somewhere above, water knocks in the pipe.")])
+S["valveLow"] = valve("A wheel on a pipe that runs along the floor and down into the channel.", 1,
+                      [setf({"sluice": 2}), n("It turns stiffly. The channel at your feet gurgles and starts to rise.")])
+S["valveSing"] = valve("A wheel on a short, thick pipe. Tap it, and it rings a clear note that goes on a long time.", 2,
+                       [setf({"sluice": 3}), run("sluiceOpen")])
+S["sluiceWrong"] = [
+    n("The wheel turns, and the pipes shriek. A joint bursts and scalding water roars out across the passage; everyone throws themselves flat."),
+    n("When it stops, all three wheels have spun back shut."),
+    setf({"sluice": 0}),
+]
+S["sluiceOpen"] = [
+    n("The last wheel turns, and the note it sings drops lower and lower until it's under your feet. Then the whole hill groans."),
+    n("Water roars down the channel. Behind the iron grate at the end of the passage, the cistern starts to fill, and something in the dark there screams."),
+    say("tamsin", R("That wasn't a pipe.")),
+    stage("ab3e"),
+]
+S["cisternBoss"] = [
+    n("The grate's lock is a lump of rust. It gives at the first kick. Beyond is the cistern: a stone hall, the water rising, warm as breath."),
+    n("On the dry shelf at the back, over a nest of moss and stolen rags, a reedcat the size of a pony gets to her feet. Grey at the muzzle. Scarred across both shoulders. A kit presses against her legs."),
+    say("brannoc", R("That's the biggest reedcat I've ever seen. She's had this hill longer than the monks did, I'd say.")),
+    say("rhea", R("And we've just flooded her house.")),
+    n("She's too proud to hear a song from someone she's never seen tired. Wear her down first, then sing."),
+    {"battle": "thornwick-cistern", "win": [run("cisternDone")]},
+]
+S["cisternDone"] = [
+    n("The Old Mother backs up the shelf, her kit under her chin, and squeezes out through a crack in the cistern roof where the hillside lets in a grey square of sky."),
+    n("At the top she stops, and looks down at Rhea for a long moment. Then she's gone."),
+    goto("thornwick", 14, 7, "down"), {"alone": True},
+    n("Up in the yard, the spring is filling. It steams and spreads and overflows its old stone lip, and runs away down the channel the monks cut for it, out over the cliff into the cloud."),
+    say("oda", R("Now that's a spring.")),
+    say("tamsin", R("Rhea. Look at it. It's ours.")),
+    say("brannoc", R("Road, gate, bathhouse, cellar and a cat the size of a cart. Right. Now the work starts. Come and find me by the fire when you've had a look round.")),
+    toast("Thornwick is yours."),
+    setf({"thornwickClaimed": True}),
     stage("ab4"),
 ]
 S["workChoice"] = [
@@ -916,6 +1010,15 @@ actors = [
     actor("buck1", TW, 5, 4, "loftbuck", [run("bucks")], stages("ab3")),
     actor("buck2", TW, 7, 5, "loftbuck", [run("bucks")], stages("ab3")),
     actor("burr", TW, 6, 4, "foal", [n("Burr, the wild yearling, asleep in the warm bathhouse with its legs folded under it. It opens one eye at you.")], {"stagePrefix": "ab", "eq": {"bathhouse": "sung"}}),
+    # under Thornwick: the kits in the gap, the sluice wheels, the grate, and the Old Mother
+    actor("kit1", "undercroft", 10, 6, "reedcat", [run("kits")], {"stage": "ab3c", "not": "kits"}),
+    actor("kit2", "undercroft", 11, 7, "reedcat", [run("kits")], {"stage": "ab3c", "not": "kits"}),
+    actor("carving", "undercroft", 13, 2, "glint", [run("carving")], {"stage": ["ab3c", "ab3e"]}),
+    actor("valve-sing", "undercroft", 15, 2, "glint", [run("valveSing")], stages("ab3c")),
+    actor("valve-high", "undercroft", 17, 2, "glint", [run("valveHigh")], stages("ab3c")),
+    actor("valve-low", "undercroft", 19, 2, "glint", [run("valveLow")], stages("ab3c")),
+    actor("grate", "undercroft", 21, 6, "glint", [n("An iron grate, rusted into the wall. Beyond it, black water and the smell of a den.")], stages("ab3c")),
+    actor("old-mother", "undercroft", 23, 5, "reedcat", [run("cisternBoss")], stages("ab3e")),
     # Thornwick: the section at home (the party stays inside the walls)
     actor("brannoc-tw", TW, 9, 12, "brannoc", [iff({"stage": "ab4"}, [run("workChoice")], [say("brannoc", R("Eat something, Sergeant."))])], {"stage": AFTER(3)[:16], "flag": "party.brannoc"}),
     actor("tamsin-tw", TW, 11, 12, "tamsin", [iff({"stage": "ab17"}, [run("verdict")], [
@@ -993,11 +1096,15 @@ steps = [
     step("land-cloudline", (10, 21), [goto("umes", 12, 12, "up")], {"flag": "umeMet"}),
     *[step("umes", (x, 13), [goto("land-cloudline", 10, 22, "down")]) for x in (12, 13)],
     # leaving Thornwick: the section comes along on the road
-    *[step(TW, (x, 15), [toast("Not now.")], stages("ab3", "ab4", "ab5", "ab6", "ab16", "ab17", "ab20", "ab22", "ab24", "ab26")) for x in (13, 14)],
+    *[step(TW, (x, 15), [toast("Not now.")], stages("ab3", "ab3c", "ab3e", "ab4", "ab5", "ab6", "ab16", "ab17", "ab20", "ab22", "ab24", "ab26")) for x in (13, 14)],
     *[step(TW, (x, 15), [{"regroup": True}, goto("land-cloudline", 32, 30, "down")]) for x in (13, 14)],
     # Kell's Bridge
     *[step("kellsbridge", (x, 13), [toast("Not until the exchange is done.")], stages("ab20")) for x in (12, 13)],
     *[step("kellsbridge", (x, 13), [run("bridgeHome")], stages("ab21")) for x in (12, 13)],
+    # the stair under the chapel, and back up
+    step(TW, (14, 3), [run("underDown")], stages("ab3c", "ab3e")),
+    step(TW, (14, 3), [n("The stair down to the monks' channel. You can hear the water running from here.")], {"flag": "thornwickClaimed"}),
+    *[step("undercroft", (x, 1), [run("underUp")]) for x in (2, 3)],
     # Thornwick's cellar
     step(TW, (16, 8), [n("Steps down into the warm dark, and Oda's trays on stone shelves over the running water. It smells like home.")], {"flag": "act2"}),
     # Corran's Vantry: the old ways out of the prologue's rooms
@@ -1014,6 +1121,7 @@ zones = [
 ]
 songs = [
     {"when": {"map": TW, "stage": "ab3"}, "near": "buck1", "range": 5, "do": [run("bathSong")]},
+    {"when": {"map": "undercroft", "stage": "ab3c", "not": "kits"}, "near": "kit1", "range": 5, "do": [run("kitsSong")]},
     {"when": {"map": TW, "stage": "ab6"}, "near": "ash-pen", "range": 4, "do": [run("heskComes")]},
     {"when": {"map": TW, "stagePrefix": "ab"}, "do": [n("You sing the foal song while you work. Somebody across the yard picks up the tune and hums it with you.")]},
 ]
@@ -1041,7 +1149,7 @@ hazards = [
      "on": "wetfloor", "burn": 18, "fail": [run("bellSteamFail")]},
 ]
 
-voiced = ["kaneThornwick", "kaneCrates", "oakesTalk", "verdict", "bridge", "tobinClean", "promotion", "posyMorning", "halloranBell", "childGate", "umeMeet", "finchPass", "halloranPromote"]
+voiced = ["cisternDone", "kaneThornwick", "kaneCrates", "oakesTalk", "verdict", "bridge", "tobinClean", "promotion", "posyMorning", "halloranBell", "childGate", "umeMeet", "finchPass", "halloranPromote"]
 
 moods = {
     "scenes": {"act2Start": "road", "frost": "grief", "kaneThornwick": "camp", "thornArrive": "hope", "bathSong": "tender", "bathFight": "tension",
@@ -1051,10 +1159,12 @@ moods = {
                "oakesTalk": "dread", "lyleTalk": "dread", "verdict": "grief", "springRider": "hope", "rider": "tension", "bridge": "grief",
                "bridgeHome": "tender", "hiding": "night", "lisleHiding": "dread", "smuggler": "dread", "finchLie": "grief", "tobinClean": "hope",
                "summer": "hope", "promotion": "camp", "bell": "night", "bellTin": "dread", "bellMorning": "grief", "posyMorning": "grief",
-               "halloranBell": "dread", "childGate": "grief", "bucks": "tension", "bathDone": "hope",
+               "halloranBell": "dread", "childGate": "grief", "bucks": "tension", "bathDone": "hope", "thornGate": "camp", "underDown": "dread", "kits": "tension", "sluiceOpen": "tension",
+               "cisternBoss": "fire", "cisternDone": "hope", "kitsFight": "tension", "kitsSong": "tender", "carving": "dread",
+               "valveHigh": "dread", "valveLow": "dread", "valveSing": "dread", "sluiceWrong": "tension", "underUp": "dread",
                "factor": "tension", "tobinVisit": "tender", "finchBirthday": "tender", "passClimb": "hope", "backToRhea2": "tension",
                "varroBridge": "tension", "bellOut": "fire", "bellChild1": "fire", "bellChild2": "fire", "bellChild3": "fire", "bellSteamFail": "fire"},
-    "stages": {"ab3": "tension", "ab6": "tender", "ab9": "road", "ab13": "tension", "ab16": "dread", "ab17": "dread", "ab20": "tension",
+    "stages": {"ab3": "tension", "ab3c": "dread", "ab3e": "tension", "ab6": "tender", "ab9": "road", "ab13": "tension", "ab16": "dread", "ab17": "dread", "ab20": "tension",
                "ac6": "tender", "ac8": "dread", "ac10": "dread", "ac11": "fire", "ac12": "grief", "ac13": "grief", "ab26": "grief"},
 }
 

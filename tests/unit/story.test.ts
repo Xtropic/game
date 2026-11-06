@@ -238,7 +238,13 @@ describe("Act II: the field", () => {
     r.run([{ run: "leaveLarkfold" }]); expect(f.stage).toBe("ab1"); expect(map()).toBe("camp");
     r.run([{ run: "kane" }]); expect(f.thornwick).toBe(true); expect(f.stage).toBe("ab2"); // Kane hands Act II its own talk
     r.run([{ run: "thornArrive" }]); expect(map()).toBe("thornwick"); expect(f.stage).toBe("ab3");
-    r.run([{ run: "bathSong" }]); expect(f.bathhouse).toBe("sung"); expect(f["kith.thornwick-yearling"]).toBe(true); expect(f.stage).toBe("ab4");
+    r.run([{ run: "bathSong" }]); expect(f.bathhouse).toBe("sung"); expect(f["kith.thornwick-yearling"]).toBe(true); expect(f.stage).toBe("ab3c");
+    // claiming Thornwick: down the stair, past the kits, the three sluice wheels in the carved order, the Old Mother
+    r.run([{ run: "underDown" }]); expect(map()).toBe("undercroft");
+    r.run([{ run: "kitsSong" }]); expect(f.kits).toBe(true);
+    r.run([{ run: "valveLow" }]); expect(f.sluice).toBe(0); // the wrong wheel first: the pipes burst, all three shut
+    r.run([{ run: "valveHigh" }, { run: "valveLow" }, { run: "valveSing" }]); expect(f.sluice).toBe(3); expect(f.stage).toBe("ab3e");
+    r.run([{ run: "cisternBoss" }]); expect(map()).toBe("thornwick"); expect(f.thornwickClaimed).toBe(true); expect(f.stage).toBe("ab4");
     pick(1); r.run([{ run: "workChoice" }]); expect(f.firstJob).toBe("store"); expect(f.lostTray).toBe(true); expect(f.stage).toBe("ab5");
     r.run([{ run: "dorrit" }]); expect(f["recruited.dorrit"]).toBe(true); expect(f.stage).toBe("ab6");
     r.run([{ run: "heskComes" }]); expect(f["recruited.hesk"]).toBe(true); expect(f.stage).toBe("ab7");

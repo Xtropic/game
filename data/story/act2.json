@@ -2,6 +2,7 @@
  "id": "act2",
  "title": "Act II: The Field",
  "voiced": [
+  "cisternDone",
   "kaneThornwick",
   "kaneCrates",
   "oakesTalk",
@@ -64,6 +65,20 @@
    "childGate": "grief",
    "bucks": "tension",
    "bathDone": "hope",
+   "thornGate": "camp",
+   "underDown": "dread",
+   "kits": "tension",
+   "sluiceOpen": "tension",
+   "cisternBoss": "fire",
+   "cisternDone": "hope",
+   "kitsFight": "tension",
+   "kitsSong": "tender",
+   "carving": "dread",
+   "valveHigh": "dread",
+   "valveLow": "dread",
+   "valveSing": "dread",
+   "sluiceWrong": "tension",
+   "underUp": "dread",
    "factor": "tension",
    "tobinVisit": "tender",
    "finchBirthday": "tender",
@@ -78,6 +93,8 @@
   },
   "stages": {
    "ab3": "tension",
+   "ab3c": "dread",
+   "ab3e": "tension",
    "ab6": "tender",
    "ab9": "road",
    "ab13": "tension",
@@ -112,6 +129,8 @@
   "ab1": "Kane will want to hear about Oda's trays. He's in his tent at the top of the camp.",
   "ab2": "Take the section up to Thornwick, the ruined monastery on the Cloudline: up the mountain road, then east of Larkfold.",
   "ab3": "Wild loftbucks have taken the old bathhouse in the north-west corner. Get them out: sing (Q), or drive them out.",
+  "ab3c": "The spring is only a trickle. Take the stair behind the altar stone in the chapel, and find what's blocking the monks' channel.",
+  "ab3e": "The water's running. Something is screaming in the cistern behind the grate, at the east end of the passage.",
   "ab4": "Brannoc wants a word about the work before the snow. He's by the fire.",
   "ab5": "Dorrit's supply cart has come up from the camp. She's at the gate.",
   "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to him (Q).",
@@ -217,6 +236,142 @@
     {
      "say": "",
      "text": "Burr, the wild yearling, asleep in the warm bathhouse with its legs folded under it. It opens one eye at you."
+    }
+   ]
+  },
+  {
+   "id": "kit1",
+   "map": "undercroft",
+   "x": 10,
+   "y": 6,
+   "look": "reedcat",
+   "when": {
+    "stage": "ab3c",
+    "not": "kits"
+   },
+   "talk": [
+    {
+     "run": "kits"
+    }
+   ]
+  },
+  {
+   "id": "kit2",
+   "map": "undercroft",
+   "x": 11,
+   "y": 7,
+   "look": "reedcat",
+   "when": {
+    "stage": "ab3c",
+    "not": "kits"
+   },
+   "talk": [
+    {
+     "run": "kits"
+    }
+   ]
+  },
+  {
+   "id": "carving",
+   "map": "undercroft",
+   "x": 13,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c",
+     "ab3e"
+    ]
+   },
+   "talk": [
+    {
+     "run": "carving"
+    }
+   ]
+  },
+  {
+   "id": "valve-sing",
+   "map": "undercroft",
+   "x": 15,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "run": "valveSing"
+    }
+   ]
+  },
+  {
+   "id": "valve-high",
+   "map": "undercroft",
+   "x": 17,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "run": "valveHigh"
+    }
+   ]
+  },
+  {
+   "id": "valve-low",
+   "map": "undercroft",
+   "x": 19,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "run": "valveLow"
+    }
+   ]
+  },
+  {
+   "id": "grate",
+   "map": "undercroft",
+   "x": 21,
+   "y": 6,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An iron grate, rusted into the wall. Beyond it, black water and the smell of a den."
+    }
+   ]
+  },
+  {
+   "id": "old-mother",
+   "map": "undercroft",
+   "x": 23,
+   "y": 5,
+   "look": "reedcat",
+   "when": {
+    "stage": [
+     "ab3e"
+    ]
+   },
+   "talk": [
+    {
+     "run": "cisternBoss"
     }
    ]
   },
@@ -1597,6 +1752,8 @@
    "when": {
     "stage": [
      "ab3",
+     "ab3c",
+     "ab3e",
      "ab4",
      "ab5",
      "ab6",
@@ -1623,6 +1780,8 @@
    "when": {
     "stage": [
      "ab3",
+     "ab3c",
+     "ab3e",
      "ab4",
      "ab5",
      "ab6",
@@ -1742,6 +1901,64 @@
      "ab21"
     ]
    }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    3
+   ],
+   "do": [
+    {
+     "run": "underDown"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab3c",
+     "ab3e"
+    ]
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    3
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The stair down to the monks' channel. You can hear the water running from here."
+    }
+   ],
+   "when": {
+    "flag": "thornwickClaimed"
+   }
+  },
+  {
+   "map": "undercroft",
+   "at": [
+    2,
+    1
+   ],
+   "do": [
+    {
+     "run": "underUp"
+    }
+   ]
+  },
+  {
+   "map": "undercroft",
+   "at": [
+    3,
+    1
+   ],
+   "do": [
+    {
+     "run": "underUp"
+    }
+   ]
   },
   {
    "map": "thornwick",
@@ -2072,6 +2289,20 @@
   },
   {
    "when": {
+    "map": "undercroft",
+    "stage": "ab3c",
+    "not": "kits"
+   },
+   "near": "kit1",
+   "range": 5,
+   "do": [
+    {
+     "run": "kitsSong"
+    }
+   ]
+  },
+  {
+   "when": {
     "map": "thornwick",
     "stage": "ab6"
    },
@@ -2348,6 +2579,93 @@
   ],
   "thornArrive": [
    {
+    "say": "",
+    "text": "The mountain road gives out a mile short of Thornwick. A whole shoulder of the hill has come down across it: scree, split boulders, a pine lying with its roots in the air."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Spring melt. Took the road with it. Nobody's been up here in years, Sergeant, and this is why.\""
+   },
+   {
+    "choose": "How do you get the carts across?",
+    "options": [
+     {
+      "label": "Dig a ledge across the slide",
+      "hint": "Slow and safe.",
+      "do": [
+       {
+        "set": {
+         "road": "dug"
+        }
+       },
+       {
+        "fade": "Two days with picks and crowbars, and a ledge just wide enough for a cart."
+       },
+       {
+        "say": "tamsin",
+        "text": "\"My hands have stopped being hands.\""
+       }
+      ]
+     },
+     {
+      "label": "Rope the carts across",
+      "hint": "Quick, and risky.",
+      "do": [
+       {
+        "set": {
+         "road": "roped"
+        }
+       },
+       {
+        "say": "",
+        "text": "Tamsin runs a line from the pine's roots to a spur of rock on the far side, and the section walks the carts over one at a time, holding their breath."
+       },
+       {
+        "say": "",
+        "text": "The last cart's back wheel goes over the edge. Brannoc holds it on the rope, red to the ears, until the others drag it back."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Halfway across, the scree moves where nobody has stepped. Grey backs among the grey stones. Eyes."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Reedcats. A whole den of them in the slide, and we're walking on their roof.\""
+   },
+   {
+    "battle": "thornwick-road",
+    "win": [
+     {
+      "say": "",
+      "text": "The reedcats scatter up the slope and watch you go from the rocks."
+     },
+     {
+      "run": "thornGate"
+     }
+    ]
+   }
+  ],
+  "thornGate": [
+   {
+    "say": "",
+    "text": "Thornwick's gate is choked to the lintel with fallen stone, and the lintel itself has cracked and dropped across the gap."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Stand back.\""
+   },
+   {
+    "say": "",
+    "text": "Brannoc gets his shoulder under the broken lintel, and lifts, and holds it, shaking, while the rest of you drag the rubble out from under him a stone at a time."
+   },
+   {
+    "fade": "An afternoon of shifting stone."
+   },
+   {
     "goto": {
      "map": "thornwick",
      "x": 13,
@@ -2364,7 +2682,7 @@
    },
    {
     "say": "",
-    "text": "In the middle of it all, a pool steams in the cold, and the air smells of wet stone and warm water."
+    "text": "In the middle of it all, a shallow pool steams in the cold, and the air smells of wet stone and warm water."
    },
    {
     "say": "tamsin",
@@ -2494,8 +2812,364 @@
   ],
   "bathDone": [
    {
+    "say": "",
+    "text": "Rhea kneels by the spring. It's warm, but it's hardly a pool: a skin of water over the stones, fed by a trickle from a pipe in the chapel wall."
+   },
+   {
+    "say": "oda",
+    "text": "\"That won't keep trays warm through a winter, child. There's more water than that under this hill. Listen.\""
+   },
+   {
+    "say": "",
+    "text": "She's right. Put an ear to the stones and there's a roar down there, somewhere under the chapel."
+   },
+   {
     "say": "brannoc",
-    "text": "\"Right. Now the work starts. Come and find me by the fire when you've had a look round.\""
+    "text": "\"The monks will have cut a channel to bring it up. It'll be blocked. There's a stair under the chapel floor, behind the altar stone. Take the lamps.\""
+   },
+   {
+    "set": {
+     "sluice": 0
+    }
+   },
+   {
+    "stage": "ab3c"
+   }
+  ],
+  "underDown": [
+   {
+    "regroup": true
+   },
+   {
+    "goto": {
+     "map": "undercroft",
+     "x": 2,
+     "y": 2,
+     "facing": "down"
+    }
+   },
+   {
+    "if": {
+     "not": "underSeen"
+    },
+    "then": [
+     {
+      "set": {
+       "underSeen": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Thirty steps down, the air turns warm and wet. The lamps show a long stone passage, a channel running black along one side of it, and a hundred years of fallen roof."
+     },
+     {
+      "say": "tamsin",
+      "text": "\"Something lives down here. Smell that?\""
+     }
+    ]
+   }
+  ],
+  "underUp": [
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 14,
+     "y": 4,
+     "facing": "down"
+    }
+   },
+   {
+    "alone": true
+   }
+  ],
+  "kits": [
+   {
+    "say": "",
+    "text": "Two half-grown reedcats, big as hounds, stand in the gap in the rubble with their backs up. Behind them, the passage goes on into the dark."
+   },
+   {
+    "choose": "They spit at the lamps.",
+    "options": [
+     {
+      "label": "Drive them off",
+      "hint": "A fight.",
+      "do": [
+       {
+        "run": "kitsFight"
+       }
+      ]
+     },
+     {
+      "label": "Step back and sing",
+      "hint": "The foal song (Q).",
+      "do": [
+       {
+        "say": "",
+        "text": "You back off a few steps and set the lamps down. The foal song works best when they can see you aren't coming closer. Press Q."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "kitsFight": [
+   {
+    "battle": "thornwick-kits",
+    "win": [
+     {
+      "say": "",
+      "text": "The kits bolt away past the sluices and through the bars of an iron grate at the far end."
+     },
+     {
+      "set": {
+       "kits": true
+      }
+     }
+    ]
+   }
+  ],
+  "kitsSong": [
+   {
+    "say": "",
+    "text": "Rhea sings low. The kits' ears come round. One sits. The other yawns, enormously, the way frightened cats do, and then they both slip away through the bars of an iron grate at the far end of the passage."
+   },
+   {
+    "set": {
+     "kits": true
+    }
+   }
+  ],
+  "carving": [
+   {
+    "say": "",
+    "text": "Words cut into the wall over three iron wheels, worn shallow, filled with green: THE HIGH WATER FIRST. THE LOW WATER AFTER. LAST, THE WHEEL THAT SINGS."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Monks. Couldn't just paint an arrow.\""
+   }
+  ],
+  "valveHigh": [
+   {
+    "choose": "A wheel on a pipe that climbs into the roof, up toward the spring.",
+    "options": [
+     {
+      "label": "Turn it",
+      "do": [
+       {
+        "if": {
+         "eq": {
+          "sluice": 0
+         }
+        },
+        "then": [
+         {
+          "set": {
+           "sluice": 1
+          }
+         },
+         {
+          "say": "",
+          "text": "It grinds round. Somewhere above, water knocks in the pipe."
+         }
+        ],
+        "else": [
+         {
+          "run": "sluiceWrong"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "Leave it",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "valveLow": [
+   {
+    "choose": "A wheel on a pipe that runs along the floor and down into the channel.",
+    "options": [
+     {
+      "label": "Turn it",
+      "do": [
+       {
+        "if": {
+         "eq": {
+          "sluice": 1
+         }
+        },
+        "then": [
+         {
+          "set": {
+           "sluice": 2
+          }
+         },
+         {
+          "say": "",
+          "text": "It turns stiffly. The channel at your feet gurgles and starts to rise."
+         }
+        ],
+        "else": [
+         {
+          "run": "sluiceWrong"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "Leave it",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "valveSing": [
+   {
+    "choose": "A wheel on a short, thick pipe. Tap it, and it rings a clear note that goes on a long time.",
+    "options": [
+     {
+      "label": "Turn it",
+      "do": [
+       {
+        "if": {
+         "eq": {
+          "sluice": 2
+         }
+        },
+        "then": [
+         {
+          "set": {
+           "sluice": 3
+          }
+         },
+         {
+          "run": "sluiceOpen"
+         }
+        ],
+        "else": [
+         {
+          "run": "sluiceWrong"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "Leave it",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "sluiceWrong": [
+   {
+    "say": "",
+    "text": "The wheel turns, and the pipes shriek. A joint bursts and scalding water roars out across the passage; everyone throws themselves flat."
+   },
+   {
+    "say": "",
+    "text": "When it stops, all three wheels have spun back shut."
+   },
+   {
+    "set": {
+     "sluice": 0
+    }
+   }
+  ],
+  "sluiceOpen": [
+   {
+    "say": "",
+    "text": "The last wheel turns, and the note it sings drops lower and lower until it's under your feet. Then the whole hill groans."
+   },
+   {
+    "say": "",
+    "text": "Water roars down the channel. Behind the iron grate at the end of the passage, the cistern starts to fill, and something in the dark there screams."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"That wasn't a pipe.\""
+   },
+   {
+    "stage": "ab3e"
+   }
+  ],
+  "cisternBoss": [
+   {
+    "say": "",
+    "text": "The grate's lock is a lump of rust. It gives at the first kick. Beyond is the cistern: a stone hall, the water rising, warm as breath."
+   },
+   {
+    "say": "",
+    "text": "On the dry shelf at the back, over a nest of moss and stolen rags, a reedcat the size of a pony gets to her feet. Grey at the muzzle. Scarred across both shoulders. A kit presses against her legs."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"That's the biggest reedcat I've ever seen. She's had this hill longer than the monks did, I'd say.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"And we've just flooded her house.\""
+   },
+   {
+    "say": "",
+    "text": "She's too proud to hear a song from someone she's never seen tired. Wear her down first, then sing."
+   },
+   {
+    "battle": "thornwick-cistern",
+    "win": [
+     {
+      "run": "cisternDone"
+     }
+    ]
+   }
+  ],
+  "cisternDone": [
+   {
+    "say": "",
+    "text": "The Old Mother backs up the shelf, her kit under her chin, and squeezes out through a crack in the cistern roof where the hillside lets in a grey square of sky."
+   },
+   {
+    "say": "",
+    "text": "At the top she stops, and looks down at Rhea for a long moment. Then she's gone."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 14,
+     "y": 7,
+     "facing": "down"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "say": "",
+    "text": "Up in the yard, the spring is filling. It steams and spreads and overflows its old stone lip, and runs away down the channel the monks cut for it, out over the cliff into the cloud."
+   },
+   {
+    "say": "oda",
+    "text": "\"Now that's a spring.\""
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Rhea. Look at it. It's ours.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Road, gate, bathhouse, cellar and a cat the size of a cart. Right. Now the work starts. Come and find me by the fire when you've had a look round.\""
+   },
+   {
+    "toast": "Thornwick is yours."
+   },
+   {
+    "set": {
+     "thornwickClaimed": true
+    }
    },
    {
     "stage": "ab4"

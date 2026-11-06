@@ -1,0 +1,52 @@
+{
+ "id": "thornwick-cistern",
+ "name": "The Old Mother",
+ "backdrop": "cistern",
+ "party": true,
+ "intro": [
+  "The Old Mother: a reedcat the size of a pony, grey at the muzzle, scarred across both shoulders. The cistern has been her den for longer than anyone has been alive to see it.",
+  "She is proud. The song won't reach her until she's tired: wear her down below half, then sing."
+ ],
+ "won": "The cistern is yours",
+ "lost": "Driven back up the stair",
+ "units": [
+  {
+   "id": "mother",
+   "name": "The Old Mother",
+   "look": "old-mother",
+   "side": "foe",
+   "row": "front",
+   "hp": 96,
+   "level": 7,
+   "kith": true,
+   "skills": [
+    "maul",
+    "pounce"
+   ],
+   "at": [
+    176,
+    104
+   ],
+   "temperament": "proud"
+  },
+  {
+   "id": "k3",
+   "name": "Grey kit",
+   "look": "reedcat:#6a6a72",
+   "side": "foe",
+   "row": "front",
+   "hp": 18,
+   "level": 3,
+   "kith": true,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    214,
+    96
+   ],
+   "temperament": "gentle",
+   "species": "reedcat"
+  }
+ ]
+}

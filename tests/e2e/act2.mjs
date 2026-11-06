@@ -85,7 +85,12 @@ await play("leaveLarkfold");
 await expect("autumn at camp", (s) => s.stage === "ab1" && s.map === "camp");
 await play("kane"); await expect("Kane sends the section to Thornwick", (s) => s.stage === "ab2");
 await play("thornArrive"); await expect("Thornwick", (s) => s.map === "thornwick" && s.stage === "ab3"); await shot("thornwick");
-await play("bucks", [0]); await expect("the bathhouse fight is won", (s) => s.stage === "ab4");
+await play("bucks", [0]); await expect("the bathhouse fight is won", (s) => s.stage === "ab3c");
+// claiming Thornwick: under the chapel, the kits, the sluices in the carved order, the Old Mother
+await play("underDown"); await expect("under Thornwick", (s) => s.map === "undercroft"); await shot("undercroft");
+await play("kits", [0]); if ((await f()).kits !== true) fail("the kits are still in the gap");
+await play("valveHigh", [0]); await play("valveLow", [0]); await play("valveSing", [0]); await expect("the sluices are open", (s) => s.stage === "ab3e");
+await play("cisternBoss"); await expect("Thornwick is claimed", (s) => s.map === "thornwick" && s.stage === "ab4");
 if ((await f()).bathhouse !== "driven") fail("bathhouse not driven");
 await play("workChoice", [1]); await expect("the storeroom first", (s) => s.stage === "ab5");
 await play("dorrit"); await play("heskComes"); await expect("winter coming", (s) => s.stage === "ab7");

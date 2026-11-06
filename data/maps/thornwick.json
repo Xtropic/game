@@ -21,13 +21,14 @@
   "A": "tent",
   "F": "campfire",
   "x": "crate",
-  "e": "exit"
+  "e": "exit",
+  "u": "cave"
  },
  "rows": [
   "KKKKKKKKKKKKKKKKKKKKKKKKKKKK",
   "KccccccccccccccccccccccccccK",
   "Kc,sssssss,sssssss,sss,ss,cK",
-  "Kc,s..~~.s,sR....s,,,w,,,,cK",
+  "Kc,s..~~.s,sR.u..s,,,w,,,,cK",
   "Kc,s.....,,s....Rs,,,,,,,,cK",
   "Kc,s.....s,sss.sss,,,,,,,,cK",
   "Kc,sss.sss,,,,,,,,,,,,,,,,cK",

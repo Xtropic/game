@@ -57,6 +57,7 @@ t.rect(1, 1, 26, 1, "c"); t.rect(1, 1, 1, 14, "c"); t.rect(26, 1, 26, 14, "c")
 t.box(3, 2, 9, 6, "s"); t.rect(4, 3, 8, 5, "."); t.rect(6, 3, 7, 3, "~"); t.put(6, 6, "."); t.put(9, 4, ",")
 # chapel: roofless, rubble in the nave, the way in at the bottom
 t.box(11, 2, 17, 5, "s"); t.rect(12, 3, 16, 4, "."); t.put(14, 5, "."); t.put(12, 3, "R"); t.put(16, 4, "R")
+t.put(14, 3, "u")  # the stair down to the monks' channel, behind the altar stone
 # well and an old wall in the north-east
 t.put(21, 3, "w"); t.rect(19, 2, 24, 2, "s"); t.put(22, 2, ",")
 # the spring: a steaming pool, and the cellar door beside it
@@ -75,8 +76,23 @@ t.rect(13, 15, 14, 15, "e")
 THORNWICK = save("thornwick", "Thornwick", "camp",
                  {"K": "cloud", "c": "cliff", ",": "grass", ".": "cobble", "s": "stonewall", "~": "water", "R": "rock",
                   "w": "well", "k": "cave", "r": "roof", "h": "wall", "d": "door", "f": "fence", "H": "hay", "A": "tent",
-                  "F": "campfire", "x": "crate", "e": "exit"},
+                  "F": "campfire", "x": "crate", "e": "exit", "u": "cave"},
                  t, (13, 14), rest=True)
+
+# ---------------- Under Thornwick: the monks' channel, its sluices, and the cistern ----------------
+# 26 x 14. The stair comes down in the north-west; a rubble choke with one gap at x 10; the sluice room with its
+# three wheels (north, x 14-20); an iron grate at x 21 into the cistern hall (east). The channel runs along the south.
+d = G(26, 14, ":")
+d.box(0, 0, 25, 13, "X"); d.rect(1, 1, 24, 1, "X")
+d.rect(2, 1, 3, 1, "S")                                   # the stair up to the chapel
+d.rect(1, 11, 24, 12, "~"); d.rect(3, 10, 8, 10, "w"); d.rect(13, 9, 18, 10, "w")
+d.rect(10, 2, 11, 10, "X"); d.rect(10, 6, 11, 7, ":")      # the rubble choke, with one gap
+d.rect(21, 2, 21, 10, "X"); d.put(21, 6, ":")               # the wall of the cistern hall; the grate stands in the gap
+d.rect(22, 2, 24, 10, ":"); d.rect(22, 8, 24, 10, "~"); d.rect(23, 2, 24, 3, "R")
+d.rect(4, 4, 5, 5, "R"); d.rect(16, 6, 17, 6, "R")
+UNDER = save("undercroft", "Under Thornwick", "dusk",
+             {"X": "rock", ":": "cavefloor", "S": "ladder", "~": "water", "w": "wetfloor", "R": "rock"},
+             d, (2, 2))
 
 # ---------------- Ume's terraces: a clan village on moss terraces ----------------
 u = G(26, 14, ",")
@@ -131,5 +147,5 @@ BACK = save("backroom", "A back room on the Spindle canal", "lull",
             b, (5, 5))
 
 if __name__ == "__main__":
-    for m in (THORNWICK, UMES, KELLS, PASS, BACK):
+    for m in (THORNWICK, UNDER, UMES, KELLS, PASS, BACK):
         print(m["id"]); print("\n".join(m["rows"]))
