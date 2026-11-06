@@ -710,7 +710,7 @@
    "map": "thornwick",
    "x": 15,
    "y": 14,
-   "look": "folk",
+   "look": "carter",
    "when": {
     "stage": [
      "ab13"
@@ -805,7 +805,7 @@
    "map": "thornwick",
    "x": 14,
    "y": 13,
-   "look": "soldier",
+   "look": "rider",
    "when": {
     "stage": [
      "ab19"
@@ -949,7 +949,7 @@
    "map": "thornwick",
    "x": 13,
    "y": 13,
-   "look": "kid3",
+   "look": "child",
    "when": {
     "stage": [
      "ab26"
@@ -999,7 +999,7 @@
    "map": "umes",
    "x": 12,
    "y": 8,
-   "look": "elder2",
+   "look": "factor",
    "when": {
     "flag": "act2"
    },
@@ -1103,7 +1103,7 @@
    "map": "kellsbridge",
    "x": 11,
    "y": 2,
-   "look": "warden",
+   "look": "warden2",
    "when": {
     "stage": [
      "ab20"
@@ -1129,7 +1129,7 @@
    },
    "talk": [
     {
-     "say": "warden2",
+     "say": "warden",
      "text": "\"Truce flag, Commons. Stay your side.\""
     }
    ]
@@ -1291,7 +1291,7 @@
    "map": "backroom",
    "x": 6,
    "y": 2,
-   "look": "vil6",
+   "look": "smuggler",
    "when": {
     "stage": [
      "ac8"

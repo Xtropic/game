@@ -82,7 +82,8 @@
   "ketti": "Ketti",
   "nurse": "Army nurse",
   "soldier": "Commons soldier",
-  "varro": "Lieutenant Varro"
+  "varro": "Lieutenant Varro",
+  "camprunner": "Commons runner"
  },
  "objectives": {
   "a1": "Find the Larkfold cart at Ferrow Cross, down the mountain road south-east of Larkfold.",
@@ -117,7 +118,7 @@
    "map": "ferrow",
    "x": 9,
    "y": 4,
-   "look": "folk",
+   "look": "innkeeper",
    "when": {
     "stagePrefix": "a"
    },
@@ -257,7 +258,7 @@
    "map": "camp",
    "x": 20,
    "y": 12,
-   "look": "folk2",
+   "look": "nurse",
    "when": {
     "stagePrefix": "a"
    },
@@ -480,17 +481,17 @@
    ]
   },
   {
-   "id": "runner",
+   "id": "camprunner",
    "map": "millbridge",
    "x": 15,
    "y": 4,
-   "look": "kid",
+   "look": "camprunner",
    "when": {
     "stage": "a6"
    },
    "talk": [
     {
-     "say": "runner",
+     "say": "camprunner",
      "text": "\"Kane says the Sallow hatchery. Tonight. You're to take the gate. South-east of Hob's Bend, you can't miss the chimneys.\""
     }
    ]

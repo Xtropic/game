@@ -308,7 +308,7 @@
    "map": "larkfold",
    "x": 17,
    "y": 8,
-   "look": "vil3",
+   "look": "runner",
    "when": {
     "stage": "n1"
    },

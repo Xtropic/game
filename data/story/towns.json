@@ -33,7 +33,7 @@
    "map": "town-highmoss",
    "x": 9,
    "y": 4,
-   "look": "vil1",
+   "look": "hm-gatherer",
    "when": {
     "stagePrefix": "a"
    },
@@ -53,7 +53,7 @@
    "map": "town-highmoss",
    "x": 15,
    "y": 8,
-   "look": "vil2",
+   "look": "hm-widow",
    "when": {
     "stagePrefix": "a"
    },
@@ -73,7 +73,7 @@
    "map": "town-highmoss",
    "x": 6,
    "y": 9,
-   "look": "vil3",
+   "look": "hm-boy",
    "when": {
     "stagePrefix": "a"
    },
@@ -89,7 +89,7 @@
    "map": "town-dripstone",
    "x": 6,
    "y": 7,
-   "look": "vil4",
+   "look": "ds-keeper",
    "when": {
     "stagePrefix": "a"
    },
@@ -109,7 +109,7 @@
    "map": "town-dripstone",
    "x": 16,
    "y": 8,
-   "look": "vil5",
+   "look": "ds-seller",
    "when": {
     "stagePrefix": "a"
    },
@@ -125,7 +125,7 @@
    "map": "town-dripstone",
    "x": 12,
    "y": 10,
-   "look": "kid2",
+   "look": "ds-girl",
    "when": {
     "stagePrefix": "a"
    },
@@ -145,7 +145,7 @@
    "map": "town-mistfold",
    "x": 12,
    "y": 5,
-   "look": "vil6",
+   "look": "mf-herder",
    "when": {
     "stagePrefix": "a"
    },
@@ -181,7 +181,7 @@
    "map": "town-mistfold",
    "x": 8,
    "y": 10,
-   "look": "vil7",
+   "look": "mf-old",
    "when": {
     "stagePrefix": "a"
    },
@@ -201,7 +201,7 @@
    "map": "town-kerrow",
    "x": 12,
    "y": 7,
-   "look": "vil1",
+   "look": "kr-ferry",
    "when": {
     "stagePrefix": "a"
    },
@@ -217,7 +217,7 @@
    "map": "town-kerrow",
    "x": 18,
    "y": 9,
-   "look": "vil4",
+   "look": "kr-smith",
    "when": {
     "stagePrefix": "a"
    },
@@ -237,7 +237,7 @@
    "map": "town-kerrow",
    "x": 7,
    "y": 3,
-   "look": "vil2",
+   "look": "kr-mother",
    "when": {
     "stagePrefix": "a"
    },
@@ -275,7 +275,7 @@
    "map": "town-ropebridge",
    "x": 13,
    "y": 10,
-   "look": "vil5",
+   "look": "rb-ropemaker",
    "when": {
     "stagePrefix": "a"
    },
@@ -295,7 +295,7 @@
    "map": "town-ropebridge",
    "x": 9,
    "y": 4,
-   "look": "kid",
+   "look": "rb-girl",
    "when": {
     "stagePrefix": "a"
    },
@@ -311,7 +311,7 @@
    "map": "town-ropebridge",
    "x": 18,
    "y": 3,
-   "look": "vil3",
+   "look": "rb-lookout",
    "when": {
     "stagePrefix": "a"
    },
@@ -331,7 +331,7 @@
    "map": "town-weirbank",
    "x": 6,
    "y": 6,
-   "look": "vil4",
+   "look": "wb-miller",
    "when": {
     "stagePrefix": "a"
    },
@@ -351,7 +351,7 @@
    "map": "town-weirbank",
    "x": 18,
    "y": 10,
-   "look": "vil6",
+   "look": "wb-fisher",
    "when": {
     "stagePrefix": "a"
    },
@@ -367,7 +367,7 @@
    "map": "town-weirbank",
    "x": 14,
    "y": 4,
-   "look": "kid3",
+   "look": "wb-child",
    "when": {
     "stagePrefix": "a"
    },
@@ -387,7 +387,7 @@
    "map": "town-drovers-halt",
    "x": 6,
    "y": 5,
-   "look": "vil7",
+   "look": "dh-host",
    "when": {
     "stagePrefix": "a"
    },
@@ -407,7 +407,7 @@
    "map": "town-drovers-halt",
    "x": 8,
    "y": 8,
-   "look": "vil1",
+   "look": "dh-drover",
    "when": {
     "stagePrefix": "a"
    },
@@ -459,7 +459,7 @@
    "map": "town-longbarrow",
    "x": 11,
    "y": 6,
-   "look": "vil5",
+   "look": "lb-keeper",
    "when": {
     "stagePrefix": "a"
    },
@@ -479,7 +479,7 @@
    "map": "town-longbarrow",
    "x": 20,
    "y": 10,
-   "look": "vil2",
+   "look": "lb-farmer",
    "when": {
     "stagePrefix": "a"
    },
@@ -514,7 +514,7 @@
    "map": "town-longbarrow",
    "x": 4,
    "y": 9,
-   "look": "kid",
+   "look": "lb-boy",
    "when": {
     "stagePrefix": "a"
    },
