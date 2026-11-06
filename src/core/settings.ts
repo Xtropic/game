@@ -15,11 +15,13 @@ export interface Settings {
   battleSpeed: number;
   /** Hits and braces land as "good" without pressing. */
   autoTiming: boolean;
+  /** Battles choose each ally's move for them. */
+  autoBattle: boolean;
   /** Run without holding Shift. */
   alwaysRun: boolean;
 }
 
-export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, alwaysRun: false };
+export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false };
 export const TEXT_SPEEDS = [0.6, 1, 1.6, 3];
 export const BATTLE_SPEEDS = [1, 1.5, 2];
 
@@ -40,6 +42,7 @@ export function parseSettings(raw: string | null, oldAuto: string | null = null)
     music: clamp01(o.music, DEFAULTS.music), effects: clamp01(o.effects, DEFAULTS.effects), voices: clamp01(o.voices, DEFAULTS.voices),
     textSpeed: oneOf(o.textSpeed, TEXT_SPEEDS, DEFAULTS.textSpeed), battleSpeed: oneOf(o.battleSpeed, BATTLE_SPEEDS, DEFAULTS.battleSpeed),
     autoTiming: typeof o.autoTiming === "boolean" ? o.autoTiming : oldAuto === "1",
+    autoBattle: typeof o.autoBattle === "boolean" ? o.autoBattle : DEFAULTS.autoBattle,
     alwaysRun: typeof o.alwaysRun === "boolean" ? o.alwaysRun : DEFAULTS.alwaysRun,
   };
 }

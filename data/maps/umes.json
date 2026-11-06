@@ -1,0 +1,47 @@
+{
+ "id": "umes",
+ "name": "Ume's terraces",
+ "music": "larkfold",
+ "rest": true,
+ "legend": {
+  "K": "cloud",
+  "c": "cliff",
+  ",": "grass",
+  "m": "moss",
+  "a": "terrace",
+  "S": "steps",
+  "r": "roof",
+  "h": "wall",
+  "d": "door",
+  "L": "stall",
+  "x": "crate",
+  "w": "well",
+  ":": "path",
+  "T": "tree",
+  "e": "exit"
+ },
+ "rows": [
+  "KKKKKKKKKKKKKKKKKKKKKKKKKK",
+  "KccccccccccccccccccccccccK",
+  "KcmmmmmmmmmmmmmmmmmmmmmmcK",
+  "KcaaaaaaaaaaaaaaaaaaSSaacK",
+  "KcmmmmmmmmmmmmmmmmmmmmmmcK",
+  "KcaaaSSaaaaaaaaaaaaaaaaacK",
+  "Kc,,,,,,,,,,,,,,,,,,,,,,cK",
+  "Kc,rrrr,,,,LLx,,rrrr,,,,cK",
+  "Kc,hhdh,,,,,,,,,hdhh,,,,cK",
+  "Kc,,::::::::::::::::::,,cK",
+  "Kc,,,,,,,,w,::,,,,,,,,,,cK",
+  "KcTT,,,,,,,,::,,,,,,,,TTcK",
+  "KcTT,,,,,,,,::,,,,,,,,TTcK",
+  "KKKKKKKKKKKKeeKKKKKKKKKKKK"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  }
+ ]
+}

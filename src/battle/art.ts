@@ -4,7 +4,8 @@
 import { BAYER4, dither, hash2, makeCanvas, px } from "../art/pixel";
 import { EVEN, type Build } from "../art/build";
 import { BODY_SHAPE, bodyOf } from "../art/bodies";
-import { saturate } from "../art/people";
+import { LOOKS, saturate } from "../art/people";
+import { keepsake } from "../gear/weapons";
 import { RECRUITS } from "../cast/recruits";
 import { drawPainted, hasPaintedFig } from "./painted";
 
@@ -36,6 +37,10 @@ const SCENERY: Record<string, Scenery> = {
   marsh: { sky: ["#7a8a8a", "#8e9c9a", "#a4b0aa", "#bac4bc", "#ccd4cc"], stars: false, orb: null, far: ["#6a7a70", "#5a6a62"], near: ["#4c5a3a", "#404e32"], ground: ["#4c5a3a", "#5a6a44", "#6a7a50", "#768656"], track: ["#3f6a7a", "#4a7686"], rock: ["#5a5a4a", "#2a2a22", "#7a7a68"], tuft: ["#a69a5a", "#c2b46e"], trees: "reeds", tree: "#6a5a3a", haze: "rgba(220,228,220,.18)" },
   road: { sky: ["#c86a4a", "#d8845a", "#e2a070", "#eab88a", "#f0cca2"], stars: false, orb: [64, 40, "#ffe0a0", "#f2b070"], far: ["#7a5a6a", "#6a4a5a"], near: ["#5a4a3a", "#4a3c30"], ground: ["#6a7a46", "#768652", "#82925c", "#8c9c66"], track: ["#a8906a", "#b8a07a"], rock: ["#8a7a6a", "#3a3028", "#a89888"], tuft: ["#5a6a3a", "#76864c"], trees: "leafy", tree: "#2a2a22" },
   yard: { sky: ["#3a3a42", "#4a4a52", "#5a5a62", "#6a6a70", "#7a7a80"], stars: false, orb: null, far: ["#4a3a36", "#3a2c28"], near: ["#5a2a22", "#4a221c"], ground: ["#5f5d58", "#6f6d68", "#7f7d78", "#878580"], track: ["#545250", "#5e5c5a"], rock: ["#6e342a", "#2a1712", "#82402f"], tuft: ["#4a4a44", "#5a5a54"], trees: "none", tree: "#222", haze: "rgba(200,200,205,.16)" },
+  // the slide on the Thornwick road: grey scree and split boulders under a cold autumn sky
+  scree: { sky: ["#7f98b0", "#98aec2", "#b2c2d0", "#ccd6de", "#e2e8ec"], stars: false, orb: [196, 20, "#fffaf0", "#e6ecf0"], far: ["#8e98a6", "#7c8694"], near: ["#6a6e70", "#5a5e60"], ground: ["#7a7a76", "#888884", "#96968f", "#a4a49c"], track: ["#6e6a62", "#7a766e"], rock: ["#8a8a86", "#3a3a38", "#acaca6"], tuft: ["#6a7a4a", "#8a9a5a"], trees: "pines", tree: "#2a4032" },
+  // under Thornwick: wet stone, lamplight and steam off the running channel
+  cistern: { sky: ["#0c0d10", "#14161a", "#1c1f24", "#262a30", "#30353c"], stars: false, orb: null, far: ["#2a2e34", "#22262c"], near: ["#3a3e44", "#2e3238"], ground: ["#3a3c3e", "#44474a", "#4e5256", "#585c60"], track: ["#2e4a56", "#3a5a68"], rock: ["#5a5e62", "#1a1c1e", "#767a7e"], tuft: ["#3e5a4a", "#4e6a58"], trees: "none", tree: "#111", haze: "rgba(230,236,240,.16)" },
   fire: { sky: ["#2a0c06", "#4a160a", "#6a2210", "#8a3a18", "#b05a22"], stars: false, orb: null, far: ["#3a1a12", "#2a120c"], near: ["#4a221c", "#3a1a14"], ground: ["#3a2a24", "#4a3830", "#5a463c", "#6a5448"], track: ["#5a4a40", "#6a5a50"], rock: ["#6e342a", "#1a0c08", "#a85a2a"], tuft: ["#e8823a", "#f2c45a"], trees: "none", tree: "#120806", haze: "rgba(255,140,60,.14)" },
 };
 /** The pixel-art stage behind a fight. The id names the scenery; the trail fight keeps its night. */
@@ -69,7 +74,7 @@ export function backdrop(id: string): HTMLCanvasElement {
 }
 
 // ---------------- HD figures ----------------
-interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
+interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap" | "short"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
   rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#8e7a5c", coatS: "#6e5c44", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8262a", weapon: "staff", lash: true },
   tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#5a6a2e", coatS: "#444f22", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
@@ -91,9 +96,16 @@ const COLOURS: (keyof CastLook)[] = ["hair", "hairL", "coat", "coatS", "pants", 
 const toned: Record<string, CastLook> = {};
 function lookFor(id: string): CastLook {
   if (toned[id]) return toned[id];
-  const c = { ...CAST[id] } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
+  const c = { ...(CAST[id] ?? fromMapLook(id)) } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
   for (const k of COLOURS) if (typeof c[k] === "string") c[k] = saturate(c[k] as string, amt);
   return (toned[id] = c as unknown as CastLook);
+}
+const WEAPON_DRAWN: Record<string, CastLook["weapon"]> = { spear: "spear", lance: "spear", staff: "staff", cane: "staff", bow: "bow", sling: "dart", knife: "dart", twin: "dart", hook: "dart", rope: "dart" };
+/** Anyone without a battle look of their own is dressed from their map sprite, which matches their portrait. */
+function fromMapLook(id: string): CastLook {
+  const m = LOOKS[id] ?? LOOKS.vil1 ?? Object.values(LOOKS)[0];
+  const style = (m.style === "short" || !m.style ? "short" : m.style) as CastLook["style"];
+  return { skin: m.skin, skinS: m.skinShade, hair: m.hair, hairL: m.hairLight, coat: m.coat, coatS: m.coatShade, pants: m.legs, boot: m.boots, eye: "#5a4a3a", style, scarf: m.accent, beard: m.beardStyle === "full" ? m.beard : undefined, cap: m.cap, weapon: WEAPON_DRAWN[keepsake(id)?.type ?? ""] ?? "none" };
 }
 /** A look can carry a coat colour after a colon ("reedcat:#8a8a80"): the kind, and the coat. */
 export const lookKind = (look: string): string => look.split(":")[0];

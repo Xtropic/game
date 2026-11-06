@@ -1,0 +1,6508 @@
+{
+ "id": "act2",
+ "title": "Act II: The Field",
+ "voiced": [
+  "cisternDone",
+  "kaneThornwick",
+  "kaneCrates",
+  "oakesTalk",
+  "verdict",
+  "bridge",
+  "tobinClean",
+  "promotion",
+  "posyMorning",
+  "halloranBell",
+  "childGate",
+  "umeMeet",
+  "finchPass",
+  "halloranPromote"
+ ],
+ "moods": {
+  "scenes": {
+   "act2Start": "road",
+   "frost": "grief",
+   "kaneThornwick": "camp",
+   "thornArrive": "hope",
+   "bathSong": "tender",
+   "bathFight": "tension",
+   "workChoice": "camp",
+   "dorrit": "camp",
+   "heskComes": "tender",
+   "evenings": "night",
+   "halloranPromote": "dread",
+   "lisleEvenings": "night",
+   "letter": "grief",
+   "mossOut": "camp",
+   "umesArrive": "hope",
+   "umeMeet": "tender",
+   "tobinHome": "hope",
+   "tobinFirst": "tender",
+   "birthday": "night",
+   "finchPass": "tender",
+   "birthdayBroken": "grief",
+   "carter": "tension",
+   "kaneCrates": "dread",
+   "raidHome": "tension",
+   "oakesTalk": "dread",
+   "lyleTalk": "dread",
+   "verdict": "grief",
+   "springRider": "hope",
+   "rider": "tension",
+   "bridge": "grief",
+   "bridgeHome": "tender",
+   "hiding": "night",
+   "lisleHiding": "dread",
+   "smuggler": "dread",
+   "finchLie": "grief",
+   "tobinClean": "hope",
+   "summer": "hope",
+   "promotion": "camp",
+   "bell": "night",
+   "bellTin": "dread",
+   "bellMorning": "grief",
+   "posyMorning": "grief",
+   "halloranBell": "dread",
+   "childGate": "grief",
+   "bucks": "tension",
+   "bathDone": "hope",
+   "thornGate": "camp",
+   "underDown": "dread",
+   "kits": "tension",
+   "sluiceOpen": "tension",
+   "cisternBoss": "fire",
+   "cisternDone": "hope",
+   "kitsFight": "tension",
+   "kitsSong": "tender",
+   "carving": "dread",
+   "valveHigh": "dread",
+   "valveLow": "dread",
+   "valveSing": "dread",
+   "sluiceWrong": "tension",
+   "underUp": "dread",
+   "factor": "tension",
+   "tobinVisit": "tender",
+   "finchBirthday": "tender",
+   "passClimb": "hope",
+   "backToRhea2": "tension",
+   "varroBridge": "tension",
+   "bellOut": "fire",
+   "bellChild1": "fire",
+   "bellChild2": "fire",
+   "bellChild3": "fire",
+   "bellSteamFail": "fire"
+  },
+  "stages": {
+   "ab3": "tension",
+   "ab3c": "dread",
+   "ab3e": "tension",
+   "ab6": "tender",
+   "ab9": "road",
+   "ab13": "tension",
+   "ab16": "dread",
+   "ab17": "dread",
+   "ab20": "tension",
+   "ac6": "tender",
+   "ac8": "dread",
+   "ac10": "dread",
+   "ac11": "fire",
+   "ac12": "grief",
+   "ac13": "grief",
+   "ab26": "grief"
+  }
+ },
+ "cast": {
+  "oakes": "Sergeant Oakes",
+  "lyle": "Lyle",
+  "dorrit": "Dorrit",
+  "hesk": "Hesk Marrow",
+  "ume": "Grandmother Ume",
+  "tobin": "Tobin",
+  "factor": "The Guild factor",
+  "carter": "The carter",
+  "smuggler": "The man with the tins",
+  "child": "A girl at the gate",
+  "posy": "Posy",
+  "rider": "Kane's rider",
+  "warden2": "Warden"
+ },
+ "objectives": {
+  "ab1": "Kane will want to hear about Oda's trays. He's in his tent at the top of the camp.",
+  "ab2": "Take the section up to Thornwick, the ruined monastery on the Cloudline: up the mountain road, then east of Larkfold.",
+  "ab3": "Wild loftbucks have taken the old bathhouse in the north-west corner. Get them out: sing (Q), or drive them out.",
+  "ab3c": "The spring is only a trickle. Take the stair behind the altar stone in the chapel, and find what's blocking the monks' channel.",
+  "ab3e": "The water's running. Something is screaming in the cistern behind the grate, at the east end of the passage.",
+  "ab4": "Brannoc wants a word about the work before the snow. He's by the fire.",
+  "ab5": "Dorrit's supply cart has come up from the camp. She's at the gate.",
+  "ab6": "Evening. Ash is restless in the new pen on the east side. Go and sing to him (Q).",
+  "ab7": "Turn in. Your tent is the one in the south-west corner.",
+  "ab8": "The first snow. Oda is at the cellar door by the spring. She's sent for you.",
+  "ab9": "Go to Ume's terraces, west of Larkfold on the Cloudline, and ask the clan for moss.",
+  "ab10": "Bring Tobin home to Thornwick.",
+  "ab11": "Take Tobin to Oda at the cellar door. She has his first greenling ready.",
+  "ab12": "Turn in at your tent.",
+  "ab13": "Midwinter. Kane's supply cart is stuck on the ice at the gate.",
+  "ab14": "Go down to the Commons camp and ask Kane about the crates.",
+  "ab15": "Go back up to Thornwick before the snow shuts the road.",
+  "ab16": "The two prisoners are tied in the chapel ruin. Talk to them.",
+  "ab17": "The section is at the fire. They're waiting for you to decide.",
+  "ab18": "Turn in.",
+  "ab19": "Spring. A rider from Kane is at the gate.",
+  "ab20": "Kell's Bridge. Varro is on this bank. The Guild's officer is waiting in the middle of the bridge.",
+  "ab21": "Home to Thornwick. Turn in when you're ready.",
+  "ab22": "Late spring. Tobin is at the gate with his pack, and Ume has come down to see him go.",
+  "ab23": "Turn in.",
+  "ab24": "Summer. Kane has come up to Thornwick. He's in the chapel with Brannoc.",
+  "ab25": "Turn in, Lieutenant.",
+  "ab26": "A girl has walked up to the gate on her own. Go and see to her.",
+  "ac1": "Captain Halloran has sent for you. He's in the yard.",
+  "ac2": "Dr Lisle wants to see the burns before your watch.",
+  "ac3": "Evening. Your rooms. The letter is still on the table.",
+  "ac5": "Finch's birthday. You promised him something. He's by the door.",
+  "ac6": "The high pass. Finch has gone up toward the wild loftbucks.",
+  "ac7": "Dr Lisle's surgery.",
+  "ac8": "A back room on the Spindle canal. The man with the tins is waiting.",
+  "ac9": "Home. Finch has waited up.",
+  "ac10": "Night watch at House Mire's hatchery. The tin is in your pocket.",
+  "ac11": "The pressure bell. Get the children out of the brood room, then get to the door.",
+  "ac12": "Morning. Walk the brood rooms.",
+  "ac13": "Captain Halloran has come down to the brood rooms."
+ },
+ "actors": [
+  {
+   "id": "oda-frost",
+   "map": "camp",
+   "x": 12,
+   "y": 11,
+   "look": "oda",
+   "when": {
+    "stage": [
+     "ab1"
+    ]
+   },
+   "talk": [
+    {
+     "say": "oda",
+     "text": "\"Ask your Marshal, child. The trays won't wait.\""
+    }
+   ]
+  },
+  {
+   "id": "buck1",
+   "map": "thornwick",
+   "x": 5,
+   "y": 4,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "ab3"
+    ]
+   },
+   "talk": [
+    {
+     "run": "bucks"
+    }
+   ]
+  },
+  {
+   "id": "buck2",
+   "map": "thornwick",
+   "x": 7,
+   "y": 5,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "ab3"
+    ]
+   },
+   "talk": [
+    {
+     "run": "bucks"
+    }
+   ]
+  },
+  {
+   "id": "burr",
+   "map": "thornwick",
+   "x": 6,
+   "y": 4,
+   "look": "foal",
+   "when": {
+    "stagePrefix": "ab",
+    "eq": {
+     "bathhouse": "sung"
+    }
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "Burr, the wild yearling, asleep in the warm bathhouse with its legs folded under it. It opens one eye at you."
+    }
+   ]
+  },
+  {
+   "id": "kit1",
+   "map": "undercroft",
+   "x": 10,
+   "y": 6,
+   "look": "reedcat",
+   "when": {
+    "stage": "ab3c",
+    "not": "kits"
+   },
+   "talk": [
+    {
+     "run": "kits"
+    }
+   ]
+  },
+  {
+   "id": "kit2",
+   "map": "undercroft",
+   "x": 11,
+   "y": 7,
+   "look": "reedcat",
+   "when": {
+    "stage": "ab3c",
+    "not": "kits"
+   },
+   "talk": [
+    {
+     "run": "kits"
+    }
+   ]
+  },
+  {
+   "id": "carving",
+   "map": "undercroft",
+   "x": 13,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c",
+     "ab3e"
+    ]
+   },
+   "talk": [
+    {
+     "run": "carving"
+    }
+   ]
+  },
+  {
+   "id": "valve-sing",
+   "map": "undercroft",
+   "x": 15,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "run": "valveSing"
+    }
+   ]
+  },
+  {
+   "id": "valve-high",
+   "map": "undercroft",
+   "x": 17,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "run": "valveHigh"
+    }
+   ]
+  },
+  {
+   "id": "valve-low",
+   "map": "undercroft",
+   "x": 19,
+   "y": 2,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "run": "valveLow"
+    }
+   ]
+  },
+  {
+   "id": "grate",
+   "map": "undercroft",
+   "x": 21,
+   "y": 6,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab3c"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An iron grate, rusted into the wall. Beyond it, black water and the smell of a den."
+    }
+   ]
+  },
+  {
+   "id": "old-mother",
+   "map": "undercroft",
+   "x": 23,
+   "y": 5,
+   "look": "reedcat",
+   "when": {
+    "stage": [
+     "ab3e"
+    ]
+   },
+   "talk": [
+    {
+     "run": "cisternBoss"
+    }
+   ]
+  },
+  {
+   "id": "brannoc-tw",
+   "map": "thornwick",
+   "x": 9,
+   "y": 12,
+   "look": "brannoc",
+   "when": {
+    "stage": [
+     "ab3",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18"
+    ],
+    "flag": "party.brannoc"
+   },
+   "talk": [
+    {
+     "if": {
+      "stage": "ab4"
+     },
+     "then": [
+      {
+       "run": "workChoice"
+      }
+     ],
+     "else": [
+      {
+       "say": "brannoc",
+       "text": "\"Eat something, Sergeant.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tamsin-tw",
+   "map": "thornwick",
+   "x": 11,
+   "y": 12,
+   "look": "tamsin",
+   "when": {
+    "stage": [
+     "ab3",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ]
+   },
+   "talk": [
+    {
+     "if": {
+      "stage": "ab17"
+     },
+     "then": [
+      {
+       "run": "verdict"
+      }
+     ],
+     "else": [
+      {
+       "if": {
+        "flag": "kaneTold"
+       },
+       "then": [
+        {
+         "say": "tamsin",
+         "text": "\"Kane's crates. I keep thinking about my mother's rings. Somebody sold her every one of those lulls, Rhea.\""
+        }
+       ],
+       "else": [
+        {
+         "say": "tamsin",
+         "text": "\"It's a ruin. But it's warm. I'll give you that.\""
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "oda-tw",
+   "map": "thornwick",
+   "x": 17,
+   "y": 8,
+   "look": "oda",
+   "when": {
+    "stage": [
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ]
+   },
+   "talk": [
+    {
+     "run": "mossOut"
+    }
+   ]
+  },
+  {
+   "id": "ferris-tw",
+   "map": "thornwick",
+   "x": 22,
+   "y": 14,
+   "look": "ferris",
+   "when": {
+    "stage": [
+     "ab3",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": "recruited.ferris"
+   },
+   "talk": [
+    {
+     "say": "ferris",
+     "text": "\"Thistle likes it here. She's caught every rat in the chapel. There were a lot of rats in the chapel.\""
+    }
+   ]
+  },
+  {
+   "id": "ketti-tw",
+   "map": "thornwick",
+   "x": 7,
+   "y": 14,
+   "look": "ketti",
+   "when": {
+    "stage": [
+     "ab3",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": "recruited.ketti"
+   },
+   "talk": [
+    {
+     "say": "ketti",
+     "text": "\"The little ones like the warm pool. I make them wash in it. They hate that.\""
+    }
+   ]
+  },
+  {
+   "id": "sela-tw",
+   "map": "thornwick",
+   "x": 4,
+   "y": 11,
+   "look": "sela",
+   "when": {
+    "stage": [
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": [
+     "recruited.sela",
+     "recruited.dorrit"
+    ]
+   },
+   "talk": [
+    {
+     "say": "sela",
+     "text": "\"Dorrit's letting me keep the stores ledger. I counted trays at the sorting house. It's the same, but nobody shouts.\""
+    }
+   ]
+  },
+  {
+   "id": "oren-tw",
+   "map": "thornwick",
+   "x": 18,
+   "y": 14,
+   "look": "oren",
+   "when": {
+    "stage": [
+     "ab3",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": "recruited.oren"
+   },
+   "talk": [
+    {
+     "say": "oren",
+     "text": "\"Anna would have liked this place. She liked anywhere with a view and a kettle.\""
+    }
+   ]
+  },
+  {
+   "id": "dorrit",
+   "map": "thornwick",
+   "x": 12,
+   "y": 14,
+   "look": "dorrit",
+   "when": {
+    "stage": [
+     "ab5"
+    ]
+   },
+   "talk": [
+    {
+     "run": "dorrit"
+    }
+   ]
+  },
+  {
+   "id": "dorrit-tw",
+   "map": "thornwick",
+   "x": 6,
+   "y": 11,
+   "look": "dorrit",
+   "when": {
+    "stage": [
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": "recruited.dorrit"
+   },
+   "talk": [
+    {
+     "if": {
+      "flag": "kaneTold"
+     },
+     "then": [
+      {
+       "say": "dorrit",
+       "text": "\"I tie that knot on everything that leaves the camp. I never once asked what was under the moss. I'm asking now.\""
+      }
+     ],
+     "else": [
+      {
+       "say": "dorrit",
+       "text": "\"Flour, eighty-one measures. Lamp oil, eleven. Nails, not enough. Never enough nails.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ash-pen",
+   "map": "thornwick",
+   "x": 21,
+   "y": 9,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "ab6"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "Ash paces the new fence, turning at each corner. He doesn't like a pen he hasn't slept in yet."
+    }
+   ]
+  },
+  {
+   "id": "hesk-tw",
+   "map": "thornwick",
+   "x": 22,
+   "y": 10,
+   "look": "hesk",
+   "when": {
+    "stage": [
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": "recruited.hesk"
+   },
+   "talk": [
+    {
+     "if": {
+      "eq": {
+       "bathhouse": "sung"
+      }
+     },
+     "then": [
+      {
+       "say": "hesk",
+       "text": "\"Your Burr's a good one. Wild-born, and she'll take a halter from you already. I'd breed from her one day, if I live that long.\""
+      }
+     ],
+     "else": [
+      {
+       "say": "hesk",
+       "text": "\"Pens are mended. Feed's in. Nobody touches my kith without asking me first, Caddow. That includes you.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tobin-tw",
+   "map": "thornwick",
+   "x": 9,
+   "y": 10,
+   "look": "tobin",
+   "when": {
+    "stage": [
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21"
+    ]
+   },
+   "talk": [
+    {
+     "run": "tobinVisit"
+    }
+   ]
+  },
+  {
+   "id": "carter",
+   "map": "thornwick",
+   "x": 15,
+   "y": 14,
+   "look": "carter",
+   "when": {
+    "stage": [
+     "ab13"
+    ]
+   },
+   "talk": [
+    {
+     "run": "carter"
+    }
+   ]
+  },
+  {
+   "id": "crate",
+   "map": "thornwick",
+   "x": 12,
+   "y": 13,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ab13"
+    ]
+   },
+   "talk": [
+    {
+     "run": "carter"
+    }
+   ]
+  },
+  {
+   "id": "oakes-pr",
+   "map": "thornwick",
+   "x": 13,
+   "y": 3,
+   "look": "oakes",
+   "when": {
+    "stage": [
+     "ab16",
+     "ab17"
+    ]
+   },
+   "talk": [
+    {
+     "run": "oakesTalk"
+    }
+   ]
+  },
+  {
+   "id": "lyle-pr",
+   "map": "thornwick",
+   "x": 15,
+   "y": 3,
+   "look": "lyle",
+   "when": {
+    "stage": [
+     "ab16",
+     "ab17"
+    ]
+   },
+   "talk": [
+    {
+     "run": "lyleTalk"
+    }
+   ]
+  },
+  {
+   "id": "oakes-tw",
+   "map": "thornwick",
+   "x": 20,
+   "y": 13,
+   "look": "oakes",
+   "when": {
+    "stage": [
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "flag": "recruited.oakes",
+    "not": "party.oakes"
+   },
+   "talk": [
+    {
+     "say": "oakes",
+     "text": "\"I can carry a pack, dig a ditch and hold a gate, Lieutenant. I can't sing. I'm told that's important round here.\""
+    }
+   ]
+  },
+  {
+   "id": "rider",
+   "map": "thornwick",
+   "x": 14,
+   "y": 13,
+   "look": "rider",
+   "when": {
+    "stage": [
+     "ab19"
+    ]
+   },
+   "talk": [
+    {
+     "run": "rider"
+    }
+   ]
+  },
+  {
+   "id": "tobin-gate",
+   "map": "thornwick",
+   "x": 13,
+   "y": 13,
+   "look": "tobin",
+   "when": {
+    "stage": [
+     "ab22"
+    ]
+   },
+   "talk": [
+    {
+     "run": "tobinClean"
+    }
+   ]
+  },
+  {
+   "id": "ume-gate",
+   "map": "thornwick",
+   "x": 15,
+   "y": 13,
+   "look": "ume",
+   "when": {
+    "stage": [
+     "ab22"
+    ]
+   },
+   "talk": [
+    {
+     "run": "tobinClean"
+    }
+   ]
+  },
+  {
+   "id": "kane-tw",
+   "map": "thornwick",
+   "x": 14,
+   "y": 3,
+   "look": "kane",
+   "when": {
+    "stage": [
+     "ab24"
+    ]
+   },
+   "talk": [
+    {
+     "run": "promotion"
+    }
+   ]
+  },
+  {
+   "id": "brannoc-ch",
+   "map": "thornwick",
+   "x": 12,
+   "y": 4,
+   "look": "brannoc",
+   "when": {
+    "stage": [
+     "ab24"
+    ]
+   },
+   "talk": [
+    {
+     "say": "brannoc",
+     "text": "\"Go on. He's going to say something nice. Try to look surprised.\""
+    }
+   ]
+  },
+  {
+   "id": "varro-tw",
+   "map": "thornwick",
+   "x": 16,
+   "y": 3,
+   "look": "varro",
+   "when": {
+    "stage": [
+     "ab24"
+    ]
+   },
+   "talk": [
+    {
+     "say": "varro",
+     "text": "\"Kane brought me up to see what you've done with his ruin. I'm impressed. Don't tell him I said so.\""
+    }
+   ]
+  },
+  {
+   "id": "weaner1",
+   "map": "thornwick",
+   "x": 16,
+   "y": 10,
+   "look": "vil2",
+   "when": {
+    "stage": [
+     "ab24",
+     "ab25",
+     "ab26"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A weaver from Millbridge, on her second greenling. She waves at you with both hands, to show you they don't shake."
+    }
+   ]
+  },
+  {
+   "id": "weaner2",
+   "map": "thornwick",
+   "x": 9,
+   "y": 9,
+   "look": "vil4",
+   "when": {
+    "stage": [
+     "ab24",
+     "ab25",
+     "ab26"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A miner from Coldharrow. He says Tobin sent him."
+    }
+   ]
+  },
+  {
+   "id": "child-gate",
+   "map": "thornwick",
+   "x": 13,
+   "y": 13,
+   "look": "child",
+   "when": {
+    "stage": [
+     "ab26"
+    ]
+   },
+   "talk": [
+    {
+     "run": "childGate"
+    }
+   ]
+  },
+  {
+   "id": "ume",
+   "map": "umes",
+   "x": 6,
+   "y": 9,
+   "look": "ume",
+   "when": {
+    "flag": "act2"
+   },
+   "talk": [
+    {
+     "run": "umeMeet"
+    }
+   ]
+  },
+  {
+   "id": "tobin-umes",
+   "map": "umes",
+   "x": 4,
+   "y": 9,
+   "look": "tobin",
+   "when": {
+    "stage": [
+     "ab9"
+    ]
+   },
+   "talk": [
+    {
+     "say": "tobin",
+     "text": "\"Ma says you're the Caddow girl. I'm not good company. Don't take it personally.\""
+    }
+   ]
+  },
+  {
+   "id": "factor",
+   "map": "umes",
+   "x": 12,
+   "y": 8,
+   "look": "factor",
+   "when": {
+    "flag": "act2"
+   },
+   "talk": [
+    {
+     "run": "factor"
+    }
+   ]
+  },
+  {
+   "id": "clan1",
+   "map": "umes",
+   "x": 18,
+   "y": 10,
+   "look": "vil5",
+   "when": {
+    "flag": "act2"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A clan woman with a basket of straw for the moss rows. She nods to you, and goes on spreading it."
+    }
+   ]
+  },
+  {
+   "id": "corran-bridge",
+   "map": "kellsbridge",
+   "x": 12,
+   "y": 6,
+   "look": "corran",
+   "when": {
+    "stage": [
+     "ab20"
+    ]
+   },
+   "talk": [
+    {
+     "run": "bridge"
+    }
+   ]
+  },
+  {
+   "id": "varro-bridge",
+   "map": "kellsbridge",
+   "x": 10,
+   "y": 10,
+   "look": "varro",
+   "when": {
+    "stage": [
+     "ab20",
+     "ab21"
+    ]
+   },
+   "talk": [
+    {
+     "run": "varroBridge"
+    }
+   ]
+  },
+  {
+   "id": "oakes-bridge",
+   "map": "kellsbridge",
+   "x": 11,
+   "y": 9,
+   "look": "oakes",
+   "when": {
+    "stage": "ab20",
+    "eq": {
+     "wardens": "spared"
+    }
+   },
+   "talk": [
+    {
+     "say": "oakes",
+     "text": "\"Go on, Caddow. Get it over with.\""
+    }
+   ]
+  },
+  {
+   "id": "lyle-bridge",
+   "map": "kellsbridge",
+   "x": 14,
+   "y": 9,
+   "look": "lyle",
+   "when": {
+    "stage": "ab20",
+    "eq": {
+     "wardens": "spared"
+    }
+   },
+   "talk": [
+    {
+     "say": "lyle",
+     "text": "\"Is that him? The lieutenant? They say he lived up in the highlands once. With the smugglers.\""
+    }
+   ]
+  },
+  {
+   "id": "warden-n1",
+   "map": "kellsbridge",
+   "x": 11,
+   "y": 2,
+   "look": "warden2",
+   "when": {
+    "stage": [
+     "ab20"
+    ]
+   },
+   "talk": [
+    {
+     "say": "warden2",
+     "text": "\"Truce flag, Commons. Stay your side.\""
+    }
+   ]
+  },
+  {
+   "id": "warden-n2",
+   "map": "kellsbridge",
+   "x": 14,
+   "y": 2,
+   "look": "warden",
+   "when": {
+    "stage": [
+     "ab20"
+    ]
+   },
+   "talk": [
+    {
+     "say": "warden",
+     "text": "\"Truce flag, Commons. Stay your side.\""
+    }
+   ]
+  },
+  {
+   "id": "halloran-ac",
+   "map": "yard",
+   "x": 12,
+   "y": 5,
+   "look": "halloran",
+   "when": {
+    "stage": [
+     "ac1"
+    ]
+   },
+   "talk": [
+    {
+     "run": "halloranPromote"
+    }
+   ]
+  },
+  {
+   "id": "lisle-ac",
+   "map": "surgery",
+   "x": 3,
+   "y": 2,
+   "look": "lisle",
+   "when": {
+    "stage": [
+     "ac2",
+     "ac7"
+    ]
+   },
+   "talk": [
+    {
+     "if": {
+      "stage": "ac2"
+     },
+     "then": [
+      {
+       "run": "lisleEvenings"
+      }
+     ],
+     "else": [
+      {
+       "run": "lisleHiding"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "finch-ac3",
+   "map": "rooms",
+   "x": 9,
+   "y": 3,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "ac3"
+    ]
+   },
+   "talk": [
+    {
+     "run": "letter"
+    }
+   ]
+  },
+  {
+   "id": "finch-ac5",
+   "map": "rooms",
+   "x": 9,
+   "y": 3,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "ac5"
+    ]
+   },
+   "talk": [
+    {
+     "run": "finchBirthday"
+    }
+   ]
+  },
+  {
+   "id": "finch-ac6",
+   "map": "highpass",
+   "x": 16,
+   "y": 4,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "ac6"
+    ]
+   },
+   "talk": [
+    {
+     "run": "finchPass"
+    }
+   ]
+  },
+  {
+   "id": "lb1",
+   "map": "highpass",
+   "x": 4,
+   "y": 6,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "ac6"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A wild loftbuck, cropping the grass through the snow. It watches Finch, not you."
+    }
+   ]
+  },
+  {
+   "id": "lb2",
+   "map": "highpass",
+   "x": 6,
+   "y": 7,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "ac6"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A wild loftbuck, cropping the grass through the snow."
+    }
+   ]
+  },
+  {
+   "id": "lb3",
+   "map": "highpass",
+   "x": 17,
+   "y": 8,
+   "look": "foal",
+   "when": {
+    "stage": [
+     "ac6"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A young one, bucking at nothing in the cold."
+    }
+   ]
+  },
+  {
+   "id": "smuggler",
+   "map": "backroom",
+   "x": 6,
+   "y": 2,
+   "look": "smuggler",
+   "when": {
+    "stage": [
+     "ac8"
+    ]
+   },
+   "talk": [
+    {
+     "run": "smuggler"
+    }
+   ]
+  },
+  {
+   "id": "finch-ac9",
+   "map": "rooms",
+   "x": 9,
+   "y": 3,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "ac9"
+    ]
+   },
+   "talk": [
+    {
+     "run": "finchLie"
+    }
+   ]
+  },
+  {
+   "id": "finch-ac10",
+   "map": "rooms",
+   "x": 9,
+   "y": 3,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "ac10"
+    ]
+   },
+   "talk": [
+    {
+     "say": "finch",
+     "text": "\"You've got the watch tonight. Mire. The north boiler's been knocking all week.\""
+    }
+   ]
+  },
+  {
+   "id": "child1",
+   "map": "hatchery",
+   "x": 3,
+   "y": 3,
+   "look": "kid",
+   "when": {
+    "stage": "ac11",
+    "not": "bell.c1"
+   },
+   "talk": [
+    {
+     "run": "bellChild1"
+    }
+   ]
+  },
+  {
+   "id": "child2",
+   "map": "hatchery",
+   "x": 8,
+   "y": 5,
+   "look": "kid2",
+   "when": {
+    "stage": "ac11",
+    "not": "bell.c2"
+   },
+   "talk": [
+    {
+     "run": "bellChild2"
+    }
+   ]
+  },
+  {
+   "id": "child3",
+   "map": "hatchery",
+   "x": 13,
+   "y": 7,
+   "look": "kid3",
+   "when": {
+    "stage": "ac11",
+    "not": "bell.c3"
+   },
+   "talk": [
+    {
+     "run": "bellChild3"
+    }
+   ]
+  },
+  {
+   "id": "posy",
+   "map": "hatchery",
+   "x": 12,
+   "y": 5,
+   "look": "posy",
+   "when": {
+    "stage": [
+     "ac12",
+     "ac13"
+    ]
+   },
+   "talk": [
+    {
+     "run": "posyMorning"
+    }
+   ]
+  },
+  {
+   "id": "halloran-bell",
+   "map": "hatchery",
+   "x": 9,
+   "y": 7,
+   "look": "halloran",
+   "when": {
+    "stage": [
+     "ac13"
+    ]
+   },
+   "talk": [
+    {
+     "run": "halloranBell"
+    }
+   ]
+  }
+ ],
+ "steps": [
+  {
+   "map": "land-cloudline",
+   "at": [
+    32,
+    29
+   ],
+   "do": [
+    {
+     "run": "thornArrive"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab2"
+    ]
+   }
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    32,
+    29
+   ],
+   "do": [
+    {
+     "run": "raidHome"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab15"
+    ]
+   }
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    32,
+    29
+   ],
+   "do": [
+    {
+     "run": "tobinHome"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab10"
+    ]
+   }
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    32,
+    29
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "thornwick",
+      "x": 13,
+      "y": 13,
+      "facing": "up"
+     }
+    },
+    {
+     "alone": true
+    }
+   ],
+   "when": {
+    "flag": "thornwick"
+   }
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    32,
+    29
+   ],
+   "do": [
+    {
+     "toast": "Thornwick. The spring is still steaming. Ask Kane first."
+    }
+   ],
+   "when": {
+    "flag": "act2"
+   }
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    10,
+    21
+   ],
+   "do": [
+    {
+     "run": "umesArrive"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab9"
+    ]
+   }
+  },
+  {
+   "map": "land-cloudline",
+   "at": [
+    10,
+    21
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "umes",
+      "x": 12,
+      "y": 12,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "flag": "umeMet"
+   }
+  },
+  {
+   "map": "umes",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 10,
+      "y": 22,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "umes",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 10,
+      "y": 22,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    13,
+    15
+   ],
+   "do": [
+    {
+     "toast": "Not now."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab16",
+     "ab17",
+     "ab20",
+     "ab22",
+     "ab24",
+     "ab26"
+    ]
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    15
+   ],
+   "do": [
+    {
+     "toast": "Not now."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab16",
+     "ab17",
+     "ab20",
+     "ab22",
+     "ab24",
+     "ab26"
+    ]
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    13,
+    15
+   ],
+   "do": [
+    {
+     "regroup": true
+    },
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 32,
+      "y": 30,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    15
+   ],
+   "do": [
+    {
+     "regroup": true
+    },
+    {
+     "goto": {
+      "map": "land-cloudline",
+      "x": 32,
+      "y": 30,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "kellsbridge",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "toast": "Not until the exchange is done."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab20"
+    ]
+   }
+  },
+  {
+   "map": "kellsbridge",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "toast": "Not until the exchange is done."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab20"
+    ]
+   }
+  },
+  {
+   "map": "kellsbridge",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "run": "bridgeHome"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab21"
+    ]
+   }
+  },
+  {
+   "map": "kellsbridge",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "run": "bridgeHome"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab21"
+    ]
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    3
+   ],
+   "do": [
+    {
+     "run": "underDown"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ab3c",
+     "ab3e"
+    ]
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    3
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The stair down to the monks' channel. You can hear the water running from here."
+    }
+   ],
+   "when": {
+    "flag": "thornwickClaimed"
+   }
+  },
+  {
+   "map": "undercroft",
+   "at": [
+    2,
+    1
+   ],
+   "do": [
+    {
+     "run": "underUp"
+    }
+   ]
+  },
+  {
+   "map": "undercroft",
+   "at": [
+    3,
+    1
+   ],
+   "do": [
+    {
+     "run": "underUp"
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    16,
+    8
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "Steps down into the warm dark, and Oda's trays on stone shelves over the running water. It smells like home."
+    }
+   ],
+   "when": {
+    "flag": "act2"
+   }
+  },
+  {
+   "map": "surgery",
+   "at": [
+    4,
+    5
+   ],
+   "do": [
+    {
+     "toast": "Not yet."
+    }
+   ],
+   "when": {
+    "stagePrefix": "ac"
+   }
+  },
+  {
+   "map": "yard",
+   "at": [
+    5,
+    8
+   ],
+   "do": [
+    {
+     "toast": "Not yet."
+    }
+   ],
+   "when": {
+    "stagePrefix": "ac"
+   }
+  },
+  {
+   "map": "hatchery",
+   "at": [
+    9,
+    9
+   ],
+   "do": [
+    {
+     "run": "bellDoor"
+    }
+   ],
+   "when": {
+    "stage": [
+     "ac11"
+    ]
+   }
+  },
+  {
+   "map": "hatchery",
+   "at": [
+    9,
+    9
+   ],
+   "do": [
+    {
+     "toast": "Not yet."
+    }
+   ],
+   "when": {
+    "stagePrefix": "ac"
+   }
+  },
+  {
+   "map": "highpass",
+   "at": [
+    11,
+    11
+   ],
+   "do": [
+    {
+     "toast": "Finch is still up on the ridge."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ac6"
+    ]
+   }
+  },
+  {
+   "map": "highpass",
+   "at": [
+    12,
+    11
+   ],
+   "do": [
+    {
+     "toast": "Finch is still up on the ridge."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ac6"
+    ]
+   }
+  },
+  {
+   "map": "backroom",
+   "at": [
+    5,
+    6
+   ],
+   "do": [
+    {
+     "toast": "The man with the tins is watching you."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ac8"
+    ]
+   }
+  }
+ ],
+ "zones": [
+  {
+   "map": "thornwick",
+   "area": [
+    3,
+    14,
+    4,
+    14
+   ],
+   "when": {
+    "stage": [
+     "ab7",
+     "ab12",
+     "ab18",
+     "ab21",
+     "ab23",
+     "ab25"
+    ]
+   },
+   "do": [
+    {
+     "run": "thornBed"
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "area": [
+    5,
+    2,
+    7,
+    6
+   ],
+   "when": {
+    "stage": "ab3",
+    "not": "bathWarned"
+   },
+   "do": [
+    {
+     "set": {
+      "bathWarned": true
+     }
+    },
+    {
+     "say": "",
+     "text": "The buck lowers his horns and paws the stone. Any closer and he'll charge."
+    }
+   ]
+  }
+ ],
+ "looks": [
+  {
+   "map": "thornwick",
+   "tile": "water",
+   "do": [
+    {
+     "say": "",
+     "text": "The spring is warm as a bath. Steam lifts off it into the cold and drifts out over the cloud."
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "tile": "tent",
+   "do": [
+    {
+     "say": "",
+     "text": "A tent of the section's, the canvas patched with the canvas of other tents."
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "tile": "stonewall",
+   "do": [
+    {
+     "say": "",
+     "text": "Old monastery walls, the stones fitted without mortar. Some of them have names cut into them, worn down to nothing."
+    }
+   ]
+  },
+  {
+   "map": "thornwick",
+   "tile": "well",
+   "do": [
+    {
+     "say": "",
+     "text": "Cold water, for drinking. Everything else up here is warm."
+    }
+   ]
+  },
+  {
+   "map": "umes",
+   "tile": "stall",
+   "do": [
+    {
+     "say": "",
+     "text": "The Guild's weighing stall. Every basket is weighed and written in the factor's book before it leaves the hill."
+    }
+   ]
+  },
+  {
+   "map": "umes",
+   "tile": "moss",
+   "do": [
+    {
+     "say": "",
+     "text": "Duskwort, pale and soft under straw. The larvae of every lull in Ostrel eat nothing else."
+    }
+   ]
+  },
+  {
+   "map": "kellsbridge",
+   "tile": "water",
+   "do": [
+    {
+     "say": "",
+     "text": "The Kerrow, high and brown with snowmelt from the Cloudline."
+    }
+   ]
+  },
+  {
+   "map": "rooms",
+   "tile": "table",
+   "when": {
+    "stagePrefix": "ac"
+   },
+   "do": [
+    {
+     "run": "roomsTable"
+    }
+   ]
+  },
+  {
+   "map": "rooms",
+   "tile": "innerdoor",
+   "when": {
+    "stagePrefix": "ac"
+   },
+   "do": [
+    {
+     "say": "",
+     "text": "Finch's room. The door is shut."
+    }
+   ]
+  },
+  {
+   "map": "rooms",
+   "tile": "bed",
+   "when": {
+    "stagePrefix": "ac"
+   },
+   "do": [
+    {
+     "say": "",
+     "text": "Rhea's mother's blanket is folded at the foot of the bed. You've never once slept under it."
+    }
+   ]
+  },
+  {
+   "map": "hatchery",
+   "tile": "tray",
+   "when": {
+    "stagePrefix": "ac"
+   },
+   "do": [
+    {
+     "say": "",
+     "text": "Brood trays, the larvae turning in damp moss. Children's hands turn them by day."
+    }
+   ]
+  },
+  {
+   "map": "backroom",
+   "tile": "crate",
+   "do": [
+    {
+     "say": "",
+     "text": "Crates packed with moss. Each tied off with a miners' hitch and a red thread."
+    }
+   ]
+  }
+ ],
+ "songs": [
+  {
+   "when": {
+    "map": "thornwick",
+    "stage": "ab3"
+   },
+   "near": "buck1",
+   "range": 5,
+   "do": [
+    {
+     "run": "bathSong"
+    }
+   ]
+  },
+  {
+   "when": {
+    "map": "undercroft",
+    "stage": "ab3c",
+    "not": "kits"
+   },
+   "near": "kit1",
+   "range": 5,
+   "do": [
+    {
+     "run": "kitsSong"
+    }
+   ]
+  },
+  {
+   "when": {
+    "map": "thornwick",
+    "stage": "ab6"
+   },
+   "near": "ash-pen",
+   "range": 4,
+   "do": [
+    {
+     "run": "heskComes"
+    }
+   ]
+  },
+  {
+   "when": {
+    "map": "thornwick",
+    "stagePrefix": "ab"
+   },
+   "do": [
+    {
+     "say": "",
+     "text": "You sing the foal song while you work. Somebody across the yard picks up the tune and hums it with you."
+    }
+   ]
+  }
+ ],
+ "hazards": [
+  {
+   "map": "hatchery",
+   "when": {
+    "stage": [
+     "ac11"
+    ]
+   },
+   "kind": "steam",
+   "sources": [
+    [
+     18,
+     1
+    ],
+    [
+     18,
+     8
+    ]
+   ],
+   "spreadEvery": 0.4,
+   "spreadBy": 2,
+   "max": 70,
+   "on": "wetfloor",
+   "burn": 18,
+   "fail": [
+    {
+     "run": "bellSteamFail"
+    }
+   ]
+  }
+ ],
+ "scripts": {
+  "act2Start": [
+   {
+    "set": {
+     "act2": true,
+     "light": "dusk",
+     "noWild": false,
+     "hero": "rhea"
+    }
+   },
+   {
+    "if": {
+     "flag": "recruited.oda"
+    },
+    "then": [
+     {
+      "say": "rhea",
+      "text": "\"Back to the camp. Oda's trays won't keep in a cave on their own all winter, and I'm not leaving them there.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "rhea",
+      "text": "\"Back to the camp. There's nothing left up there.\""
+     }
+    ]
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Then back to the camp it is. Slowly, if nobody minds. My back minds.\""
+   },
+   {
+    "fade": "A week on the road, down the mountain and east along the drove road."
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "goto": {
+     "map": "camp",
+     "x": 12,
+     "y": 10,
+     "facing": "up"
+    }
+   },
+   {
+    "run": "frost"
+   }
+  ],
+  "frost": [
+   {
+    "if": {
+     "not": "recruited.oda"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Someone thin as a stick is waiting by the hay bales, with three brood trays wrapped in sacking at her feet."
+     },
+     {
+      "say": "oda",
+      "text": "\"Rhea Caddow. I heard singing on the terraces at harvest. By the time I'd climbed out of the caves you were gone. I followed your tracks down.\""
+     },
+     {
+      "say": "",
+      "text": "Old Oda, who kept Larkfold's greenling trays. She has lived in the spring caves since the raid."
+     },
+     {
+      "set": {
+       "recruited.oda": true
+      }
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "The first frost came in the night. Oda has unwrapped one of her trays on the hay. The larvae in it are grey and still."
+   },
+   {
+    "say": "oda",
+    "text": "\"Larvae die in the cold. Every child in Larkfold knew that. I've kept the other two alive under my own blankets, and that won't last a week of this.\""
+   },
+   {
+    "say": "oda",
+    "text": "\"They need warm water under them. A spring, like home. There's no spring in this camp.\""
+   },
+   {
+    "choose": "Oda waits.",
+    "options": [
+     {
+      "label": "\"There's a ruin on the Cloudline, east of Larkfold. Thornwick. It's built over a hot spring.\"",
+      "by": "rhea",
+      "do": []
+     },
+     {
+      "label": "\"I'll find you somewhere warm, Oda. Give me a day.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "oda",
+        "text": "\"You've got about two.\""
+       },
+       {
+        "say": "",
+        "text": "Rhea thinks of the ruin she walked past on the Cloudline, steaming in the cold. Thornwick."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "oda",
+    "text": "\"Then ask your Marshal for it. Nobody else is using it.\""
+   },
+   {
+    "stage": "ab1"
+   }
+  ],
+  "kane2": [
+   {
+    "if": {
+     "stage": "ab1"
+    },
+    "then": [
+     {
+      "run": "kaneThornwick"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ab14"
+      },
+      "then": [
+       {
+        "run": "kaneCrates"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "stage": "ab2"
+        },
+        "then": [
+         {
+          "say": "kane",
+          "text": "\"Thornwick, Caddow. Before the snow.\""
+         }
+        ],
+        "else": [
+         {
+          "say": "kane",
+          "text": "\"You've a post to hold, Caddow. Go and hold it.\""
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "kaneThornwick": [
+   {
+    "say": "",
+    "text": "Kane is at his map table, with a list of the camp's winter stores weighted down under his knife."
+   },
+   {
+    "say": "kane",
+    "text": "\"Caddow. Brannoc says you brought an old woman down the mountain with three trays of greenlings. Is that true?\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"Two trays now. The frost took one. They need warm water under them, or they'll all go.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"We've a hundred people in the weaning tents and nothing to wean them with but what we take off Guild carts. Two trays of greenlings is worth more to me than a cart of flour.\""
+   },
+   {
+    "choose": "Kane waits for the rest.",
+    "options": [
+     {
+      "label": "\"There's a ruin over a hot spring on the Cloudline. Thornwick. Give me the section and I'll hold it through the winter.\"",
+      "by": "rhea",
+      "do": []
+     },
+     {
+      "label": "\"Larkfold had a spring. Thornwick has one too. Let us go and keep them alive there.\"",
+      "by": "rhea",
+      "do": []
+     }
+    ]
+   },
+   {
+    "say": "kane",
+    "text": "\"Thornwick. Monks built it, a hundred years ago, and the cold drove them out. It'll be roofless and full of kith.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"I can't spare a company for a ruin. A section, I can spare. Yours. You'll have Brannoc too: his back won't be fit to march to Millbridge before spring, and he can be useless just as well up there.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Keep those trays alive, Sergeant. Keep your people alive. Don't light big fires where the valley can see them.\""
+   },
+   {
+    "toast": "Thornwick is east of Larkfold on the Cloudline. Up the mountain road from the vale."
+   },
+   {
+    "set": {
+     "thornwick": true
+    }
+   },
+   {
+    "stage": "ab2"
+   }
+  ],
+  "thornArrive": [
+   {
+    "say": "",
+    "text": "The mountain road gives out a mile short of Thornwick. A whole shoulder of the hill has come down across it: scree, split boulders, a pine lying with its roots in the air."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Spring melt. Took the road with it. Nobody's been up here in years, Sergeant, and this is why.\""
+   },
+   {
+    "choose": "How do you get the carts across?",
+    "options": [
+     {
+      "label": "Dig a ledge across the slide",
+      "hint": "Slow and safe.",
+      "do": [
+       {
+        "set": {
+         "road": "dug"
+        }
+       },
+       {
+        "fade": "Two days with picks and crowbars, and a ledge just wide enough for a cart."
+       },
+       {
+        "say": "tamsin",
+        "text": "\"My hands have stopped being hands.\""
+       }
+      ]
+     },
+     {
+      "label": "Rope the carts across",
+      "hint": "Quick, and risky.",
+      "do": [
+       {
+        "set": {
+         "road": "roped"
+        }
+       },
+       {
+        "say": "",
+        "text": "Tamsin runs a line from the pine's roots to a spur of rock on the far side, and the section walks the carts over one at a time, holding their breath."
+       },
+       {
+        "say": "",
+        "text": "The last cart's back wheel goes over the edge. Brannoc holds it on the rope, red to the ears, until the others drag it back."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Halfway across, the scree moves where nobody has stepped. Grey backs among the grey stones. Eyes."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Reedcats. A whole den of them in the slide, and we're walking on their roof.\""
+   },
+   {
+    "battle": "thornwick-road",
+    "win": [
+     {
+      "say": "",
+      "text": "The reedcats scatter up the slope and watch you go from the rocks."
+     },
+     {
+      "run": "thornGate"
+     }
+    ]
+   }
+  ],
+  "thornGate": [
+   {
+    "say": "",
+    "text": "Thornwick's gate is choked to the lintel with fallen stone, and the lintel itself has cracked and dropped across the gap."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Stand back.\""
+   },
+   {
+    "say": "",
+    "text": "Brannoc gets his shoulder under the broken lintel, and lifts, and holds it, shaking, while the rest of you drag the rubble out from under him a stone at a time."
+   },
+   {
+    "fade": "An afternoon of shifting stone."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 13,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "say": "",
+    "text": "Thornwick sits on a shelf of rock over the cloud. A chapel with no roof. A bathhouse with no door. Walls the frost has been pulling apart for a hundred years."
+   },
+   {
+    "say": "",
+    "text": "In the middle of it all, a shallow pool steams in the cold, and the air smells of wet stone and warm water."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"It's a ruin, Rhea.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"It's a warm ruin.\""
+   },
+   {
+    "say": "",
+    "text": "Something bellows from the old bathhouse in the north-west corner, and hooves skitter on stone."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"And somebody already lives here.\""
+   },
+   {
+    "stage": "ab3"
+   }
+  ],
+  "bucks": [
+   {
+    "if": {
+     "stage": "ab3"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Two wild loftbucks have made the warm bathhouse their winter den: a big grey buck and a yearling half his size. The buck lowers his horns at you."
+     },
+     {
+      "choose": "The buck stamps.",
+      "options": [
+       {
+        "label": "Drive them out",
+        "hint": "A fight. They're wild, not wicked.",
+        "do": [
+         {
+          "run": "bathFight"
+         }
+        ]
+       },
+       {
+        "label": "Step back and sing",
+        "hint": "The foal song (Q).",
+        "do": [
+         {
+          "say": "",
+          "text": "You back off a few steps. The foal song works best when they can hear it and see you aren't coming closer. Press Q."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The loftbucks have gone."
+     }
+    ]
+   }
+  ],
+  "bathFight": [
+   {
+    "regroup": true
+   },
+   {
+    "battle": "thornwick-bathhouse",
+    "win": [
+     {
+      "alone": true
+     },
+     {
+      "say": "",
+      "text": "The loftbucks crash out through the gap in the wall and away down the terraces into the cloud. The bathhouse is yours, and it smells terrible."
+     },
+     {
+      "set": {
+       "bathhouse": "driven"
+      }
+     },
+     {
+      "run": "bathDone"
+     }
+    ]
+   }
+  ],
+  "bathSong": [
+   {
+    "say": "",
+    "text": "Rhea sings the foal song, low and slow, the way she sang it at Larkfold. The buck's ears swing toward her. His head comes up."
+   },
+   {
+    "say": "",
+    "text": "He listens all the way through. Then he walks out of the bathhouse past her, close enough to touch, and away down the terraces into the cloud."
+   },
+   {
+    "say": "",
+    "text": "The yearling doesn't follow. It stands in the doorway, looking at Rhea, and then at Ash, and then lies down in the warm."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"I think you've been adopted.\""
+   },
+   {
+    "kith": {
+     "species": "loftbuck",
+     "level": 3,
+     "id": "thornwick-yearling",
+     "name": "Burr",
+     "temperament": "gentle"
+    }
+   },
+   {
+    "toast": "A wild loftbuck yearling stays at Thornwick. Tamsin names it Burr, for the burrs in its coat."
+   },
+   {
+    "set": {
+     "bathhouse": "sung"
+    }
+   },
+   {
+    "run": "bathDone"
+   }
+  ],
+  "bathDone": [
+   {
+    "say": "",
+    "text": "Rhea kneels by the spring. It's warm, but it's hardly a pool: a skin of water over the stones, fed by a trickle from a pipe in the chapel wall."
+   },
+   {
+    "say": "oda",
+    "text": "\"That won't keep trays warm through a winter, child. There's more water than that under this hill. Listen.\""
+   },
+   {
+    "say": "",
+    "text": "She's right. Put an ear to the stones and there's a roar down there, somewhere under the chapel."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"The monks will have cut a channel to bring it up. It'll be blocked. There's a stair under the chapel floor, behind the altar stone. Take the lamps.\""
+   },
+   {
+    "set": {
+     "sluice": 0
+    }
+   },
+   {
+    "stage": "ab3c"
+   }
+  ],
+  "underDown": [
+   {
+    "regroup": true
+   },
+   {
+    "goto": {
+     "map": "undercroft",
+     "x": 2,
+     "y": 2,
+     "facing": "down"
+    }
+   },
+   {
+    "if": {
+     "not": "underSeen"
+    },
+    "then": [
+     {
+      "set": {
+       "underSeen": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Thirty steps down, the air turns warm and wet. The lamps show a long stone passage, a channel running black along one side of it, and a hundred years of fallen roof."
+     },
+     {
+      "say": "tamsin",
+      "text": "\"Something lives down here. Smell that?\""
+     }
+    ]
+   }
+  ],
+  "underUp": [
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 14,
+     "y": 4,
+     "facing": "down"
+    }
+   },
+   {
+    "alone": true
+   }
+  ],
+  "kits": [
+   {
+    "say": "",
+    "text": "Two half-grown reedcats, big as hounds, stand in the gap in the rubble with their backs up. Behind them, the passage goes on into the dark."
+   },
+   {
+    "choose": "They spit at the lamps.",
+    "options": [
+     {
+      "label": "Drive them off",
+      "hint": "A fight.",
+      "do": [
+       {
+        "run": "kitsFight"
+       }
+      ]
+     },
+     {
+      "label": "Step back and sing",
+      "hint": "The foal song (Q).",
+      "do": [
+       {
+        "say": "",
+        "text": "You back off a few steps and set the lamps down. The foal song works best when they can see you aren't coming closer. Press Q."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "kitsFight": [
+   {
+    "battle": "thornwick-kits",
+    "win": [
+     {
+      "say": "",
+      "text": "The kits bolt away past the sluices and through the bars of an iron grate at the far end."
+     },
+     {
+      "set": {
+       "kits": true
+      }
+     }
+    ]
+   }
+  ],
+  "kitsSong": [
+   {
+    "say": "",
+    "text": "Rhea sings low. The kits' ears come round. One sits. The other yawns, enormously, the way frightened cats do, and then they both slip away through the bars of an iron grate at the far end of the passage."
+   },
+   {
+    "set": {
+     "kits": true
+    }
+   }
+  ],
+  "carving": [
+   {
+    "say": "",
+    "text": "Words cut into the wall over three iron wheels, worn shallow, filled with green: THE HIGH WATER FIRST. THE LOW WATER AFTER. LAST, THE WHEEL THAT SINGS."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Monks. Couldn't just paint an arrow.\""
+   }
+  ],
+  "valveHigh": [
+   {
+    "choose": "A wheel on a pipe that climbs into the roof, up toward the spring.",
+    "options": [
+     {
+      "label": "Turn it",
+      "do": [
+       {
+        "if": {
+         "eq": {
+          "sluice": 0
+         }
+        },
+        "then": [
+         {
+          "set": {
+           "sluice": 1
+          }
+         },
+         {
+          "say": "",
+          "text": "It grinds round. Somewhere above, water knocks in the pipe."
+         }
+        ],
+        "else": [
+         {
+          "run": "sluiceWrong"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "Leave it",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "valveLow": [
+   {
+    "choose": "A wheel on a pipe that runs along the floor and down into the channel.",
+    "options": [
+     {
+      "label": "Turn it",
+      "do": [
+       {
+        "if": {
+         "eq": {
+          "sluice": 1
+         }
+        },
+        "then": [
+         {
+          "set": {
+           "sluice": 2
+          }
+         },
+         {
+          "say": "",
+          "text": "It turns stiffly. The channel at your feet gurgles and starts to rise."
+         }
+        ],
+        "else": [
+         {
+          "run": "sluiceWrong"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "Leave it",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "valveSing": [
+   {
+    "choose": "A wheel on a short, thick pipe. Tap it, and it rings a clear note that goes on a long time.",
+    "options": [
+     {
+      "label": "Turn it",
+      "do": [
+       {
+        "if": {
+         "eq": {
+          "sluice": 2
+         }
+        },
+        "then": [
+         {
+          "set": {
+           "sluice": 3
+          }
+         },
+         {
+          "run": "sluiceOpen"
+         }
+        ],
+        "else": [
+         {
+          "run": "sluiceWrong"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "Leave it",
+      "do": []
+     }
+    ]
+   }
+  ],
+  "sluiceWrong": [
+   {
+    "say": "",
+    "text": "The wheel turns, and the pipes shriek. A joint bursts and scalding water roars out across the passage; everyone throws themselves flat."
+   },
+   {
+    "say": "",
+    "text": "When it stops, all three wheels have spun back shut."
+   },
+   {
+    "set": {
+     "sluice": 0
+    }
+   }
+  ],
+  "sluiceOpen": [
+   {
+    "say": "",
+    "text": "The last wheel turns, and the note it sings drops lower and lower until it's under your feet. Then the whole hill groans."
+   },
+   {
+    "say": "",
+    "text": "Water roars down the channel. Behind the iron grate at the end of the passage, the cistern starts to fill, and something in the dark there screams."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"That wasn't a pipe.\""
+   },
+   {
+    "stage": "ab3e"
+   }
+  ],
+  "cisternBoss": [
+   {
+    "say": "",
+    "text": "The grate's lock is a lump of rust. It gives at the first kick. Beyond is the cistern: a stone hall, the water rising, warm as breath."
+   },
+   {
+    "say": "",
+    "text": "On the dry shelf at the back, over a nest of moss and stolen rags, a reedcat the size of a pony gets to her feet. Grey at the muzzle. Scarred across both shoulders. A kit presses against her legs."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"That's the biggest reedcat I've ever seen. She's had this hill longer than the monks did, I'd say.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"And we've just flooded her house.\""
+   },
+   {
+    "say": "",
+    "text": "She's too proud to hear a song from someone she's never seen tired. Wear her down first, then sing."
+   },
+   {
+    "battle": "thornwick-cistern",
+    "win": [
+     {
+      "run": "cisternDone"
+     }
+    ]
+   }
+  ],
+  "cisternDone": [
+   {
+    "say": "",
+    "text": "The Old Mother backs up the shelf, her kit under her chin, and squeezes out through a crack in the cistern roof where the hillside lets in a grey square of sky."
+   },
+   {
+    "say": "",
+    "text": "At the top she stops, and looks down at Rhea for a long moment. Then she's gone."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 14,
+     "y": 7,
+     "facing": "down"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "say": "",
+    "text": "Up in the yard, the spring is filling. It steams and spreads and overflows its old stone lip, and runs away down the channel the monks cut for it, out over the cliff into the cloud."
+   },
+   {
+    "say": "oda",
+    "text": "\"Now that's a spring.\""
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Rhea. Look at it. It's ours.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Road, gate, bathhouse, cellar and a cat the size of a cart. Right. Now the work starts. Come and find me by the fire when you've had a look round.\""
+   },
+   {
+    "toast": "Thornwick is yours."
+   },
+   {
+    "set": {
+     "thornwickClaimed": true
+    }
+   },
+   {
+    "stage": "ab4"
+   }
+  ],
+  "workChoice": [
+   {
+    "say": "",
+    "text": "Brannoc is sitting on an upturned crate by the fire, with a stick, drawing in the dirt."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Two jobs before the snow, Sergeant, and the snow's about ten days off. You can smell it.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"One: the spring. The cellar beside it is full of a hundred years of rubble, and Oda needs it clear to set her trays over the warm water.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Two: the storeroom. The roof's half in. If Kane sends up flour and it gets wet, we eat paste till spring.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"We've hands for one before the weather turns. The other gets done after, in the cold, slower.\""
+   },
+   {
+    "choose": "Which first?",
+    "options": [
+     {
+      "label": "Clear the spring first",
+      "hint": "Oda's trays won't wait.",
+      "do": [
+       {
+        "set": {
+         "firstJob": "spring"
+        }
+       },
+       {
+        "say": "oda",
+        "text": "\"Thank you. The trays have three days left in them, maybe four.\""
+       }
+      ]
+     },
+     {
+      "label": "Roof the storeroom first",
+      "hint": "Stores that stay dry feed everyone.",
+      "do": [
+       {
+        "set": {
+         "firstJob": "store"
+        }
+       },
+       {
+        "say": "oda",
+        "text": "\"Then I'll sleep with the trays in my blankets a while longer. Don't take too long, child.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "fade": "Ten days of work. Rubble out, timber up, blisters on everyone."
+   },
+   {
+    "if": {
+     "eq": {
+      "firstJob": "spring"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The cellar is clear. Oda's trays sit on stone shelves over the warm water, and the larvae are eating again. The storeroom roof is still half sky."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The storeroom has a roof. The cellar is only half clear, and the cold got into Oda's blankets one night. She lost a second tray. One is left, and it's eating."
+     },
+     {
+      "set": {
+       "lostTray": true
+      }
+     }
+    ]
+   },
+   {
+    "stage": "ab5"
+   }
+  ],
+  "dorrit": [
+   {
+    "if": {
+     "stage": "ab5"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A cart from the camp has come up the mountain road, and a woman in round spectacles is walking round it, counting sacks under her breath."
+     },
+     {
+      "say": "dorrit",
+      "text": "\"Dorrit. Quartermaster. Kane says you're to have flour, salt, lamp oil, nails, and no more than your share of anything.\""
+     },
+     {
+      "say": "",
+      "text": "She ties off the last sack with the knot every Commons crate is tied with: a miners' hitch, with a red thread laid through it so a thief can't retie it without anyone knowing."
+     },
+     {
+      "say": "dorrit",
+      "text": "\"Where am I putting it?\""
+     },
+     {
+      "if": {
+       "eq": {
+        "firstJob": "store"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Rhea shows her the storeroom, roofed and dry. Dorrit stands in the middle of it for a long time, sniffing the air for damp."
+       },
+       {
+        "say": "dorrit",
+        "text": "\"Well. It's a cellar with ideas above itself, but it's dry. I could keep stores in this. Properly, I mean. With a ledger.\""
+       },
+       {
+        "say": "dorrit",
+        "text": "\"Kane's got three of me down at the camp. He won't miss one. I'll stay, if you'll have me.\""
+       },
+       {
+        "set": {
+         "recruited.dorrit": true
+        }
+       },
+       {
+        "toast": "Dorrit stays at Thornwick to run the stores."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Rhea shows her the storeroom. Dorrit looks up through the roof at the sky."
+       },
+       {
+        "say": "dorrit",
+        "text": "\"No. Absolutely not. I'll leave you what will keep under a tarp, and the rest goes back down with me.\""
+       },
+       {
+        "say": "",
+        "text": "She's kind about it, in a brisk way. She leaves before dark."
+       }
+      ]
+     },
+     {
+      "stage": "ab6"
+     },
+     {
+      "set": {
+       "light": "dusk"
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "dorrit",
+      "text": "\"Everything's counted. Don't touch the lamp oil without telling me.\""
+     }
+    ]
+   }
+  ],
+  "heskComes": [
+   {
+    "say": "",
+    "text": "Rhea leans on the pen fence and sings the foal song to Ash, quietly, the way she sang it to the yearlings at Larkfold. Ash stops pacing and lies down in the hay."
+   },
+   {
+    "say": "",
+    "text": "When Rhea turns round, there's an old man in a flat cap standing at the gap in the fence, with a string of three tired kith on a lead behind him."
+   },
+   {
+    "say": "hesk",
+    "text": "\"Don't stop on my account. I haven't heard that song sung properly since I was a boy. Larkfold, is it?\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"It was.\""
+   },
+   {
+    "say": "hesk",
+    "text": "\"Hesk Marrow. I breed kith. Bred them. The Guild's buyers have had the last of my stock off me for the price of the feed, and I'm walking what's left of them somewhere the buyers don't go.\""
+   },
+   {
+    "say": "hesk",
+    "text": "\"You've a pen, a spring that keeps the frost off, and somebody who can sing a kith quiet. That's more than most places have. I'll work for my keep.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "bathhouse": "sung"
+     }
+    },
+    "then": [
+     {
+      "say": "hesk",
+      "text": "\"And you've a wild yearling sleeping in your bathhouse like a house cat. I'd like to see what you do with that one.\""
+     }
+    ]
+   },
+   {
+    "set": {
+     "recruited.hesk": true
+    }
+   },
+   {
+    "toast": "Hesk Marrow stays at Thornwick to keep the kith pens."
+   },
+   {
+    "stage": "ab7"
+   }
+  ],
+  "thornBed": [
+   {
+    "if": {
+     "stage": "ab7"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "evening"
+      }
+     },
+     {
+      "fade": "Vantry. The same autumn."
+     },
+     {
+      "run": "evenings"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ab12"
+      },
+      "then": [
+       {
+        "set": {
+         "light": "evening"
+        }
+       },
+       {
+        "fade": "Vantry, midwinter."
+       },
+       {
+        "run": "birthday"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "stage": "ab18"
+        },
+        "then": [
+         {
+          "fade": "The snow melts off the terraces. Spring."
+         },
+         {
+          "set": {
+           "light": "day"
+          }
+         },
+         {
+          "stage": "ab19"
+         },
+         {
+          "run": "springRider"
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "stage": "ab21"
+          },
+          "then": [
+           {
+            "set": {
+             "light": "evening"
+            }
+           },
+           {
+            "fade": "Vantry. That same spring."
+           },
+           {
+            "run": "hiding"
+           }
+          ],
+          "else": [
+           {
+            "if": {
+             "stage": "ab23"
+            },
+            "then": [
+             {
+              "fade": "Summer comes up the mountain."
+             },
+             {
+              "set": {
+               "light": "day"
+              }
+             },
+             {
+              "run": "summer"
+             }
+            ],
+            "else": [
+             {
+              "if": {
+               "stage": "ab25"
+              },
+              "then": [
+               {
+                "set": {
+                 "light": "evening"
+                }
+               },
+               {
+                "fade": "Vantry. A hot summer night."
+               },
+               {
+                "run": "bell"
+               }
+              ],
+              "else": [
+               {
+                "toast": "Your tent. It's not time to sleep yet."
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "evenings": [
+   {
+    "hero": "corran"
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "day",
+     "showHold": true
+    }
+   },
+   {
+    "stage": "ac1"
+   },
+   {
+    "goto": {
+     "map": "yard",
+     "x": 11,
+     "y": 6,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "A year in Vantry. The burns on your back and hands have healed into shiny skin that pulls when you reach for anything."
+   },
+   {
+    "say": "",
+    "text": "You've worked the hatchery night watch every night of that year. You've not been late once."
+   }
+  ],
+  "halloranPromote": [
+   {
+    "if": {
+     "stage": "ac1"
+    },
+    "then": [
+     {
+      "say": "halloran",
+      "text": "\"Dace. A year on the night watch. One bad night with the boilers, and you went into the steam yourself instead of running for help. Do you know how rare that is?\""
+     },
+     {
+      "say": "halloran",
+      "text": "\"The Houses have noticed. They want the watch officers to be men who can keep a boiler room quiet. I want you to have a lieutenant's tabs and three hatcheries to keep quiet instead of one.\""
+     },
+     {
+      "choose": "Halloran holds out the tabs.",
+      "options": [
+       {
+        "label": "\"Thank you, Captain.\"",
+        "hint": "Take them.",
+        "by": "corran",
+        "do": [
+         {
+          "add": {
+           "hold": -2
+          }
+         }
+        ]
+       },
+       {
+        "label": "\"I didn't come back for tabs.\"",
+        "by": "corran",
+        "do": [
+         {
+          "say": "halloran",
+          "text": "\"No. You came back for a boy. And now you've got one, and he eats. Take the tabs.\""
+         },
+         {
+          "add": {
+           "hold": 1
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "halloran",
+      "text": "\"You're useful when you're quiet, Dace. Stay quiet.\""
+     },
+     {
+      "set": {
+       "rank.corran": "Lieutenant"
+      }
+     },
+     {
+      "toast": "Corran is made a Warden lieutenant."
+     },
+     {
+      "stage": "ac2"
+     },
+     {
+      "goto": {
+       "map": "surgery",
+       "x": 4,
+       "y": 4,
+       "facing": "up"
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "halloran",
+      "text": "\"Go and do your job, Lieutenant.\""
+     }
+    ]
+   }
+  ],
+  "lisleEvenings": [
+   {
+    "if": {
+     "stage": "ac2"
+    },
+    "then": [
+     {
+      "say": "lisle",
+      "text": "\"Turn round. Lift your shirt.\""
+     },
+     {
+      "say": "",
+      "text": "Cool fingers on the shiny skin of your back."
+     },
+     {
+      "say": "lisle",
+      "text": "\"Healed. As much as it's going to. Does it hurt?\""
+     },
+     {
+      "say": "corran",
+      "text": "\"Not the burns.\""
+     },
+     {
+      "say": "lisle",
+      "text": "\"Then what?\""
+     },
+     {
+      "say": "",
+      "text": "The evenings. When the watch hasn't started and the rooms are quiet and there's nothing to do but think about your mother and your sister, and Rhea on a roof in the dark."
+     },
+     {
+      "choose": "Lisle waits, pen over the ledger.",
+      "options": [
+       {
+        "label": "\"Evenings are hard. I sleep badly.\"",
+        "hint": "Ask for a lull for the evenings.",
+        "by": "corran",
+        "do": [
+         {
+          "say": "lisle",
+          "text": "\"A lot of my officers say that. A field line, for the evenings. One at a time, and you come to me for the next one, not to a shop.\""
+         },
+         {
+          "say": "",
+          "text": "Lisle writes your name in the ledger, and a line under it, and passes you a tin."
+         },
+         {
+          "set": {
+           "evenings": "lull",
+           "mods.corran": "lull"
+          }
+         },
+         {
+          "add": {
+           "hold": -8,
+           "rings.corran": 1
+          }
+         }
+        ]
+       },
+       {
+        "label": "\"Nothing. It doesn't hurt.\"",
+        "hint": "Sit through the evenings.",
+        "by": "corran",
+        "do": [
+         {
+          "say": "lisle",
+          "text": "\"Good. Come back if it does.\""
+         },
+         {
+          "set": {
+           "evenings": "none"
+          }
+         },
+         {
+          "add": {
+           "hold": 6
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "fade": "That evening."
+     },
+     {
+      "set": {
+       "light": "evening"
+      }
+     },
+     {
+      "stage": "ac3"
+     },
+     {
+      "goto": {
+       "map": "rooms",
+       "x": 2,
+       "y": 3,
+       "facing": "right"
+      }
+     },
+     {
+      "if": {
+       "eq": {
+        "evenings": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "The bite at the back of your neck is a cold pinch, then nothing. The room is very quiet. It's the first quiet evening in a year."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The rooms are very quiet. Every sound from the street comes in through the shutters."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "lisle",
+      "text": "\"You're healed, Lieutenant. Go home.\""
+     }
+    ]
+   }
+  ],
+  "letter": [
+   {
+    "if": {
+     "stage": "ac3"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A letter, on the table, where it's been for a month. The first line says Rhea. The second line is empty."
+     },
+     {
+      "choose": "The ink is dry on the pen.",
+      "options": [
+       {
+        "label": "Write a line",
+        "do": [
+         {
+          "say": "",
+          "text": "You write: I took Finch out of the brood rooms. He's well. He's growing. He doesn't"
+         },
+         {
+          "say": "",
+          "text": "You can't finish the sentence. You put the pen down."
+         },
+         {
+          "set": {
+           "letter": "line"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Put it away",
+        "do": [
+         {
+          "say": "",
+          "text": "You fold it into the back of the ledger, where you won't see it."
+         },
+         {
+          "set": {
+           "letter": "away"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "A knock at the inner door. Finch, wanting something, or wanting nothing and pretending he does."
+     },
+     {
+      "if": {
+       "eq": {
+        "evenings": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "You mean to get up. It's a long way to the door, through all that quiet."
+       },
+       {
+        "say": "",
+        "text": "He knocks twice more and stops."
+       },
+       {
+        "add": {
+         "finchCorran": -5
+        }
+       }
+      ],
+      "else": [
+       {
+        "say": "finch",
+        "text": "\"Warden. Your tabs are on wrong.\""
+       },
+       {
+        "say": "",
+        "text": "He fixes them without being asked, and goes back to his room without another word. It's the most he's said to you in a week."
+       },
+       {
+        "add": {
+         "finchCorran": 3
+        }
+       }
+      ]
+     },
+     {
+      "run": "backToRhea1"
+     }
+    ]
+   }
+  ],
+  "backToRhea1": [
+   {
+    "fade": "Thornwick. The first snow."
+   },
+   {
+    "hero": "rhea"
+   },
+   {
+    "set": {
+     "light": "snow",
+     "showHold": false,
+     "mods.corran": ""
+    }
+   },
+   {
+    "stage": "ab8"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 3,
+     "y": 14,
+     "facing": "up"
+    }
+   }
+  ],
+  "mossOut": [
+   {
+    "if": {
+     "stage": "ab8"
+    },
+    "then": [
+     {
+      "say": "oda",
+      "text": "\"The larvae have eaten every scrap of moss I brought down. Duskwort, child. It's the only thing they'll eat, and it only grows up here, above the mist.\""
+     },
+     {
+      "say": "oda",
+      "text": "\"There's wild duskwort on these terraces, but not enough to feed a tray for a week. The clans grow it by the field. Ume's people are a day west, past Larkfold.\""
+     },
+     {
+      "say": "oda",
+      "text": "\"Every leaf they grow is sold to the Guild before it's picked. But Ume knew your mother. Go and ask her.\""
+     },
+     {
+      "stage": "ab9"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ab11"
+      },
+      "then": [
+       {
+        "run": "tobinFirst"
+       }
+      ],
+      "else": [
+       {
+        "say": "oda",
+        "text": "\"Warm and fed, the lot of them. Go and do something else, child, you're making them nervous.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "umesArrive": [
+   {
+    "goto": {
+     "map": "umes",
+     "x": 12,
+     "y": 12,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "Ume's terraces climb out of the snow in green stripes. Somebody has laid straw over the moss to keep the frost off it, row by row, all the way up the hill."
+   },
+   {
+    "say": "",
+    "text": "By the weighing stall a man in a Guild coat is tallying baskets in a book. Nobody near him is talking."
+   }
+  ],
+  "factor": [
+   {
+    "if": {
+     "flag": "umeMet"
+    },
+    "then": [
+     {
+      "say": "factor",
+      "text": "\"The clan's baskets are counted, Commons. Don't make me write you down as well.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "factor",
+      "text": "\"Every basket on this hill is the Guild's before it's picked, miss. Seed debt, tool debt, flour debt. Grandmother Ume's family is paid up to the year their grandchildren die.\""
+     },
+     {
+      "say": "factor",
+      "text": "\"If you're buying, you're buying from the Guild, at the Guild's price, in Vantry.\""
+     }
+    ]
+   }
+  ],
+  "umeMeet": [
+   {
+    "if": {
+     "stage": "ab9"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A tiny old woman is sitting on the step of the end house in a terrace-patterned shawl, with her leg stretched out in front of her."
+     },
+     {
+      "say": "",
+      "text": "There's a grey lull on her bare hip, just above the knee. A wild one: small, pale, and fat with feeding."
+     },
+     {
+      "say": "ume",
+      "text": "\"Don't stare, girl. It's rude. I've set a wild lull on this hip every winter for seventy years, and it drops off when it's full, and I've never once wanted another.\""
+     },
+     {
+      "say": "ume",
+      "text": "\"Your face. You're a Caddow. Your mother came up here once, years ago. She wanted to know how we set a wild lull, and how we knew it wouldn't hook anyone. No lowland healer ever asked us that before or since.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"She bred greenlings from what you told her. In Larkfold. For people coming off Guild lulls.\""
+     },
+     {
+      "say": "ume",
+      "text": "\"I heard. I heard what it cost, too.\""
+     },
+     {
+      "say": "",
+      "text": "Someone is sitting in the doorway behind her: a man of forty in a miner's coat, with his arms wrapped round himself. He's shaking. His neck is ringed with scars from his collar to his ear."
+     },
+     {
+      "say": "ume",
+      "text": "\"My son Tobin. He went down to the Coldharrow pits at sixteen, and a foreman set a Guild lull on him after a rock fall so he'd finish the shift. Twenty years. There's no counting his rings any more, they've run together. He came home in the summer with nothing left to buy one with.\""
+     },
+     {
+      "say": "tobin",
+      "text": "\"Ma.\""
+     },
+     {
+      "say": "ume",
+      "text": "\"He's tried three times to come off them on his own, up here, in the cold. The raw sends him back down the mountain every time.\""
+     },
+     {
+      "choose": "What does Rhea ask for?",
+      "options": [
+       {
+        "label": "\"We need moss for our greenlings. And I think Tobin needs greenlings.\"",
+        "by": "rhea",
+        "do": []
+       },
+       {
+        "label": "\"Let me take Tobin to Thornwick. Oda can wean him.\"",
+        "by": "rhea",
+        "do": []
+       }
+      ]
+     },
+     {
+      "say": "ume",
+      "text": "\"The Guild's factor counts every basket. He doesn't count the gleanings, the scraps we pick off the terraces after the harvest. They're ours by clan law. He doesn't know they're worth anything.\""
+     },
+     {
+      "say": "ume",
+      "text": "\"You can have the gleanings, a basket every month, for as long as you need them. And you take my son, and you bring him back to me clean. That's the price.\""
+     },
+     {
+      "say": "tobin",
+      "text": "\"I've had the raw three times, Ma. I can't do it a fourth.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"It won't be the raw. That's what greenlings are for. You wear a weaker one, then a weaker one, as slowly as you need, and your body learns to manage without, a little at a time.\""
+     },
+     {
+      "say": "",
+      "text": "Tobin looks at his mother for a long time. Then he gets up, slowly, and goes to get his coat."
+     },
+     {
+      "set": {
+       "umeMet": true,
+       "recruited.tobin": true
+      }
+     },
+     {
+      "follow": [
+       "tobin"
+      ]
+     },
+     {
+      "toast": "Ume will send a basket of moss gleanings to Thornwick every month."
+     },
+     {
+      "stage": "ab10"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "tobinClean"
+      },
+      "then": [
+       {
+        "say": "ume",
+        "text": "\"You brought him back. I'd heard a lot of things about Larkfold. Nobody told me you keep your word.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "ume",
+        "text": "\"Look after my son, Caddow.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "tobinHome": [
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 13,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "follow": []
+   },
+   {
+    "say": "",
+    "text": "Tobin stops inside the gate and looks at the steaming pool, the patched storeroom, the kith pens, the tents."
+   },
+   {
+    "say": "tobin",
+    "text": "\"This is it? The place that weans people?\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"It is now.\""
+   },
+   {
+    "stage": "ab11"
+   }
+  ],
+  "tobinFirst": [
+   {
+    "say": "",
+    "text": "Down in the warm cellar, Oda has a greenling ready on a square of damp moss: the strongest of her strengths, the first."
+   },
+   {
+    "say": "oda",
+    "text": "\"Sit down, Tobin. Head forward. You've done this hundreds of times. This is the last time it'll be this strong. In Larkfold we stepped people down every fortnight. Twenty years on Guild lulls, you'll go by the month.\""
+   },
+   {
+    "say": "",
+    "text": "Oda takes the Guild lull off the back of his neck, the dying one he came up the mountain wearing, and sets the greenling in its place before the raw can start."
+   },
+   {
+    "say": "tobin",
+    "text": "\"It's weaker.\""
+   },
+   {
+    "say": "oda",
+    "text": "\"It's meant to be. Next month it'll be weaker still. By the thaw you won't need one.\""
+   },
+   {
+    "say": "tobin",
+    "text": "\"And if I can't?\""
+   },
+   {
+    "say": "oda",
+    "text": "\"Then you'll have a weaker one for another month. Nobody here is in a hurry, son.\""
+   },
+   {
+    "set": {
+     "tobinWean": 1
+    }
+   },
+   {
+    "stage": "ab12"
+   }
+  ],
+  "tobinVisit": [
+   {
+    "if": {
+     "stage": [
+      "ab12"
+     ]
+    },
+    "then": [
+     {
+      "say": "tobin",
+      "text": "\"It's not the raw. Your Oda was right. It's not good, either. But it's not the raw.\""
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": [
+        "ab13",
+        "ab14",
+        "ab15"
+       ]
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Tobin is mending the storeroom wall, slowly, with his sleeves rolled up. The greenling on his neck is smaller than the last one."
+       },
+       {
+        "say": "tobin",
+        "text": "\"Second strength. My hands shake in the mornings. Oda says that's the body remembering how to do its own work.\""
+       },
+       {
+        "set": {
+         "tobinWean": 2
+        }
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "stage": [
+          "ab16",
+          "ab17",
+          "ab18"
+         ]
+        },
+        "then": [
+         {
+          "say": "tobin",
+          "text": "\"Third strength. Last one, Oda says. I slept the whole night through last night. First time since I was sixteen.\""
+         },
+         {
+          "set": {
+           "tobinWean": 3
+          }
+         }
+        ],
+        "else": [
+         {
+          "say": "tobin",
+          "text": "\"Nothing on my neck at all. I keep reaching for it.\""
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "birthday": [
+   {
+    "hero": "corran"
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "day",
+     "showHold": true
+    }
+   },
+   {
+    "stage": "ac5"
+   },
+   {
+    "goto": {
+     "map": "rooms",
+     "x": 2,
+     "y": 3,
+     "facing": "right"
+    }
+   },
+   {
+    "if": {
+     "eq": {
+      "evenings": "lull"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A fresh tin from Lisle on the table. You've been back for one every month since the autumn. It makes the evenings quiet, and lately the mornings too."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "You told Lisle nothing hurt, in the autumn, and you've kept to it. Some evenings it takes the whole evening."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Finch is fourteen today. A year ago you promised to take him up to the high passes above the city, to see the wild loftbucks come down to graze. You said: when you're fourteen."
+   }
+  ],
+  "finchBirthday": [
+   {
+    "if": {
+     "stage": "ac5"
+    },
+    "then": [
+     {
+      "say": "finch",
+      "text": "\"You said the high passes. When I was fourteen.\""
+     },
+     {
+      "say": "",
+      "text": "He says it as if he doesn't care either way. He's been ready since dawn: boots on, coat buttoned wrong."
+     },
+     {
+      "choose": "It's a long climb, and your head aches.",
+      "options": [
+       {
+        "label": "\"Get your scarf. It's cold up there.\"",
+        "hint": "Keep the promise.",
+        "by": "corran",
+        "do": [
+         {
+          "set": {
+           "birthday": "kept"
+          }
+         },
+         {
+          "run": "passClimb"
+         }
+        ]
+       },
+       {
+        "label": "\"Not today. Next week. I've a report to write.\"",
+        "hint": "Stay home.",
+        "by": "corran",
+        "do": [
+         {
+          "run": "birthdayBroken"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "birthdayBroken": [
+   {
+    "set": {
+     "birthday": "broken"
+    }
+   },
+   {
+    "add": {
+     "finchCorran": -12
+    }
+   },
+   {
+    "say": "finch",
+    "text": "\"All right.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "evenings": "lull"
+     }
+    },
+    "then": [
+     {
+      "set": {
+       "mods.corran": "lull"
+      }
+     },
+     {
+      "add": {
+       "hold": -10,
+       "rings.corran": 1
+      }
+     },
+     {
+      "say": "",
+      "text": "He goes out alone. You put the fresh lull on, for the headache, and the afternoon goes by very smoothly."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "He goes out alone. You sit over the report all afternoon and don't write a word of it."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "He comes back after dark with snow in his hair, and doesn't say where he's been. You don't ask. He never asks you for anything again."
+   },
+   {
+    "run": "backToRhea2"
+   }
+  ],
+  "passClimb": [
+   {
+    "fade": "Three hours' climb above the city."
+   },
+   {
+    "stage": "ac6"
+   },
+   {
+    "goto": {
+     "map": "highpass",
+     "x": 11,
+     "y": 10,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "Above Vantry's smoke the air is so clear it hurts. The pass is a long green saddle between two peaks, and there's a herd of wild loftbucks grazing on it in the snow."
+   },
+   {
+    "follow": []
+   }
+  ],
+  "finchPass": [
+   {
+    "if": {
+     "stage": "ac6"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Finch is sitting on a rock at the top of the path, watching the herd. He doesn't turn round."
+     },
+     {
+      "say": "finch",
+      "text": "\"There was a foal at home. Smoke. He got stuck on a ledge once and wouldn't come down for anyone.\""
+     },
+     {
+      "say": "finch",
+      "text": "\"My sister sang him down. She sang, and he came. Every time.\""
+     },
+     {
+      "say": "",
+      "text": "It's the first time in a year he has said the word home."
+     },
+     {
+      "choose": "Finch is watching the herd, not you.",
+      "options": [
+       {
+        "label": "\"I remember. I was there.\"",
+        "by": "corran",
+        "do": [
+         {
+          "say": "finch",
+          "text": "\"I know you were.\""
+         },
+         {
+          "say": "",
+          "text": "He's quiet for a long time after that. But he doesn't get up and leave."
+         }
+        ]
+       },
+       {
+        "label": "\"Do you want to try? Singing?\"",
+        "by": "corran",
+        "do": [
+         {
+          "say": "finch",
+          "text": "\"I don't know the words any more.\""
+         },
+         {
+          "say": "",
+          "text": "He hums three notes of it, very quietly, and stops. One of the loftbucks lifts its head."
+         }
+        ]
+       },
+       {
+        "label": "Say nothing. Sit with him.",
+        "do": [
+         {
+          "say": "",
+          "text": "You sit down on the next rock. The loftbucks graze. After a while, his shoulder is against yours. Neither of you mentions it."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "add": {
+       "finchCorran": 15,
+       "hold": 8
+      }
+     },
+     {
+      "set": {
+       "finchHome": true
+      }
+     },
+     {
+      "say": "",
+      "text": "You stay until the light goes. On the way down, he walks beside you instead of ahead."
+     },
+     {
+      "run": "backToRhea2"
+     }
+    ]
+   }
+  ],
+  "backToRhea2": [
+   {
+    "fade": "Thornwick. Midwinter."
+   },
+   {
+    "hero": "rhea"
+   },
+   {
+    "set": {
+     "light": "snow",
+     "showHold": false,
+     "mods.corran": ""
+    }
+   },
+   {
+    "stage": "ab13"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "down"
+    }
+   },
+   {
+    "say": "",
+    "text": "A shout from the gate. Kane's supply cart has slid on the ice at the top of the road and gone over on one wheel."
+   }
+  ],
+  "carter": [
+   {
+    "if": {
+     "stage": "ab13"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The cart lies tipped against the gatepost. Sacks of flour, a barrel of lamp oil, and three long crates. One of the crates has split open on the stones."
+     },
+     {
+      "say": "",
+      "text": "It's packed with duskwort moss. In the moss, row on row, are lull tins. Guild tins, each with a House seal stamped in the lid."
+     },
+     {
+      "say": "",
+      "text": "The crate was tied with a miners' hitch with a red thread laid through it. The Commons knot. The same knot Dorrit tied on your flour."
+     },
+     {
+      "say": "carter",
+      "text": "\"Don't touch that, Sergeant. Those aren't yours.\""
+     },
+     {
+      "choose": "The carter is already pushing the moss back over the tins.",
+      "options": [
+       {
+        "label": "\"Whose are they?\"",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "carter",
+          "text": "\"The Marshal's. They go down to the lowlands on the north road. They don't stop here, and you didn't see them.\""
+         }
+        ]
+       },
+       {
+        "label": "\"Those are Guild lulls. In a Commons crate.\"",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "carter",
+          "text": "\"Taken off a Guild cart, fair and square. Where they go after that is the Marshal's business, not mine and not yours.\""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "if": {
+       "flag": "recruited.tobin"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Tobin is standing at the storeroom door with a sack on his shoulder, looking at the tins. He doesn't move until the carter has nailed the crate shut again."
+       }
+      ]
+     },
+     {
+      "set": {
+       "sawCrates": true,
+       "noWild": false
+      }
+     },
+     {
+      "stage": "ab14"
+     }
+    ],
+    "else": [
+     {
+      "say": "carter",
+      "text": "\"Mind the ice.\""
+     }
+    ]
+   }
+  ],
+  "kaneCrates": [
+   {
+    "say": "",
+    "text": "Kane is alone in his tent, writing. He doesn't look surprised to see you."
+   },
+   {
+    "say": "kane",
+    "text": "\"The cart went over on your ice. I heard. Sit down, Caddow.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"There were Guild lulls in that crate. Hundreds. Tied with our knot.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"There were. We take them off Guild carts on the Vantry road, and we sell them in the lowland towns for less than the Guild does. That's how this army eats.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Who did you think paid for your boots? For Dorrit's flour? For the nurses' linen and the arrows and the bread? The highlands are three generations in debt. The towns that love us can't feed us.\""
+   },
+   {
+    "choose": "Kane waits. He has had this conversation before.",
+    "options": [
+     {
+      "label": "\"We're selling the thing we're fighting.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"We're selling the thing people will buy anyway. If they don't buy it from us, they buy it from the Guild, and the Guild's coin builds more hatcheries.\""
+       },
+       {
+        "say": "kane",
+        "text": "\"Every lull we sell is a lull the Guild didn't. Every coin of it is a child out of a brood room. I can live with that. So can you.\""
+       }
+      ]
+     },
+     {
+      "label": "\"Does Brannoc know?\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"Ask him. He's a grown man. Most of the old hands know, and most of them would rather not think about it.\""
+       },
+       {
+        "say": "kane",
+        "text": "\"Brannoc was down the pits for twenty years. He knows what people do to get through the day. He doesn't judge them, and he doesn't judge me.\""
+       }
+      ]
+     },
+     {
+      "label": "\"Some of those lulls go back into Vantry.\"",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "kane",
+        "text": "\"Some. A lull doesn't care who wears it.\""
+       },
+       {
+        "say": "kane",
+        "text": "\"Neither do I, Caddow. Not this winter. Not with a hundred people in the weaning tents.\""
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "kane",
+    "text": "\"You've done good work up at Thornwick. Greenlings, and a clan that talks to us, and an old man's kith in the pens. Don't spoil it by being simple about money.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Go back up before the snow shuts the road.\""
+   },
+   {
+    "set": {
+     "kaneTold": true
+    }
+   },
+   {
+    "stage": "ab15"
+   }
+  ],
+  "raidHome": [
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 13,
+     "facing": "up"
+    }
+   },
+   {
+    "set": {
+     "light": "night"
+    }
+   },
+   {
+    "say": "",
+    "text": "Thornwick, after dark. The section is round the fire. Hesk's kith are pacing their pens, ears flat."
+   },
+   {
+    "say": "tamsin",
+    "text": "\"Rhea. Lamps on the road. Five of them, and kith.\""
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Wardens. They've followed the smoke.\""
+   },
+   {
+    "say": "",
+    "text": "You were told not to light big fires the valley could see. Somebody did, on the coldest night of the winter, and you didn't stop them."
+   },
+   {
+    "regroup": true
+   },
+   {
+    "say": "rhea",
+    "text": "\"Everyone to the gate.\""
+   },
+   {
+    "battle": "thornwick-gate",
+    "win": [
+     {
+      "alone": true
+     },
+     {
+      "say": "",
+      "text": "Three of the Wardens run back down the road into the dark. Two don't get the chance. A sergeant with a split lip, and a red-haired archer, hardly more than a boy."
+     },
+     {
+      "say": "",
+      "text": "The section ties their hands and puts them in the chapel ruin, out of the wind."
+     },
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "stage": "ab16"
+     }
+    ]
+   }
+  ],
+  "oakesTalk": [
+   {
+    "if": {
+     "stage": "ab16"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The sergeant is sitting against the chapel wall with his tied hands in his lap. He looks at Rhea, and then at the floor, and keeps looking at it."
+     },
+     {
+      "say": "oakes",
+      "text": "\"Oakes. Sergeant, Wardens of the Brood Guild. That's all you'll get, and you won't get it twice.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Where were you a year ago last autumn, Sergeant Oakes?\""
+     },
+     {
+      "say": "",
+      "text": "He's quiet for a long time."
+     },
+     {
+      "say": "oakes",
+      "text": "\"I know who you are. Caddow. They talked about you, after. The one who wasn't there.\""
+     },
+     {
+      "say": "oakes",
+      "text": "\"I was in Halloran's column. Larkfold. I held the torches. I didn't light any, but I held them for the men who did.\""
+     },
+     {
+      "say": "oakes",
+      "text": "\"You'll hang me for it. I'd hang me for it. I just wanted you to hear it from me, and not from someone else after.\""
+     },
+     {
+      "set": {
+       "oakesTold": true
+      }
+     },
+     {
+      "if": {
+       "flag": "lyleTalked"
+      },
+      "then": [
+       {
+        "stage": "ab17"
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ab17"
+      },
+      "then": [
+       {
+        "say": "oakes",
+        "text": "\"Go on. They're waiting for you.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "oakes",
+        "text": "\"Caddow.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "lyleTalk": [
+   {
+    "if": {
+     "stage": "ab16"
+    },
+    "then": [
+     {
+      "say": "lyle",
+      "text": "\"I wasn't at Larkfold. I swear it. I was in a mill in Spindlegate till last spring. They give you a coat and a meal.\""
+     },
+     {
+      "say": "lyle",
+      "text": "\"Sergeant Oakes said we'd go up, look at the smoke, and come home. He said you were only highland smugglers.\""
+     },
+     {
+      "say": "",
+      "text": "He's nineteen, at most. He has a bowstring callus and a sunburned nose and he can't stop his knees shaking."
+     },
+     {
+      "set": {
+       "lyleTalked": true
+      }
+     },
+     {
+      "if": {
+       "flag": "oakesTold"
+      },
+      "then": [
+       {
+        "stage": "ab17"
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "lyle",
+      "text": "\"Is it now? Is it tonight?\""
+     }
+    ]
+   }
+  ],
+  "verdict": [
+   {
+    "say": "",
+    "text": "The section sits round the fire. Nobody is eating."
+   },
+   {
+    "say": "soldier",
+    "text": "\"He held the torches at Larkfold. He said so himself.\""
+   },
+   {
+    "say": "soldier",
+    "text": "\"They hanged your elders from their own drying house, Sergeant. We all heard. What do you want to do with the men who held the light for it?\""
+   },
+   {
+    "if": {
+     "flag": "recruited.oren"
+    },
+    "then": [
+     {
+      "say": "oren",
+      "text": "\"Whatever you decide, decide it so you can live with it in a year. That's all I'll say.\""
+     }
+    ]
+   },
+   {
+    "say": "brannoc",
+    "text": "\"It's your section, Caddow. They'll do what you say. That's what it means.\""
+   },
+   {
+    "choose": "Two Wardens in the chapel. What does Rhea say?",
+    "options": [
+     {
+      "label": "\"Nobody hangs. Not at Thornwick. We keep them for an exchange, and we feed them like our own.\"",
+      "hint": "Spare them, though they hanged Larkfold's elders.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "wardens": "spared"
+        }
+       },
+       {
+        "add": {
+         "finchTrust": 4
+        }
+       },
+       {
+        "say": "soldier",
+        "text": "\"And when he goes back and holds the torches somewhere else?\""
+       },
+       {
+        "say": "rhea",
+        "text": "\"Then I'll have been wrong. I'd rather be wrong that way.\""
+       },
+       {
+        "say": "",
+        "text": "Some of them look at the fire. Some of them look at her. Nobody argues after that."
+       }
+      ]
+     },
+     {
+      "label": "\"Hang them. As they hanged ours.\"",
+      "hint": "As they hanged the elders.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "wardens": "hanged"
+        }
+       },
+       {
+        "add": {
+         "finchTrust": -15
+        }
+       },
+       {
+        "say": "",
+        "text": "Nobody says anything. Brannoc gets up and goes to find rope, because he won't ask anyone else to do it."
+       },
+       {
+        "say": "",
+        "text": "In the morning there are two shapes under the chapel arch. Nobody looks at them, and nobody goes that way for a week."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "light": "night"
+    }
+   },
+   {
+    "stage": "ab18"
+   }
+  ],
+  "springRider": [
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 4,
+     "y": 14,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "Water runs everywhere. The terraces below the walls are turning green."
+   },
+   {
+    "if": {
+     "flag": "party.brannoc"
+    },
+    "then": [
+     {
+      "say": "brannoc",
+      "text": "\"Back's mended. Kane's sent word: the Millbridge company has waited all winter for me, and it can't wait any longer.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"You've done well up here, Caddow. Don't let anyone tell you different. Not even you.\""
+     },
+     {
+      "leave": "brannoc"
+     },
+     {
+      "toast": "Brannoc goes down to the Millbridge company."
+     }
+    ]
+   }
+  ],
+  "rider": [
+   {
+    "if": {
+     "stage": "ab19"
+    },
+    "then": [
+     {
+      "say": "rider",
+      "text": "\"From the Marshal, Sergeant. There's to be an exchange of prisoners at Kell's Bridge on the Kerrow, under a truce flag. Five of ours the Guild has taken on the Vantry road this winter, for five of theirs we hold.\""
+     },
+     {
+      "if": {
+       "eq": {
+        "wardens": "spared"
+       }
+      },
+      "then": [
+       {
+        "say": "rider",
+        "text": "\"Two of theirs are yours. The Marshal wants them brought down, and you with them, as their escort.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "rider",
+        "text": "\"The Marshal wants you with the escort. You've seen Wardens up close.\""
+       }
+      ]
+     },
+     {
+      "say": "rider",
+      "text": "\"Lieutenant Varro does the talking. The Guild has named its own officer for the bridge.\""
+     },
+     {
+      "say": "",
+      "text": "The rider hesitates, then hands over a second, smaller paper. The Guild's letter, copied in Varro's neat hand. At the bottom, the name of the officer who will meet them."
+     },
+     {
+      "say": "",
+      "text": "Lieutenant C. Dace, Wardens of the Brood Guild."
+     },
+     {
+      "say": "tamsin",
+      "text": "\"Rhea.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"I know. I can read.\""
+     },
+     {
+      "choose": "Kane hasn't ordered her. He's asked.",
+      "options": [
+       {
+        "label": "\"I'll go.\"",
+        "by": "rhea",
+        "do": []
+       },
+       {
+        "label": "\"Tell Kane I'll be there.\"",
+        "by": "rhea",
+        "do": []
+       }
+      ]
+     },
+     {
+      "regroup": true
+     },
+     {
+      "fade": "Two days down the mountain and along the Kerrow, under a white flag."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "stage": "ab20"
+     },
+     {
+      "goto": {
+       "map": "kellsbridge",
+       "x": 12,
+       "y": 12,
+       "facing": "up"
+      }
+     },
+     {
+      "say": "",
+      "text": "Kell's Bridge is old stone, three arches over the Kerrow, with the Commons tents on this bank and the Guild's grey ones on the other."
+     },
+     {
+      "say": "",
+      "text": "A man in a Warden lieutenant's coat is waiting alone in the middle of the bridge."
+     }
+    ],
+    "else": [
+     {
+      "say": "rider",
+      "text": "\"The Marshal's waiting on your answer, Sergeant.\""
+     }
+    ]
+   }
+  ],
+  "varroBridge": [
+   {
+    "if": {
+     "stage": "ab20"
+    },
+    "then": [
+     {
+      "say": "varro",
+      "text": "\"It's all agreed, Caddow. Our five for their five. He asked who the escort was, and I told him.\""
+     },
+     {
+      "say": "varro",
+      "text": "\"Walk them out to the middle. He'll want to count them. If you need me, I'm here.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "varro",
+      "text": "\"Done. Let's go home before anyone changes their mind.\""
+     }
+    ]
+   }
+  ],
+  "bridge": [
+   {
+    "if": {
+     "stage": "ab20"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The spring sun is hot on the bridge. The river is loud under the arches."
+     },
+     {
+      "say": "",
+      "text": "Corran is thinner. His hair is cut short, the Warden way. He has a lieutenant's tabs on a grey coat, and the collar is buttoned high up his neck, in the heat."
+     },
+     {
+      "say": "corran",
+      "text": "\"Rhea.\""
+     },
+     {
+      "say": "",
+      "text": "He says it the way he used to say it across the drying-house roof, and she hates him for that more than for anything."
+     },
+     {
+      "say": "corran",
+      "text": "\"Five of ours. Five of yours. I need to count them.\""
+     },
+     {
+      "if": {
+       "eq": {
+        "wardens": "spared"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "He counts. When he gets to Oakes, Oakes doesn't step forward."
+       },
+       {
+        "say": "oakes",
+        "text": "\"I'm not going back, Lieutenant. Write me down as dead, or deserted, or whatever you like.\""
+       },
+       {
+        "say": "corran",
+        "text": "\"You know what they do to deserters, Oakes.\""
+       },
+       {
+        "say": "oakes",
+        "text": "\"You'd know.\""
+       },
+       {
+        "say": "",
+        "text": "Corran looks at him for a long moment, and writes something in his book."
+       },
+       {
+        "say": "corran",
+        "text": "\"Dead in the snow at Thornwick. Four, then.\""
+       },
+       {
+        "say": "lyle",
+        "text": "\"Sergeant?\""
+       },
+       {
+        "say": "oakes",
+        "text": "\"Go home, lad. Go back to your mill. You've done nothing to be ashamed of yet.\""
+       },
+       {
+        "say": "",
+        "text": "Lyle crosses to the Guild's side alone, looking back the whole way."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "He counts the Commons' three Wardens from the stockade. Two of the five he was expecting aren't there. He doesn't ask why. He knows."
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "The exchange is done. Nobody moves."
+     },
+     {
+      "say": "corran",
+      "text": "\"Do you still sing?\""
+     },
+     {
+      "say": "",
+      "text": "Her hand goes to her collar without her meaning it to. To the cord under her shirt, and the ring on it. He sees."
+     },
+     {
+      "choose": "Corran is waiting. Varro is watching from the bank.",
+      "options": [
+       {
+        "label": "\"Every harvest. On the terraces. Nothing ever comes.\"",
+        "hint": "Answer him.",
+        "by": "rhea",
+        "do": [
+         {
+          "set": {
+           "parley": "answered"
+          }
+         },
+         {
+          "add": {
+           "hold": 10
+          }
+         },
+         {
+          "say": "",
+          "text": "Something happens to his face, and then doesn't."
+         },
+         {
+          "say": "corran",
+          "text": "\"No. It wouldn't. Not now.\""
+         },
+         {
+          "say": "corran",
+          "text": "\"I'm glad you still sing.\""
+         }
+        ]
+       },
+       {
+        "label": "\"You don't get to ask me that. You don't get to ask me anything. You walked them in with a lamp, Corran.\"",
+        "hint": "Tell him what she thinks of him.",
+        "by": "rhea",
+        "do": [
+         {
+          "set": {
+           "parley": "toldoff"
+          }
+         },
+         {
+          "add": {
+           "hold": -10
+          }
+         },
+         {
+          "say": "corran",
+          "text": "\"I know what I did.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"Then say it.\""
+         },
+         {
+          "say": "",
+          "text": "He doesn't. He turns, and walks back to the grey tents, and his back is very straight."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "if": {
+       "eq": {
+        "wardens": "spared"
+       }
+      },
+      "then": [
+       {
+        "say": "oakes",
+        "text": "\"Sergeant. I'm a dead man on their books now. I'd sooner be useful than dead. If you'll have me.\""
+       },
+       {
+        "join": "oakes"
+       },
+       {
+        "set": {
+         "recruited.oakes": true
+        }
+       },
+       {
+        "toast": "Oakes joins Rhea's company."
+       }
+      ]
+     },
+     {
+      "stage": "ab21"
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The bridge is empty now. The river is loud under the arches."
+     }
+    ]
+   }
+  ],
+  "bridgeHome": [
+   {
+    "fade": "Two days back up the mountain."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 13,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "if": {
+     "eq": {
+      "parley": "answered"
+     }
+    },
+    "then": [
+     {
+      "say": "tamsin",
+      "text": "\"You answered him. I saw. I'm not going to say anything.\""
+     },
+     {
+      "say": "tamsin",
+      "text": "\"I'm only going to say that I saw.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "tamsin",
+      "text": "\"Good. He had it coming. Now go and lie down, before you fall down.\""
+     }
+    ]
+   }
+  ],
+  "hiding": [
+   {
+    "hero": "corran"
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "day",
+     "showHold": true
+    }
+   },
+   {
+    "stage": "ac7"
+   },
+   {
+    "goto": {
+     "map": "surgery",
+     "x": 4,
+     "y": 4,
+     "facing": "up"
+    }
+   },
+   {
+    "if": {
+     "eq": {
+      "parley": "toldoff"
+     }
+    },
+    "then": [
+     {
+      "set": {
+       "mods.corran": "lull"
+      }
+     },
+     {
+      "add": {
+       "hold": -6,
+       "rings.corran": 1
+      }
+     },
+     {
+      "say": "",
+      "text": "You put a fresh lull on the night you came back from the bridge, and the night after that. You were going to make the tin last the month. It has lasted nine days."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "evenings": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "You've been sleeping, since the bridge. Not well. But sleeping. The tin from Lisle has run out early anyway. It always does now."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Since the bridge you haven't slept. Three nights. Four. Every time you close your eyes she says it again: you walked them in with a lamp."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "lisleHiding": [
+   {
+    "if": {
+     "stage": "ac7"
+    },
+    "then": [
+     {
+      "if": {
+       "eq": {
+        "evenings": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "corran",
+        "text": "\"The field line doesn't do anything any more. I need the house line.\""
+       },
+       {
+        "say": "lisle",
+        "text": "\"You need less, Lieutenant. Not more. The Guild counts every line I set, and every officer I set them on. Your name is in that ledger nine times since the autumn.\""
+       },
+       {
+        "say": "lisle",
+        "text": "\"No. Come back in a month.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "corran",
+        "text": "\"I can't sleep. You offered me something for the evenings, in the autumn.\""
+       },
+       {
+        "say": "lisle",
+        "text": "\"And you told me nothing hurt. The Guild counts every line I set now. New names wait a month for the ledger. Come back in a month.\""
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "Out in the street, a Warden you've seen in the yard catches your eye and walks with you a while. He knows a place, he says. On the Spindle canal. They don't keep ledgers."
+     },
+     {
+      "stage": "ac8"
+     },
+     {
+      "goto": {
+       "map": "backroom",
+       "x": 5,
+       "y": 5,
+       "facing": "up"
+      }
+     },
+     {
+      "say": "",
+      "text": "A low room that smells of canal water and moss. Crates along the walls. A man at the table with a stack of tins and a ledger he isn't writing in."
+     }
+    ],
+    "else": [
+     {
+      "say": "lisle",
+      "text": "\"A month, Lieutenant.\""
+     }
+    ]
+   }
+  ],
+  "smuggler": [
+   {
+    "if": {
+     "stage": "ac8"
+    },
+    "then": [
+     {
+      "say": "smuggler",
+      "text": "\"House lines. Real Guild stock, sealed, straight off the cart. Half the shop price, and nobody writes your name down.\""
+     },
+     {
+      "say": "",
+      "text": "He opens a crate to show you. Tins, packed in duskwort moss. The crate was tied with a miners' hitch, with a red thread laid through it."
+     },
+     {
+      "say": "smuggler",
+      "text": "\"Don't ask where from, Lieutenant, and I won't ask where your coat's from.\""
+     },
+     {
+      "choose": "The tins are packed in moss, row on row.",
+      "options": [
+       {
+        "label": "Buy three",
+        "hint": "Half the price, and no ledger.",
+        "do": [
+         {
+          "set": {
+           "bought": true,
+           "mods.corran": "lull"
+          }
+         },
+         {
+          "add": {
+           "hold": -12,
+           "rings.corran": 2
+          }
+         },
+         {
+          "say": "",
+          "text": "You pay. He wraps them in a page torn from a newspaper. The house line is like stepping into warm water."
+         }
+        ]
+       },
+       {
+        "label": "Walk out with nothing",
+        "hint": "And sit out the raw.",
+        "do": [
+         {
+          "set": {
+           "bought": false,
+           "mods.corran": "raw"
+          }
+         },
+         {
+          "add": {
+           "hold": 10
+          }
+         },
+         {
+          "say": "",
+          "text": "You walk out. By the time you're home, the shaking has started. By midnight it's the raw, and it doesn't stop for four days."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "fade": "Home."
+     },
+     {
+      "stage": "ac9"
+     },
+     {
+      "goto": {
+       "map": "rooms",
+       "x": 2,
+       "y": 3,
+       "facing": "right"
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "smuggler",
+      "text": "\"Come again, Lieutenant.\""
+     }
+    ]
+   }
+  ],
+  "finchLie": [
+   {
+    "if": {
+     "stage": "ac9"
+    },
+    "then": [
+     {
+      "say": "finch",
+      "text": "\"Where were you?\""
+     },
+     {
+      "if": {
+       "eq": {
+        "bought": true
+       }
+      },
+      "then": [
+       {
+        "say": "corran",
+        "text": "\"Watch report. It ran late.\""
+       },
+       {
+        "say": "",
+        "text": "Finch looks at you. At your collar. He's not a child any more, and he grew up in a hatchery, and he knows exactly what a man looks like the evening after a fresh house line."
+       },
+       {
+        "say": "finch",
+        "text": "\"All right.\""
+       },
+       {
+        "say": "",
+        "text": "He goes to bed. He pretends to believe you. You let him."
+       },
+       {
+        "add": {
+         "finchCorran": -6
+        }
+       }
+      ],
+      "else": [
+       {
+        "say": "corran",
+        "text": "\"Out. Walking.\""
+       },
+       {
+        "say": "",
+        "text": "You're shaking so hard you can't undo your coat. Finch watches you try for a while. Then he comes over and undoes it for you, and doesn't say anything at all."
+       },
+       {
+        "say": "",
+        "text": "In the morning there's a cup of hot water and honey on the table by your bed. He must have sat up to make it."
+       },
+       {
+        "add": {
+         "finchCorran": 6
+        }
+       }
+      ]
+     },
+     {
+      "run": "backToRhea3"
+     }
+    ]
+   }
+  ],
+  "backToRhea3": [
+   {
+    "fade": "Thornwick. Late spring."
+   },
+   {
+    "hero": "rhea"
+   },
+   {
+    "set": {
+     "light": "day",
+     "showHold": false,
+     "mods.corran": ""
+    }
+   },
+   {
+    "stage": "ab22"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "down"
+    }
+   }
+  ],
+  "tobinClean": [
+   {
+    "if": {
+     "stage": "ab22"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Tobin stands at the gate with his pack on, in his mended miner's coat. There's nothing on the back of his neck. The rings on his neck have gone pale, and there's no new one."
+     },
+     {
+      "say": "",
+      "text": "Ume has come down from the terraces on a loftbuck, with her stick across her knees, to see it."
+     },
+     {
+      "say": "ume",
+      "text": "\"Turn round. Let me look.\""
+     },
+     {
+      "say": "",
+      "text": "He turns round. She looks at the back of his neck for a long time, and touches each ring once, the way you'd count beads."
+     },
+     {
+      "say": "ume",
+      "text": "\"Twenty years I've watched the young ones go down the mountain and come back with rings. You're the first one I've seen come home without a new one.\""
+     },
+     {
+      "say": "tobin",
+      "text": "\"Six months. The first was the worst. Then it was just being ill. Then it was just tired. Then one morning I didn't think about it until noon.\""
+     },
+     {
+      "say": "tobin",
+      "text": "\"I'm going back down to Coldharrow. There's eight hundred men in those pits with rings on their necks. I want to tell them where Thornwick is.\""
+     },
+     {
+      "say": "ume",
+      "text": "\"Your mother knew this could be done, Caddow. She just never lived to see the end of it.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Neither did I. Till now.\""
+     },
+     {
+      "say": "",
+      "text": "Tobin walks down the road into the cloud without looking back, the way people do when they're sure."
+     },
+     {
+      "set": {
+       "tobinClean": true
+      }
+     },
+     {
+      "stage": "ab23"
+     }
+    ],
+    "else": [
+     {
+      "say": "ume",
+      "text": "\"Go on with you. I'm an old woman watching a road.\""
+     }
+    ]
+   }
+  ],
+  "summer": [
+   {
+    "stage": "ab24"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 13,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "Thornwick in summer. The pool steams in the sun. The chapel has a roof again, of a sort. There are sixty people living inside the walls now: the section, weaners from the lowlands, children who walked up from the carts, Hesk's kith, Oda's trays."
+   },
+   {
+    "say": "",
+    "text": "Kane's horse is tied by the gate."
+   }
+  ],
+  "promotion": [
+   {
+    "if": {
+     "stage": "ab24"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Kane is in the chapel, looking up at the new roof. Brannoc is with him, standing straight for the first time since Sallow. Varro is sitting on the altar step with a ledger."
+     },
+     {
+      "say": "kane",
+      "text": "\"Caddow. Look at this place. I gave you a section and a ruin.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"Thornwick weans more people than every tent at the camp. The clans send moss. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you.\""
+     },
+     {
+      "if": {
+       "flag": "recruited.oakes"
+      },
+      "then": [
+       {
+        "say": "kane",
+        "text": "\"And there's a Warden sergeant in your company who walked away from the Guild on a bridge. Nobody's done that in ten years.\""
+       }
+      ]
+     },
+     {
+      "say": "kane",
+      "text": "\"It's not a section's post any more. It's a company's. A company needs a lieutenant, and the officers have to agree on who.\""
+     },
+     {
+      "say": "varro",
+      "text": "\"I've put my name to it. For what that's worth.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"And I've put mine. I was her sergeant. I told the council she's the only recruit I ever had who stitched my back and then outvoted me.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"There it is, then. Lieutenant Caddow, of the Thornwick company.\""
+     },
+     {
+      "set": {
+       "rank": "Lieutenant"
+      }
+     },
+     {
+      "toast": "Promoted: Lieutenant. Thornwick is now a company post."
+     },
+     {
+      "say": "kane",
+      "text": "\"Now. One more thing, Lieutenant, and then I'll get out of your chapel.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"Thornwick sits on the only road over the Cloudline that stays open all winter. I want my crates to go down that road, through your gate, to the lowland towns. Same crates you saw on the ice. They'll come through once a month, and they won't stop.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"Half this army's pay goes down that road, Caddow. More, if the Vantry road gets watched.\""
+     },
+     {
+      "if": {
+       "flag": "tobinClean"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Through the chapel door, Rhea can see the gate Tobin walked out of, clean, a month ago."
+       }
+      ]
+     },
+     {
+      "choose": "Kane's crates on the Thornwick road.",
+      "options": [
+       {
+        "label": "\"Not through my gate. Not Guild lulls, past the weaning house, to the people we're trying to wean.\"",
+        "hint": "Shut the road, and lose half the army's pay.",
+        "by": "rhea",
+        "do": [
+         {
+          "set": {
+           "trade": "shut"
+          }
+         },
+         {
+          "add": {
+           "kaneTrust": -20
+          }
+         },
+         {
+          "say": "kane",
+          "text": "\"Then the army goes hungry this winter, Lieutenant. Half of it. I hope your greenlings are filling.\""
+         },
+         {
+          "say": "kane",
+          "text": "\"I'll remember who shut the road.\""
+         },
+         {
+          "say": "",
+          "text": "He leaves before dark. He doesn't say goodbye."
+         }
+        ]
+       },
+       {
+        "label": "\"Send them through. The army has to eat.\"",
+        "hint": "Let them through. The army is fed.",
+        "by": "rhea",
+        "do": [
+         {
+          "set": {
+           "trade": "open"
+          }
+         },
+         {
+          "add": {
+           "kaneTrust": 10
+          }
+         },
+         {
+          "say": "kane",
+          "text": "\"Good. I knew you weren't simple.\""
+         },
+         {
+          "say": "",
+          "text": "He claps her on the shoulder on his way out. Brannoc doesn't look at either of them."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "stage": "ab25"
+     }
+    ],
+    "else": [
+     {
+      "say": "kane",
+      "text": "\"Lieutenant.\""
+     }
+    ]
+   }
+  ],
+  "bell": [
+   {
+    "hero": "corran"
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "evening",
+     "showHold": true
+    }
+   },
+   {
+    "stage": "ac10"
+   },
+   {
+    "goto": {
+     "map": "rooms",
+     "x": 2,
+     "y": 3,
+     "facing": "right"
+    }
+   },
+   {
+    "if": {
+     "eq": {
+      "trade": "shut"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The man on the Spindle canal hasn't had stock for a month. His crates stopped coming, he said, somewhere up in the mountains. The tin in your pocket is the last you have."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "There are always tins on the Spindle canal now. There's one in your pocket."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Tonight you have the watch at House Mire's hatchery. Twelve hours in the heat by the boilers, listening for the pressure bell."
+   }
+  ],
+  "bellTin": [
+   {
+    "if": {
+     "stage": "ac10"
+    },
+    "then": [
+     {
+      "choose": "The tin is in your pocket. The watch starts in an hour.",
+      "options": [
+       {
+        "label": "Put it on before the watch",
+        "hint": "Twelve hours by the boilers will go by smoothly.",
+        "do": [
+         {
+          "set": {
+           "bellNight": "lull",
+           "mods.corran": "lull"
+          }
+         },
+         {
+          "add": {
+           "hold": -12,
+           "rings.corran": 1
+          }
+         }
+        ]
+       },
+       {
+        "label": "Leave it in the tin",
+        "hint": "And sit the watch with the shakes.",
+        "do": [
+         {
+          "set": {
+           "bellNight": "clean",
+           "mods.corran": "raw"
+          }
+         },
+         {
+          "add": {
+           "hold": 8
+          }
+         },
+         {
+          "say": "",
+          "text": "Your hands are already shaking. It will be a long night."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "fade": "House Mire's hatchery. The night watch."
+     },
+     {
+      "set": {
+       "light": "steam"
+      }
+     },
+     {
+      "if": {
+       "eq": {
+        "bellNight": "lull"
+       }
+      },
+      "then": [
+       {
+        "goto": {
+         "map": "hatchery",
+         "x": 9,
+         "y": 8,
+         "facing": "up"
+        }
+       },
+       {
+        "say": "",
+        "text": "The boiler room is warm. The chair by the gauges is comfortable. The night is very smooth, and very quiet."
+       },
+       {
+        "say": "",
+        "text": "You close your eyes for a moment."
+       },
+       {
+        "fade": "You wake to screaming."
+       },
+       {
+        "say": "",
+        "text": "The pressure bell has been ringing for a long time. The north boiler has burst. The brood room beyond it is white with steam, and the night shift is carrying children out of it."
+       },
+       {
+        "say": "",
+        "text": "You run in with them. You carry out who you can. It's too late for most of it."
+       },
+       {
+        "set": {
+         "bellDead": 6
+        }
+       },
+       {
+        "run": "bellMorning"
+       }
+      ],
+      "else": [
+       {
+        "goto": {
+         "map": "hatchery",
+         "x": 9,
+         "y": 8,
+         "facing": "up"
+        }
+       },
+       {
+        "say": "",
+        "text": "The boiler room is so hot your shirt sticks to the shakes. You walk the gauges every hour to stay awake."
+       },
+       {
+        "say": "",
+        "text": "Just before dawn, the pressure bell starts ringing. The north boiler. You hear it. You're already running."
+       },
+       {
+        "stage": "ac11"
+       },
+       {
+        "say": "",
+        "text": "Steam is coming through the wall from the north boiler. There are children asleep at the trays. Get them to the door, then get out yourself."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bellOut": [
+   {
+    "say": "",
+    "text": "You come out last, with the last of them. Behind you the north boiler goes with a sound like the sky splitting."
+   },
+   {
+    "say": "",
+    "text": "The night shift brings the others out of the far rooms. Not all of them."
+   },
+   {
+    "set": {
+     "bellDead": 2
+    }
+   },
+   {
+    "run": "bellMorning"
+   }
+  ],
+  "bellMorning": [
+   {
+    "fade": "Morning."
+   },
+   {
+    "set": {
+     "light": "steam"
+    }
+   },
+   {
+    "stage": "ac12"
+   },
+   {
+    "goto": {
+     "map": "hatchery",
+     "x": 9,
+     "y": 8,
+     "facing": "up"
+    }
+   },
+   {
+    "if": {
+     "eq": {
+      "bellDead": 6
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The brood room is quiet now. Six trays stand empty. Someone has chalked six numbers on the boiler wall, the way the hatchery counts children."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The brood room is quiet now. Two trays stand empty. Someone has chalked two numbers on the boiler wall, the way the hatchery counts children."
+     }
+    ]
+   }
+  ],
+  "posyMorning": [
+   {
+    "if": {
+     "stage": "ac12"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A girl of fifteen is scrubbing the floor by the empty trays, in a leather brood-room apron. Her arms are scarred with bites to the elbow. She doesn't stop scrubbing when you come in."
+     },
+     {
+      "say": "posy",
+      "text": "\"You were on watch.\""
+     },
+     {
+      "if": {
+       "eq": {
+        "bellNight": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "posy",
+        "text": "\"Everyone knows what you wear under that collar, Lieutenant. Everyone in the brood rooms knows what a man looks like when he's got a fresh one on. You were asleep.\""
+       },
+       {
+        "say": "corran",
+        "text": "\"Yes.\""
+       },
+       {
+        "say": "",
+        "text": "She looks at you then, for the first time. You know her face. You knew it before she was fifteen. She was a child on the second cart, at Larkfold."
+       },
+       {
+        "say": "posy",
+        "text": "\"Six. Write it down in your book.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "posy",
+        "text": "\"You heard it. They're saying you were the first one in. They're saying you carried three out.\""
+       },
+       {
+        "say": "",
+        "text": "She looks at you then, for the first time. You know her face. She was a child on the second cart, at Larkfold."
+       },
+       {
+        "say": "posy",
+        "text": "\"Two still died. I knew them both. Write that in your book as well.\""
+       }
+      ]
+     },
+     {
+      "set": {
+       "metPosy": true
+      }
+     },
+     {
+      "stage": "ac13"
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Posy goes on scrubbing."
+     }
+    ]
+   }
+  ],
+  "halloranBell": [
+   {
+    "if": {
+     "stage": "ac13"
+    },
+    "then": [
+     {
+      "say": "halloran",
+      "text": "\"Dace. Walk with me.\""
+     },
+     {
+      "say": "halloran",
+      "text": "\"A boiler burst at Mire. It happens. The House's report says the valve failed, and it will say so for as long as anyone reads it.\""
+     },
+     {
+      "if": {
+       "eq": {
+        "bellNight": "lull"
+       }
+      },
+      "then": [
+       {
+        "say": "halloran",
+        "text": "\"I know where you were. So does the House. Nobody is going to say it, because you're too useful, and because the Houses don't like to read about their officers.\""
+       },
+       {
+        "add": {
+         "hold": -10
+        }
+       }
+      ],
+      "else": [
+       {
+        "say": "halloran",
+        "text": "\"I hear you were first in. Good. Nobody will write that down either.\""
+       }
+      ]
+     },
+     {
+      "say": "halloran",
+      "text": "\"Go home, Lieutenant. Sleep. Come back tonight.\""
+     },
+     {
+      "run": "backToRhea4"
+     }
+    ],
+    "else": [
+     {
+      "say": "halloran",
+      "text": "\"Go home, Dace.\""
+     }
+    ]
+   }
+  ],
+  "backToRhea4": [
+   {
+    "fade": "Thornwick. A fortnight later."
+   },
+   {
+    "hero": "rhea"
+   },
+   {
+    "set": {
+     "light": "day",
+     "showHold": false,
+     "mods.corran": ""
+    }
+   },
+   {
+    "stage": "ab26"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "down"
+    }
+   }
+  ],
+  "childGate": [
+   {
+    "if": {
+     "stage": "ab26"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A girl of about ten is sitting just inside the gate, with her boots in her lap. Her feet are bleeding. She has walked a very long way."
+     },
+     {
+      "say": "child",
+      "text": "\"Is this the place? Up the mountain? Where they don't send you back?\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"This is the place. You're safe. Where have you come from?\""
+     },
+     {
+      "say": "child",
+      "text": "\"Mire. House Mire's hatchery, in Vantry. I walked.\""
+     },
+     {
+      "say": "child",
+      "text": "\"A boiler went. In the night. The north one.\""
+     },
+     {
+      "if": {
+       "eq": {
+        "bellDead": 6
+       }
+      },
+      "then": [
+       {
+        "say": "child",
+        "text": "\"Six of us. Six didn't come out. The officer on watch was asleep. Everybody says so. He was wearing one, under his collar.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "child",
+        "text": "\"Two of us didn't come out. The officer on watch was the first one in. He carried out three. They still say it was his fault.\""
+       }
+      ]
+     },
+     {
+      "say": "child",
+      "text": "\"After, nobody was watching the gate. So I walked.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea sits down on the stones beside her and takes the bleeding feet into her lap, and starts to clean them, because it's the only thing she can think of to do."
+     },
+     {
+      "say": "",
+      "text": "She doesn't ask the officer's name. The girl wouldn't know it. There are a hundred officers in Vantry with high collars."
+     },
+     {
+      "set": {
+       "childMire": true
+      }
+     },
+     {
+      "end": "act2"
+     }
+    ]
+   }
+  ],
+  "bellChild1": [
+   {
+    "if": {
+     "stage": "ac11"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": "bell.c1"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Already out."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "A boy asleep with his head on the tray rim. You get him up and push him toward the door."
+       },
+       {
+        "set": {
+         "bell.c1": true
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bellChild2": [
+   {
+    "if": {
+     "stage": "ac11"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": "bell.c2"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Already out."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "A girl who can't see for the steam, turning in circles. You put her hand on your belt and walk her to the door."
+       },
+       {
+        "set": {
+         "bell.c2": true
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bellChild3": [
+   {
+    "if": {
+     "stage": "ac11"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": "bell.c3"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Already out."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The smallest one, under a tray, too frightened to come out. You reach in and carry him out under your arm."
+       },
+       {
+        "set": {
+         "bell.c3": true
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "bellDoor": [
+   {
+    "if": {
+     "stage": "ac11"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": [
+        "bell.c1",
+        "bell.c2",
+        "bell.c3"
+       ]
+      },
+      "then": [
+       {
+        "run": "bellOut"
+       }
+      ],
+      "else": [
+       {
+        "toast": "There are still children at the trays."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "toast": "Not now."
+     }
+    ]
+   }
+  ],
+  "bellSteamFail": [
+   {
+    "say": "",
+    "text": "You go down on one knee in the white. Someone's hands drag you back by the collar."
+   },
+   {
+    "say": "",
+    "text": "You go back in."
+   },
+   {
+    "goto": {
+     "map": "hatchery",
+     "x": 9,
+     "y": 8,
+     "facing": "up"
+    }
+   }
+  ],
+  "roomsTable": [
+   {
+    "if": {
+     "stage": "ac3"
+    },
+    "then": [
+     {
+      "run": "letter"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ac10"
+      },
+      "then": [
+       {
+        "run": "bellTin"
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The table. The ledger, and the lamp."
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

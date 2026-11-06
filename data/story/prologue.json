@@ -1,6 +1,6 @@
 {
  "id": "prologue",
- "title": "Prologue \u00b7 Larkfold",
+ "title": "Prologue · Larkfold",
  "voiced": [
   "roofTalk",
   "news",
@@ -308,7 +308,7 @@
    "map": "larkfold",
    "x": 17,
    "y": 8,
-   "look": "vil3",
+   "look": "runner",
    "when": {
     "stage": "n1"
    },
@@ -465,7 +465,10 @@
     {
      "run": "halloran"
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "finch",
@@ -491,7 +494,10 @@
       }
      ]
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "sela",
@@ -504,7 +510,10 @@
      "say": "",
      "text": "A Larkfold girl of seven, crying without making any sound."
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "kid12",
@@ -517,7 +526,10 @@
      "say": "",
      "text": "A Larkfold child. They won't look at you."
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "kid14",
@@ -530,7 +542,10 @@
      "say": "",
      "text": "A Larkfold child. They won't look at you."
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "finch",
@@ -552,7 +567,7 @@
     },
     {
      "say": "finch",
-     "text": "\"I can't see. I can't\u2014\""
+     "text": "\"I can't see. I can't—\""
     },
     {
      "say": "",
@@ -570,7 +585,10 @@
     {
      "run": "lisle"
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "n1",
@@ -1648,7 +1666,7 @@
        },
        {
         "say": "corran",
-        "text": "\"Hask. A village on the far ridge, caught with a brood room. We hanged the adults in the square and put the children on carts. I walked away the next morning and didn't stop until I saw your terraces.\""
+        "text": "\"Hask. A village on the far ridge, caught with a brood room. We hanged the adults in the square and put the children on carts. I walked away the next morning. Five years of ferry work and mill work after that, and then one spring I came up a mountain and saw your terraces.\""
        },
        {
         "run": "roofTalk"
@@ -2875,7 +2893,7 @@
    },
    {
     "say": "rook",
-    "text": "\"They didn't come up the trail. They came out of the cloud, by the cloud gate, quiet as you like. Davin opened it for them. He thought it was a friend.\""
+    "text": "\"They didn't come up the trail. They came out of the cloud, by the cloud gate, quiet as you like. Old Davin on the cloud gate opened it for them. He thought it was a friend.\""
    },
    {
     "say": "rook",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { act, afterBattle, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
+import { act, afterBattle, autoChoice, canRelease, fleeChance, release, tryFlee, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
 import { BATTLES, SKILLS } from "../../src/battle/data";
 import { initiativeOf, intentRead, statsOf } from "../../src/battle/rules";
 import { NEUTRAL, party } from "../../src/cast/attributes";
@@ -271,5 +271,33 @@ describe("heavy moves for those who aren't fighters", () => {
   it("every keepsake weapon type has a finisher, and every kith family an art", () => {
     for (const t of new Set(Object.values(KEEPSAKES).map((k) => k.type))) expect(book[`fin.${t}`], t).toBeDefined();
     for (const f of Object.keys(FAMILIES)) expect(book[`art.${f}`], f).toBeDefined();
+  });
+});
+
+describe("leaving a fight", () => {
+  it("running: a failed try hands the turn to the foes; a good one ends the fight", () => {
+    const s = fresh();
+    expect(fleeChance(s)).toBeGreaterThanOrEqual(0.25); expect(fleeChance(s)).toBeLessThanOrEqual(0.95);
+    expect(tryFlee(s, () => 0.99)).toBe(false); expect(s.phase).toBe("foe"); expect(s.escaped).toBeUndefined();
+    const t = fresh(); expect(tryFlee(t, () => 0)).toBe(true); expect(t.escaped).toBe("fled");
+  });
+
+  it("letting go: only when the foes are far weaker, and then they all leave", () => {
+    const s = fresh();
+    expect(canRelease(s)).toBe(false); // an even fight
+    for (const f of fighters(s, "foe")) { f.hp = 1; f.level = 1; }
+    for (const a of fighters(s, "ally")) a.level = 12;
+    expect(canRelease(s)).toBe(true);
+    release(s);
+    expect(fighters(s, "foe")).toHaveLength(0); expect(s.escaped).toBe("released");
+  });
+
+  it("auto battle picks a real move against a foe, and a heal when someone is badly hurt", () => {
+    const s = fresh(), u = acting(s)!;
+    const c = autoChoice(s, book, u)!;
+    expect(skillsFor(s, u, book)).toContain(c.skill); expect(unit(s, c.target).side).toBe("foe");
+    const rhea = turnOf(s, "rhea") && unit(s, "rhea"), tam = unit(s, "tam"); tam.hp = 1;
+    const h = autoChoice(s, book, rhea)!;
+    if (skillsFor(s, rhea, book).some((k) => book[k].kind === "heal")) { expect(book[h.skill].kind).toBe("heal"); expect(h.target).toBe("tam"); }
   });
 });

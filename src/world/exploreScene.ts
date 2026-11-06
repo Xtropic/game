@@ -11,7 +11,7 @@ import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
 import { REGIONS } from "./content";
-import { encounter } from "../battle/encounters";
+import { encounter, partyUnits, type Traveller } from "../battle/encounters";
 import type { BattleDef, BattleState } from "../battle/rules";
 import { OFFERS, lingerLine, trustChance } from "../kith/befriend";
 import { bakeMap } from "../art/tiles";
@@ -21,7 +21,7 @@ import { MAPS } from "./content";
 import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
 import { LOOKS, beastSheet, bodyOf, isBeast, glintTexture, noteTexture, personSheet, toneOf, type Facing } from "../art/people";
-import { RECRUITS } from "../cast/recruits";
+import { RECRUITS, recruit } from "../cast/recruits";
 
 /** People who can join you: drawn bright so they stand out from the crowd. */
 const RECRUITABLE = new Set(RECRUITS.map((r) => r.id));
@@ -34,12 +34,16 @@ import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
 import { ITEMS } from "../gear/items";
 import type { Slot } from "../core/save";
-import { StoryRunner, holds, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
+import { StoryRunner, holds, partyOf, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
 const NO_ANCHOR = { x: 0, y: 0 };
 const BOX = { w: 10, h: 6, ox: 1, oy: 11 }; // player's collision box at the feet, relative to the sprite's top-left
+/** Most travelling companions beside Rhea (Ash not counted): the battle line has six places. */
+const MAX_TRAVEL = 5;
+/** Story companions who fight with their own battle moves. */
+const FIGHTERS = new Set(["tamsin", "brannoc", "ferris", "ketti", "oakes"]);
 const FOLLOW_GAP = 16; // pixels of trail between each follower
 const WORLD_PACE = 1.6; // the world map is walked faster: one tile there is a stretch of country
 /** Tiles of wild ground walked between chance meetings on the world map: at least, plus up to. */
@@ -56,6 +60,7 @@ const LIGHT: Record<string, { color: number; alpha: number }> = {
   ash: { color: 0x2a2624, alpha: 0.12 },
   evening: { color: 0x1a1008, alpha: 0.4 },
   steam: { color: 0x0a0806, alpha: 0.2 },
+  snow: { color: 0xe8f0fa, alpha: 0.22 },
 };
 const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery"]);
 
@@ -157,6 +162,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.checkJoins(true);
     // a save made at the old end of the prologue carries straight on into the story, as it would now
     if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
+    else if (this.flags.ended === "act1") { this.flags.ended = false; this.runner.run([{ run: "act2Start" }]); } // a save made where Act I used to end
     else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
   }
 
@@ -197,14 +203,17 @@ export class ExploreScene implements Scene, StoryHost {
   refresh(): void {
     for (const s of this.shown) s.sprite.destroy();
     this.shown = [];
+    const staged = new Set<string>(); // party members a scene has placed somewhere on this map (brannoc-dawn): their follower steps aside
     for (const a of [...this.story.actors, ...this.findActors()]) {
       if (a.map !== this.map.file.id || !holds(a.when, this.where())) continue;
       if (this.followers.some((f) => f.id === a.id)) continue;
+      staged.add(a.id.split("-")[0]);
       const frames = this.sheet(a.look === "glint" ? "elder" : a.look);
       const sprite = new Sprite(a.look === "note" ? this.noteTex : a.look === "glint" ? this.glintTex : frames.down[0]);
       this.placeActor(sprite, a);
       this.people.addChild(sprite); this.shown.push({ a, sprite, frames });
     }
+    for (const f of this.followers) f.sprite.visible = !staged.has(f.id);
     if (!this.player.sprite.parent) this.people.addChild(this.player.sprite);
     const stage = String(this.flags.stage ?? "");
     this.objective.text = this.story.objectives[stage] ?? "";
@@ -298,8 +307,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** A chance meeting: a fight drawn from the region and the ground, with whoever is travelling with the hero. */
   meet(region: string, ground: Parameters<typeof encounter>[1]): void {
-    const party = this.followers.map((f) => ({ id: f.id, name: this.story.cast[f.id] ?? f.id }));
-    const def = encounter(region, ground, this.hero(), party, this.rng);
+    const def = encounter(region, ground, this.hero(), this.travellers(), this.rng);
     if (def.units.every((u) => u.side === "foe")) return;
     this.startBattle(def);
   }
@@ -392,10 +400,11 @@ export class ExploreScene implements Scene, StoryHost {
   private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && this.game.scenes.top === this; }
 
   openMenu(): void {
-    const trav = [this.hero(), ...this.followers.map((f) => f.id)];
     this.menu.show({
       game: this.game, names: this.story.cast,
-      travelling: () => trav,
+      travelling: () => [this.hero(), ...this.followers.map((f) => f.id)],
+      inParty: () => partyOf(this.flags),
+      setTravelling: (id) => this.setTravelling(id),
       company: () => this.joinedIds(),
       health: () => this.health(), setHealth: (h) => this.setHealth(h),
       save: (slot) => this.save(slot),
@@ -404,6 +413,33 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   private toggleNotes(): void { this.notes.toggle((id) => !!this.flags[`learned.${id}`], this.screen.w, this.screen.h); }
+
+  /** Whoever is walking with the hero now, as battle sees them: kith carry their species and level. */
+  private travellers(): Traveller[] {
+    return this.followers.map((f) => { const k = this.game.kith[f.id]; return { id: f.id, name: k?.name ?? this.story.cast[f.id] ?? f.id, ...(k ? { kith: { species: k.species, level: k.level } } : {}) }; });
+  }
+
+  /** The party picker (menu, Party page): puts someone recruited into the travelling party, or leaves them at camp.
+   *  The story's party list is what changes, so scenes that send people away or bring them back still work. While a
+   *  scene has the hero on their own (at Thornwick, or on an errand), the choice holds until the party sets out again. */
+  setTravelling(id: string): string {
+    const f = this.flags, name = this.game.kith[id]?.name ?? this.story.cast[id] ?? recruit(id)?.name ?? id;
+    if (this.hero() !== "rhea") return "Only Rhea chooses who travels with her.";
+    if (id === "rhea") return "Rhea leads. She always goes.";
+    if (id === "ash") return "Ash goes where Rhea goes.";
+    const r = recruit(id), fights = !!this.game.kith[id] || FIGHTERS.has(id) || r?.role === "party";
+    if (!fights) return r?.role === "base" ? `${name} keeps things running at home, not on the road.` : `${name} serves with the Commons, not on the road.`;
+    const list = partyOf(f), was = list.includes(id), walking = this.followers.map((x) => x.id);
+    const together = walking.length === list.length && list.every((x) => walking.includes(x));
+    if (!was && list.filter((x) => x !== "ash").length >= MAX_TRAVEL) return `Five travel with Rhea at most. Leave someone at camp first.`;
+    const next = was ? list.filter((x) => x !== id) : [...list, id];
+    f.party = next.join(",");
+    if (together) this.follow(next);
+    this.save("auto");
+    sfx.pickup();
+    if (was) return together ? `${name} stays behind at camp.` : `${name} will stay behind next time you set out.`;
+    return together ? `${name} joins the party.` : `${name} will come with you when you next set out.`;
+  }
 
   private toggleCompany(): void {
     const members = this.joinedIds().map((id) => joinerFor(id, this.game.kith, this.story.cast));
@@ -448,7 +484,9 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Puts a battle over the map; on a win, records it, shares out experience, and continues the story. */
   startBattle(which: string | BattleDef, onWin?: () => void): void {
-    const def = typeof which === "string" ? BATTLES[which] : which; if (!def) throw new Error(`no battle ${String(which)}`);
+    const found = typeof which === "string" ? BATTLES[which] : which; if (!found) throw new Error(`no battle ${String(which)}`);
+    // a written fight with "party": whoever is travelling with the hero fights it, against the foes it names
+    const def: BattleDef = found.party ? { ...found, units: [...partyUnits(this.hero(), this.travellers()), ...found.units.filter((u) => u.side === "foe")] } : found;
     const id = def.id;
     this.game.scenes.push(new BattleScene(def, SKILLS, {
       levels: this.game.levels(),
@@ -456,9 +494,11 @@ export class ExploreScene implements Scene, StoryHost {
       kith: this.game.kith,
       health: this.health(),
       pack: Object.fromEntries(Object.keys(ITEMS).filter((k) => ITEMS[k].battle).map((k) => [k, Number(this.game.flags[`have.${k}`] ?? 0)])),
-      onDone: (_r, s) => {
+      escape: typeof which !== "string", // chance meetings on the road; never a fight the story needs
+      onDone: (r, s) => {
         for (const [k, n] of Object.entries(s.used)) this.game.flags[`have.${k}`] = Math.max(0, Number(this.game.flags[`have.${k}`] ?? 0) - n);
         this.setHealth(afterBattle(s));
+        if (r !== "won") { this.refresh(); this.save("auto"); return; } // ran, or let them go: nothing won, nothing learned
         if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
@@ -524,7 +564,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
   /** A small line in the corner while anyone is hurt, so the player knows to rest. */
   private drawWounds(): void {
-    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran" };
+    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran", oakes: "Oakes" };
     const parts = Object.entries(h).map(([id, v]) => `${names[id] ?? id} ${Math.round(v * 100)}%`);
     this.wounds.text = parts.length ? `Wounded: ${parts.join("  ·  ")}\nRest in a town or camp to heal fully.` : "";
   }
@@ -734,6 +774,6 @@ export class ExploreScene implements Scene, StoryHost {
   /** Read-only view for tests and debugging. */
   debug() {
     return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
-      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
+      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), seen: this.followers.filter((f) => f.sprite.visible).map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

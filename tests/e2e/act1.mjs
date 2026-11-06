@@ -94,8 +94,7 @@ await expect("back out on the world map", (s) => s.map === "land-vale");
 await travel("land-vale", 59, 17, "right"); await walk("ArrowRight", 400);
 await expect("into the camp", (s) => s.map === "camp");
 await put(15, 5, "up"); await tap("Enter"); await choose(0);
-await expect("enlisted as a Recruit; look round the camp", (s) => s.stage === "a2b");
-if ((await flags()).rank !== "Recruit") fail("not a Recruit");
+await expect("a night in camp before deciding; look round", (s) => s.stage === "a2b");
 await put(19, 12, "right"); await talk(); await choose(0);
 await put(8, 8, "left"); await talk(); await read();
 await put(24, 8, "right"); await talk(); await read();
@@ -103,9 +102,10 @@ const tour = await flags(); if (!tour["tour.nurse"] || !tour["tour.yard"] || !to
 await put(23, 8, "right"); await tap("KeyQ"); await read();
 if (!(await flags())["recruited.ferris"]) fail("singing did not calm Ferris's reedcat");
 await page.screenshot({ path: "test-results/act1-camp.png" });
-await put(15, 5, "up"); await talk(); await choose(0);
+await put(15, 5, "up"); await talk(); await choose(0); await choose(0);
 await expect("sent to bed, not straight into the next day", (s) => s.stage === "a2e");
-await sleepInTent(); await expect("dawn: Brannoc in the drill yard", (s) => s.stage === "a2f");
+if ((await flags()).rank !== "Recruit") fail("not a Recruit after the first night");
+await sleepInTent(); await expect("dawn: Brannoc in the drill yard", (s) => s.stage === "a2f" && s.followers.includes("brannoc") && !s.seen.includes("brannoc")); // one Brannoc: the one waiting
 await put(7, 9, "right"); await talk(); await read();
 await fight("spar"); await read();
 await expect("three weeks of drill ahead", (s) => s.stage === "a2g");
@@ -169,14 +169,13 @@ await expect("the spring caves", (s) => s.map === "caves");
 await put(9, 3, "right"); await tap("Enter"); await read();
 if (!(await flags())["recruited.oda"]) fail("Oda not found in the caves");
 await put(7, 7, "down"); await walk("ArrowDown", 300);
-await put(16, 17, "down"); await walk("ArrowDown", 600); await read();
-const end = await expect("the end of what's written", (s) => s.ended);
+await put(16, 17, "down"); await walk("ArrowDown", 600); await read(400); await choose(0);
+// no end card: the story walks on into the autumn, back at camp
+const end = await expect("autumn at camp, no end card", (s) => !s.ended && s.map === "camp" && s.stage === "ab1");
 await page.screenshot({ path: "test-results/act1-end.png" });
-const ledger = await page.evaluate(() => window.__lull.game.scenes.top.ended?.text ?? "");
-if (/Act|Prologue|Interlude/.test(ledger)) fail(`act wording at the end: ${ledger}`);
-const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).flags);
-if (saved.ended !== "act1") fail(`the end is not saved: ${saved.ended}`);
+const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto") ?? "{}").flags ?? {});
+if (saved.ended) fail(`an ending was saved: ${saved.ended}`);
 
 if (errors.length) fail("page errors: " + errors.join(" | "));
-console.log(process.exitCode ? "act1 e2e FAILED" : "act1 e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ ended: end.ended }));
+console.log(process.exitCode ? "act1 e2e FAILED" : "act1 e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ stage: end.stage }));
 await browser.close(); server.close();
