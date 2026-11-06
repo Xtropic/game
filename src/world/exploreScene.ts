@@ -11,7 +11,7 @@ import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
 import { REGIONS } from "./content";
-import { encounter } from "../battle/encounters";
+import { encounter, partyUnits } from "../battle/encounters";
 import type { BattleDef, BattleState } from "../battle/rules";
 import { OFFERS, lingerLine, trustChance } from "../kith/befriend";
 import { bakeMap } from "../art/tiles";
@@ -56,6 +56,7 @@ const LIGHT: Record<string, { color: number; alpha: number }> = {
   ash: { color: 0x2a2624, alpha: 0.12 },
   evening: { color: 0x1a1008, alpha: 0.4 },
   steam: { color: 0x0a0806, alpha: 0.2 },
+  snow: { color: 0xe8f0fa, alpha: 0.22 },
 };
 const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery"]);
 
@@ -157,6 +158,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.checkJoins(true);
     // a save made at the old end of the prologue carries straight on into the story, as it would now
     if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
+    else if (this.flags.ended === "act1") { this.flags.ended = false; this.runner.run([{ run: "act2Start" }]); } // a save made where Act I used to end
     else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
   }
 
@@ -448,7 +450,9 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Puts a battle over the map; on a win, records it, shares out experience, and continues the story. */
   startBattle(which: string | BattleDef, onWin?: () => void): void {
-    const def = typeof which === "string" ? BATTLES[which] : which; if (!def) throw new Error(`no battle ${String(which)}`);
+    const found = typeof which === "string" ? BATTLES[which] : which; if (!found) throw new Error(`no battle ${String(which)}`);
+    // a written fight with "party": whoever is travelling with the hero fights it, against the foes it names
+    const def: BattleDef = found.party ? { ...found, units: [...partyUnits(this.hero(), this.followers.map((f) => ({ id: f.id, name: this.story.cast[f.id] ?? f.id }))), ...found.units.filter((u) => u.side === "foe")] } : found;
     const id = def.id;
     this.game.scenes.push(new BattleScene(def, SKILLS, {
       levels: this.game.levels(),
@@ -524,7 +528,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
   /** A small line in the corner while anyone is hurt, so the player knows to rest. */
   private drawWounds(): void {
-    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran" };
+    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran", oakes: "Oakes" };
     const parts = Object.entries(h).map(([id, v]) => `${names[id] ?? id} ${Math.round(v * 100)}%`);
     this.wounds.text = parts.length ? `Wounded: ${parts.join("  ·  ")}\nRest in a town or camp to heal fully.` : "";
   }

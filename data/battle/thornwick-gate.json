@@ -1,0 +1,79 @@
+{
+ "id": "thornwick-gate",
+ "name": "Wardens in the snow",
+ "backdrop": "snow",
+ "party": true,
+ "intro": [
+  "Wardens at the gate of Thornwick, with lamps and a tracker reedcat. They followed the smoke up the road.",
+  "Hold the gate. Nobody gets past the pool."
+ ],
+ "won": "The gate holds",
+ "lost": "Pushed back from the gate",
+ "units": [
+  {
+   "id": "oakesfoe",
+   "name": "Warden sergeant",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 6,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    168,
+    92
+   ]
+  },
+  {
+   "id": "rc",
+   "name": "Warden tracker",
+   "look": "reedcat:#d8d6d0",
+   "side": "foe",
+   "row": "front",
+   "hp": 24,
+   "kith": true,
+   "level": 5,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    160,
+    126
+   ]
+  },
+  {
+   "id": "w2",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 5,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    194,
+    110
+   ]
+  },
+  {
+   "id": "lylefoe",
+   "name": "Warden archer",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 4,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    226,
+    98
+   ]
+  }
+ ]
+}

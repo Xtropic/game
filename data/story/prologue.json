@@ -1,6 +1,6 @@
 {
  "id": "prologue",
- "title": "Prologue \u00b7 Larkfold",
+ "title": "Prologue · Larkfold",
  "voiced": [
   "roofTalk",
   "news",
@@ -465,7 +465,10 @@
     {
      "run": "halloran"
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "finch",
@@ -491,7 +494,10 @@
       }
      ]
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "sela",
@@ -504,7 +510,10 @@
      "say": "",
      "text": "A Larkfold girl of seven, crying without making any sound."
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "kid12",
@@ -517,7 +526,10 @@
      "say": "",
      "text": "A Larkfold child. They won't look at you."
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "kid14",
@@ -530,7 +542,10 @@
      "say": "",
      "text": "A Larkfold child. They won't look at you."
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "finch",
@@ -552,7 +567,7 @@
     },
     {
      "say": "finch",
-     "text": "\"I can't see. I can't\u2014\""
+     "text": "\"I can't see. I can't—\""
     },
     {
      "say": "",
@@ -570,7 +585,10 @@
     {
      "run": "lisle"
     }
-   ]
+   ],
+   "when": {
+    "stagePrefix": "i"
+   }
   },
   {
    "id": "n1",

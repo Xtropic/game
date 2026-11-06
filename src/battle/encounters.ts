@@ -48,7 +48,7 @@ export interface Traveller { id: string; name: string; }
 export const unitIdOf = (id: string): string => (id === "tamsin" ? "tam" : id);
 
 // Where each side stands, in stage units: allies on the left, foes on the right.
-const ALLY_FRONT: [number, number][] = [[86, 94], [100, 122]], ALLY_BACK: [number, number][] = [[42, 104], [28, 128]];
+const ALLY_FRONT: [number, number][] = [[86, 94], [100, 122], [112, 104]], ALLY_BACK: [number, number][] = [[42, 104], [28, 128], [16, 110]];
 const FOE_AT: [number, number][] = [[168, 92], [160, 126], [194, 110], [226, 98]];
 
 /** Battle units for the hero and the party travelling with them, in the rows they fight from. */
@@ -62,6 +62,7 @@ export function partyUnits(hero: string, party: Traveller[]): UnitDef[] {
     if (p.id === "brannoc") add({ id: "brannoc", name: "Brannoc", look: "brannoc", side: "ally", row: "front", cast: "brannoc", skills: ["strike", "guard"] }, "front");
     if (p.id === "ferris") add({ id: "ferris", name: "Ferris", look: "ferris", side: "ally", row: "back", cast: "ferris", skills: ["bow", "smoke"] }, "back");
     if (p.id === "ketti") add({ id: "ketti", name: "Ketti", look: "ketti", side: "ally", row: "back", cast: "ketti", skills: ["knife", "smoke"] }, "back");
+    if (p.id === "oakes") add({ id: "oakes", name: "Oakes", look: "oakes", side: "ally", row: "front", cast: "oakes", skills: ["strike", "guard"] }, "front");
   }
   return out;
 }

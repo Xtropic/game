@@ -1,0 +1,52 @@
+{
+ "id": "thornwick",
+ "name": "Thornwick",
+ "music": "camp",
+ "rest": true,
+ "legend": {
+  "K": "cloud",
+  "c": "cliff",
+  ",": "grass",
+  ".": "cobble",
+  "s": "stonewall",
+  "~": "water",
+  "R": "rock",
+  "w": "well",
+  "k": "cave",
+  "r": "roof",
+  "h": "wall",
+  "d": "door",
+  "f": "fence",
+  "H": "hay",
+  "A": "tent",
+  "F": "campfire",
+  "x": "crate",
+  "e": "exit"
+ },
+ "rows": [
+  "KKKKKKKKKKKKKKKKKKKKKKKKKKKK",
+  "KccccccccccccccccccccccccccK",
+  "Kc,sssssss,sssssss,sss,ss,cK",
+  "Kc,s..~~.s,sR....s,,,w,,,,cK",
+  "Kc,s.....,,s....Rs,,,,,,,,cK",
+  "Kc,s.....s,sss.sss,,,,,,,,cK",
+  "Kc,sss.sss,,,,,,,,,,,,,,,,cK",
+  "Kc,,,,......~~~~,,,ffffff,cK",
+  "Kc,rrrrr,,,,~~~~k,,f,,HHf,cK",
+  "Kc,rrrrr,,,,,..,,,,,,,,,f,cK",
+  "Kc,hhdhh,,,,,..,,,,f,,,,f,cK",
+  "Kc,,,..............ffffff,cK",
+  "Kc,AA,,AA,,,,..,,,AA,,AA,,cK",
+  "Kc,AA,,AA,F,,..,x,AA,,AA,,cK",
+  "Kc,,,,,,,,,,,..,,,,,,,,,,,cK",
+  "KKKKKKKKKKKKKeeKKKKKKKKKKKKK"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 14
+  }
+ ]
+}

@@ -47,7 +47,8 @@ export type SkillBook = Record<string, SkillDef>;
 export interface UnitDef { id: string; name: string; look: string; side: Side; row: Row; hp?: number; skills: string[]; kith?: boolean; bonded?: string; at: [number, number]; cast?: string; level?: number;
   /** A wild kith's kind and temperament: the song reaches each temperament differently, and a calmed one may be won over. */
   species?: string; temperament?: Temperament; }
-export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; /** Banner when the fight is won, and when the party is driven back. */ won?: string; lost?: string; }
+export interface BattleDef { id: string; name: string; backdrop: string; intro: string[]; units: UnitDef[]; /** Banner when the fight is won, and when the party is driven back. */ won?: string; lost?: string;
+  /** The hero and whoever travels with them fight it; only the foes in `units` are used. */ party?: boolean; }
 
 export interface Intent { skill: string; target: string; }
 export interface Unit extends UnitDef {

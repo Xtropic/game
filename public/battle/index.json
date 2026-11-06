@@ -1,4 +1,5 @@
 {
+  "oakes": { "file": "oakes.webp", "rig": "person", "h": 55 },
   "rhea": { "file": "rhea.webp", "rig": "person", "h": 52 },
   "tamsin": { "file": "tamsin.webp", "rig": "person", "h": 52 },
   "brannoc": { "file": "brannoc.webp", "rig": "person", "h": 57 },

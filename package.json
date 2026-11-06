@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "e2e": "node tests/e2e/smoke.mjs && node tests/e2e/battle.mjs && node tests/e2e/prologue.mjs && node tests/e2e/act1.mjs && node tests/e2e/menu.mjs"
+    "e2e": "node tests/e2e/smoke.mjs && node tests/e2e/battle.mjs && node tests/e2e/prologue.mjs && node tests/e2e/act1.mjs && node tests/e2e/act2.mjs && node tests/e2e/menu.mjs"
   },
   "dependencies": {
     "pixi.js": "^8.22.0"

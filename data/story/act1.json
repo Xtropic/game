@@ -1754,92 +1754,104 @@
   "kane": [
    {
     "if": {
-     "stage": "a2"
+     "flag": "act2"
     },
     "then": [
      {
-      "run": "enlist"
+      "run": "kane2"
      }
     ],
     "else": [
      {
       "if": {
-       "stage": "a2b"
+       "stage": "a2"
       },
       "then": [
        {
-        "run": "kaneTour"
+        "run": "enlist"
        }
       ],
       "else": [
        {
         "if": {
-         "stage": "a2c"
+         "stage": "a2b"
         },
         "then": [
          {
-          "say": "kane",
-          "text": "\"You're on the east picket tonight, Caddow. Ferris is already there.\""
+          "run": "kaneTour"
          }
         ],
         "else": [
          {
           "if": {
-           "stage": "a2d"
+           "stage": "a2c"
           },
           "then": [
            {
-            "run": "cartOrders"
+            "say": "kane",
+            "text": "\"You're on the east picket tonight, Caddow. Ferris is already there.\""
            }
           ],
           "else": [
            {
             "if": {
-             "stage": "a4"
+             "stage": "a2d"
             },
             "then": [
              {
-              "run": "afterCart"
+              "run": "cartOrders"
              }
             ],
             "else": [
              {
               "if": {
-               "stage": "a5"
+               "stage": "a4"
               },
               "then": [
                {
-                "say": "kane",
-                "text": "\"Millbridge, Caddow. Varro will do the talking. You tell them the truth about Larkfold, whatever it costs.\""
+                "run": "afterCart"
                }
               ],
               "else": [
                {
                 "if": {
-                 "stage": "a5b"
+                 "stage": "a5"
                 },
                 "then": [
                  {
+                  "say": "kane",
+                  "text": "\"Millbridge, Caddow. Varro will do the talking. You tell them the truth about Larkfold, whatever it costs.\""
+                 }
+                ],
+                "else": [
+                 {
                   "if": {
-                   "flag": "quiet.tamsin"
+                   "stage": "a5b"
                   },
                   "then": [
                    {
-                    "run": "sallowOrders"
+                    "if": {
+                     "flag": "quiet.tamsin"
+                    },
+                    "then": [
+                     {
+                      "run": "sallowOrders"
+                     }
+                    ],
+                    "else": [
+                     {
+                      "say": "kane",
+                      "text": "\"Nothing for you this week. Rest while you can, Caddow. Tamsin was asking after you.\""
+                     }
+                    ]
                    }
                   ],
                   "else": [
                    {
                     "say": "kane",
-                    "text": "\"Nothing for you this week. Rest while you can, Caddow. Tamsin was asking after you.\""
+                    "text": "\"Every hatchery we open is a few hundred children and one less wall between you and your brother. Keep going, Caddow.\""
                    }
                   ]
-                 }
-                ],
-                "else": [
-                 {
-                  "say": "kane",
-                  "text": "\"Every hatchery we open is a few hundred children and one less wall between you and your brother. Keep going, Caddow.\""
                  }
                 ]
                }
@@ -2458,7 +2470,7 @@
     "join": "brannoc"
    },
    {
-    "end": "act1"
+    "run": "act2Start"
    }
   ],
   "tourNurse": [

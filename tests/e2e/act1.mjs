@@ -169,14 +169,13 @@ await expect("the spring caves", (s) => s.map === "caves");
 await put(9, 3, "right"); await tap("Enter"); await read();
 if (!(await flags())["recruited.oda"]) fail("Oda not found in the caves");
 await put(7, 7, "down"); await walk("ArrowDown", 300);
-await put(16, 17, "down"); await walk("ArrowDown", 600); await read();
-const end = await expect("the end of what's written", (s) => s.ended);
+await put(16, 17, "down"); await walk("ArrowDown", 600); await read(400);
+// no end card: the story walks on into the autumn, back at camp
+const end = await expect("autumn at camp, no end card", (s) => !s.ended && s.map === "camp" && s.stage === "ab1");
 await page.screenshot({ path: "test-results/act1-end.png" });
-const ledger = await page.evaluate(() => window.__lull.game.scenes.top.ended?.text ?? "");
-if (/Act|Prologue|Interlude/.test(ledger)) fail(`act wording at the end: ${ledger}`);
-const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto")).flags);
-if (saved.ended !== "act1") fail(`the end is not saved: ${saved.ended}`);
+const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("lull.save.auto") ?? "{}").flags ?? {});
+if (saved.ended) fail(`an ending was saved: ${saved.ended}`);
 
 if (errors.length) fail("page errors: " + errors.join(" | "));
-console.log(process.exitCode ? "act1 e2e FAILED" : "act1 e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ ended: end.ended }));
+console.log(process.exitCode ? "act1 e2e FAILED" : "act1 e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, JSON.stringify({ stage: end.stage }));
 await browser.close(); server.close();

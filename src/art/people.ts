@@ -53,6 +53,14 @@ export const LOOKS: Record<string, Look> = {
   vil5: { hair: "#a87a3a", hairLight: "#c89a52", skin: "#e8c8a8", skinShade: "#c0a080", coat: "#3a5a5a", coatShade: "#2a4444", accent: "#b84a3a", legs: "#3a3a34", boots: "#221a14", style: "braid" },
   vil6: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#a87450", skinShade: "#86583a", coat: "#7a6a4a", coatShade: "#5e5038", accent: "#d8ccb0", legs: "#3e352c", boots: "#221a14", beardStyle: "moustache", beard: "#1e1a18" },
   vil7: { hair: "#d8d4cc", hairLight: "#f0ece4", skin: "#dcb090", skinShade: "#b48a6c", coat: "#5a3a3a", coatShade: "#442c2c", accent: "#c8b890", legs: "#3a3028", boots: "#201812", style: "short", beardStyle: "full", beard: "#d8d4cc" },
+  // Act II, matched to their portraits
+  oakes: { hair: "#6a4a30", hairLight: "#8a6a48", skin: "#dcb08c", skinShade: "#b48a6a", coat: "#6a6e72", coatShade: "#4e5256", accent: "#2a2a2c", legs: "#34373a", boots: "#1a1a1a" },
+  lyle: { hair: "#c0602a", hairLight: "#e07e3e", skin: "#f0d0b8", skinShade: "#d0ac92", coat: "#6a6a6a", coatShade: "#4e4e4e", accent: "#3e4a2e", legs: "#34373a", boots: "#1a1a1a" },
+  dorrit: { hair: "#7a4a2a", hairLight: "#9a6a42", skin: "#ecc8a8", skinShade: "#c8a284", coat: "#e0d6c4", coatShade: "#bcb09a", accent: "#8a7a50", legs: "#4a4034", boots: "#2a221c", style: "bun" },
+  hesk: { hair: "#c8c4bc", hairLight: "#e4e0d8", skin: "#c89a74", skinShade: "#a07654", coat: "#6a4a2e", coatShade: "#4e3622", accent: "#4a5a3a", legs: "#3a3028", boots: "#1e1610", style: "cap", cap: "#5a4a36", beardStyle: "full", beard: "#d8d4cc" },
+  ume: { hair: "#eeeae2", hairLight: "#ffffff", skin: "#8a5a3a", skinShade: "#6a4228", coat: "#4a6a2e", coatShade: "#384f22", accent: "#c8a050", legs: "#3e352c", boots: "#2a221c", style: "braid" },
+  posy: { hair: "#1a1a1e", hairLight: "#34343a", skin: "#ecd6c4", skinShade: "#c8b09e", coat: "#7a7a7a", coatShade: "#5c5c5c", accent: "#5a3a24", legs: "#3a3a3a", boots: "#222" },
+  tobin: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#9a6a48", skinShade: "#7a5034", coat: "#4a4238", coatShade: "#36302a", accent: "#5a6a3a", legs: "#34302a", boots: "#1e1610" },
   kid3: { hair: "#2a1a10", hairLight: "#4a3020", skin: "#c8a07a", skinShade: "#a07c5a", coat: "#8a8a7a", coatShade: "#6a6a5c", accent: "#5a5a50", legs: "#3e352c", boots: "#2a221c" },
 };
 /** Characters you can recruit (and Rhea) are drawn in clear, bright colours; everyone else a little muted,

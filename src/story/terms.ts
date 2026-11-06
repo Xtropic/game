@@ -27,6 +27,10 @@ export const TERMS: Term[] = [
   { id: "ostrel", name: "Ostrel", match: /\bOstrel\b/, note: "The country this story takes place in." },
   { id: "sorting", name: "Sorting house", match: /\bsorting house\b/i, note: "Where the Guild decides which work each indentured child is sent to." },
   { id: "reeve", name: "Reeve", match: /\breeve\b/i, note: "The elected head of a town." },
+  { id: "thornwick", name: "Thornwick", match: /\bThornwick\b/, note: "A ruined monastery on a terrace of the Cloudline, built over a hot spring. Nobody had lived there for a hundred years." },
+  { id: "duskwort", name: "Duskwort", match: /\bduskwort\b/i, note: "A pale moss that only grows high in the mountains, above the mist. Lull larvae eat nothing else." },
+  { id: "factor", name: "Factor", match: /\bfactor\b/i, note: "The Guild's agent in a village. He weighs what the village grows and writes it against what the village owes." },
+  { id: "clans", name: "The Cloudline clans", match: /\bclans?\b/i, note: "The families who grow duskwort on the high terraces of the Cloudline. They still set wild lulls the old way." },
   { id: "drying", name: "Drying house", match: /\bdrying house\b/i, note: "Where Larkfold dries the moss its greenlings are raised on." },
 ];
 
