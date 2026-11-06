@@ -199,14 +199,17 @@ export class ExploreScene implements Scene, StoryHost {
   refresh(): void {
     for (const s of this.shown) s.sprite.destroy();
     this.shown = [];
+    const staged = new Set<string>(); // party members a scene has placed somewhere on this map (brannoc-dawn): their follower steps aside
     for (const a of [...this.story.actors, ...this.findActors()]) {
       if (a.map !== this.map.file.id || !holds(a.when, this.where())) continue;
       if (this.followers.some((f) => f.id === a.id)) continue;
+      staged.add(a.id.split("-")[0]);
       const frames = this.sheet(a.look === "glint" ? "elder" : a.look);
       const sprite = new Sprite(a.look === "note" ? this.noteTex : a.look === "glint" ? this.glintTex : frames.down[0]);
       this.placeActor(sprite, a);
       this.people.addChild(sprite); this.shown.push({ a, sprite, frames });
     }
+    for (const f of this.followers) f.sprite.visible = !staged.has(f.id);
     if (!this.player.sprite.parent) this.people.addChild(this.player.sprite);
     const stage = String(this.flags.stage ?? "");
     this.objective.text = this.story.objectives[stage] ?? "";
@@ -738,6 +741,6 @@ export class ExploreScene implements Scene, StoryHost {
   /** Read-only view for tests and debugging. */
   debug() {
     return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
-      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
+      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), seen: this.followers.filter((f) => f.sprite.visible).map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

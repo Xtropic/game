@@ -105,7 +105,7 @@ if (!(await flags())["recruited.ferris"]) fail("singing did not calm Ferris's re
 await page.screenshot({ path: "test-results/act1-camp.png" });
 await put(15, 5, "up"); await talk(); await choose(0);
 await expect("sent to bed, not straight into the next day", (s) => s.stage === "a2e");
-await sleepInTent(); await expect("dawn: Brannoc in the drill yard", (s) => s.stage === "a2f");
+await sleepInTent(); await expect("dawn: Brannoc in the drill yard", (s) => s.stage === "a2f" && s.followers.includes("brannoc") && !s.seen.includes("brannoc")); // one Brannoc: the one waiting
 await put(7, 9, "right"); await talk(); await read();
 await fight("spar"); await read();
 await expect("three weeks of drill ahead", (s) => s.stage === "a2g");
