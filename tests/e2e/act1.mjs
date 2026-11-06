@@ -169,7 +169,7 @@ await expect("the spring caves", (s) => s.map === "caves");
 await put(9, 3, "right"); await tap("Enter"); await read();
 if (!(await flags())["recruited.oda"]) fail("Oda not found in the caves");
 await put(7, 7, "down"); await walk("ArrowDown", 300);
-await put(16, 17, "down"); await walk("ArrowDown", 600); await read(400);
+await put(16, 17, "down"); await walk("ArrowDown", 600); await read(400); await choose(0);
 // no end card: the story walks on into the autumn, back at camp
 const end = await expect("autumn at camp, no end card", (s) => !s.ended && s.map === "camp" && s.stage === "ab1");
 await page.screenshot({ path: "test-results/act1-end.png" });
