@@ -4,7 +4,8 @@
 import { BAYER4, dither, hash2, makeCanvas, px } from "../art/pixel";
 import { EVEN, type Build } from "../art/build";
 import { BODY_SHAPE, bodyOf } from "../art/bodies";
-import { saturate } from "../art/people";
+import { LOOKS, saturate } from "../art/people";
+import { keepsake } from "../gear/weapons";
 import { RECRUITS } from "../cast/recruits";
 import { drawPainted, hasPaintedFig } from "./painted";
 
@@ -69,7 +70,7 @@ export function backdrop(id: string): HTMLCanvasElement {
 }
 
 // ---------------- HD figures ----------------
-interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
+interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap" | "short"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
   rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#8e7a5c", coatS: "#6e5c44", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8262a", weapon: "staff", lash: true },
   tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#5a6a2e", coatS: "#444f22", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
@@ -91,9 +92,16 @@ const COLOURS: (keyof CastLook)[] = ["hair", "hairL", "coat", "coatS", "pants", 
 const toned: Record<string, CastLook> = {};
 function lookFor(id: string): CastLook {
   if (toned[id]) return toned[id];
-  const c = { ...CAST[id] } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
+  const c = { ...(CAST[id] ?? fromMapLook(id)) } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
   for (const k of COLOURS) if (typeof c[k] === "string") c[k] = saturate(c[k] as string, amt);
   return (toned[id] = c as unknown as CastLook);
+}
+const WEAPON_DRAWN: Record<string, CastLook["weapon"]> = { spear: "spear", lance: "spear", staff: "staff", cane: "staff", bow: "bow", sling: "dart", knife: "dart", twin: "dart", hook: "dart", rope: "dart" };
+/** Anyone without a battle look of their own is dressed from their map sprite, which matches their portrait. */
+function fromMapLook(id: string): CastLook {
+  const m = LOOKS[id] ?? LOOKS.vil1 ?? Object.values(LOOKS)[0];
+  const style = (m.style === "short" || !m.style ? "short" : m.style) as CastLook["style"];
+  return { skin: m.skin, skinS: m.skinShade, hair: m.hair, hairL: m.hairLight, coat: m.coat, coatS: m.coatShade, pants: m.legs, boot: m.boots, eye: "#5a4a3a", style, scarf: m.accent, beard: m.beardStyle === "full" ? m.beard : undefined, cap: m.cap, weapon: WEAPON_DRAWN[keepsake(id)?.type ?? ""] ?? "none" };
 }
 /** A look can carry a coat colour after a colon ("reedcat:#8a8a80"): the kind, and the coat. */
 export const lookKind = (look: string): string => look.split(":")[0];

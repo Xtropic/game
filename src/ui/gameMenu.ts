@@ -1,5 +1,6 @@
 // The menu (Tab or M, or the Menu button): five pages.
-//   Party     everyone in the company: level, experience, health, the seven attributes, weapon; kith too
+//   Party     everyone in the company: level, experience, health, the seven attributes, weapon; kith too.
+//             Enter picks who travels with Rhea (the party picker); the rest wait at camp
 //   Gear      each keepsake weapon: its tier and techniques, and the two fittings in it, which can be changed
 //   Items     bandages, salves and teas carried, used on whoever needs them
 //   Settings  sound, music, effects and voice levels, text speed, battle speed, auto timing, always run
@@ -28,6 +29,10 @@ export interface MenuHost {
   travelling(): string[];
   /** Everyone who has joined, by story id. */
   company(): string[];
+  /** Who the party is meant to be, by story id: the picker's choice, even while a scene has the hero alone. */
+  inParty(): string[];
+  /** Puts someone into the travelling party or leaves them at camp; says what happened. */
+  setTravelling(id: string): string;
   health(): Record<string, number>;
   setHealth(h: Record<string, number>): void;
   save(slot: Slot): void;
@@ -35,7 +40,7 @@ export interface MenuHost {
   load(slot: Slot): void;
 }
 
-interface Member { id: string; name: string; kith: boolean; unit: string; travelling: boolean; }
+interface Member { id: string; name: string; kith: boolean; unit: string; travelling: boolean; /** In the party the player picked (may be waiting at camp while a scene has Rhea alone). */ party: boolean; }
 
 const TABS = ["Party", "Gear", "Items", "Settings", "Save"] as const;
 type Focus = "tabs" | "list" | "slots" | "pick" | "target" | "confirm";
@@ -131,12 +136,12 @@ export class GameMenu {
   // ---- who and what ----
 
   private members(): Member[] {
-    const g = this.host.game, trav = this.host.travelling(), seen = new Set<string>(), out: Member[] = [];
-    for (const id of [...trav, ...this.host.company()]) {
+    const g = this.host.game, trav = this.host.travelling(), party = new Set([...this.host.inParty(), trav[0]]), seen = new Set<string>(), out: Member[] = [];
+    for (const id of [...trav, ...this.host.inParty(), ...this.host.company()]) {
       if (seen.has(id)) continue; seen.add(id);
       const k = g.kith[id];
       if (!k && !PEOPLE[id]) continue;
-      out.push({ id, name: k ? k.name : this.host.names[id] ?? cap(id), kith: !!k, unit: unitIdOf(id), travelling: trav.includes(id) });
+      out.push({ id, name: k ? k.name : this.host.names[id] ?? cap(id), kith: !!k, unit: unitIdOf(id), travelling: trav.includes(id), party: party.has(id) });
     }
     return out;
   }
@@ -173,7 +178,8 @@ export class GameMenu {
 
   private choose(): void {
     const tab = TABS[this.tab];
-    if (tab === "Gear") { if (this.armed()[this.i]) { this.focus = "slots"; this.slot = 0; } }
+    if (tab === "Party") { const m = this.members()[this.i]; if (m) this.msg = this.host.setTravelling(m.id); }
+    else if (tab === "Gear") { if (this.armed()[this.i]) { this.focus = "slots"; this.slot = 0; } }
     else if (tab === "Items") {
       const id = itemsOwned(this.host.game.flags)[this.i]; if (!id) return;
       if (ITEMS[id].battle) { this.msg = "That one is for fights: choose it on someone's turn."; return; }
@@ -321,7 +327,8 @@ export class GameMenu {
 
   private drawParty(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
     const ms = this.members(), hl = this.host.health();
-    this.list(ms.map((m) => ({ label: m.name, sub: `${m.kith ? "Kith · " : ""}Level ${m.kith ? this.host.game.kith[m.id].level : this.host.game.progress(m.id).level}${m.travelling ? "" : " · not with you"}` })), b, listW, fs, "Nobody yet.");
+    this.list(ms.map((m) => ({ label: m.name, sub: `${m.kith ? "Kith · " : ""}Level ${m.kith ? this.host.game.kith[m.id].level : this.host.game.progress(m.id).level}${m.party ? " · in the party" : " · at camp"}` })), b, listW, fs, "Nobody yet.");
+    if (this.focus !== "tabs" && !this.msg) this.msg = "Enter on someone: take them along, or leave them at camp.";
     const m = ms[this.i]; if (!m) return;
     const g = this.host.game, x = b.x + listW + 18, w = b.w - listW - 18, narrow = w < 380;
     const size = narrow ? Math.min(90, w) : Math.min(110, Math.round(b.h * 0.26));

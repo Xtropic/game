@@ -5,6 +5,9 @@ import type { BattleDef, UnitDef } from "./rules";
 import { TEMPERAMENTS } from "../kith/kith";
 import type { TileKind } from "../world/map";
 import speciesData from "../../data/kith/species.json";
+import { keepsake } from "../gear/weapons";
+import { recruit } from "../cast/recruits";
+import { person } from "../cast/attributes";
 
 interface SpeciesRow { id: string; name: string; family: string; region?: string | null; kind: string; }
 const SPECIES = (speciesData as unknown as { species: SpeciesRow[] }).species;
@@ -42,7 +45,7 @@ export function sceneryFor(t: TileKind | null): string {
   }
 }
 
-export interface Traveller { id: string; name: string; }
+export interface Traveller { id: string; name: string; /** A kith travelling in the party: its species and level. */ kith?: { species: string; level: number }; }
 
 /** A traveller's id in battle (and in the wounds they carry out of it), where it differs from their story id. */
 export const unitIdOf = (id: string): string => (id === "tamsin" ? "tam" : id);
@@ -50,6 +53,17 @@ export const unitIdOf = (id: string): string => (id === "tamsin" ? "tam" : id);
 // Where each side stands, in stage units: allies on the left, foes on the right.
 const ALLY_FRONT: [number, number][] = [[86, 94], [100, 122], [112, 104]], ALLY_BACK: [number, number][] = [[42, 104], [28, 128], [16, 110]];
 const FOE_AT: [number, number][] = [[168, 92], [160, 126], [194, 110], [226, 98]];
+
+const KNOWN = new Set(["ash", "tamsin", "brannoc", "ferris", "ketti", "oakes", "rhea", "corran"]);
+/** How each keepsake weapon type fights: its moves, and the row it fights from. */
+const STYLE: Record<string, { skills: string[]; row: "front" | "back" }> = {
+  sling: { skills: ["sling", "smoke"], row: "back" }, bow: { skills: ["bow", "smoke"], row: "back" },
+  knife: { skills: ["knife", "smoke"], row: "back" }, twin: { skills: ["knife", "smoke"], row: "back" }, hook: { skills: ["knife", "smoke"], row: "back" },
+  rope: { skills: ["knife", "smoke"], row: "back" }, cane: { skills: ["strike", "smoke"], row: "back" },
+  shield: { skills: ["strike", "guard"], row: "front" }, spear: { skills: ["strike", "guard"], row: "front" }, lance: { skills: ["strike", "guard"], row: "front" },
+  blade: { skills: ["strike", "guard"], row: "front" }, sabre: { skills: ["strike", "guard"], row: "front" }, staff: { skills: ["strike", "guard"], row: "front" },
+  fists: { skills: ["strike", "guard"], row: "front" }, tools: { skills: ["strike", "guard"], row: "front" },
+};
 
 /** Battle units for the hero and the party travelling with them, in the rows they fight from. */
 export function partyUnits(hero: string, party: Traveller[]): UnitDef[] {
@@ -63,6 +77,16 @@ export function partyUnits(hero: string, party: Traveller[]): UnitDef[] {
     if (p.id === "ferris") add({ id: "ferris", name: "Ferris", look: "ferris", side: "ally", row: "back", cast: "ferris", skills: ["bow", "smoke"] }, "back");
     if (p.id === "ketti") add({ id: "ketti", name: "Ketti", look: "ketti", side: "ally", row: "back", cast: "ketti", skills: ["knife", "smoke"] }, "back");
     if (p.id === "oakes") add({ id: "oakes", name: "Oakes", look: "oakes", side: "ally", row: "front", cast: "oakes", skills: ["strike", "guard"] }, "front");
+    if (KNOWN.has(p.id)) continue;
+    if (p.kith) { // a kith fighting in the party, not bonded to anyone: it takes its own turns
+      const fam = SPECIES.find((x) => x.id === p.kith!.species)?.family ?? "reedcat", buck = fam === "loftbuck", lv = p.kith.level;
+      add({ id: p.id, name: p.name, look: `${fam}:${COATS[fam] ?? "#9a8a70"}`, side: "ally", row: "front", level: lv, kith: true, species: p.kith.species, skills: [buck ? "horns" : "pounce"] }, "front");
+      continue;
+    }
+    // anyone else recruited: their keepsake weapon decides how they fight and where they stand
+    const type = keepsake(p.id)?.type ?? "blade", style = STYLE[type] ?? STYLE.blade;
+    const skills = [...style.skills, ...(/doctor|nurse|healer|medic|herbal|surgeon/i.test(recruit(p.id)?.job ?? "") ? ["rally"] : [])];
+    add({ id: p.id, name: p.name, look: p.id, side: "ally", row: style.row, ...(person(p.id) ? { cast: p.id } : { hp: 24 }), skills }, style.row);
   }
   return out;
 }
