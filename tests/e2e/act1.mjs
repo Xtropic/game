@@ -94,8 +94,7 @@ await expect("back out on the world map", (s) => s.map === "land-vale");
 await travel("land-vale", 59, 17, "right"); await walk("ArrowRight", 400);
 await expect("into the camp", (s) => s.map === "camp");
 await put(15, 5, "up"); await tap("Enter"); await choose(0);
-await expect("enlisted as a Recruit; look round the camp", (s) => s.stage === "a2b");
-if ((await flags()).rank !== "Recruit") fail("not a Recruit");
+await expect("a night in camp before deciding; look round", (s) => s.stage === "a2b");
 await put(19, 12, "right"); await talk(); await choose(0);
 await put(8, 8, "left"); await talk(); await read();
 await put(24, 8, "right"); await talk(); await read();
@@ -103,8 +102,9 @@ const tour = await flags(); if (!tour["tour.nurse"] || !tour["tour.yard"] || !to
 await put(23, 8, "right"); await tap("KeyQ"); await read();
 if (!(await flags())["recruited.ferris"]) fail("singing did not calm Ferris's reedcat");
 await page.screenshot({ path: "test-results/act1-camp.png" });
-await put(15, 5, "up"); await talk(); await choose(0);
+await put(15, 5, "up"); await talk(); await choose(0); await choose(0);
 await expect("sent to bed, not straight into the next day", (s) => s.stage === "a2e");
+if ((await flags()).rank !== "Recruit") fail("not a Recruit after the first night");
 await sleepInTent(); await expect("dawn: Brannoc in the drill yard", (s) => s.stage === "a2f" && s.followers.includes("brannoc") && !s.seen.includes("brannoc")); // one Brannoc: the one waiting
 await put(7, 9, "right"); await talk(); await read();
 await fight("spar"); await read();

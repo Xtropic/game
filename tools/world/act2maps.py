@@ -91,7 +91,7 @@ d.rect(21, 2, 21, 10, "X"); d.put(21, 6, ":")               # the wall of the ci
 d.rect(22, 2, 24, 10, ":"); d.rect(22, 8, 24, 10, "~"); d.rect(23, 2, 24, 3, "R")
 d.rect(4, 4, 5, 5, "R"); d.rect(16, 6, 17, 6, "R")
 UNDER = save("undercroft", "Under Thornwick", "dusk",
-             {"X": "rock", ":": "cavefloor", "S": "ladder", "~": "water", "w": "wetfloor", "R": "rock"},
+             {"X": "rock", ":": "cavefloor", "S": "cave", "~": "water", "w": "wetfloor", "R": "rock"},
              d, (2, 2))
 
 # ---------------- Ume's terraces: a clan village on moss terraces ----------------
