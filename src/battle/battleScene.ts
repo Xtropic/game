@@ -14,7 +14,7 @@ import {
   FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
 } from "./rules";
-import { paintedHeight } from "./painted";
+import { paintedHeight, paintedLook } from "./painted";
 import {
   CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
@@ -151,7 +151,7 @@ export class BattleScene implements Scene {
 
   // ---------------- positions ----------------
   private pos(u: Unit): [number, number] { const v = this.vis.get(u.id)!; return [u.at[0] + v.ox + v.kx, u.at[1] + v.oy - v.hop]; }
-  private top(u: Unit): number { return this.pos(u)[1] - (paintedHeight(u.look) ?? LOOK_TOP[lookKind(u.look)] ?? 40); }
+  private top(u: Unit): number { return this.pos(u)[1] - (paintedHeight(lookKind(paintedLook(u.look, u.species) ?? "")) ?? LOOK_TOP[lookKind(u.look)] ?? 40); }
   private dirOf(u: Unit): number { return u.side === "ally" ? 1 : -1; }
 
   // ---------------- coroutines ----------------
@@ -492,10 +492,11 @@ export class BattleScene implements Scene {
     for (const u of order) {
       const v = this.vis.get(u.id)!, [x, y] = this.pos(u);
       const lk = lookKind(u.look);
-      const flip = lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
+      const paint = paintedLook(u.look, u.species);
+      const flip = paint ? (u.side === "foe" ? !v.flee : v.flee) : lk === "ash" ? v.flee : lk === "loftbuck" ? (u.side === "foe" ? !v.flee : v.flee) : lk === "reedcat" ? v.flee : u.side === "foe" ? !v.flee : v.flee;
       const pose = { t: T + x * 0.1, run: v.pose === "run" ? v.run : 0, lunge: v.pose === "lunge", brace: v.pose === "brace" || v.pose === "guard" || (this.qte?.mode === "brace" && this.qte.target === u.id), bow: v.pose === "aim" && u.look === "archer" ? 1 : undefined, cast: v.pose === "cast" || v.pose === "aim" && u.look !== "archer" || v.pose === "cheer", shout: v.pose === "cheer", flash: v.flash, flip, fall: v.fall };
       g.save(); g.globalAlpha = v.fade;
-      withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, u.look, xx, yy, pose, this.builds[u.id]));
+      withFlash(g, x, y, v.flash, (gg, xx, yy) => drawLook(gg, paint ?? u.look, xx, yy, pose, this.builds[u.id]));
       g.restore();
     }
     // foe HP bars and intents

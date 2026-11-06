@@ -1,4 +1,19 @@
 {
-  "rhea": { "file": "rhea.png", "rig": "person", "h": 52 },
-  "ash": { "file": "ash.png", "rig": "beast", "h": 35 }
+  "rhea": { "file": "rhea.webp", "rig": "person", "h": 52 },
+  "tamsin": { "file": "tamsin.webp", "rig": "person", "h": 52 },
+  "brannoc": { "file": "brannoc.webp", "rig": "person", "h": 57 },
+  "ferris": { "file": "ferris.webp", "rig": "person", "h": 57 },
+  "ketti": { "file": "ketti.webp", "rig": "person", "h": 43 },
+  "warden": { "file": "warden.webp", "rig": "person", "h": 52 },
+  "archer": { "file": "archer.webp", "rig": "person", "h": 52 },
+  "cartwarden": { "file": "cartwarden.webp", "rig": "person", "h": 53 },
+  "ash": { "file": "ash.webp", "rig": "beast", "h": 35 },
+  "loftbuck": { "file": "loftbuck.webp", "rig": "beast", "h": 33 },
+  "terrace-doe": { "file": "terrace-doe.webp", "rig": "beast", "h": 31 },
+  "kerrow-leaper": { "file": "kerrow-leaper.webp", "rig": "beast", "h": 32 },
+  "drove-loftbuck": { "file": "drove-loftbuck.webp", "rig": "beast", "h": 33 },
+  "reedcat": { "file": "reedcat.webp", "rig": "beast", "h": 24 },
+  "fog-reedcat": { "file": "fog-reedcat.webp", "rig": "beast", "h": 24 },
+  "market-reedcat": { "file": "market-reedcat.webp", "rig": "beast", "h": 20 },
+  "drove-cat": { "file": "drove-cat.webp", "rig": "beast", "h": 25 }
 }

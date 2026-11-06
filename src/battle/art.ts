@@ -286,7 +286,7 @@ export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Po
 
 export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
   const kind = lookKind(look), coat = lookCoat(look);
-  if (!coat && hasPaintedFig(kind)) drawPainted(g, kind, x, y, o, K);
+  if (hasPaintedFig(kind)) drawPainted(g, kind, x, y, o, K, coat);
   else if (kind === "ash") drawAsh(g, x, y, o, b);
   else if (kind === "loftbuck") drawAsh(g, x, y, o, b, coat ?? "#9a8a70", false);
   else if (kind === "reedcat") drawCat(g, x, y, o, b, coat);

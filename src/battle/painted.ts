@@ -22,6 +22,31 @@ export async function loadBattleArt(base = "battle/"): Promise<void> {
 }
 
 export const hasPaintedFig = (look: string): boolean => look in painted;
+
+/** A painting recoloured towards a coat colour (for kith with no painting of their own), made once and kept. */
+const tinted: Record<string, HTMLCanvasElement> = {};
+function tintedImage(key: string, coat: string): CanvasImageSource {
+  const id = key + coat;
+  if (tinted[id]) return tinted[id];
+  const img = painted[key].img, cv = document.createElement("canvas"); cv.width = img.width; cv.height = img.height;
+  const g = cv.getContext("2d")!;
+  g.drawImage(img, 0, 0);
+  g.globalCompositeOperation = "color"; g.globalAlpha = 0.75; g.fillStyle = coat; g.fillRect(0, 0, cv.width, cv.height);
+  g.globalCompositeOperation = "destination-in"; g.globalAlpha = 1; g.drawImage(img, 0, 0);
+  return (tinted[id] = cv);
+}
+
+/**
+ * What to paint a battle unit as: its own look when that has a painting, else its species' painting, else its
+ * family's painting recoloured to its coat ("reedcat:#d8d6d0"); undefined when there is none.
+ */
+export function paintedLook(look: string, species?: string): string | undefined {
+  const [kind, coat] = look.split(":");
+  if (!coat && kind in painted) return kind;
+  if (species && species in painted) return species;
+  if (kind in painted) return look;
+  return undefined;
+}
 export const paintedHeight = (look: string): number | undefined => painted[look]?.h;
 
 const smooth = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -53,7 +78,7 @@ function field(rig: Rig, u: number, v: number, o: Pose, lean: number): [number, 
     const barrel = bump(0.12, 0.85, u) * bump(0.35, 0.8, v);
     dy -= barrel * Math.sin(t * 1.8) * 0.012 * (v - 0.55) * 2;
     // the tail swishes
-    const tail = (1 - smooth(0.06, 0.24, u)) * bump(0.35, 0.72, v);
+    const tail = (1 - smooth(0.06, 0.24, u)) * bump(0.3, 1.05, v);
     dy += tail * Math.sin(t * 3.1) * 0.022; dx += tail * Math.cos(t * 3.1) * 0.015 - tail * (o.run ? 0.03 : 0);
     // the head and neck nod and look about
     const head = smooth(0.6, 0.95, u) * smooth(0.55, 0.95, v);
@@ -72,9 +97,9 @@ function field(rig: Rig, u: number, v: number, o: Pose, lean: number): [number, 
 const COLS = 12, ROWS = 18;
 
 /** Draws painted figure `look` with its feet at (x, y) in stage units, facing right unless flipped. */
-export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, K: number): void {
+export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, K: number, coat?: string): void {
   const p = painted[look]; if (!p) return;
-  const { img, rig } = p, H = p.h * K, W = H * img.width / img.height;
+  const { rig } = p, img = coat ? tintedImage(look, coat) : p.img, iw = p.img.width, ih = p.img.height, H = p.h * K, W = H * iw / ih;
   const flash = o.flash ?? 0;
   const lean = (o.lunge ? 0.16 : 0) + (o.run ? 0.07 : 0) - (o.brace ? 0.05 : 0) - flash * 0.08;
   const squash = o.brace ? 0.95 : 1;
@@ -87,7 +112,7 @@ export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number
   const bob = o.run ? -Math.abs(Math.cos(o.run)) * 0.02 : 0;
   g.translate((o.lunge ? 0.06 : 0) * H - flash * 0.03 * H, bob * H);
   g.scale(1, squash);
-  const sw = img.width / COLS, sh = img.height / ROWS, cw = W / COLS, ch = H / ROWS;
+  const sw = iw / COLS, sh = ih / ROWS, cw = W / COLS, ch = H / ROWS;
   for (let r = 0; r < ROWS; r++) {
     const v = 1 - (r + 0.5) / ROWS;
     for (let c = 0; c < COLS; c++) {
