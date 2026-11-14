@@ -29,6 +29,7 @@ import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
+import { Atmosphere } from "./atmosphere";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
@@ -51,18 +52,6 @@ const ENCOUNTER_EVERY: [number, number] = [22, 26];
 
 export interface ExploreState { map: string; x: number; y: number; facing: Facing; }
 
-/** Colour laid over the world for the time of day and what has happened. Indoors keeps its own light. */
-const LIGHT: Record<string, { color: number; alpha: number }> = {
-  day: { color: 0, alpha: 0 },
-  dusk: { color: 0x6a2a3a, alpha: 0.28 },
-  night: { color: 0x0a1030, alpha: 0.5 },
-  fire: { color: 0x3a0c04, alpha: 0.42 },
-  ash: { color: 0x2a2624, alpha: 0.12 },
-  evening: { color: 0x1a1008, alpha: 0.4 },
-  steam: { color: 0x0a0806, alpha: 0.2 },
-  snow: { color: 0xe8f0fa, alpha: 0.22 },
-};
-const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery", "mire", "culvert"]);
 
 interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 
@@ -80,6 +69,9 @@ export class ExploreScene implements Scene, StoryHost {
   private people = new Container();
   private overlay = new Graphics();
   private steamLayer = new Graphics();
+  /** Light and air: lamps in the dark, embers, steam, snow, the vignette. */
+  private atmos = new Atmosphere();
+  private airAt = 0;
   private hud = new Container();
   private wounds = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#e8b8a0", lineHeight: 17, dropShadow: { color: "#000000", alpha: 0.9, blur: 3, distance: 1, angle: Math.PI / 2 } } });
   private joins = new JoinCards();
@@ -145,10 +137,10 @@ export class ExploreScene implements Scene, StoryHost {
     this.game = game;
     this.runner = new StoryRunner(this.story, this);
     if (!this.flags.stage) this.beginStory();
-    this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
+    this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
@@ -182,6 +174,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.map && this.map.file.id !== id) sfx.door();
     if (file.rest && this.map && this.map.file.id !== id) queueMicrotask(() => this.rest(file.name));
     this.map = new WorldMap(file);
+    this.atmos.setMap(this.map);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
     if (this.flags.gateOpen) this.map.open.add("gate");
     const sp = this.map.spawn();
@@ -220,10 +213,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.objective.text = this.story.objectives[stage] ?? "";
     this.chapter.text = this.flags.rank && this.flags.hero !== "corran" ? String(this.flags.rank) : "";
     if (this.game.width) this.chapter.x = this.game.width - this.chapter.width - 16;
-    const light = LIGHT[String(this.flags.light ?? "day")] ?? LIGHT.day;
-    const indoor = INDOORS.has(this.map.file.id) && this.flags.light !== "evening" && this.flags.light !== "steam";
-    this.overlay.clear();
-    if (!indoor && light.alpha > 0) this.overlay.rect(0, 0, this.map.width * TILE, this.map.height * TILE).fill({ color: light.color, alpha: light.alpha });
+    this.atmos.setLight(String(this.flags.light ?? "day"));
     this.drawFog();
     this.drawMeter(); this.drawWounds();
   }
@@ -333,6 +323,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.screen = { w, h };
     this.zoom = this.zoomFor(w, h);
     this.world.scale.set(this.zoom);
+    this.atmos.resize(w, h);
     this.dialog.resize(w, h); this.joins.resize(w, h);
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
@@ -763,6 +754,8 @@ export class ExploreScene implements Scene, StoryHost {
     const cx = mw <= vw ? (mw - vw) / 2 : Math.max(0, Math.min(mw - vw, p.x + 6 - vw / 2));
     const cy = mh <= vh ? (mh - vh) / 2 : Math.max(0, Math.min(mh - vh, p.y + 9 - vh / 2));
     this.world.x = -Math.round(cx) * this.zoom; this.world.y = -Math.round(cy) * this.zoom;
+    const airDt = Math.max(0, Math.min(0.1, t - this.airAt)); this.airAt = t;
+    this.atmos.update(airDt, t, this.game.app.renderer, p, { x: cx, y: cy, w: vw, h: vh });
     // on the world map, name the nearest place within two tiles
     this.placeLabel.text = "";
     if (this.map.file.world) {
