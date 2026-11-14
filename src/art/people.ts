@@ -97,6 +97,10 @@ export const LOOKS: Record<string, Look> = {
   posy: { hair: "#1a1a1e", hairLight: "#34343a", skin: "#ecd6c4", skinShade: "#c8b09e", coat: "#7a7a7a", coatShade: "#5c5c5c", accent: "#5a3a24", legs: "#3a3a3a", boots: "#222" },
   tobin: { hair: "#1e1a18", hairLight: "#3a3430", skin: "#9a6a48", skinShade: "#7a5034", coat: "#4a4238", coatShade: "#36302a", accent: "#5a6a3a", legs: "#34302a", boots: "#1e1610" },
   kid3: { hair: "#2a1a10", hairLight: "#4a3020", skin: "#c8a07a", skinShade: "#a07c5a", coat: "#8a8a7a", coatShade: "#6a6a5c", accent: "#5a5a50", legs: "#3e352c", boots: "#2a221c" },
+  // Act III, matched to their portraits
+  hallet: { hair: "#8a8a86", hairLight: "#b0b0aa", skin: "#d8ac88", skinShade: "#b08866", coat: "#2e4434", coatShade: "#22332a", accent: "#9aa0a6", legs: "#2a2e2a", boots: "#1a1614", style: "short" },
+  fennick: { hair: "#8a7458", hairLight: "#a88e70", skin: "#ecd0b4", skinShade: "#c8aa8e", coat: "#4a4a50", coatShade: "#36363c", accent: "#e8e4dc", legs: "#34343a", boots: "#1e1e22" },
+  haldane: { hair: "#eeeae4", hairLight: "#ffffff", skin: "#e0b898", skinShade: "#bc9474", coat: "#26262c", coatShade: "#18181c", accent: "#a8322a", legs: "#26262c", boots: "#18181c", style: "short" },
 };
 /** Characters you can recruit (and Rhea) are drawn in clear, bright colours; everyone else a little muted,
  *  so the people who can join you stand out in a crowd. */

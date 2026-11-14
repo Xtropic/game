@@ -5,7 +5,7 @@
  "cast": {
   "hm-gatherer": "Moss gatherer",
   "hm-widow": "Widow Sorrel",
-  "hm-boy": "Wim",
+  "hm-boy": "Tobin",
   "ds-keeper": "Spring keeper",
   "ds-seller": "Water seller",
   "ds-girl": "Nell",
@@ -33,7 +33,7 @@
    "map": "town-highmoss",
    "x": 9,
    "y": 4,
-   "look": "hm-gatherer",
+   "look": "vil1",
    "when": {
     "stagePrefix": "a"
    },
@@ -53,7 +53,7 @@
    "map": "town-highmoss",
    "x": 15,
    "y": 8,
-   "look": "hm-widow",
+   "look": "vil2",
    "when": {
     "stagePrefix": "a"
    },
@@ -73,7 +73,7 @@
    "map": "town-highmoss",
    "x": 6,
    "y": 9,
-   "look": "hm-boy",
+   "look": "vil3",
    "when": {
     "stagePrefix": "a"
    },
@@ -89,7 +89,7 @@
    "map": "town-dripstone",
    "x": 6,
    "y": 7,
-   "look": "ds-keeper",
+   "look": "vil4",
    "when": {
     "stagePrefix": "a"
    },
@@ -109,7 +109,7 @@
    "map": "town-dripstone",
    "x": 16,
    "y": 8,
-   "look": "ds-seller",
+   "look": "vil5",
    "when": {
     "stagePrefix": "a"
    },
@@ -125,7 +125,7 @@
    "map": "town-dripstone",
    "x": 12,
    "y": 10,
-   "look": "ds-girl",
+   "look": "kid2",
    "when": {
     "stagePrefix": "a"
    },
@@ -145,7 +145,7 @@
    "map": "town-mistfold",
    "x": 12,
    "y": 5,
-   "look": "mf-herder",
+   "look": "vil6",
    "when": {
     "stagePrefix": "a"
    },
@@ -172,7 +172,7 @@
    "talk": [
     {
      "say": "",
-     "text": "A big loftbuck, half asleep in the mist. It sniffs Ash, decides he's no trouble, and goes back to sleep."
+     "text": "A big loftbuck, half asleep in the mist. It sniffs Ash, decides she's no trouble, and goes back to sleep."
     }
    ]
   },
@@ -181,7 +181,7 @@
    "map": "town-mistfold",
    "x": 8,
    "y": 10,
-   "look": "mf-old",
+   "look": "vil7",
    "when": {
     "stagePrefix": "a"
    },
@@ -201,7 +201,7 @@
    "map": "town-kerrow",
    "x": 12,
    "y": 7,
-   "look": "kr-ferry",
+   "look": "vil1",
    "when": {
     "stagePrefix": "a"
    },
@@ -217,7 +217,7 @@
    "map": "town-kerrow",
    "x": 18,
    "y": 9,
-   "look": "kr-smith",
+   "look": "vil4",
    "when": {
     "stagePrefix": "a"
    },
@@ -237,7 +237,7 @@
    "map": "town-kerrow",
    "x": 7,
    "y": 3,
-   "look": "kr-mother",
+   "look": "vil2",
    "when": {
     "stagePrefix": "a"
    },
@@ -253,12 +253,83 @@
        "a3b",
        "a3c",
        "a4",
+       "a4b",
        "a5",
+       "a5b",
        "a6",
        "a6b",
+       "a6c",
+       "a6d",
+       "a6e",
        "a7",
        "a7b",
-       "a7c"
+       "a7c",
+       "ab1",
+       "ab2",
+       "ab3",
+       "ab3c",
+       "ab3e",
+       "ab4",
+       "ab5",
+       "ab6",
+       "ab7",
+       "ab8",
+       "ab9",
+       "ab10",
+       "ab11",
+       "ab12",
+       "ab13",
+       "ab14",
+       "ab15",
+       "ab16",
+       "ab17",
+       "ab18",
+       "ab19",
+       "ab20",
+       "ab21",
+       "ab22",
+       "ab23",
+       "ab24",
+       "ab25",
+       "ab26",
+       "ac1",
+       "ac2",
+       "ac3",
+       "ac5",
+       "ac6",
+       "ac7",
+       "ac8",
+       "ac9",
+       "ac10",
+       "ac11",
+       "ac12",
+       "ac13",
+       "ad1",
+       "ad2",
+       "ad3",
+       "ad4",
+       "ad5",
+       "ad6",
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad20"
       ]
      },
      "then": [
@@ -275,7 +346,7 @@
    "map": "town-ropebridge",
    "x": 13,
    "y": 10,
-   "look": "rb-ropemaker",
+   "look": "vil5",
    "when": {
     "stagePrefix": "a"
    },
@@ -295,7 +366,7 @@
    "map": "town-ropebridge",
    "x": 9,
    "y": 4,
-   "look": "rb-girl",
+   "look": "kid",
    "when": {
     "stagePrefix": "a"
    },
@@ -311,7 +382,7 @@
    "map": "town-ropebridge",
    "x": 18,
    "y": 3,
-   "look": "rb-lookout",
+   "look": "vil3",
    "when": {
     "stagePrefix": "a"
    },
@@ -331,7 +402,7 @@
    "map": "town-weirbank",
    "x": 6,
    "y": 6,
-   "look": "wb-miller",
+   "look": "vil4",
    "when": {
     "stagePrefix": "a"
    },
@@ -351,7 +422,7 @@
    "map": "town-weirbank",
    "x": 18,
    "y": 10,
-   "look": "wb-fisher",
+   "look": "vil6",
    "when": {
     "stagePrefix": "a"
    },
@@ -367,7 +438,7 @@
    "map": "town-weirbank",
    "x": 14,
    "y": 4,
-   "look": "wb-child",
+   "look": "kid3",
    "when": {
     "stagePrefix": "a"
    },
@@ -387,7 +458,7 @@
    "map": "town-drovers-halt",
    "x": 6,
    "y": 5,
-   "look": "dh-host",
+   "look": "vil7",
    "when": {
     "stagePrefix": "a"
    },
@@ -407,7 +478,7 @@
    "map": "town-drovers-halt",
    "x": 8,
    "y": 8,
-   "look": "dh-drover",
+   "look": "vil1",
    "when": {
     "stagePrefix": "a"
    },
@@ -459,7 +530,7 @@
    "map": "town-longbarrow",
    "x": 11,
    "y": 6,
-   "look": "lb-keeper",
+   "look": "vil5",
    "when": {
     "stagePrefix": "a"
    },
@@ -479,7 +550,7 @@
    "map": "town-longbarrow",
    "x": 20,
    "y": 10,
-   "look": "lb-farmer",
+   "look": "vil2",
    "when": {
     "stagePrefix": "a"
    },
@@ -492,12 +563,83 @@
      "if": {
       "stage": [
        "a4",
+       "a4b",
        "a5",
+       "a5b",
        "a6",
        "a6b",
+       "a6c",
+       "a6d",
+       "a6e",
        "a7",
        "a7b",
-       "a7c"
+       "a7c",
+       "ab1",
+       "ab2",
+       "ab3",
+       "ab3c",
+       "ab3e",
+       "ab4",
+       "ab5",
+       "ab6",
+       "ab7",
+       "ab8",
+       "ab9",
+       "ab10",
+       "ab11",
+       "ab12",
+       "ab13",
+       "ab14",
+       "ab15",
+       "ab16",
+       "ab17",
+       "ab18",
+       "ab19",
+       "ab20",
+       "ab21",
+       "ab22",
+       "ab23",
+       "ab24",
+       "ab25",
+       "ab26",
+       "ac1",
+       "ac2",
+       "ac3",
+       "ac5",
+       "ac6",
+       "ac7",
+       "ac8",
+       "ac9",
+       "ac10",
+       "ac11",
+       "ac12",
+       "ac13",
+       "ad1",
+       "ad2",
+       "ad3",
+       "ad4",
+       "ad5",
+       "ad6",
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad20"
       ]
      },
      "then": [
@@ -514,7 +656,7 @@
    "map": "town-longbarrow",
    "x": 4,
    "y": 9,
-   "look": "lb-boy",
+   "look": "kid",
    "when": {
     "stagePrefix": "a"
    },
@@ -522,6 +664,230 @@
     {
      "say": "lb-boy",
      "text": "\"If you lie on the barrow at night you can hear it breathing. Ansel's brother says so. I'm Ansel.\""
+    }
+   ]
+  },
+  {
+   "id": "cw-spinner",
+   "map": "town-cinderwick",
+   "x": 6,
+   "y": 4,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A spinner on her break, sitting on the edge of a stall. \"Fourteen hours on the frames. Fifteen, if the foreman's wearing. You get so you can't feel your fingers, then you get so you can't feel anything. That's what the tins are for.\""
+    }
+   ]
+  },
+  {
+   "id": "cw-boy",
+   "map": "town-cinderwick",
+   "x": 15,
+   "y": 5,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy with a sack of bobbins. \"The drain under the wall? Everybody knows about the drain. Nobody goes down it. It comes out at the Houses.\""
+    }
+   ]
+  },
+  {
+   "id": "cw-lock",
+   "map": "town-cinderwick",
+   "x": 8,
+   "y": 8,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A lock-keeper leaning on his pole. \"Smoke and canals, that's Cinderwick. The mills drink the river and the Guild drinks the mills.\""
+    }
+   ]
+  },
+  {
+   "id": "ls-bargee",
+   "map": "town-lockside",
+   "x": 5,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A bargee mending a rope. \"Corvel's hatchery is up the cut. You can hear the boilers knocking at night if the wind's right. Nobody round here goes near it.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad20"
+      ]
+     },
+     "then": [
+      {
+       "say": "",
+       "text": "A bargee mending a rope. \"Ninety-one of them, walking up the towpath in the dark, holding hands. My wife cried. I didn't see anything, mind. I was asleep.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ls-woman",
+   "map": "town-lockside",
+   "x": 14,
+   "y": 6,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman hanging washing between two boats. \"My sister's girl went into Corvel's at seven. She'll come out at twenty, if she comes out. That's the indenture.\""
+    }
+   ]
+  },
+  {
+   "id": "ls-dog",
+   "map": "town-lockside",
+   "x": 19,
+   "y": 9,
+   "look": "reedcat",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A barge reedcat, asleep on a coil of rope in the sun. It doesn't care who you are."
+    }
+   ]
+  },
+  {
+   "id": "cg-chandler",
+   "map": "town-candle-galleries",
+   "x": 5,
+   "y": 6,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old chandler dipping wicks. \"The galleries were cut for tallow, back when the mills ran on candles. Now the Sisters keep them lit, and nobody asks what for.\""
+    }
+   ]
+  },
+  {
+   "id": "cg-novice",
+   "map": "town-candle-galleries",
+   "x": 12,
+   "y": 2,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A young woman in a grey hood, trimming a lamp in a niche. She smiles at you, and doesn't say anything, and goes on to the next lamp."
+    }
+   ]
+  },
+  {
+   "id": "cg-girl",
+   "map": "town-candle-galleries",
+   "x": 15,
+   "y": 6,
+   "look": "kid2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A girl counting candles into a basket. \"Forty-one, forty-two. If I lose count I have to start again. I never lose count.\""
+    }
+   ]
+  },
+  {
+   "id": "ld-keeper",
+   "map": "town-lockkeepers-deep",
+   "x": 6,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The keeper of the deep lock, a big slow man. \"Deepest lock in Ostrel. Thirty feet of water. Takes an hour to fill. I've had a lot of hours to think.\""
+    }
+   ]
+  },
+  {
+   "id": "ld-wife",
+   "map": "town-lockkeepers-deep",
+   "x": 15,
+   "y": 4,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "His wife, gutting fish. \"He thinks too much. Here. Take a fish. You look like you've walked a long way.\""
+    }
+   ]
+  },
+  {
+   "id": "ld-boy",
+   "map": "town-lockkeepers-deep",
+   "x": 12,
+   "y": 8,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy fishing off the lock gate with a bent nail. He hasn't caught anything. He doesn't mind."
     }
    ]
   }
@@ -954,6 +1320,154 @@
       "map": "land-vale",
       "x": 66,
       "y": 29,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    20,
+    12
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick",
+      "x": 12,
+      "y": 10,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-cinderwick",
+   "at": [
+    12,
+    12
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 20,
+      "y": 13,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    38,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockside",
+      "x": 11,
+      "y": 8,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-lockside",
+   "at": [
+    11,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 38,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    37,
+    30
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-candle-galleries",
+      "x": 10,
+      "y": 6,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-candle-galleries",
+   "at": [
+    10,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 37,
+      "y": 31,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    47,
+    33
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockkeepers-deep",
+      "x": 10,
+      "y": 7,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-lockkeepers-deep",
+   "at": [
+    10,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 47,
+      "y": 34,
       "facing": "down"
      }
     }

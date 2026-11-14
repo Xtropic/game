@@ -228,6 +228,92 @@ TOWNS = [
         ("lb-boy", "Ansel", "kid", 4, 9, [
             "\"If you lie on the barrow at night you can hear it breathing. Ansel's brother says so. I'm Ansel.\""]),
     ], signs=[(5, 5, "A standing stone at the barrow's end. Dozens of little iron rings hang from a nail in it.")]),
+
+    # The Millcities, open once the Sallow checkpoint falls. Nobody here has a painted face yet, so they're heard
+    # through Rhea's eyes (narration), not in speech boxes.
+    dict(id="cinderwick", land="millcities", name="Cinderwick", music="town", rows=[
+        "hhhhhhhhhhhhhhhhhhhhhhhhhh",
+        "hrrrr.rrrrr..rrrrr.rrrrrrh",
+        "hhdhh.hhdhh..hhdhh.hhhdhhh",
+        "h........................h",
+        "h..SS......w.......xx....h",
+        "h........................h",
+        "h~~~~~~~~~~==~~~~~~~~~~~~h",
+        "h~~~~~~~~~~==~~~~~~~~~~~~h",
+        "h.....p.....:.....p......h",
+        "hrrrr.......:.......rrrr.h",
+        "hhhdh.......:.......hdhh.h",
+        "h...........:............h",
+        "hhhhhhhhhhhhehhhhhhhhhhhhh",
+    ], spawn=(12, 11), people=[
+        ("cw-spinner", "", "vil2", 6, 4, [
+            ("", "A spinner on her break, sitting on the edge of a stall. \"Fourteen hours on the frames. Fifteen, if the foreman's wearing. You get so you can't feel your fingers, then you get so you can't feel anything. That's what the tins are for.\"")]),
+        ("cw-boy", "", "kid", 15, 5, [
+            ("", "A boy with a sack of bobbins. \"The drain under the wall? Everybody knows about the drain. Nobody goes down it. It comes out at the Houses.\"")]),
+        ("cw-lock", "", "vil6", 8, 8, [
+            ("", "A lock-keeper leaning on his pole. \"Smoke and canals, that's Cinderwick. The mills drink the river and the Guild drinks the mills.\"")]),
+    ], signs=[(11, 4, "A pump with a chained cup. A notice nailed above it: 'Indentured children may not drink from this pump.'")]),
+
+    dict(id="lockside", land="millcities", name="Lockside", music="town", rows=[
+        "TTTTTTTTTTTTTTTTTTTTTTTT",
+        "T~~~~~~~~~~~~~~~~~~~~~~T",
+        "T~~~~~~~~~~==~~~~~~~~~~T",
+        "T,,,,,,,,,,:,,,,,,,,,,,T",
+        "T,rrrr,,,,,:,,,,,rrrr,,T",
+        "T,hhdh,,,,,:,,,,,hdhh,,T",
+        "T,,,:::::::::::::::,,,,T",
+        "T,,,,,,,,,,:,,,,,,,xx,,T",
+        "T,,CC,,,,,,:,,,,F,,,,,,T",
+        "T,,,,,,,,,,:,,,,,,,,,,,T",
+        "TTTTTTTTTTTeTTTTTTTTTTTT",
+    ], spawn=(11, 9), people=[
+        ("ls-bargee", "", "vil4", 5, 7, [
+            ("", "A bargee mending a rope. \"Corvel's hatchery is up the cut. You can hear the boilers knocking at night if the wind's right. Nobody round here goes near it.\""),
+            ("from", "ad6b", "A bargee mending a rope. \"Ninety-one of them, walking up the towpath in the dark, holding hands. My wife cried. I didn't see anything, mind. I was asleep.\"")]),
+        ("ls-woman", "", "vil5", 14, 6, [
+            ("", "A woman hanging washing between two boats. \"My sister's girl went into Corvel's at seven. She'll come out at twenty, if she comes out. That's the indenture.\"")]),
+        ("ls-dog", "", "reedcat", 19, 9, [
+            ("", "A barge reedcat, asleep on a coil of rope in the sun. It doesn't care who you are.")]),
+    ], signs=[(16, 8, "A brazier where the lock-keepers warm their hands. Someone has scratched a tally of boats into the post: hundreds of them.")]),
+
+    dict(id="candle-galleries", land="millcities", name="The Candle Galleries", music="caves", rows=[
+        "RRRRRRRRRRRRRRRRRRRRRR",
+        "RRRoRRRRRRRRRRRRRRoRRR",
+        "RR,:,,,,,,,,,,,,,,:,RR",
+        "RR,:::::::::::::::::RR",
+        "RR,,,,bb,,,,,,bb,,,,RR",
+        "RR,xx,,,,,,,,,,,,,SSRR",
+        "RR,,,,,,,,:,,,,,,,,,RR",
+        "RR,,,,,,,,:,,,,,,,,,RR",
+        "RRRRRRRRRReRRRRRRRRRRR",
+    ], spawn=(10, 7), people=[
+        ("cg-chandler", "", "vil7", 5, 6, [
+            ("", "An old chandler dipping wicks. \"The galleries were cut for tallow, back when the mills ran on candles. Now the Sisters keep them lit, and nobody asks what for.\"")]),
+        ("cg-novice", "", "vil3", 12, 2, [
+            ("", "A young woman in a grey hood, trimming a lamp in a niche. She smiles at you, and doesn't say anything, and goes on to the next lamp.")]),
+        ("cg-girl", "", "kid2", 15, 6, [
+            ("", "A girl counting candles into a basket. \"Forty-one, forty-two. If I lose count I have to start again. I never lose count.\"")]),
+    ], signs=[(14, 4, "A long table of cooling candles, hundreds of them, each stamped with a little lamp.")]),
+
+    dict(id="lockkeepers-deep", land="millcities", name="Lockkeeper's Deep", music="dusk", rows=[
+        "TTTTTTTTTTTTTTTTTTTTTT",
+        "T,,,,,,,,,,,,,,,,,,,,T",
+        "T,~~~~~~~~~~~~~~~~~~,T",
+        "T,~~~~~~~~==~~~~~~~~,T",
+        "T,,,,,,,,,:,,,,,,,,,,T",
+        "T,rrrr,,,,:,,,,rrrr,,T",
+        "T,hdhh,,,,:,,,,hhdh,,T",
+        "T,,:::::::::::::::,,,T",
+        "T,,,,,,,,,:,,,HH,,,,,T",
+        "TTTTTTTTTTeTTTTTTTTTTT",
+    ], spawn=(10, 8), people=[
+        ("ld-keeper", "", "vil4", 6, 7, [
+            ("", "The keeper of the deep lock, a big slow man. \"Deepest lock in Ostrel. Thirty feet of water. Takes an hour to fill. I've had a lot of hours to think.\"")]),
+        ("ld-wife", "", "vil2", 15, 4, [
+            ("", "His wife, gutting fish. \"He thinks too much. Here. Take a fish. You look like you've walked a long way.\"")]),
+        ("ld-boy", "", "kid3", 12, 8, [
+            ("", "A boy fishing off the lock gate with a bent nail. He hasn't caught anything. He doesn't mind.")]),
+    ], signs=[(10, 3, "The deep lock's gate, green with weed, taller than a house.")]),
 ]
 
 LOOKS_NOTE = "vil1..vil7 are defined in src/art/people.ts"
@@ -237,7 +323,7 @@ ORDER = [s for s in json.load(open(os.path.join(ROOT, "data", "world", "gates.js
 
 
 def main():
-    lands = {l: json.load(open(os.path.join(ROOT, "data", "maps", f"land-{l}.json"))) for l in ("cloudline", "vale")}
+    lands = {l: json.load(open(os.path.join(ROOT, "data", "maps", f"land-{l}.json"))) for l in ("cloudline", "vale", "millcities")}
     story = {"id": "towns", "title": "The open towns", "voiced": [], "cast": {}, "objectives": {}, "actors": [], "steps": [],
              "zones": [], "looks": [], "songs": [], "hazards": [], "scripts": {}}
     for t in TOWNS:
@@ -267,7 +353,7 @@ def main():
             talk = []
             for ln in lines:
                 if isinstance(ln, tuple) and ln[0] == "from":  # only once the story has got that far
-                    talk.append({"if": {"stage": ORDER[ORDER.index(ln[1]):]}, "then": [{"say": pid, "text": ln[2]}]})
+                    talk.append({"if": {"stage": ORDER[ORDER.index(ln[1]):]}, "then": [{"say": pid if name else "", "text": ln[2]}]})
                 elif isinstance(ln, tuple): talk.append({"say": "", "text": ln[1]})
                 else: talk.append({"say": pid, "text": ln})
             if name: story["cast"][pid] = name

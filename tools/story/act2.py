@@ -115,10 +115,10 @@ S["frost"] = [
 ]
 
 S["kane2"] = [
-    iff({"stage": "ab1"}, [run("kaneThornwick")], [
+    iff({"flag": "act3"}, [run("kane3")], [iff({"stage": "ab1"}, [run("kaneThornwick")], [
         iff({"stage": "ab14"}, [run("kaneCrates")], [
             iff({"stage": "ab2"}, [say("kane", R("Thornwick, Caddow. Before the snow."))], [
-                say("kane", R("You've a post to hold, Caddow. Go and hold it."))])])]),
+                say("kane", R("You've a post to hold, Caddow. Go and hold it."))])])])]),
 ]
 S["kaneThornwick"] = [
     n("Kane is at his map table, with a list of the camp's winter stores weighted down under his knife."),
@@ -960,7 +960,7 @@ S["childGate"] = [
         n("Rhea sits down on the stones beside her and takes the bleeding feet into her lap, and starts to clean them, because it's the only thing she can think of to do."),
         n("She doesn't ask the officer's name. The girl wouldn't know it. There are a hundred officers in Vantry with high collars."),
         setf({"childMire": True}),
-        {"end": "act2"},
+        run("act3Start"),
     ]),
 ]
 
@@ -1172,7 +1172,8 @@ story = {
     "id": "act2", "title": "Act II: The Field", "voiced": voiced, "moods": moods, "cast": cast, "objectives": objectives,
     "actors": actors, "steps": steps, "zones": zones, "looks": looks, "songs": songs, "hazards": hazards, "scripts": S,
 }
-with open(OUT, "w") as f:
-    json.dump(story, f, indent=1, ensure_ascii=False)
-    f.write("\n")
-print(len(S), "scripts,", len(actors), "actors")
+if __name__ == "__main__":
+    with open(OUT, "w") as f:
+        json.dump(story, f, indent=1, ensure_ascii=False)
+        f.write("\n")
+    print(len(S), "scripts,", len(actors), "actors")

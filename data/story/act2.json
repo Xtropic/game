@@ -2481,38 +2481,50 @@
   "kane2": [
    {
     "if": {
-     "stage": "ab1"
+     "flag": "act3"
     },
     "then": [
      {
-      "run": "kaneThornwick"
+      "run": "kane3"
      }
     ],
     "else": [
      {
       "if": {
-       "stage": "ab14"
+       "stage": "ab1"
       },
       "then": [
        {
-        "run": "kaneCrates"
+        "run": "kaneThornwick"
        }
       ],
       "else": [
        {
         "if": {
-         "stage": "ab2"
+         "stage": "ab14"
         },
         "then": [
          {
-          "say": "kane",
-          "text": "\"Thornwick, Caddow. Before the snow.\""
+          "run": "kaneCrates"
          }
         ],
         "else": [
          {
-          "say": "kane",
-          "text": "\"You've a post to hold, Caddow. Go and hold it.\""
+          "if": {
+           "stage": "ab2"
+          },
+          "then": [
+           {
+            "say": "kane",
+            "text": "\"Thornwick, Caddow. Before the snow.\""
+           }
+          ],
+          "else": [
+           {
+            "say": "kane",
+            "text": "\"You've a post to hold, Caddow. Go and hold it.\""
+           }
+          ]
          }
         ]
        }
@@ -6325,7 +6337,7 @@
       }
      },
      {
-      "end": "act2"
+      "run": "act3Start"
      }
     ]
    }

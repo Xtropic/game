@@ -117,8 +117,8 @@ await play("thornBed"); await expect("the pressure bell", (s) => s.stage === "ac
 await play("roomsTable", [1]); await play("bellChild1"); await play("bellChild2"); await play("bellChild3"); await play("bellDoor");
 await expect("the bell night ends", (s) => s.stage === "ac12");
 await play("posyMorning"); await play("halloranBell"); await expect("back at Thornwick", (s) => s.stage === "ab26");
-const end = await play("childGate"); await shot("end");
-if (!end.ended) fail(`the end of what's written: ${JSON.stringify(end)}`);
+await play("childGate"); await shot("end");
+await expect("straight on into Act III", (s) => s.stage === "ad1" && s.map === "thornwick" && !s.ended);
 
 if (errors.length) fail("page errors: " + errors.join(" | "));
 console.log(process.exitCode ? "act2 e2e FAILED" : "act2 e2e passed", `in ${((Date.now() - t0) / 1000).toFixed(1)}s`, `joins ${joins}`);

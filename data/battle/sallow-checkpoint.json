@@ -1,0 +1,80 @@
+{
+ "id": "sallow-checkpoint",
+ "name": "The Sallow checkpoint",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "The Guild checkpoint on the road south. Wardens at the barrier, an archer in the guardhouse door, a tracker reedcat on a chain.",
+  "Take the barrier, and the Millcities are open."
+ ],
+ "won": "The road south is open",
+ "lost": "Thrown back up the road",
+ "units": [
+  {
+   "id": "cw1",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 6,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    168,
+    92
+   ]
+  },
+  {
+   "id": "cw2",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 6,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    194,
+    112
+   ]
+  },
+  {
+   "id": "crc",
+   "name": "Tracker reedcat",
+   "look": "reedcat:#c8c4ba",
+   "side": "foe",
+   "row": "front",
+   "hp": 26,
+   "kith": true,
+   "level": 6,
+   "skills": [
+    "pounce"
+   ],
+   "species": "fog-reedcat",
+   "at": [
+    160,
+    128
+   ]
+  },
+  {
+   "id": "cab",
+   "name": "Warden archer",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 6,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    228,
+    98
+   ]
+  }
+ ]
+}

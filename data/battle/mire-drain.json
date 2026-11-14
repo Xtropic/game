@@ -1,0 +1,70 @@
+{
+ "id": "mire-drain",
+ "name": "In the drain",
+ "backdrop": "cistern",
+ "party": true,
+ "intro": [
+  "Drain reedcats, fat and bold, in the warm dark under Vantry's wall.",
+  "Don't let them get behind you in the water."
+ ],
+ "won": "The drain is clear",
+ "lost": "Driven back to the canal",
+ "units": [
+  {
+   "id": "dr1",
+   "name": "Drain reedcat",
+   "look": "reedcat:#5a5a52",
+   "side": "foe",
+   "row": "front",
+   "hp": 24,
+   "kith": true,
+   "level": 6,
+   "skills": [
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    168,
+    100
+   ]
+  },
+  {
+   "id": "dr2",
+   "name": "Drain reedcat",
+   "look": "reedcat:#5a5a52",
+   "side": "foe",
+   "row": "front",
+   "hp": 24,
+   "kith": true,
+   "level": 6,
+   "skills": [
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    196,
+    118
+   ]
+  },
+  {
+   "id": "dr3",
+   "name": "Old drain reedcat",
+   "look": "reedcat:#3e3e38",
+   "side": "foe",
+   "row": "front",
+   "hp": 34,
+   "kith": true,
+   "level": 7,
+   "skills": [
+    "maul",
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "temperament": "proud",
+   "at": [
+    222,
+    96
+   ]
+  }
+ ]
+}

@@ -65,10 +65,15 @@ CAST = {
     "smuggler": (V(("bm_fable", 1)), 0.96, 0),
     "rider": (V(("am_puck", 1)), 1.0, 0),
     "warden2": (V(("bm_george", 1)), 0.95, 0),
+    # Act III
+    "wren": (V(("af_aoede", 1)), 0.96, 2.5),
+    "hallet": (V(("am_fenrir", 1)), 0.94, -0.5),
+    "haldane": (V(("bm_fable", 1)), 0.86, 0),
+    "fennick": (V(("am_puck", 1)), 1.0, 0),
 }
 # the accent each voice was trained on (a = American, b = British)
 def lang_for(who):
-    v = {"rhea": "b", "rook": "b", "oda": "b", "warden": "b", "innkeeper": "b", "oren": "b", "hessa": "b", "oakes": "b", "ume": "b", "hesk": "b", "factor": "b", "smuggler": "b", "warden2": "b"}.get(who, "a")
+    v = {"rhea": "b", "rook": "b", "oda": "b", "warden": "b", "innkeeper": "b", "oren": "b", "hessa": "b", "oakes": "b", "ume": "b", "hesk": "b", "factor": "b", "smuggler": "b", "warden2": "b", "haldane": "b"}.get(who, "a")
     return "en-gb" if v == "b" else "en-us"
 # a breath between sentences, so long lines aren't rushed
 PAUSE = {".": 0.38, "?": 0.42, "!": 0.36, "—": 0.22, "…": 0.45, ";": 0.25, ":": 0.25}

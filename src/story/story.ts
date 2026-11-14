@@ -13,6 +13,8 @@ export interface Cond {
   flag?: string | string[];
   not?: string | string[];
   eq?: Record<string, Value>;
+  /** Numbers that must be at least this much (an unset number counts as 0). */
+  atLeast?: Record<string, number>;
   hero?: string;
   map?: string | string[];
 }
@@ -86,6 +88,7 @@ export function holds(c: Cond | undefined, w: Where): boolean {
   if (list(c.flag).some((f) => !w.flags[f])) return false;
   if (list(c.not).some((f) => !!w.flags[f])) return false;
   if (c.eq && Object.entries(c.eq).some(([k, v]) => w.flags[k] !== v)) return false;
+  if (c.atLeast && Object.entries(c.atLeast).some(([k, v]) => Number(w.flags[k] ?? 0) < v)) return false;
   if (c.hero !== undefined && (w.flags.hero ?? "rhea") !== c.hero) return false;
   if (c.map !== undefined && !list(c.map).includes(w.map)) return false;
   return true;

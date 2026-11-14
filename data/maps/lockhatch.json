@@ -1,0 +1,52 @@
+{
+ "id": "lockhatch",
+ "name": "Lockside hatchery",
+ "music": "hatchery",
+ "legend": {
+  "#": "brick",
+  ".": "cobble",
+  "~": "canal",
+  "_": "wetfloor",
+  "t": "tray",
+  "B": "boiler",
+  "d": "door",
+  "I": "iwall",
+  "p": "plank",
+  "b": "bed",
+  "T": "table",
+  "k": "shelf",
+  "f": "fence",
+  ",": "grass",
+  "H": "hay",
+  "F": "campfire",
+  "x": "crate",
+  "w": "well",
+  "e": "exit"
+ },
+ "rows": [
+  "############################",
+  "#.############..IIIIIIIIII.#",
+  "#.#B________B#..IkpppppbpI.#",
+  "#.#_ttt__ttt_#..IppTpppppI.#",
+  "#.#__________#..IppppppppI.#",
+  "#.#_ttt__ttt_#..IppppppppI.#",
+  "#.#__________#..IIIIdIIIII.#",
+  "#.#__________#.............#",
+  "#.#####d######.............#",
+  "#~~...............ffffffff.#",
+  "#~~...............f,,,,HHf.#",
+  "#~~...........w...,,,,,,,f.#",
+  "#~~.xx..F.........f,,,,,,f.#",
+  "#~~...............ffffffff.#",
+  "#~~........................#",
+  "#############ee#############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 14
+  }
+ ]
+}

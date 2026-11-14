@@ -1,0 +1,52 @@
+{
+ "id": "town-cinderwick",
+ "name": "Cinderwick",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  ".": "cobble",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit",
+  "p": "plank"
+ },
+ "rows": [
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "hrrrr.rrrrr..rrrrr.rrrrrrh",
+  "hhdhh.hhdhh..hhdhh.hhhdhhh",
+  "h........................h",
+  "h..SS......w.......xx....h",
+  "h........................h",
+  "h~~~~~~~~~~==~~~~~~~~~~~~h",
+  "h~~~~~~~~~~==~~~~~~~~~~~~h",
+  "h.....p.....:.....p......h",
+  "hrrrr.......:.......rrrr.h",
+  "hhhdh.......:.......hdhh.h",
+  "h...........:............h",
+  "hhhhhhhhhhhhehhhhhhhhhhhhh"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 11
+  },
+  {
+   "id": "cinderwick-sign0",
+   "kind": "sign",
+   "x": 11,
+   "y": 4,
+   "props": {
+    "text": "A pump with a chained cup. A notice nailed above it: 'Indentured children may not drink from this pump.'"
+   }
+  }
+ ]
+}

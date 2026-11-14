@@ -62,7 +62,7 @@ const LIGHT: Record<string, { color: number; alpha: number }> = {
   steam: { color: 0x0a0806, alpha: 0.2 },
   snow: { color: 0xe8f0fa, alpha: 0.22 },
 };
-const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery"]);
+const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery", "mire", "culvert"]);
 
 interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 
@@ -163,6 +163,7 @@ export class ExploreScene implements Scene, StoryHost {
     // a save made at the old end of the prologue carries straight on into the story, as it would now
     if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
     else if (this.flags.ended === "act1") { this.flags.ended = false; this.runner.run([{ run: "act2Start" }]); } // a save made where Act I used to end
+    else if (this.flags.ended === "act2") { this.flags.ended = false; this.runner.run([{ run: "act3Start" }]); } // ...or where Act II did
     else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
   }
 
