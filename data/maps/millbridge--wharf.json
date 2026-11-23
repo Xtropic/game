@@ -1,0 +1,48 @@
+{
+ "id": "millbridge--wharf",
+ "name": "Millbridge, the Wharf",
+ "music": "road",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "C": "cart",
+  "p": "plank"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,rrrr,,,,,,,,,,,rrrr,,T",
+  "T,hdhh,,,,xx,,,,,hhdh,,T",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,CC,,,,,,,,,,,,,,,HH,e",
+  "TppppppppppppppppppppppT",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "TTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 22,
+   "y": 5
+  },
+  {
+   "id": "millbridge--wharf-sign0",
+   "kind": "sign",
+   "x": 10,
+   "y": 3,
+   "props": {
+    "text": "Crates stamped with the Guild's mark: a hand over a wheel."
+   }
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "note": "Stalls in the larger towns (tools/world/towns.py puts the keepers there). Each ware is an item or a fitting id and its price in coin; bought ones go into have.<id>.",
+ "shops": {
+  "millbridge": { "name": "Mill Quarter stall", "note": "Mill silk, harness and the vale's remedies.", "wares": [
+   ["bandage", 8], ["willowbark", 12], ["grip-wrapped", 30], ["cord-silk", 70], ["charm-ribbon", 35] ] },
+  "cinderwick": { "name": "Canal Market trader", "note": "Whatever came up the canal this week, and iron from the Foundry Ward.", "wares": [
+   ["bandage", 8], ["salve", 15], ["firepot", 25], ["dart", 20], ["snare", 22], ["head-hatchery", 70], ["boss-mine", 80] ] },
+  "lockside": { "name": "Quay chandler", "note": "Rope, gut and what the bargees leave behind.", "wares": [
+   ["bandage", 8], ["salve", 15], ["cord-gut", 45], ["charm-bell", 40], ["charm-tooth", 45] ] }
+ }
+}

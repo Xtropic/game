@@ -600,6 +600,9 @@ export class World3D {
       // ease to just below the town near it: distance (local tiles) outside the town's rectangle
       const X = lx(a.x - R) + u, Z = lz(a.y - R) + v, dx = Math.max(0, -X, X - W), dz = Math.max(0, -Z, Z - H), d = Math.hypot(dx, dz);
       const k = smoothstep(2, 16, d);
+      // under the town itself it drops away, so the town's own canals and ponds (sunk below its ground) show
+      const di = Math.min(X, W - X, Z, H - Z);
+      if (di > 0) return -0.08 - 0.9 * smoothstep(0, 1.5, di);
       return -0.08 + h * k;
     };
     for (let i = 0; i < pos.count; i++) { const ix = i % V, iz = Math.floor(i / V); pos.setY(i, height(ix * S / SUB, iz * S / SUB)); }

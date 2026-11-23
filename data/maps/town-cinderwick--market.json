@@ -1,0 +1,59 @@
+{
+ "id": "town-cinderwick--market",
+ "name": "Cinderwick, the Canal Market",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "C": "cart",
+  "p": "plank"
+ },
+ "rows": [
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "h~~~~~~~~~~~~~~~~~~~~~~~~h",
+  "h~~~~~~~~~~~~~~~~~~~~~~~~h",
+  "hpppppppppppppppppppppppph",
+  "h........................h",
+  "h.SS...SS...SS....SS..SS.h",
+  "h........................h",
+  "h...x.......w.......CC...h",
+  "h........................e",
+  "hrrrrr...........rrrrrr..h",
+  "hhhdhh...........hhdhhh..h",
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 24,
+   "y": 8
+  },
+  {
+   "id": "town-cinderwick--market-sign0",
+   "kind": "sign",
+   "x": 12,
+   "y": 7,
+   "props": {
+    "text": "A market pump. Someone has chalked the price of bread on it, crossed it out, and chalked a higher one."
+   }
+  },
+  {
+   "id": "town-cinderwick--market-sign1",
+   "kind": "sign",
+   "x": 3,
+   "y": 3,
+   "props": {
+    "text": "The quay planks, slick with grain dust and canal water."
+   }
+  }
+ ]
+}

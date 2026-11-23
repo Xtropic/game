@@ -21,7 +21,7 @@ import { MAPS } from "./content";
 
 /** Where a town's map stands on the world map (its place there shares the map's id, less any "town-"), for its 3D surroundings. */
 function aroundOf(id: string): Around | undefined {
-  const pid = id.replace(/^town-/, "");
+  const pid = id.replace(/^town-/, "").split("--")[0]; // a district sits where its town does
   for (const m of Object.values(MAPS)) { const p = m.world ? m.places?.find((q) => q.id === pid) : undefined; if (p) return { land: m, x: p.x, y: p.y }; }
   return undefined;
 }
@@ -39,6 +39,7 @@ import { DialogueBox } from "../ui/dialogueBox";
 import { Atmosphere } from "./atmosphere";
 import { World3D, type Around, type Fig } from "../three/world3d";
 import { BasePanel } from "../ui/basePanel";
+import { ShopPanel } from "../ui/shopPanel";
 import { baseDay, coinForFoe } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
@@ -97,6 +98,7 @@ export class ExploreScene implements Scene, StoryHost {
   private notes = new NotesPanel();
   private menu = new GameMenu();
   private base = new BasePanel();
+  private shop = new ShopPanel();
   private baseStage = "";
   private menuButton = new Text({ text: "☰ Menu", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private map!: WorldMap;
@@ -160,7 +162,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
@@ -353,7 +355,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
-    this.menu.resize(w, h); this.base.resize(w, h);
+    this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
@@ -439,7 +441,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Nothing else is on screen or running: the menu can open. */
-  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && this.game.scenes.top === this; }
+  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && !this.shop.open && this.game.scenes.top === this; }
 
   openMenu(): void {
     this.menu.show({
@@ -581,7 +583,13 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** A kith joins the company. */
   /** The roll-keeper's "menu" step: opens the party page once the line that led to it has closed. */
-  openPage(page: "party" | "base"): void { setTimeout(() => { if (this.free()) page === "base" ? this.openBase() : this.openMenu(); }, 150); }
+  openPage(page: "party" | "base" | `shop:${string}`): void {
+    setTimeout(() => {
+      if (!this.free()) return;
+      if (page.startsWith("shop:")) this.shop.show(this.game, page.slice(5), this.screen.w, this.screen.h);
+      else if (page === "base") this.openBase(); else this.openMenu();
+    }, 150);
+  }
 
   addKith(g: KithGift): void {
     if (this.game.kith[g.id]) return;
@@ -736,6 +744,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
     if (this.menu.open) { if (!this.menu.update(inp)) this.settle = true; return; }
     if (this.base.open) { if (!this.base.update(inp)) this.settle = true; return; }
+    if (this.shop.open) { if (!this.shop.update(inp)) this.settle = true; return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
