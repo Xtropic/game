@@ -43,7 +43,7 @@ export type Step =
   /** A kith joins: a wild one won over (by the song and food, or bait). The game makes it from its kind and level. */
   | { kith: KithGift }
   /** Opens the party picker (the roll-keeper at camp and at Thornwick). */
-  | { menu: "party" };
+  | { menu: "party" | "base" };
 
 export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
@@ -111,7 +111,7 @@ export interface StoryHost {
   /** Adds a kith to the company. */
   addKith?(k: KithGift): void;
   /** Opens the in-game menu on its party page. */
-  openPage?(page: "party"): void;
+  openPage?(page: "party" | "base"): void;
 }
 
 export class StoryRunner {

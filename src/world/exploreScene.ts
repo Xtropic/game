@@ -34,10 +34,13 @@ import { RECRUITS, recruit } from "../cast/recruits";
 const RECRUITABLE = new Set(RECRUITS.map((r) => r.id));
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
-import { xpForFoe } from "../cast/attributes";
+import { PEOPLE, attrsAt, xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
 import { Atmosphere } from "./atmosphere";
 import { World3D, type Around, type Fig } from "../three/world3d";
+import { BasePanel } from "../ui/basePanel";
+import { baseDay, coinForFoe } from "../base/base";
+import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
@@ -93,6 +96,8 @@ export class ExploreScene implements Scene, StoryHost {
   private company = new CompanyPanel();
   private notes = new NotesPanel();
   private menu = new GameMenu();
+  private base = new BasePanel();
+  private baseStage = "";
   private menuButton = new Text({ text: "☰ Menu", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private map!: WorldMap;
   private game!: Game;
@@ -155,7 +160,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
@@ -348,7 +353,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
-    this.menu.resize(w, h);
+    this.menu.resize(w, h); this.base.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
@@ -378,7 +383,35 @@ export class ExploreScene implements Scene, StoryHost {
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
   toast(t: string): void { this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
-  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.refresh(); }
+  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.baseTick(); this.refresh(); }
+
+  /** Thornwick is held from the night the Old Mother is beaten. Each time the story moves on after that, a day of
+   *  work passes there (see base/base.ts), and a short report shows. */
+  private baseTick(): void {
+    const f = this.flags, st = String(f.stage ?? ""), m = /^ab(\d+)/.exec(st);
+    if (!f["base.open"] && ((m && Number(m[1]) >= 4) || st.startsWith("ad"))) { f["base.open"] = true; this.baseStage = st; return; }
+    if (!f["base.open"] || st === this.baseStage) return;
+    if (!this.baseStage) { this.baseStage = st; return; } // a game just loaded: no day passes
+    this.baseStage = st;
+    const lines = this.baseWork(); if (lines) this.toast(`Thornwick: ${lines}`);
+  }
+  /** A day of work at Thornwick; returns the first lines of its report. */
+  private baseWork(): string {
+    const f = this.flags;
+    const out = baseDay({ flags: f, coin: this.game.coin, workers: this.baseStaying().map((id) => ({ id, name: this.story.cast[id] ?? id, attrs: attrsAt(id, this.game.progress(id).level, this.game.modsOf(id)) })), kith: this.baseKith().map((id) => this.game.kith[id]), rng: this.rng });
+    this.game.coin = out.coin;
+    for (const [id, xp] of Object.entries(out.drill)) this.game.giveXp(id, xp, this.story.cast[id] ?? id);
+    this.save("auto");
+    return out.lines.length ? out.lines.slice(0, 3).join(" ") : "A quiet day: nobody is set to work.";
+  }
+  /** People who stay at Thornwick: everyone recruited who isn't travelling. */
+  private baseStaying(): string[] { const trav = new Set([this.hero(), ...this.followers.map((f) => f.id), ...partyOf(this.flags)]); return this.joinedIds().filter((id) => !trav.has(id) && !this.game.kith[id] && PEOPLE[id]); }
+  private baseKith(): string[] { const trav = new Set([...this.followers.map((f) => f.id), ...partyOf(this.flags), "ash"]); return this.joinedIds().filter((id) => this.game.kith[id] && !trav.has(id)); }
+  openBase(): void {
+    this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
+      armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
+      addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.baseWork() }, this.screen.w, this.screen.h);
+  }
 
   /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */
   private joinedIds(): string[] { return String(this.flags.company ?? "").split(",").filter(Boolean); }
@@ -406,7 +439,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Nothing else is on screen or running: the menu can open. */
-  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && this.game.scenes.top === this; }
+  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && this.game.scenes.top === this; }
 
   openMenu(): void {
     this.menu.show({
@@ -512,6 +545,8 @@ export class ExploreScene implements Scene, StoryHost {
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
         const ups = s.units.filter((u) => u.side === "ally" && u.cast).flatMap((u) => this.game.giveXp(u.cast!, xp, u.name));
+        const purse = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + coinForFoe(u.stats ? u.level : undefined, !!u.species || !!u.kith), 0);
+        if (purse) { this.game.coin += purse; ups.push(`You take ${purse} coin from the field.`); }
         // owned kith that fought learn from what they did, and grow
         for (const u of s.units) if (u.side === "ally" && u.kith && this.game.kith[u.id]) ups.push(...this.game.kithFought(u.id, s.deeds[u.id], xp));
         // Wardens carry field dressings; now and then one is left on the road
@@ -546,7 +581,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** A kith joins the company. */
   /** The roll-keeper's "menu" step: opens the party page once the line that led to it has closed. */
-  openPage(_page: "party"): void { setTimeout(() => { if (this.free()) this.openMenu(); }, 150); }
+  openPage(page: "party" | "base"): void { setTimeout(() => { if (this.free()) page === "base" ? this.openBase() : this.openMenu(); }, 150); }
 
   addKith(g: KithGift): void {
     if (this.game.kith[g.id]) return;
@@ -700,6 +735,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
     if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
     if (this.menu.open) { if (!this.menu.update(inp)) this.settle = true; return; }
+    if (this.base.open) { if (!this.base.update(inp)) this.settle = true; return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
