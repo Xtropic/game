@@ -31,7 +31,7 @@ const TER: Record<Terrain, { move: number; shelter: number; pass: boolean }> = {
 
 export interface CompanyDef { id: string; name: string; kind: Kind; at: [number, number]; facing?: number; officer?: string; level?: number; }
 export interface PlanStep { at?: number; when?: "contact" | "half"; orders: { company: string; to: [number, number]; via?: [number, number] }[]; note: string; }
-export interface Stratagem { id: string; name: string; text: string; /** Who says what about it in council: archetype -> line. */ opinions?: Record<string, string>; effect: { hide?: string[]; move?: Record<string, [number, number]>; stakes?: [number, number, number, number]; skipPlan?: number; enemyMorale?: number; }; }
+export interface Stratagem { id: string; name: string; text: string; /** Who says what about it in council: archetype -> line. */ opinions?: Record<string, string>; effect: { hide?: string[]; move?: Record<string, [number, number]>; stakes?: [number, number, number, number]; skipPlan?: number; enemyMorale?: number; /** Cells whose ground changes (a bridge raised): [x, y, legend char]. */ terrain?: [number, number, string][]; }; }
 export interface ArmyDef {
   id: string; name: string; intro: string[]; terrain: string[]; legend: Record<string, Terrain>;
   /** Seconds the player must hold, if holding wins; otherwise break them. */ hold?: number;
@@ -53,6 +53,8 @@ export const terrainAt = (s: ArmyState, x: number, y: number): Terrain => { cons
 
 /** Officers in council: the companies of our side, each with whoever leads it. Unled companies have a sergeant (level 6 warden). */
 export function createArmy(def: ArmyDef, officers: Record<string, { attrs: Attrs } | undefined>, stratagem?: string, heroWits = 10): ArmyState {
+  const chosen = def.stratagems.find((x) => x.id === stratagem);
+  if (chosen?.effect.terrain) { const rows = def.terrain.map((r) => [...r]); for (const [x, y, ch] of chosen.effect.terrain) rows[y][x] = ch; def = { ...def, terrain: rows.map((r) => r.join("")) }; }
   const make = (c: CompanyDef, side: "ours" | "theirs"): Company => {
     const a = officers[c.id]?.attrs ?? attrsAt(c.officer ?? "warden", c.level ?? 6), k = KINDS[c.kind];
     const men = Math.round(command.unitSize(a) * k.men), mor = command.morale(a);
@@ -94,16 +96,31 @@ function clear(s: ArmyState, x0: number, y0: number, x1: number, y1: number): bo
   for (let i = 1; i <= n; i++) { const t = i / n; if (!TER[terrainAt(s, x0 + (x1 - x0) * t, y0 + (y1 - y0) * t)].pass) return false; }
   return true;
 }
-const crossings = new WeakMap<ArmyDef, [number, number][]>();
-/** The gate or ford to go through on the way to (tx, ty). */
-function waypoint(s: ArmyState, x: number, y: number, tx: number, ty: number): [number, number] | undefined {
-  let list = crossings.get(s.def);
-  if (!list) { list = []; s.def.terrain.forEach((r, yy) => [...r].forEach((ch, xx) => { const k = s.def.legend[ch]; if (k === "gate" || k === "ford") for (const dy of [-0.9, 0.9]) if (TER[s.def.legend[s.def.terrain[yy + Math.sign(dy)]?.[xx]] ?? "water"].pass) list!.push([xx + 0.5, yy + 0.5 + dy]); })); crossings.set(s.def, list); }
-  let best: [number, number] | undefined, bd = Infinity;
-  for (const [gx, gy] of list) {
-    // step to the near side of the crossing first, so the way to it is open ground
-    const d = Math.hypot(gx - x, gy - y) + Math.hypot(tx - gx, ty - gy);
-    if (d < bd && Math.hypot(gx - x, gy - y) > 0.4 && clear(s, x, y, gx, gy)) { bd = d; best = [gx, gy]; }
+const fields = new WeakMap<ArmyState, Map<string, Int16Array>>();
+/** Steps from every cell to the target cell over ground that can be crossed (a flow field, cached per target). */
+function flow(s: ArmyState, tx: number, ty: number): Int16Array {
+  const W = s.def.terrain[0].length, H = s.def.terrain.length, gx = Math.floor(tx), gy = Math.floor(ty), key = `${gx},${gy}`;
+  let m = fields.get(s); if (!m) { m = new Map(); fields.set(s, m); }
+  const hit = m.get(key); if (hit) return hit;
+  const d = new Int16Array(W * H).fill(-1), q: number[] = [];
+  if (gx >= 0 && gy >= 0 && gx < W && gy < H) { d[gy * W + gx] = 0; q.push(gy * W + gx); }
+  for (let i = 0; i < q.length; i++) {
+    const x = q[i] % W, y = Math.floor(q[i] / W);
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H || d[ny * W + nx] >= 0) continue;
+      if (!TER[terrainAt(s, nx + 0.5, ny + 0.5)].pass) continue;
+      d[ny * W + nx] = d[q[i]] + 1; q.push(ny * W + nx);
+    }
+  }
+  m.set(key, d); return d;
+}
+/** The centre of the next cell on the shortest way round whatever blocks the straight line. */
+function nextCell(s: ArmyState, x: number, y: number, tx: number, ty: number): [number, number] | undefined {
+  const W = s.def.terrain[0].length, H = s.def.terrain.length, d = flow(s, tx, ty), cx = Math.floor(x), cy = Math.floor(y);
+  let best: [number, number] | undefined, bd = cx >= 0 && cy >= 0 && cx < W && cy < H && d[cy * W + cx] >= 0 ? d[cy * W + cx] : 1e9;
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+    const v = d[ny * W + nx]; if (v >= 0 && v < bd) { bd = v; best = [nx + 0.5, ny + 0.5]; }
   }
   return best;
 }
@@ -151,7 +168,7 @@ export function tick(s: ArmyState, dt: number, rng: () => number): void {
     // stop to fight anyone of theirs in contact (melee companies)
     if (c.kind !== "bow" && live(s).some((o) => o.side !== c.side && !o.hidden && dist(o, c) < 1.15)) continue;
     // a wall or a stream in the way: make for the gate or ford that gives the shortest way round
-    if (!clear(s, c.x, c.y, tx, ty)) { const w = waypoint(s, c.x, c.y, tx, ty); if (w) [tx, ty] = w; }
+    if (!clear(s, c.x, c.y, tx, ty)) { const w = nextCell(s, c.x, c.y, tx, ty); if (w) [tx, ty] = w; }
     const ang = Math.atan2(ty - c.y, tx - c.x), here = TER[terrainAt(s, c.x, c.y)];
     const sp = KINDS[c.kind].speed * here.move * (1 - c.fatigue * 0.4) * clamp(command.endurance(c.attrs), 0.7, 1.4) * 0.9;
     const step = Math.min(Math.hypot(tx - c.x, ty - c.y), sp * dt);

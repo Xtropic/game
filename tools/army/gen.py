@@ -32,6 +32,21 @@ def thornwick(g):
     for y in range(6, H): g[y][19] = g[y][19] if g[y][19] in "=~" else ":"; g[y][20] = g[y][20] if g[y][20] in "=~" else ":"
 
 
+def lockside(g):
+    W, H = len(g[0]), len(g)
+    def fill(x0, y0, x1, y1, ch):
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                if 0 <= x < W and 0 <= y < H: g[y][x] = ch
+    fill(1, 0, W - 2, 4, "y"); fill(13, 0, 26, 1, "#")  # Corvel's yard, the brood house along the back
+    fill(0, 5, W - 1, 5, "#"); fill(19, 5, 20, 5, "g"); fill(34, 5, 34, 5, "g")  # the wall, the main gate, the cart gate
+    fill(0, 8, W - 1, 8, ":")                          # the towpath
+    fill(0, 9, W - 1, 10, "~")                         # the canal
+    fill(8, 9, 9, 10, "="); fill(31, 9, 32, 10, "=")   # the two lock bridges
+    fill(33, 12, 39, 20, "T"); fill(0, 14, 5, 19, "T")  # willows east, a coppice west
+    for y in range(11, H): g[y][19] = ":"; g[y][20] = ":"
+
+
 BATTLES = {
     "thornwick-raid": dict(
         name="The Wardens at Thornwick", hold=180,
@@ -81,6 +96,52 @@ BATTLES = {
         ],
         won="Thornwick holds", lost="Thornwick's gate is down",
     ),
+    "lockside-hold": dict(
+        name="Corvel's hatchery", hold=200,
+        intro=["Corvel's hatchery, at the head of the Lockside cut. The yard wall, the brood house behind it, the canal in front with its two lock bridges. Your first command.",
+               "A Warden column is coming up from the south: foot, pikes, crossbows, and riders. They have to cross the canal at one of the lock bridges to reach you.",
+               "Break them, or hold until dark."],
+        terrain=field(40, 24, lockside),
+        commander=dict(name="The Warden major", cast="warden", level=20),
+        ours=[
+            dict(id="hq", name="Your company", kind="foot", at=[20, 3]),
+            dict(id="varro", name="Second company", kind="foot", at=[12, 7]),
+            dict(id="pikes", name="Pikes", kind="pike", at=[20, 6.6]),
+            dict(id="bows-w", name="West bows", kind="bow", at=[9, 6.6]),
+            dict(id="bows-e", name="East bows", kind="bow", at=[31, 6.6]),
+            dict(id="riders", name="Kith riders", kind="horse", at=[30, 3]),
+        ],
+        theirs=[
+            dict(id="w-foot1", name="Warden foot", kind="foot", at=[15, 20], officer="warden", level=17),
+            dict(id="w-foot2", name="Warden foot", kind="foot", at=[24, 20], officer="warden", level=17),
+            dict(id="w-pikes", name="Warden pikes", kind="pike", at=[19.5, 21.5], officer="warden", level=18),
+            dict(id="w-xbow1", name="Crossbows", kind="bow", at=[11, 21], officer="archer", level=17),
+            dict(id="w-xbow2", name="Crossbows", kind="bow", at=[28, 21], officer="archer", level=17),
+            dict(id="w-horse", name="Warden riders", kind="horse", at=[30, 23], officer="warden", level=19),
+            dict(id="w-reserve", name="The reserve", kind="foot", at=[19.5, 23], officer="warden", level=19),
+        ],
+        plan=[
+            dict(at=3, note="The foot go for the west lock bridge and on to the gate; the pikes take the east bridge; crossbows line the south bank.", orders=[
+                dict(company="w-foot1", via=[8.5, 11.5], to=[18, 7]), dict(company="w-foot2", via=[9, 11.5], to=[21, 7]),
+                dict(company="w-pikes", via=[31.5, 11.5], to=[30, 7]), dict(company="w-xbow1", to=[12, 12]), dict(company="w-xbow2", to=[27, 12])]),
+            dict(at=30, note="Their riders go round through the willows, over the east bridge, for the cart gate.", orders=[
+                dict(company="w-horse", via=[36, 13], to=[34.5, 3])]),
+            dict(when="half", note="When the attack falters, the reserve comes up the middle.", orders=[
+                dict(company="w-reserve", via=[9, 11.5], to=[19.5, 7])]),
+        ],
+        stratagems=[
+            dict(id="raise", name="Raise the west lock bridge", text="The lock-keepers can wind the west bridge up out of reach. Everything they send has to come over the east bridge, under your east bows, the long way round.",
+                 opinions={"artisan": "\"Give me the lock-keepers and it's up by dawn.\"", "commander": "\"One bridge is one fight. I like one fight.\"", "talker": "\"The keepers will do it for the Commons. Ask them nicely.\""},
+                 effect=dict(terrain=[[8, 9, "~"], [9, 9, "~"], [8, 10, "~"], [9, 10, "~"]])),
+            dict(id="willows", name="Second company in the willows", text="Your second company lies up in the willows by the east bridge. Hidden until they strike, and anyone who comes that way meets them first.",
+                 opinions={"skirmisher": "\"Willows are good cover. Wet, but good.\"", "rider": "\"If their riders come round, they'll come through there.\"", "hero": "\"It leaves the west bridge thin.\""},
+                 effect=dict(hide=["varro"], move={"varro": [35, 13]})),
+            dict(id="stakes", name="Stakes before the gate", text="Stakes across the ground in front of Corvel's gate. Whoever reaches the gate fights slowly there, and bleeds.",
+                 opinions={"guardian": "\"Stakes I understand.\"", "vanguard": "\"Leave a gap for us to go out through.\""},
+                 effect=dict(stakes=[16, 6, 24, 7.8])),
+        ],
+        won="Corvel's holds", lost="Corvel's is lost",
+    ),
 }
 
 
@@ -94,7 +155,7 @@ def main():
             assert LEGEND[ch] not in ("water", "wall"), f"{c['id']} starts on {ch}"
         out["battles"][bid] = {"id": bid, "legend": LEGEND, **b}
     json.dump(out, open(os.path.join(ROOT, "data", "army", "battles.json"), "w"), indent=1, ensure_ascii=False)
-    for r in BATTLES["thornwick-raid"]["terrain"]: print(r)
+    for r in BATTLES["lockside-hold"]["terrain"]: print(r)
 
 
 if __name__ == "__main__":

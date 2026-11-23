@@ -354,6 +354,358 @@
    ],
    "won": "Thornwick holds",
    "lost": "Thornwick's gate is down"
+  },
+  "lockside-hold": {
+   "id": "lockside-hold",
+   "legend": {
+    ".": "open",
+    "T": "woods",
+    "^": "hill",
+    "~": "water",
+    "=": "ford",
+    ":": "road",
+    "#": "wall",
+    "g": "gate",
+    "y": "yard"
+   },
+   "name": "Corvel's hatchery",
+   "hold": 200,
+   "intro": [
+    "Corvel's hatchery, at the head of the Lockside cut. The yard wall, the brood house behind it, the canal in front with its two lock bridges. Your first command.",
+    "A Warden column is coming up from the south: foot, pikes, crossbows, and riders. They have to cross the canal at one of the lock bridges to reach you.",
+    "Break them, or hold until dark."
+   ],
+   "terrain": [
+    ".yyyyyyyyyyyy##############yyyyyyyyyyyy.",
+    ".yyyyyyyyyyyy##############yyyyyyyyyyyy.",
+    ".yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.",
+    ".yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.",
+    ".yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.",
+    "###################gg#############g#####",
+    "........................................",
+    "........................................",
+    "::::::::::::::::::::::::::::::::::::::::",
+    "~~~~~~~~==~~~~~~~~~~~~~~~~~~~~~==~~~~~~~",
+    "~~~~~~~~==~~~~~~~~~~~~~~~~~~~~~==~~~~~~~",
+    "...................::...................",
+    "...................::............TTTTTTT",
+    "...................::............TTTTTTT",
+    "TTTTTT.............::............TTTTTTT",
+    "TTTTTT.............::............TTTTTTT",
+    "TTTTTT.............::............TTTTTTT",
+    "TTTTTT.............::............TTTTTTT",
+    "TTTTTT.............::............TTTTTTT",
+    "TTTTTT.............::............TTTTTTT",
+    "...................::............TTTTTTT",
+    "...................::...................",
+    "...................::...................",
+    "...................::..................."
+   ],
+   "commander": {
+    "name": "The Warden major",
+    "cast": "warden",
+    "level": 20
+   },
+   "ours": [
+    {
+     "id": "hq",
+     "name": "Your company",
+     "kind": "foot",
+     "at": [
+      20,
+      3
+     ]
+    },
+    {
+     "id": "varro",
+     "name": "Second company",
+     "kind": "foot",
+     "at": [
+      12,
+      7
+     ]
+    },
+    {
+     "id": "pikes",
+     "name": "Pikes",
+     "kind": "pike",
+     "at": [
+      20,
+      6.6
+     ]
+    },
+    {
+     "id": "bows-w",
+     "name": "West bows",
+     "kind": "bow",
+     "at": [
+      9,
+      6.6
+     ]
+    },
+    {
+     "id": "bows-e",
+     "name": "East bows",
+     "kind": "bow",
+     "at": [
+      31,
+      6.6
+     ]
+    },
+    {
+     "id": "riders",
+     "name": "Kith riders",
+     "kind": "horse",
+     "at": [
+      30,
+      3
+     ]
+    }
+   ],
+   "theirs": [
+    {
+     "id": "w-foot1",
+     "name": "Warden foot",
+     "kind": "foot",
+     "at": [
+      15,
+      20
+     ],
+     "officer": "warden",
+     "level": 17
+    },
+    {
+     "id": "w-foot2",
+     "name": "Warden foot",
+     "kind": "foot",
+     "at": [
+      24,
+      20
+     ],
+     "officer": "warden",
+     "level": 17
+    },
+    {
+     "id": "w-pikes",
+     "name": "Warden pikes",
+     "kind": "pike",
+     "at": [
+      19.5,
+      21.5
+     ],
+     "officer": "warden",
+     "level": 18
+    },
+    {
+     "id": "w-xbow1",
+     "name": "Crossbows",
+     "kind": "bow",
+     "at": [
+      11,
+      21
+     ],
+     "officer": "archer",
+     "level": 17
+    },
+    {
+     "id": "w-xbow2",
+     "name": "Crossbows",
+     "kind": "bow",
+     "at": [
+      28,
+      21
+     ],
+     "officer": "archer",
+     "level": 17
+    },
+    {
+     "id": "w-horse",
+     "name": "Warden riders",
+     "kind": "horse",
+     "at": [
+      30,
+      23
+     ],
+     "officer": "warden",
+     "level": 19
+    },
+    {
+     "id": "w-reserve",
+     "name": "The reserve",
+     "kind": "foot",
+     "at": [
+      19.5,
+      23
+     ],
+     "officer": "warden",
+     "level": 19
+    }
+   ],
+   "plan": [
+    {
+     "at": 3,
+     "note": "The foot go for the west lock bridge and on to the gate; the pikes take the east bridge; crossbows line the south bank.",
+     "orders": [
+      {
+       "company": "w-foot1",
+       "via": [
+        8.5,
+        11.5
+       ],
+       "to": [
+        18,
+        7
+       ]
+      },
+      {
+       "company": "w-foot2",
+       "via": [
+        9,
+        11.5
+       ],
+       "to": [
+        21,
+        7
+       ]
+      },
+      {
+       "company": "w-pikes",
+       "via": [
+        31.5,
+        11.5
+       ],
+       "to": [
+        30,
+        7
+       ]
+      },
+      {
+       "company": "w-xbow1",
+       "to": [
+        12,
+        12
+       ]
+      },
+      {
+       "company": "w-xbow2",
+       "to": [
+        27,
+        12
+       ]
+      }
+     ]
+    },
+    {
+     "at": 30,
+     "note": "Their riders go round through the willows, over the east bridge, for the cart gate.",
+     "orders": [
+      {
+       "company": "w-horse",
+       "via": [
+        36,
+        13
+       ],
+       "to": [
+        34.5,
+        3
+       ]
+      }
+     ]
+    },
+    {
+     "when": "half",
+     "note": "When the attack falters, the reserve comes up the middle.",
+     "orders": [
+      {
+       "company": "w-reserve",
+       "via": [
+        9,
+        11.5
+       ],
+       "to": [
+        19.5,
+        7
+       ]
+      }
+     ]
+    }
+   ],
+   "stratagems": [
+    {
+     "id": "raise",
+     "name": "Raise the west lock bridge",
+     "text": "The lock-keepers can wind the west bridge up out of reach. Everything they send has to come over the east bridge, under your east bows, the long way round.",
+     "opinions": {
+      "artisan": "\"Give me the lock-keepers and it's up by dawn.\"",
+      "commander": "\"One bridge is one fight. I like one fight.\"",
+      "talker": "\"The keepers will do it for the Commons. Ask them nicely.\""
+     },
+     "effect": {
+      "terrain": [
+       [
+        8,
+        9,
+        "~"
+       ],
+       [
+        9,
+        9,
+        "~"
+       ],
+       [
+        8,
+        10,
+        "~"
+       ],
+       [
+        9,
+        10,
+        "~"
+       ]
+      ]
+     }
+    },
+    {
+     "id": "willows",
+     "name": "Second company in the willows",
+     "text": "Your second company lies up in the willows by the east bridge. Hidden until they strike, and anyone who comes that way meets them first.",
+     "opinions": {
+      "skirmisher": "\"Willows are good cover. Wet, but good.\"",
+      "rider": "\"If their riders come round, they'll come through there.\"",
+      "hero": "\"It leaves the west bridge thin.\""
+     },
+     "effect": {
+      "hide": [
+       "varro"
+      ],
+      "move": {
+       "varro": [
+        35,
+        13
+       ]
+      }
+     }
+    },
+    {
+     "id": "stakes",
+     "name": "Stakes before the gate",
+     "text": "Stakes across the ground in front of Corvel's gate. Whoever reaches the gate fights slowly there, and bleeds.",
+     "opinions": {
+      "guardian": "\"Stakes I understand.\"",
+      "vanguard": "\"Leave a gap for us to go out through.\""
+     },
+     "effect": {
+      "stakes": [
+       16,
+       6,
+       24,
+       7.8
+      ]
+     }
+    }
+   ],
+   "won": "Corvel's holds",
+   "lost": "Corvel's is lost"
   }
  }
 }

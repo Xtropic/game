@@ -33,6 +33,7 @@ objectives = {
     "ad17": "Turn in at your tent.",
     "ad18": "Summer. Professor Haldane is waiting in the chapel with his ledger.",
     "ad19": "Kane and the officers have come up to Thornwick. They're in the chapel.",
+    "ad19b": "Lockside. Hold Corvel's hatchery against the Warden column.",
     "ad20": "Evening. Turn in when you're ready.",
     "ae1": "The tin is on the table.",
     "ae2": "Halloran is waiting for you in the yard.",
@@ -671,8 +672,31 @@ S["captain"] = [
                        n("She looks at him until he looks away, and then goes out into the sun."),
                    ], hint="Keep it until it can do some good.")),
         ]),
-        stage("ad20"),
+        stage("ad19b"), run("firstCommand"),
     ], [say("kane", R("Captain."))]),
+]
+# Mathew (2026-11-23) chose this for the first army battle in the story: the new Captain's first order.
+S["firstCommand"] = [
+    n("Kane waits until the chapel has emptied of everyone but his officers. Then he unrolls a map on the altar stone."),
+    say("kane", R("Your first order, then, Captain. A Warden column came out of Cinderwick two nights ago, up the towpath. Six companies, and riders. They want Corvel's back.")),
+    say("hallet", R("And the Guild wants it seen that the Commons can't hold what it takes.")),
+    say("kane", R("The Houses column is yours. Varro's people, Thornwick's companies, whoever you can raise. Hold the hatchery.")),
+    say("varro", R("They'll come over the lock bridges. There are two. They'll want both.")),
+    fade("Lockside. Two days later."), setf({"light": "evening"}),
+    n("Corvel's hatchery stands empty behind its wall, the brood rooms cold, the boilers silent. The children are long gone north. What's left to hold is the building, and what it means."),
+    n("Down the towpath, drums. Grey coats in the evening light, coming on in good order."),
+    {"army": "lockside-hold", "win": [
+        setf({"lockHeld": True}), add({"kaneTrust": 6}),
+        n("The last Warden company goes back over the lock bridge at a run, and the bargees on the far bank, who have watched the whole thing from their boats, start banging pans."),
+        say("varro", R("They'll write that up in Vantry as a skirmish. Let them. Everyone on this canal saw it.")),
+        toast("Corvel's hatchery holds. The Houses column has its first victory."),
+    ], "lose": [
+        setf({"lockHeld": False}), add({"kaneTrust": -6}),
+        n("The column breaks back up the towpath in the dusk, carrying its wounded. Behind it, the Wardens run their grey flag up over Corvel's gate."),
+        say("varro", R("The children are north. The building's only a building. Tell yourself that, Caddow, because Hallet will be telling Kane something else.")),
+        toast("Corvel's hatchery is lost. The Houses column falls back."),
+    ]},
+    fade("Thornwick. Late."), setf({"light": "evening"}), stage("ad20"), goto(TW, 4, 13, "up"),
 ]
 S["lastNight"] = [
     setf({"light": "evening"}),
@@ -881,7 +905,7 @@ moods = {
                "halloranStrip": "dread", "posyRaw": "tender", "guardOffer": "dread", "backToRhea5": "hope", "haldane": "hope", "councilMire": "camp",
                "drainIn": "dread", "drainKith": "tension", "mireIn": "dread", "fennick": "tension", "mireGuards": "fire", "mireCorran": "grief",
                "corranBath": "grief", "posyPool": "grief", "trial": "grief", "surveyRead": "dread", "surveyTell": "grief", "summerTrial": "hope",
-               "captain": "camp", "lastNight": "tender", "thornBed3": "night", "kane3": "camp"},
+               "captain": "camp", "firstCommand": "tension", "lastNight": "tender", "thornBed3": "night", "kane3": "camp"},
     "stages": {"ad3": "tension", "ad5": "dread", "ad6": "fire", "ad8": "grief", "ae1": "night", "ae3": "grief", "ae4": "dread", "ad14": "dread", "ad15": "tension",
                "ad16": "tender", "ad16l": "grief"},
 }

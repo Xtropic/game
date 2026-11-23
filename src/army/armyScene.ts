@@ -130,9 +130,9 @@ export class ArmyScene implements Scene {
 
   // ---------------- drawing ----------------
   private drawGround(): void {
-    const g = this.ground.clear(), c = this.cell, rows = this.def.terrain;
+    const d = this.s?.def ?? this.def, g = this.ground.clear(), c = this.cell, rows = d.terrain;
     rows.forEach((r, y) => [...r].forEach((ch, x) => {
-      const k = this.def.legend[ch] ?? "open", n = ((x * 73856093) ^ (y * 19349663)) >>> 0;
+      const k = d.legend[ch] ?? "open", n = ((x * 73856093) ^ (y * 19349663)) >>> 0;
       g.rect(x * c, y * c, c + 0.5, c + 0.5).fill({ color: GROUND[k] });
       if (k === "woods") for (let i = 0; i < 2; i++) g.circle(x * c + c * (0.25 + 0.5 * ((n >> (i * 4)) & 1)), y * c + c * (0.3 + 0.4 * ((n >> (i * 4 + 2)) & 1)), c * 0.28).fill({ color: 0x2c4626 });
       else if (k === "hill") g.rect(x * c, y * c + c * 0.45, c, 1).fill({ color: 0xa8b070, alpha: 0.6 });

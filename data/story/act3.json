@@ -52,6 +52,7 @@
    "surveyTell": "grief",
    "summerTrial": "hope",
    "captain": "camp",
+   "firstCommand": "tension",
    "lastNight": "tender",
    "thornBed3": "night",
    "kane3": "camp"
@@ -98,6 +99,7 @@
   "ad17": "Turn in at your tent.",
   "ad18": "Summer. Professor Haldane is waiting in the chapel with his ledger.",
   "ad19": "Kane and the officers have come up to Thornwick. They're in the chapel.",
+  "ad19b": "Lockside. Hold Corvel's hatchery against the Warden column.",
   "ad20": "Evening. Turn in when you're ready.",
   "ae1": "The tin is on the table.",
   "ae2": "Halloran is waiting for you in the yard.",
@@ -4661,7 +4663,10 @@
       ]
      },
      {
-      "stage": "ad20"
+      "stage": "ad19b"
+     },
+     {
+      "run": "firstCommand"
      }
     ],
     "else": [
@@ -4670,6 +4675,112 @@
       "text": "\"Captain.\""
      }
     ]
+   }
+  ],
+  "firstCommand": [
+   {
+    "say": "",
+    "text": "Kane waits until the chapel has emptied of everyone but his officers. Then he unrolls a map on the altar stone."
+   },
+   {
+    "say": "kane",
+    "text": "\"Your first order, then, Captain. A Warden column came out of Cinderwick two nights ago, up the towpath. Six companies, and riders. They want Corvel's back.\""
+   },
+   {
+    "say": "hallet",
+    "text": "\"And the Guild wants it seen that the Commons can't hold what it takes.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"The Houses column is yours. Varro's people, Thornwick's companies, whoever you can raise. Hold the hatchery.\""
+   },
+   {
+    "say": "varro",
+    "text": "\"They'll come over the lock bridges. There are two. They'll want both.\""
+   },
+   {
+    "fade": "Lockside. Two days later."
+   },
+   {
+    "set": {
+     "light": "evening"
+    }
+   },
+   {
+    "say": "",
+    "text": "Corvel's hatchery stands empty behind its wall, the brood rooms cold, the boilers silent. The children are long gone north. What's left to hold is the building, and what it means."
+   },
+   {
+    "say": "",
+    "text": "Down the towpath, drums. Grey coats in the evening light, coming on in good order."
+   },
+   {
+    "army": "lockside-hold",
+    "win": [
+     {
+      "set": {
+       "lockHeld": true
+      }
+     },
+     {
+      "add": {
+       "kaneTrust": 6
+      }
+     },
+     {
+      "say": "",
+      "text": "The last Warden company goes back over the lock bridge at a run, and the bargees on the far bank, who have watched the whole thing from their boats, start banging pans."
+     },
+     {
+      "say": "varro",
+      "text": "\"They'll write that up in Vantry as a skirmish. Let them. Everyone on this canal saw it.\""
+     },
+     {
+      "toast": "Corvel's hatchery holds. The Houses column has its first victory."
+     }
+    ],
+    "lose": [
+     {
+      "set": {
+       "lockHeld": false
+      }
+     },
+     {
+      "add": {
+       "kaneTrust": -6
+      }
+     },
+     {
+      "say": "",
+      "text": "The column breaks back up the towpath in the dusk, carrying its wounded. Behind it, the Wardens run their grey flag up over Corvel's gate."
+     },
+     {
+      "say": "varro",
+      "text": "\"The children are north. The building's only a building. Tell yourself that, Caddow, because Hallet will be telling Kane something else.\""
+     },
+     {
+      "toast": "Corvel's hatchery is lost. The Houses column falls back."
+     }
+    ]
+   },
+   {
+    "fade": "Thornwick. Late."
+   },
+   {
+    "set": {
+     "light": "evening"
+    }
+   },
+   {
+    "stage": "ad20"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 4,
+     "y": 13,
+     "facing": "up"
+    }
    }
   ],
   "lastNight": [
