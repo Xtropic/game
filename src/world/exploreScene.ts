@@ -545,6 +545,9 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** A kith joins the company. */
+  /** The roll-keeper's "menu" step: opens the party page once the line that led to it has closed. */
+  openPage(_page: "party"): void { setTimeout(() => { if (this.free()) this.openMenu(); }, 150); }
+
   addKith(g: KithGift): void {
     if (this.game.kith[g.id]) return;
     const region = this.regionNow;
@@ -791,7 +794,7 @@ export class ExploreScene implements Scene, StoryHost {
   /** Draws the world in 3D when it is switched on (the default) and the browser can. Returns false to fall back to 2D. */
   private render3d(dt: number, t: number): boolean {
     const want = settings.get("world3d") && this.game.scenes.top === this;
-    if (!want || (!this.w3 && !World3D.available())) { this.world.visible = true; return false; }
+    if (!want || (!this.w3 && !World3D.available())) { this.world.visible = true; this.atmos.vignette.visible = !navigator.webdriver; return false; }
     if (!this.w3) {
       const host = this.game.app.canvas.parentElement; if (!host) { this.world.visible = true; return false; }
       try { this.w3 = new World3D(host); } catch { this.world.visible = true; return false; }
@@ -803,6 +806,7 @@ export class ExploreScene implements Scene, StoryHost {
     const light = String(this.flags.light ?? "day"); if (light !== this.w3Light) { w3.setLight(light); this.w3Light = light; }
     const fk = this.fogCells.map((c) => c.join(",")).join(";"); if (fk !== this.w3FogKey) { w3.setFog(this.fogCells); this.w3FogKey = fk; }
     this.world.visible = false;
+    this.atmos.vignette.visible = false; // the flat view's round vignette reads as a ring on top of the 3D scene
     const p = this.player, figs: Fig[] = [];
     const add = (key: string, sprite: Sprite, look?: string, facing?: Facing) => {
       const tex = sprite.texture, src = tex?.source?.resource as (CanvasImageSource & { width: number; height: number }) | undefined;

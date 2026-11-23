@@ -41,7 +41,9 @@ export type Step =
   | { chapter: string }
   | { end: string }
   /** A kith joins: a wild one won over (by the song and food, or bait). The game makes it from its kind and level. */
-  | { kith: KithGift };
+  | { kith: KithGift }
+  /** Opens the party picker (the roll-keeper at camp and at Thornwick). */
+  | { menu: "party" };
 
 export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
@@ -108,6 +110,8 @@ export interface StoryHost {
   end(id: string): void;
   /** Adds a kith to the company. */
   addKith?(k: KithGift): void;
+  /** Opens the in-game menu on its party page. */
+  openPage?(page: "party"): void;
 }
 
 export class StoryRunner {
@@ -168,6 +172,7 @@ export class StoryRunner {
     if ("hero" in st) { f.hero = st.hero; this.host.changed(); return; }
     if ("chapter" in st) { f.chapter = st.chapter; this.host.changed(); return; }
     if ("end" in st) { this.queue = []; this.host.end(st.end); return; }
+    if ("menu" in st) { this.host.openPage?.(st.menu); return; }
     if ("kith" in st) { this.host.addKith?.(st.kith); f[`kith.${st.kith.id}`] = true; this.host.changed(); return; }
     if ("set" in st || "add" in st) {
       for (const [k, v] of Object.entries(st.set ?? {})) f[k] = v;

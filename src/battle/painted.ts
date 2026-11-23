@@ -129,7 +129,7 @@ export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number
   g.translate(x * K, y * K);
   if (o.flip) g.scale(-1, 1);
   // ground shadow
-  g.fillStyle = "rgba(5,5,15,.45)"; g.beginPath(); g.ellipse(0, 0, W * (rig === "beast" ? 0.42 : 0.3), H * 0.03, 0, 0, 7); g.fill();
+  if (o.stride == null) { g.fillStyle = "rgba(5,5,15,.45)"; g.beginPath(); g.ellipse(0, 0, W * (rig === "beast" ? 0.42 : 0.3), H * 0.03, 0, 0, 7); g.fill(); }
   if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
   const bob = o.run && o.stride == null ? -Math.abs(Math.cos(o.run)) * 0.02 : 0;
   g.translate((o.lunge ? 0.06 : 0) * H - flash * 0.03 * H, bob * H);

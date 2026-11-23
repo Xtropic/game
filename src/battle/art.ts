@@ -131,7 +131,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
   const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 * st : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
   const wx = body.w * (1 + 0.11 * b.bulk), tallY = body.h * (1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0)), thick = body.limb * (1 + 0.22 * b.brawn - 0.1 * b.reach);
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
-  ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
+  if (o.stride == null) ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)"); // in the 3D world the sun casts the shadow
   if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
   g.translate(0, bob); g.rotate(lean);
   const hipY = -13, sh = -21.5;
