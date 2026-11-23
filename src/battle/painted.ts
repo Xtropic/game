@@ -77,11 +77,13 @@ function field(rig: Rig, u: number, v: number, o: Pose, lean: number, aspect: nu
     if (o.stride != null) { // out in the world (stride is set there): an easy stance, and a real walk when moving
       const st = o.stride, legs = 1 - smooth(0.04, 0.5, v), side = Math.max(-1, Math.min(1, (u - 0.5) * 7));
       const arms = bump(0.3, 0.8, v) * smooth(0.12, 0.3, Math.abs(u - 0.5)); // the outer columns at arm height
-      const narrow = 1 - smooth(0.02, 0.56, v); // strongest at the feet, easing out at the hips
-      dx -= (u - 0.5) * aspect * (0.62 * narrow + 0.22 * arms); // the battle stance's wide feet and ready arms come in
+      const narrow = Math.max(0, Math.min(1, (0.52 - v) / 0.48)); // a straight line from hip to foot, so each splayed leg comes in straight, not bowed
+      dx -= (u - 0.5) * aspect * (0.62 * narrow + 0.22 * arms);
+      dx -= side * bump(0.06, 0.48, v) * 0.032; // the fighting crouch bows each knee outward: bring both knees in over the feet // the battle stance's wide feet and ready arms come in
       if (o.run != null) {
         const ph = o.run, swing = Math.sin(ph) * side, fwd = Math.cos(ph) * side;
         dx += legs * swing * 0.06 * st; // each leg swings in turn
+        dx += bump(0.03, 0.5, v) * (0.01 + 0.035 * Math.max(0, fwd)) * st; // both knees bend the same way, forward; the stepping leg bends most
         dy -= legs * legs * Math.max(0, fwd) * 0.07 * st; // the swinging foot lifts clear of the ground
         dx -= arms * swing * 0.03 * st; // arms swing against the legs
         dy -= smooth(0.45, 1, v) * Math.abs(Math.cos(ph)) * 0.014 * st; // the body rides up over each planted foot
