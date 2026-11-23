@@ -1,0 +1,208 @@
+{
+ "note": "One-on-one duels (src/battle/duel.ts). moves are weights; feint is the chance he shows one stance and comes another; words are said in the pauses (attr against the foe's vs).",
+ "duels": {
+  "lockside-rider": {
+   "name": "The rider at the gate",
+   "backdrop": "fire",
+   "mustWin": true,
+   "intro": [
+    "The grey loftbuck stamps across the gate. The rider's spear comes down level. He hasn't said a word.",
+    "Watch how he sits. High, he means the spear at your head. Low, the grey's forefeet. Leaning in, a straight thrust."
+   ],
+   "foe": {
+    "name": "The rider",
+    "look": "warden",
+    "cast": "warden",
+    "level": 8,
+    "mount": "loftbuck:#b4b8bc",
+    "moves": {
+     "high": 3,
+     "low": 3,
+     "thrust": 2
+    },
+    "feint": 0.15,
+    "lines": {
+     "hit": [
+      "The spear-butt cracks across your shoulder.",
+      "The grey's hooves come down where you were nearly standing."
+     ],
+     "hurt": [
+      "He sways in the saddle.",
+      "The grey shies; he hauls it round."
+     ],
+     "yield": "The spear-point drops, and stays down.",
+     "down": "Your blow takes him across the helm. He sways, and the grey feels it."
+    }
+   },
+   "words": [
+    {
+     "id": "sing",
+     "label": "Sing the foal song to the grey",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "calm",
+     "line": "You sing, low, the song Larkfold sang to its foals.",
+     "land": "The grey's ears come round. It stops dead, and won't go forward again. He has to fight you on foot now.",
+     "miss": "The grey tosses its head and won't hear it."
+    },
+    {
+     "id": "plea",
+     "label": "\"They're children. Let them through.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 35,
+     "line": "\"They're children. Ninety of them. Let them through.\"",
+     "land": "The spear-point dips. Just for a breath, it dips.",
+     "miss": "Nothing. The visor doesn't move."
+    }
+   ],
+   "won": "The gate is open",
+   "lost": "Knocked down in the yard"
+  },
+  "ring-tam": {
+   "name": "Slag Tam",
+   "backdrop": "fire",
+   "prize": 20,
+   "intro": [
+    "The Foundry ring is a square of slag-sand under the furnace hatch. Slag Tam rolls his shoulders. Half the night shift is watching.",
+    "Tam is strong and he isn't subtle. Watch his shoulders."
+   ],
+   "foe": {
+    "name": "Slag Tam",
+    "look": "rafe",
+    "cast": "slagtam",
+    "level": 5,
+    "moves": {
+     "high": 4,
+     "low": 2,
+     "thrust": 2
+    },
+    "feint": 0,
+    "lines": {
+     "hit": [
+      "Tam's fist lands like a dropped ingot.",
+      "He catches you on the ribs."
+     ],
+     "hurt": [
+      "Tam grunts.",
+      "The crowd jeers him."
+     ],
+     "yield": "Tam spits sand, laughs, and holds up a hand. \"Enough. Somebody give her my purse.\"",
+     "down": "Tam sits down hard in the slag-sand and stays there."
+    }
+   },
+   "words": [
+    {
+     "id": "jeer",
+     "label": "\"Is that what they pay you for?\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"Is that what they pay you for, Tam?\"",
+     "land": "The crowd laughs. Tam goes red and wild.",
+     "miss": "Tam grins. \"They pay me to hit people like you.\""
+    }
+   ],
+   "won": "Tam is beaten",
+   "lost": "Down in the slag-sand"
+  },
+  "ring-hesketh": {
+   "name": "Hesketh",
+   "backdrop": "fire",
+   "prize": 40,
+   "intro": [
+    "Hesketh was a puddler until the heat took one eye. Now he fights in the ring for coin, and he's quick, and he lies with his whole body.",
+    "He feints. If his weight looks wrong, it is."
+   ],
+   "foe": {
+    "name": "Hesketh",
+    "look": "vil6",
+    "cast": "hesketh",
+    "level": 9,
+    "moves": {
+     "high": 3,
+     "low": 3,
+     "thrust": 3
+    },
+    "feint": 0.45,
+    "lines": {
+     "hit": [
+      "Hesketh's bar raps your knuckles.",
+      "He's past you and back before you see him go."
+     ],
+     "hurt": [
+      "Hesketh's one eye narrows.",
+      "He steps back, breathing."
+     ],
+     "yield": "Hesketh lowers the bar. \"You read me. Nobody reads me.\" He sounds pleased.",
+     "down": "Hesketh goes down on one knee and stays there, laughing at himself."
+    }
+   },
+   "words": [
+    {
+     "id": "eye",
+     "label": "\"You favour the blind side.\"",
+     "attr": "wits",
+     "vs": "wits",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You favour your blind side. You're afraid of it.\"",
+     "land": "That lands. He hesitates every time now.",
+     "miss": "\"Everybody says that,\" he says, and comes at you from it."
+    }
+   ],
+   "won": "Hesketh is beaten",
+   "lost": "Down in the slag-sand"
+  },
+  "ring-moll": {
+   "name": "Iron Moll",
+   "backdrop": "fire",
+   "prize": 80,
+   "intro": [
+    "Iron Moll has held the Foundry ring for six winters. She was a hammer-woman at the Warden forge, and she's built like the hammer.",
+    "She doesn't feint. She doesn't need to. Don't trade blows with her."
+   ],
+   "foe": {
+    "name": "Iron Moll",
+    "look": "edda",
+    "cast": "ironmoll",
+    "level": 14,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "Moll hits you and the world goes white.",
+      "Her forearm takes you across the chest."
+     ],
+     "hurt": [
+      "Moll blinks.",
+      "For the first time, Moll steps back."
+     ],
+     "yield": "Moll looks at you for a long time. Then she steps out of the ring. \"Yours. Look after it.\"",
+     "down": "Moll goes down. The whole Foundry Ward goes silent, then roars."
+    }
+   },
+   "words": [
+    {
+     "id": "forge",
+     "label": "\"You made Warden steel once.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You made their steel once. Now you make them money in a ring.\"",
+     "land": "Something goes out of her shoulders.",
+     "miss": "\"And now I make my own,\" she says."
+    }
+   ],
+   "won": "Champion of the Foundry ring",
+   "lost": "Down in the slag-sand"
+  }
+ }
+}

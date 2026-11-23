@@ -962,6 +962,117 @@
    ]
   },
   {
+   "id": "cf-ringkeeper",
+   "map": "town-cinderwick--foundry",
+   "x": 10,
+   "y": 9,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman with a slate and a bag of coin sits on an upturned crucible by a square of raked slag-sand. \"The Foundry ring. One on one, no blades, first to yield or fall. Beat my fighter and the purse is yours.\""
+    },
+    {
+     "choose": "The ring-keeper waits, chalk in hand.",
+     "options": [
+      {
+       "label": "Fight Slag Tam (purse 20)",
+       "hint": "Strong, and not subtle.",
+       "when": {
+        "not": "won.duel.ring-tam"
+       },
+       "do": [
+        {
+         "duel": "ring-tam",
+         "win": [
+          {
+           "say": "",
+           "text": "The ring-keeper chalks your name on the slate, under Tam's, and crosses his out. \"Hesketh next, if you want him.\""
+          }
+         ],
+         "lose": [
+          {
+           "say": "",
+           "text": "\"Come back when you can stand,\" the ring-keeper says, not unkindly."
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Fight Hesketh (purse 40)",
+       "hint": "Quick, and he feints.",
+       "when": {
+        "flag": "won.duel.ring-tam",
+        "not": "won.duel.ring-hesketh"
+       },
+       "do": [
+        {
+         "duel": "ring-hesketh",
+         "win": [
+          {
+           "say": "",
+           "text": "\"Nobody reads Hesketh,\" the ring-keeper says. \"Moll will want to meet you.\""
+          }
+         ],
+         "lose": [
+          {
+           "say": "",
+           "text": "\"He does that to everyone,\" the ring-keeper says."
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Fight Iron Moll (purse 80)",
+       "hint": "Champion six winters. Don't trade blows.",
+       "when": {
+        "flag": "won.duel.ring-hesketh",
+        "not": "won.duel.ring-moll"
+       },
+       "do": [
+        {
+         "duel": "ring-moll",
+         "win": [
+          {
+           "say": "",
+           "text": "The ring-keeper wipes the slate clean and writes one name at the top. Yours."
+          }
+         ],
+         "lose": [
+          {
+           "say": "",
+           "text": "\"Six winters,\" the ring-keeper says. \"You won't be the last to try.\""
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Fight Moll again, for the crowd",
+       "hint": "No purse. Just the noise.",
+       "when": {
+        "flag": "won.duel.ring-moll"
+       },
+       "do": [
+        {
+         "duel": "ring-moll"
+        }
+       ]
+      },
+      {
+       "label": "Not now",
+       "do": []
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "cf-sweeper",
    "map": "town-cinderwick--foundry",
    "x": 19,

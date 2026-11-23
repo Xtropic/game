@@ -341,6 +341,15 @@ DISTRICTS = [
         ("cf-foreman", "", "vil6", 6, 6, [
             ("", "A foreman with a slate and a cough. \"Sixty hands on the day shift, forty at night. Forty-one, if you count the boy who sweeps the slag. I don't. He's not on the books.\""),
             ("from", "ad1", "The foreman again, quieter. \"Is it true about the cart? The children? ... Don't tell me. If I know, I'd have to say.\"")]),
+        ("cf-ringkeeper", "", "vil1", 10, 9, [
+            ("", "A woman with a slate and a bag of coin sits on an upturned crucible by a square of raked slag-sand. \"The Foundry ring. One on one, no blades, first to yield or fall. Beat my fighter and the purse is yours.\""),
+            ("steps", [{"choose": "The ring-keeper waits, chalk in hand.", "options": [
+                {"label": "Fight Slag Tam (purse 20)", "hint": "Strong, and not subtle.", "when": {"not": "won.duel.ring-tam"}, "do": [{"duel": "ring-tam", "win": [{"say": "", "text": "The ring-keeper chalks your name on the slate, under Tam's, and crosses his out. \"Hesketh next, if you want him.\""}], "lose": [{"say": "", "text": "\"Come back when you can stand,\" the ring-keeper says, not unkindly."}]}]},
+                {"label": "Fight Hesketh (purse 40)", "hint": "Quick, and he feints.", "when": {"flag": "won.duel.ring-tam", "not": "won.duel.ring-hesketh"}, "do": [{"duel": "ring-hesketh", "win": [{"say": "", "text": "\"Nobody reads Hesketh,\" the ring-keeper says. \"Moll will want to meet you.\""}], "lose": [{"say": "", "text": "\"He does that to everyone,\" the ring-keeper says."}]}]},
+                {"label": "Fight Iron Moll (purse 80)", "hint": "Champion six winters. Don't trade blows.", "when": {"flag": "won.duel.ring-hesketh", "not": "won.duel.ring-moll"}, "do": [{"duel": "ring-moll", "win": [{"say": "", "text": "The ring-keeper wipes the slate clean and writes one name at the top. Yours."}], "lose": [{"say": "", "text": "\"Six winters,\" the ring-keeper says. \"You won't be the last to try.\""}]}]},
+                {"label": "Fight Moll again, for the crowd", "hint": "No purse. Just the noise.", "when": {"flag": "won.duel.ring-moll"}, "do": [{"duel": "ring-moll"}]},
+                {"label": "Not now", "do": []}]}]),
+        ]),
         ("cf-sweeper", "", "kid3", 19, 10, [
             ("", "The slag boy, black to the eyes. \"I'm saving for boots. Forty coin. I've got six. The rest of my wage is my mum's tins.\"")]),
     ], signs=[(9, 4, "A slag heap, still warm. Children pick through it for bits of good iron."),
@@ -513,6 +522,7 @@ def add_people(story, mid, rows, people):
         talk = []
         for ln in lines:
             if isinstance(ln, tuple) and ln[0] == "shop": continue
+            if isinstance(ln, tuple) and ln[0] == "steps": talk.extend(ln[1]); continue
             if isinstance(ln, tuple) and ln[0] == "from":  # only once the story has got that far
                 talk.append({"if": {"stage": ORDER[ORDER.index(ln[1]):]}, "then": [{"say": pid if name else "", "text": ln[2]}]})
             elif isinstance(ln, tuple): talk.append({"say": "", "text": ln[1]})

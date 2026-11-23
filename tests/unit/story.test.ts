@@ -14,6 +14,7 @@ function host(flags: Flags, picks: number[] = []) {
     fade: (c, done) => { log.push(`fade ${c}`); done(); },
     goto: (m, x, y, _f, done) => { map = m; log.push(`goto ${m} ${x},${y}`); done(); },
     battle: (id, done) => { flags[`won.${id}`] = true; log.push(`battle ${id}`); done(); },
+    duel: (id: string, done: (won: boolean) => void) => { flags[`won.duel.${id}`] = true; log.push(`duel ${id}`); done(true); },
     follow: (ids) => log.push(`follow ${ids.join(",")}`),
     toast: (t) => log.push(`toast ${t}`),
     changed: () => {},

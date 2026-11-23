@@ -2302,7 +2302,7 @@
       "text": "The rider doesn't answer. He touches his heels to the grey."
      },
      {
-      "battle": "lockside-rider",
+      "duel": "lockside-rider",
       "win": [
        {
         "say": "",

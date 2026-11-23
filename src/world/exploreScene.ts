@@ -40,6 +40,8 @@ import { Atmosphere } from "./atmosphere";
 import { World3D, type Around, type Fig } from "../three/world3d";
 import { BasePanel } from "../ui/basePanel";
 import { ShopPanel } from "../ui/shopPanel";
+import { DuelScene } from "../battle/duelScene";
+import { DUELS } from "../battle/duel";
 import { baseDay, coinForFoe } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
@@ -503,6 +505,20 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   battle(id: string, done: () => void): void { this.startBattle(id, done); }
+  /** A one-on-one duel for the hero; a win (or a yield) gives experience and any purse. */
+  duel(id: string, done: (won: boolean) => void): void {
+    const def = DUELS[id]; if (!def) throw new Error(`no duel ${id}`);
+    const hero = this.hero(), attrs = attrsAt(hero, this.game.progress(hero).level, this.game.modsOf(hero));
+    this.game.scenes.push(new DuelScene(def, { name: this.story.cast[hero] ?? hero, look: hero, attrs }, (r) => {
+      if (r === "lost") { this.refresh(); done(false); return; }
+      const first = !this.game.flags[`won.duel.${id}`]; this.game.flags[`won.duel.${id}`] = true;
+      const ups = this.game.giveXp(hero, xpForFoe(def.foe.level) * 2, this.story.cast[hero] ?? hero);
+      if (def.prize && first) { this.game.coin += def.prize; ups.push(`The purse is yours: ${def.prize} coin.`); }
+      this.refresh(); done(true);
+      if (ups.length) this.runner.run(ups.map((text) => ({ say: "", text })));
+      this.save("auto");
+    }, () => this.rng()));
+  }
 
   /** Where the written story runs out. */
   end(id: string): void {

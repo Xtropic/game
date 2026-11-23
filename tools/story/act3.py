@@ -145,7 +145,7 @@ S["lockRider"] = [
         n("The grey loftbuck stamps and blows. The rider levels his spear. Behind you, ninety children are waiting to go through that gate."),
         say("rhea", R("Let them through. Nobody has to get hurt.")),
         n("The rider doesn't answer. He touches his heels to the grey."),
-        {"battle": "lockside-rider", "win": [
+        {"duel": "lockside-rider", "win": [
             n("The grey goes up on its hind legs. The rider comes off backwards onto the cobbles and lies there winded, his helm knocked crooked over his face."),
             n("Varro's people are on him before he can get up. They bind his hands and pull a sack over his head, the way the Commons takes every prisoner."),
             n("The grey won't let anyone near. It stands over its rider and screams at anyone who comes close, until someone gets a rope on it."),

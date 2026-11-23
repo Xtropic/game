@@ -45,7 +45,9 @@ export type Step =
   /** Opens the party picker (the roll-keeper at camp and at Thornwick). */
   | { menu: "party" | "base" }
   /** Opens a town stall (data/towns/shops.json). */
-  | { shop: string };
+  | { shop: string }
+  /** A one-on-one duel (data/battle/duels.json); win runs on a win or a yield, lose on a loss the story allows. */
+  | { duel: string; win?: Step[]; lose?: Step[] };
 
 export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
@@ -114,6 +116,7 @@ export interface StoryHost {
   addKith?(k: KithGift): void;
   /** Opens the in-game menu on its party page. */
   openPage?(page: "party" | "base" | `shop:${string}`): void;
+  duel?(id: string, done: (won: boolean) => void): void;
 }
 
 export class StoryRunner {
@@ -169,6 +172,7 @@ export class StoryRunner {
     if ("fade" in st) { this.block(); this.host.fade(st.fade, this.resume); return; }
     if ("goto" in st) { this.block(); const g = st.goto; this.host.goto(g.map, g.x, g.y, g.facing, this.resume); return; }
     if ("battle" in st) { const win = st.win ?? []; this.block(); this.host.battle(st.battle, () => { this.front(win); this.resume(); }); return; }
+    if ("duel" in st) { this.block(); this.host.duel?.(st.duel, (won) => { this.front((won ? st.win : st.lose) ?? []); this.resume(); }); return; }
     if ("run" in st) { const s = this.story.scripts[st.run]; if (!s) throw new Error(`no script ${st.run}`); const m = this.story.moods?.scenes[st.run]; if (m) f.scene = m; this.front(s); return; }
     if ("mood" in st) { f.scene = st.mood; return; }
     if ("hero" in st) { f.hero = st.hero; this.host.changed(); return; }
@@ -212,6 +216,7 @@ export function storyLines(s: Story): { who: string; text: string }[] {
       if ("choose" in st) { out.push({ who: "narrator", text: st.choose }); for (const o of st.options) { if (o.by) out.push({ who: o.by, text: o.label }); walk(o.do); } }
       if ("if" in st) { walk(st.then); walk(st.else); }
       if ("battle" in st) walk(st.win);
+      if ("duel" in st) { walk(st.win); walk(st.lose); }
     }
   };
   for (const a of s.actors) { walk(a.talk); walk(a.touch); }
@@ -232,6 +237,7 @@ export function voicedLines(s: Story): { who: string; text: string }[] {
       if ("choose" in st) for (const o of st.options) walk(o.do);
       if ("if" in st) { walk(st.then); walk(st.else); }
       if ("battle" in st) walk(st.win);
+      if ("duel" in st) { walk(st.win); walk(st.lose); }
     }
   };
   for (const id of s.voiced ?? []) walk(s.scripts[id]);
@@ -252,6 +258,7 @@ export function checkStory(s: Story, maps: Set<string>, battles: Set<string>): s
       if ("choose" in st) for (const o of st.options) walk(o.do, where);
       if ("if" in st) { walk(st.then, where); walk(st.else, where); }
       if ("battle" in st) walk(st.win, where);
+      if ("duel" in st) { walk(st.win, where); walk(st.lose, where); }
     }
   };
   for (const a of s.actors) { if (!maps.has(a.map)) errs.push(`actor ${a.id}: no map ${a.map}`); walk(a.talk, `actor ${a.id}`); walk(a.touch, `actor ${a.id}`); }

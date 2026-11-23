@@ -1,6 +1,7 @@
 import { Game } from "./core/game";
 import { ExploreScene } from "./world/exploreScene";
 import { BattleScene } from "./battle/battleScene";
+import { DuelScene } from "./battle/duelScene";
 import { drawPortrait, loadPortraits } from "./art/portraits";
 import { loadBattleArt } from "./battle/painted";
 import { castSheet, looksSheet } from "./art/gallery";
@@ -27,11 +28,12 @@ async function boot(): Promise<void> {
   const apply = (s: Settings) => { audio.setLevels(s.music, s.effects); game.voices.volume = s.voices; if (s.voices <= 0) game.voices.stop(); game.input.runToggle = s.alwaysRun; };
   apply(settings.value); settings.onChange(apply);
   audio.onChange((on) => { game.voices.muted = !on; if (!on) game.voices.stop(); scene.toast(on ? "Sound on (N)" : "Sound off (N)"); });
-  setInterval(() => audio.track(game.scenes.top instanceof BattleScene ? "battle" : scene.musicNow()), 300);
+  setInterval(() => audio.track(game.scenes.top instanceof BattleScene || game.scenes.top instanceof DuelScene ? "battle" : scene.musicNow()), 300);
   // Test and debugging hook; read-only views plus the input object so automated tests can play.
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), saves: () => game.saves.list(),
     battle: () => { const top = game.scenes.top; return top instanceof BattleScene ? top : null; },
     startBattle: (id: string) => scene.startBattle(id),
+    duel: (id: string) => scene.duel(id, () => {}), duelState: (foeGuard?: number) => { const top = game.scenes.top; if (top instanceof DuelScene && foeGuard != null) top.s.foe.guard = foeGuard; return top instanceof DuelScene ? { phase: top.phase, round: top.s.round, over: top.s.over, hero: top.s.hero.guard, foe: top.s.foe.guard } : null; },
     goto: (map: string, x: number, y: number) => scene.goto(map, x, y, undefined, () => {}),
     refresh: () => scene.refresh(),
     menu: () => scene.openMenu(), settings,
