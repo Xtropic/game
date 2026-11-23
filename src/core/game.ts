@@ -68,8 +68,9 @@ export class Game {
   get height(): number { return this.app.screen.height; }
 
   async init(host: HTMLElement): Promise<void> {
-    await this.app.init({ resizeTo: host, background: "#0c0f12", antialias: true, autoDensity: true, resolution: Math.min(3, window.devicePixelRatio || 1), roundPixels: true });
+    await this.app.init({ resizeTo: host, background: "#0c0f12", backgroundAlpha: 0, antialias: true, autoDensity: true, resolution: Math.min(3, window.devicePixelRatio || 1), roundPixels: true });
     host.appendChild(this.app.canvas);
+    Object.assign(this.app.canvas.style, { position: "absolute", inset: "0" }); // over the 3D world's canvas
     this.app.stage.addChild(this.stage);
     this.input.attach(window);
     this.app.renderer.on("resize", (w: number, h: number) => this.scenes.resize(w, h));

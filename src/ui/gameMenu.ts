@@ -223,6 +223,7 @@ export class GameMenu {
       { label: "Auto timing", value: () => (settings.get("autoTiming") ? "On" : "Off"), change: () => settings.set("autoTiming", !settings.get("autoTiming")) },
       { label: "Auto battle", value: () => (settings.get("autoBattle") ? "On" : "Off"), change: () => settings.set("autoBattle", !settings.get("autoBattle")) },
       { label: "Always run", value: () => (settings.get("alwaysRun") ? "On" : "Off"), change: () => settings.set("alwaysRun", !settings.get("alwaysRun")) },
+      { label: "3D world", value: () => (settings.get("world3d") ? "On" : "Off"), change: () => settings.set("world3d", !settings.get("world3d")) },
     ];
   }
   private static SETTING_NOTES: Record<string, string> = {

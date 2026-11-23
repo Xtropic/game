@@ -19,9 +19,11 @@ export interface Settings {
   autoBattle: boolean;
   /** Run without holding Shift. */
   alwaysRun: boolean;
+  /** Draw the world in 3D (off: the flat pixel-art view). */
+  world3d: boolean;
 }
 
-export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false };
+export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false, world3d: true };
 export const TEXT_SPEEDS = [0.6, 1, 1.6, 3];
 export const BATTLE_SPEEDS = [1, 1.5, 2];
 
@@ -44,6 +46,7 @@ export function parseSettings(raw: string | null, oldAuto: string | null = null)
     autoTiming: typeof o.autoTiming === "boolean" ? o.autoTiming : oldAuto === "1",
     autoBattle: typeof o.autoBattle === "boolean" ? o.autoBattle : DEFAULTS.autoBattle,
     alwaysRun: typeof o.alwaysRun === "boolean" ? o.alwaysRun : DEFAULTS.alwaysRun,
+    world3d: typeof o.world3d === "boolean" ? o.world3d : DEFAULTS.world3d,
   };
 }
 

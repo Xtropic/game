@@ -47,7 +47,13 @@ export function paintedLook(look: string, species?: string): string | undefined 
   if (kind in painted) return look;
   return undefined;
 }
-export const paintedHeight = (look: string): number | undefined => painted[look]?.h;
+export const paintedHeight = (look: string): number | undefined => painted[look.split(":")[0]]?.h;
+/** The picture for a painted look (as paintedLook returns it), recoloured when it carries a coat. */
+export function paintedSource(look: string): CanvasImageSource & { width: number; height: number } | undefined {
+  const [kind, coat] = look.split(":");
+  if (!painted[kind]) return undefined;
+  return (coat ? tintedImage(kind, coat) : painted[kind].img) as CanvasImageSource & { width: number; height: number };
+}
 
 const smooth = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const bump = (a: number, b: number, x: number) => smooth(a, (a + b) / 2, x) * (1 - smooth((a + b) / 2, b, x));

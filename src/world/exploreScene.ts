@@ -30,6 +30,8 @@ import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
 import { Atmosphere } from "./atmosphere";
+import { World3D, type Fig } from "../three/world3d";
+import { settings } from "../core/settings";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
@@ -71,6 +73,12 @@ export class ExploreScene implements Scene, StoryHost {
   private steamLayer = new Graphics();
   /** Light and air: lamps in the dark, embers, steam, snow, the vignette. */
   private atmos = new Atmosphere();
+  /** The world drawn in 3D under the HUD; the Pixi world layer is the fallback when 3D is off or unavailable. */
+  private w3: World3D | null = null;
+  private w3Map: WorldMap | null = null;
+  private w3Light = "";
+  private w3FogKey = "";
+  private fogCells: [number, number][] = [];
   private airAt = 0;
   private hud = new Container();
   private wounds = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#e8b8a0", lineHeight: 17, dropShadow: { color: "#000000", alpha: 0.9, blur: 3, distance: 1, angle: Math.PI / 2 } } });
@@ -240,7 +248,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Hidden lands are under mist until someone walks into them; a shut way has something standing across it. */
   private drawFog(): void {
-    this.fog.clear();
+    this.fog.clear(); this.fogCells = [];
     for (const b of this.barriers) b.destroy();
     this.barriers = [];
     if (!this.map.file.world) return;
@@ -255,6 +263,7 @@ export class ExploreScene implements Scene, StoryHost {
     for (let ty = 0; ty < this.map.height; ty++) for (let tx = 0; tx < this.map.width; tx++) {
       const r = this.map.regionAt(tx, ty);
       if (!r || REGIONS[r]?.kind !== "hidden" || this.flags[`found.${r}`]) continue;
+      this.fogCells.push([tx, ty]);
       this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0xc8d0da, alpha: 0.86 + 0.06 * Math.sin(tx * 0.7 + ty * 0.5 + t) });
     }
   }
@@ -324,6 +333,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.zoom = this.zoomFor(w, h);
     this.world.scale.set(this.zoom);
     this.atmos.resize(w, h);
+    this.w3?.resize(w, h);
     this.dialog.resize(w, h); this.joins.resize(w, h);
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
@@ -636,7 +646,7 @@ export class ExploreScene implements Scene, StoryHost {
   private hazard(dt: number): void {
     const hz = this.story.hazards.find((h) => h.map === this.map.file.id && holds(h.when, this.where()));
     this.steamLayer.clear();
-    if (!hz) return;
+    if (!hz) { if (this.w3) this.w3.setHazard(new Set(), false); return; }
     if (!this.steam.size) for (const [x, y] of hz.sources) this.steam.add(`${x},${y}`);
     this.steamT += dt;
     if (this.steamT > hz.spreadEvery) {
@@ -650,6 +660,7 @@ export class ExploreScene implements Scene, StoryHost {
     }
     const t = this.game.playSeconds;
     const fire = hz.kind === "fire";
+    this.w3?.setHazard(this.steam, fire);
     for (const c of this.steam) { const [x, y] = c.split(",").map(Number); const fl = Math.sin(t * (fire ? 9 : 3) + x * 1.7 + y); this.steamLayer.rect(x * TILE, y * TILE, TILE, TILE).fill(fire ? { color: fl > 0.3 ? 0xf2a040 : 0xd0501a, alpha: 0.55 + 0.2 * fl } : { color: 0xeef2f4, alpha: 0.5 + 0.15 * fl }); }
     const [tx, ty] = this.feetTile();
     if (this.steam.has(`${tx},${ty}`)) {
@@ -755,19 +766,55 @@ export class ExploreScene implements Scene, StoryHost {
     const cy = mh <= vh ? (mh - vh) / 2 : Math.max(0, Math.min(mh - vh, p.y + 9 - vh / 2));
     this.world.x = -Math.round(cx) * this.zoom; this.world.y = -Math.round(cy) * this.zoom;
     const airDt = Math.max(0, Math.min(0.1, t - this.airAt)); this.airAt = t;
-    this.atmos.update(airDt, t, this.game.app.renderer, p, { x: cx, y: cy, w: vw, h: vh });
+    const in3d = this.render3d(airDt, t);
+    if (!in3d) this.atmos.update(airDt, t, this.game.app.renderer, p, { x: cx, y: cy, w: vw, h: vh });
     // on the world map, name the nearest place within two tiles
     this.placeLabel.text = "";
     if (this.map.file.world) {
       const fx = p.x + 6, fy = p.y + 12;
       const near = (this.map.file.places ?? []).map((pl) => ({ pl, d: Math.hypot(pl.x * TILE + 8 - fx, pl.y * TILE + 8 - fy) })).filter((x) => x.d < TILE * 2.2).sort((a, b) => a.d - b.d)[0];
-      if (near) { this.placeLabel.text = near.pl.name; this.placeLabel.x = (near.pl.x * TILE + 8 - Math.round(cx)) * this.zoom; this.placeLabel.y = (near.pl.y * TILE - 2 - Math.round(cy)) * this.zoom; }
+      if (near) {
+        this.placeLabel.text = near.pl.name;
+        if (in3d && this.w3) { const at = this.w3.project(near.pl.x * TILE + 8, near.pl.y * TILE + 8, 0.9); this.placeLabel.x = at.x; this.placeLabel.y = at.y; }
+        else { this.placeLabel.x = (near.pl.x * TILE + 8 - Math.round(cx)) * this.zoom; this.placeLabel.y = (near.pl.y * TILE - 2 - Math.round(cy)) * this.zoom; }
+      }
     }
+  }
+
+  /** Draws the world in 3D when it is switched on (the default) and the browser can. Returns false to fall back to 2D. */
+  private render3d(dt: number, t: number): boolean {
+    const want = settings.get("world3d") && this.game.scenes.top === this;
+    if (!want || (!this.w3 && !World3D.available())) { this.world.visible = true; return false; }
+    if (!this.w3) {
+      const host = this.game.app.canvas.parentElement; if (!host) { this.world.visible = true; return false; }
+      try { this.w3 = new World3D(host); } catch { this.world.visible = true; return false; }
+      this.w3.resize(this.game.width, this.game.height);
+    }
+    const w3 = this.w3;
+    if (this.w3Map !== this.map) { w3.setMap(this.map, { burnt: this.map.file.id === "larkfold" && !!this.flags.ash }); this.w3Map = this.map; this.w3Light = ""; this.w3FogKey = ""; }
+    const light = String(this.flags.light ?? "day"); if (light !== this.w3Light) { w3.setLight(light); this.w3Light = light; }
+    const fk = this.fogCells.map((c) => c.join(",")).join(";"); if (fk !== this.w3FogKey) { w3.setFog(this.fogCells); this.w3FogKey = fk; }
+    this.world.visible = false;
+    const p = this.player, figs: Fig[] = [];
+    const add = (key: string, sprite: Sprite, look?: string, facing?: Facing) => {
+      const tex = sprite.texture, src = tex?.source?.resource as (CanvasImageSource & { width: number; height: number }) | undefined;
+      if (!tex || !src) return;
+      const fw = tex.frame.width, fh = tex.frame.height, ax = sprite.anchor.x, ay = sprite.anchor.y;
+      const left = sprite.x - ax * fw, top = sprite.y - ay * fh;
+      figs.push({ key, look, facing, canvas: src, frame: { x: tex.frame.x, y: tex.frame.y, w: fw, h: fh }, x: left + fw / 2, y: top + fh, visible: sprite.visible });
+    };
+    add("hero", p.sprite, this.hero(), p.facing);
+    this.followers.forEach((f) => add(`f:${f.id}`, f.sprite, f.look, f.facing));
+    this.shown.forEach((n, i) => add(`a:${n.a.id}:${i}`, n.sprite, n.a.look, n.a.x * TILE < p.x ? "left" : "right"));
+    this.barriers.forEach((b, i) => add(`b:${i}`, b));
+    w3.figures(figs, "hero");
+    w3.frame(t, dt, { x: p.x + 6, y: p.y + 17 });
+    return true;
   }
 
   /** Read-only view for tests and debugging. */
   debug() {
-    return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
+    return { three: this.w3 && !this.world.visible ? this.w3.moodNow : null, map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
       region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), seen: this.followers.filter((f) => f.sprite.visible).map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

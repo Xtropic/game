@@ -32,6 +32,8 @@ async function boot(): Promise<void> {
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), saves: () => game.saves.list(),
     battle: () => { const top = game.scenes.top; return top instanceof BattleScene ? top : null; },
     startBattle: (id: string) => scene.startBattle(id),
+    goto: (map: string, x: number, y: number) => scene.goto(map, x, y, undefined, () => {}),
+    refresh: () => scene.refresh(),
     menu: () => scene.openMenu(), settings,
     sound: audio, tracks: TRACK_NAMES,
     looks: () => looksSheet(),
