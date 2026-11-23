@@ -168,3 +168,32 @@ export const coinForFoe = (level = 2, kith = false): number => (kith ? 0 : 3 + l
 export function bestJob(a: Attrs): Job {
   return [...ALL_JOBS].sort((x, y) => jobSkill(a, y) - jobSkill(a, x))[0];
 }
+
+// ---- raids ------------------------------------------------------------------------------------------------
+
+/** Stages when a Warden column might come for Thornwick: Thornwick is held and nothing in the story is on a knife-edge. */
+const QUIET = (st: string): boolean => {
+  const m = /^ab(\d+)/.exec(st); if (m) return Number(m[1]) >= 6;
+  return ["ad1", "ad2", "ad3", "ad10", "ad11", "ad12", "ad17", "ad18", "ad19", "ad20"].includes(st);
+};
+/**
+ * After a day at Thornwick: now and then the scouts see a Warden column coming. It arrives a few days later (more
+ * warning with a better watch) and attacks when Rhea is next at Thornwick. Returns a line for the report, if any.
+ */
+export function raidCheck(f: Flags, stage: string, rng: () => number): string | undefined {
+  if (!baseOpen(f) || !QUIET(stage)) return undefined;
+  const d = day(f), due = num(f, "base.raid");
+  if (due) return d >= due ? "The Warden column is at Thornwick's gate." : undefined;
+  if (d - num(f, "base.lastRaid") < 8 || rng() > 0.18) return undefined;
+  const warn = 2 + levelOf(f, "watch");
+  f["base.raid"] = d + warn;
+  return `Scouts: a Warden column on the road, ${warn} days out. They'll come for Thornwick.`;
+}
+export const raidDue = (f: Flags): boolean => { const due = num(f, "base.raid"); return !!due && day(f) >= due; };
+/** The raid is over: beaten off, or Thornwick sacked (stores burned, the builders' work lost, coin taken). */
+export function raidOver(f: Flags, coin: number, won: boolean): { coin: number; line: string } {
+  f["base.raid"] = 0; f["base.lastRaid"] = day(f);
+  if (won) { f.supplies = supplies(f) + 12; return { coin: coin + 45, line: "The Wardens leave their dead, their purses and two carts of stores on the road. Thornwick takes all of it: 45 coin and 12 supplies." }; }
+  const lost = Math.round(coin * 0.25); f.supplies = Math.floor(supplies(f) / 2); f["base.work"] = 0;
+  return { coin: coin - lost, line: `The Wardens burn half the stores, take ${lost} coin from the strongroom, and pull down whatever the builders had up. They're gone by morning.` };
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BUILDINGS, RECIPES, baseDay, bestJob, canRaise, coinForFoe, levelOf, penChoices, penPlan, setPenPlan, startRaise, supplies } from "../../src/base/base";
+import { BUILDINGS, RECIPES, raidCheck, raidDue, raidOver, baseDay, bestJob, canRaise, coinForFoe, levelOf, penChoices, penPlan, setPenPlan, startRaise, supplies } from "../../src/base/base";
 import { attrsAt } from "../../src/cast/attributes";
 import { ITEMS } from "../../src/gear/items";
 import { SOURCES, starterAsh } from "../../src/kith/upbringing";
@@ -48,5 +48,14 @@ describe("Thornwick", () => {
   it("people foes carry coin, kith don't; everyone has a best job", () => {
     expect(coinForFoe(4)).toBeGreaterThan(coinForFoe(1)); expect(coinForFoe(4, true)).toBe(0);
     expect(bestJob(attrsAt("hesk", 10))).toBeTruthy();
+  });
+
+  it("Warden columns come now and then in quiet times, with warning, and a lost raid costs stores and coin", () => {
+    const f: Flags = { "base.open": true, "base.day": 20, supplies: 40 };
+    expect(raidCheck(f, "ad5", () => 0)).toBeUndefined(); // the night at Lockside: not now
+    expect(raidCheck(f, "ad11", () => 0)).toContain("2 days out");
+    expect(raidDue(f)).toBe(false); f["base.day"] = 22; expect(raidDue(f)).toBe(true);
+    const r = raidOver(f, 100, false); expect(r.coin).toBe(75); expect(f.supplies).toBe(20); expect(raidDue(f)).toBe(false);
+    expect(raidCheck(f, "ad11", () => 0)).toBeUndefined(); // not again so soon
   });
 });

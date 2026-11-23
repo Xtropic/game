@@ -42,7 +42,9 @@ import { BasePanel } from "../ui/basePanel";
 import { ShopPanel } from "../ui/shopPanel";
 import { DuelScene } from "../battle/duelScene";
 import { DUELS } from "../battle/duel";
-import { baseDay, coinForFoe } from "../base/base";
+import { ArmyScene } from "../army/armyScene";
+import { ARMY_BATTLES } from "../army/army";
+import { baseDay, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
 import { newTerm } from "../story/terms";
@@ -199,6 +201,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (file.rest && this.map && this.map.file.id !== id) queueMicrotask(() => this.rest(file.name));
     this.map = new WorldMap(file);
     this.atmos.setMap(this.map);
+    if (id === "thornwick" && raidDue(this.flags)) setTimeout(() => this.raidNow(), 1500);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
     if (this.flags.gateOpen) this.map.open.add("gate");
     const sp = this.map.spawn();
@@ -405,7 +408,10 @@ export class ExploreScene implements Scene, StoryHost {
     const out = baseDay({ flags: f, coin: this.game.coin, workers: this.baseStaying().map((id) => ({ id, name: this.story.cast[id] ?? id, attrs: attrsAt(id, this.game.progress(id).level, this.game.modsOf(id)) })), kith: this.baseKith().map((id) => this.game.kith[id]), rng: this.rng });
     this.game.coin = out.coin;
     for (const [id, xp] of Object.entries(out.drill)) this.game.giveXp(id, xp, this.story.cast[id] ?? id);
+    const raid = raidCheck(f, String(f.stage ?? ""), this.rng);
+    if (raid && this.map.file.id === "thornwick") setTimeout(() => this.raidNow(), 1200);
     this.save("auto");
+    if (raid) return raid;
     return out.lines.length ? out.lines.slice(0, 3).join(" ") : "A quiet day: nobody is set to work.";
   }
   /** People who stay at Thornwick: everyone recruited who isn't travelling. */
@@ -505,6 +511,35 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   battle(id: string, done: () => void): void { this.startBattle(id, done); }
+  /** The Warden column reaches Thornwick: the alarm, then the battle. Waits for a quiet moment. */
+  private raidNow(): void {
+    if (!raidDue(this.flags) || this.map.file.id !== "thornwick") return;
+    if (!this.free()) { setTimeout(() => this.raidNow(), 1500); return; }
+    this.runner.run([
+      { say: "", text: "The bell on the gatehouse goes, and doesn't stop. Grey coats on the road below the ford: the Warden column the scouts saw." },
+      { army: "thornwick-raid" },
+    ]);
+  }
+  /** An army battle: the hero's company and everyone recruited as officers. */
+  army(id: string, done: (won: boolean) => void): void {
+    const def = ARMY_BATTLES[id]; if (!def) throw new Error(`no army battle ${id}`);
+    const off = (pid: string) => ({ id: pid, name: this.story.cast[pid] ?? pid, attrs: attrsAt(pid, this.game.progress(pid).level, this.game.modsOf(pid)) });
+    const hero = this.hero(), pool = this.joinedIds().filter((p) => p !== hero && !this.game.kith[p] && PEOPLE[p]).map(off);
+    this.game.scenes.push(new ArmyScene(def, pool, off(hero), (won, s) => {
+      const lines: string[] = [];
+      if (won) {
+        const broken = s.cos.filter((c) => c.side === "theirs" && c.state !== "ok");
+        const xp = broken.reduce((n, c) => n + xpForFoe(def.theirs.find((d) => d.id === c.id)?.level) * 3, 0) + 20;
+        const led = new Set([hero, ...s.cos.filter((c) => c.side === "ours").map((c) => c.officer).filter(Boolean) as string[]]);
+        for (const p of led) lines.push(...this.game.giveXp(p, xp, this.story.cast[p] ?? p));
+        this.game.flags[`won.army.${id}`] = true;
+      }
+      if (id === "thornwick-raid") { const r = raidOver(this.game.flags, this.game.coin, won); this.game.coin = r.coin; lines.unshift(r.line); }
+      this.refresh(); done(won);
+      if (lines.length) this.runner.run(lines.map((text) => ({ say: "", text })));
+      this.save("auto");
+    }, () => this.rng()));
+  }
   /** A one-on-one duel for the hero; a win (or a yield) gives experience and any purse. */
   duel(id: string, done: (won: boolean) => void): void {
     const def = DUELS[id]; if (!def) throw new Error(`no duel ${id}`);
