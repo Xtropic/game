@@ -7,11 +7,12 @@ import { BODY_SHAPE, bodyOf } from "../art/bodies";
 import { LOOKS, saturate } from "../art/people";
 import { keepsake } from "../gear/weapons";
 import { RECRUITS } from "../cast/recruits";
-import { drawPainted, hasPaintedFig } from "./painted";
+import { drawPainted, hasPaintedFig, paintedRig } from "./painted";
 
 export const CW = 256, CH = 144;
 let K = 4;
 export const setScale = (k: number): void => { K = k; };
+export const getScale = (): number => K;
 const U = (v: number) => v * K;
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 export const INK = "#1a1420";
@@ -111,7 +112,7 @@ function fromMapLook(id: string): CastLook {
 export const lookKind = (look: string): string => look.split(":")[0];
 const lookCoat = (look: string): string | undefined => look.split(":")[1];
 
-export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; /** 0..1 mouth opening while speaking */ talk?: number; }
+export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; /** 0..1 how long the stride is when `run` is set: 1 is a battle charge, ~0.5 an easy walk */ stride?: number; /** 0..1 mouth opening while speaking */ talk?: number; }
 
 function inkPath(g: CanvasRenderingContext2D, fill: string, lw = 0.28) { g.fillStyle = fill; g.fill(); g.lineWidth = lw; g.strokeStyle = INK; g.stroke(); }
 function limb(g: CanvasRenderingContext2D, pts: number[], w: number, col: string) {
@@ -126,8 +127,8 @@ const grey = (hex: string, amt: number): string => { const n = parseInt(hex.slic
 export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
   const base = lookFor(id), t = o.t, body = BODY_SHAPE[bodyOf(id)];
   const P0 = b.raw ? { ...base, skin: shadeHex(grey(base.skin, 0.45), 0.04), skinS: grey(base.skinS, 0.45) } : base;
-  const run = o.run ? Math.sin(o.run) : 0, lean = (o.run ? 0.14 : o.lunge ? 0.22 : o.brace ? -0.08 : 0) - 0.05 * b.bearing + (b.raw ? 0.09 : 0);
-  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
+  const st = o.stride ?? 1, run = o.run ? Math.sin(o.run) * st : 0, lean = (o.run ? 0.03 + 0.11 * st * st : o.lunge ? 0.22 : o.brace ? -0.08 : 0) - 0.05 * b.bearing + (b.raw ? 0.09 : 0);
+  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 * st : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
   const wx = body.w * (1 + 0.11 * b.bulk), tallY = body.h * (1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0)), thick = body.limb * (1 + 0.22 * b.brawn - 0.1 * b.reach);
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
   ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
@@ -148,7 +149,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
     else if (o.brace) { el = near ? [4.5, -21] : [3.4, -19]; hd = near ? [4.2, -25.5] : [5.6, -23.5]; }
     else if (o.cast) { el = near ? [4, -20.5] : [-1.6, -18]; hd = near ? [6.5, -23.5] : [0.4, -15.8]; }
     else if (o.bow != null) { el = near ? [5.5, -20] : [-0.8, -19.6]; hd = near ? [9, -20.5] : [2.2 - o.bow * 2, -20.4]; }
-    else if (o.run) { const a = (near ? 1 : -1) * Math.sin(o.run) * 3; el = [a * 0.6 + (near ? 1 : -1), -17.5]; hd = [a + 1.2, -14.5]; }
+    else if (o.run) { const a = (near ? 1 : -1) * Math.sin(o.run) * 3 * st; el = [a * 0.6 + (near ? 1 : -1), -17.5]; hd = [a + 1.2, -14.5]; }
     else { el = near ? [2.6, -16.8] : [-2, -16.8]; hd = near ? [3.6, -13.3] : [-1.6, -13.2]; }
     const shx = near ? 1.8 : -1.4, col = near ? P0.coat : P0.coatS;
     limb(g, [shx, sh + 0.8, el[0], el[1], hd[0], hd[1]], 2.1 * thick, col);
@@ -296,9 +297,11 @@ export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Po
   g.restore();
 }
 
-export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
+const DRAWN_BEASTS = new Set(["ash", "loftbuck", "reedcat"]);
+export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN, painted = true): void {
   const kind = lookKind(look), coat = lookCoat(look);
-  if (hasPaintedFig(kind)) drawPainted(g, kind, x, y, o, K, coat);
+  // painted = false asks for the drawn rig (the world uses it so everyone walks alike); kith with no drawn rig keep their painting
+  if (hasPaintedFig(kind) && (painted || (paintedRig(kind) === "beast" && !DRAWN_BEASTS.has(kind)))) drawPainted(g, kind, x, y, o, K, coat);
   else if (kind === "ash") drawAsh(g, x, y, o, b);
   else if (kind === "loftbuck") drawAsh(g, x, y, o, b, coat ?? "#9a8a70", false);
   else if (kind === "reedcat") drawCat(g, x, y, o, b, coat);

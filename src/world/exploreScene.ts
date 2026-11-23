@@ -788,6 +788,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (!this.w3) {
       const host = this.game.app.canvas.parentElement; if (!host) { this.world.visible = true; return false; }
       try { this.w3 = new World3D(host); } catch { this.world.visible = true; return false; }
+      this.w3.buildFor = (id) => this.game.buildFor(id);
       this.w3.resize(this.game.width, this.game.height);
     }
     const w3 = this.w3;

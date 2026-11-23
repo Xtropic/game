@@ -22,6 +22,7 @@ export async function loadBattleArt(base = "battle/"): Promise<void> {
 }
 
 export const hasPaintedFig = (look: string): boolean => look in painted;
+export const paintedRig = (look: string): Rig | undefined => painted[look]?.rig;
 
 /** A painting recoloured towards a coat colour (for kith with no painting of their own), made once and kept. */
 const tinted: Record<string, HTMLCanvasElement> = {};

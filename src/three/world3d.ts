@@ -16,7 +16,8 @@ import { VerticalTiltShiftShader } from "three/examples/jsm/shaders/VerticalTilt
 import { TILE, TILE_DEFS, WorldMap, type MapFile, type TileKind } from "../world/map";
 import { bakeMap } from "../art/tiles";
 import { hash2 } from "../art/pixel";
-import { paintedHeight, paintedLook, paintedSource } from "../battle/painted";
+import { drawLook, getScale, setScale } from "../battle/art";
+import type { Build } from "../art/build";
 
 export type Facing = "down" | "up" | "left" | "right";
 
@@ -122,7 +123,11 @@ function averageColour(c: HTMLCanvasElement): THREE.Color {
 const m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), v3 = new THREE.Vector3(), e3 = new THREE.Euler();
 
 interface Lamp { x: number; y: number; z: number; color: number; kind: "fire" | "window" | "glow" }
-interface Shown3 { obj: THREE.Group; body: THREE.Mesh; mat: THREE.MeshStandardMaterial; source: unknown; painted: boolean; face: 1 | -1; lastX: number; lastY: number; phase: number; moving: number; seen: boolean; w: number; h: number }
+interface Shown3 { obj: THREE.Group; body: THREE.Mesh; mat: THREE.MeshStandardMaterial; source: unknown; rig: { cv: HTMLCanvasElement; g: CanvasRenderingContext2D; tex: THREE.CanvasTexture; look: string; due: number; seed: number } | null; face: 1 | -1; lastX: number; lastY: number; phase: number; moving: number; spd: number; seen: boolean; w: number; h: number }
+/** People and kith in the world are drawn with the same rig as in battle, into a canvas of this many stage units. */
+const RIG = { w: 96, h: 66, footX: 48, footY: 63, K: 4, perTile: 33.5 };
+/** Things on the map that aren't people or kith: they stay as their pixel sprites. */
+const PROPS = new Set(["note", "glint"]);
 
 // ---------------------------------------------------------------- the renderer
 export class World3D {
@@ -228,8 +233,7 @@ export class World3D {
       for (const mt of mats) { if (mt === this.windowMat || mt === this.flameMat || mt === this.puffMat || mt === this.hazardMat) continue; (mt as THREE.MeshStandardMaterial).map?.dispose(); mt.dispose(); }
     });
     for (const c of [...this.level.children]) { dispose(c); this.level.remove(c); }
-    for (const s of this.shown.values()) { s.mat.map?.dispose(); s.mat.dispose(); s.body.geometry.dispose(); this.figs.remove(s.obj); }
-    this.shown.clear();
+    for (const [k, s] of [...this.shown]) this.drop(k, s);
     this.lamps = []; this.flames = []; this.houses = []; this.leaves = null; this.cloudTex = null; this.puffs = []; this.sea = null; this.fogMesh = null; this.hazard = null; this.hazardKey = "";
   }
 
@@ -645,59 +649,89 @@ export class World3D {
     return t;
   }
 
+  /** How someone looks now (their build, from their attributes and the story); set by the explore scene. */
+  buildFor: ((id: string) => Build) | null = null;
+  private builds = new Map<string, { b: Build; at: number }>();
+  private build(id: string, now: number): Build | undefined {
+    if (!this.buildFor) return undefined;
+    const c = this.builds.get(id);
+    if (c && now - c.at < 3) return c.b;
+    const b = this.buildFor(id.split(":")[0]); this.builds.set(id, { b, at: now }); return b;
+  }
+  private clock = 0;
+  private figT = 0;
+
   /** Stand everyone where they are this frame. */
   figures(list: Fig[], heroKey: string): void {
     for (const s of this.shown.values()) s.seen = false;
+    const now = this.clock, step = Math.min(0.1, Math.max(1 / 240, now - this.figT)); this.figT = now;
     for (const f of list) {
       if (!f.visible) continue;
-      const pl = f.look ? paintedLook(f.look) : undefined, src = pl ? paintedSource(pl) : undefined;
-      const source: unknown = src ?? f.canvas;
+      const rigged = !!f.look && !PROPS.has(f.look);
+      const source: unknown = rigged ? `rig:${f.look}` : f.canvas;
       if (!source) continue;
       let s = this.shown.get(f.key);
       if (!s || s.source !== source) {
-        if (s) { s.mat.map?.dispose(); s.mat.dispose(); s.body.geometry.dispose(); this.figs.remove(s.obj); }
-        const base = this.texFor(source as object, () => {
-          const t = src ? new THREE.Texture(src as HTMLImageElement) : new THREE.CanvasTexture(f.canvas as HTMLCanvasElement);
-          t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true;
-          if (!src) { t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; } else t.anisotropy = 4;
-          return t;
-        });
-        const tex = base.clone(); tex.needsUpdate = true;
+        if (s) this.drop(f.key, s);
+        let tex: THREE.Texture, rig: Shown3["rig"] = null, w = 1, h = 1.5;
+        if (rigged) {
+          const cv = document.createElement("canvas"); cv.width = RIG.w * RIG.K; cv.height = RIG.h * RIG.K;
+          const ct = new THREE.CanvasTexture(cv); ct.colorSpace = THREE.SRGBColorSpace; ct.anisotropy = 4; ct.generateMipmaps = false; ct.minFilter = THREE.LinearFilter;
+          tex = ct; rig = { cv, g: cv.getContext("2d")!, tex: ct, look: f.look!, due: 0, seed: hash2(f.key.length, f.key.charCodeAt(f.key.length - 1)) * 10 };
+          w = RIG.w / RIG.perTile; h = RIG.h / RIG.perTile;
+        } else {
+          const base = this.texFor(source as object, () => { const t = new THREE.CanvasTexture(f.canvas as HTMLCanvasElement); t.colorSpace = THREE.SRGBColorSpace; t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; return t; });
+          tex = base.clone(); tex.needsUpdate = true;
+        }
         const mat = new THREE.MeshStandardMaterial({ map: tex, emissiveMap: tex, emissive: 0xffffff, emissiveIntensity: this.mood.selfLit, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.85 });
-        const geo = new THREE.PlaneGeometry(1, 1); geo.translate(0, 0.5, 0);
+        const geo = new THREE.PlaneGeometry(1, 1);
+        // the plane's origin is the figure's feet
+        if (rigged) geo.translate(0.5 - RIG.footX / RIG.w, RIG.footY / RIG.h - 0.5, 0); else geo.translate(0, 0.5, 0);
         const body = new THREE.Mesh(geo, mat); body.castShadow = true;
         const obj = new THREE.Group(); obj.add(body);
-        const blob = new THREE.Mesh(new THREE.CircleGeometry(0.3, 16), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false }));
-        blob.rotation.x = -Math.PI / 2; blob.position.y = 0.02; obj.add(blob);
+        if (!rigged) { const blob = new THREE.Mesh(new THREE.CircleGeometry(0.3, 16), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false })); blob.rotation.x = -Math.PI / 2; blob.position.y = 0.02; obj.add(blob); }
         this.figs.add(obj);
-        let w = 1, h = 1.5;
-        if (src) { const img = src as { width: number; height: number }; h = 1.55 * (paintedHeight(pl!) ?? 52) / 52; w = h * img.width / img.height; }
-        s = { obj, body, mat, source, painted: !!src, face: 1, lastX: f.x, lastY: f.y, phase: 0, moving: 0, seen: true, w, h };
-        blob.scale.set(Math.min(1.4, w * 0.9), Math.min(0.8, w * 0.5), 1);
+        s = { obj, body, mat, source, rig, face: 1, lastX: f.x, lastY: f.y, phase: 0, moving: 0, spd: 0, seen: true, w, h };
         this.shown.set(f.key, s);
       }
       s.seen = true;
-      if (!s.painted && f.frame && f.canvas) {
+      if (!s.rig && f.frame && f.canvas) {
         const t = s.mat.map!, cw = f.canvas.width, ch = f.canvas.height;
         t.repeat.set(f.frame.w / cw, f.frame.h / ch); t.offset.set(f.frame.x / cw, 1 - (f.frame.y + f.frame.h) / ch);
         s.w = f.frame.w / TILE; s.h = f.frame.h / TILE;
-        if (s.mat.map !== s.mat.emissiveMap) s.mat.emissiveMap = t;
       }
-      const dx = f.x - s.lastX, dy = f.y - s.lastY, d = Math.hypot(dx, dy);
-      s.moving = d > 0.05 ? 0.25 : Math.max(0, s.moving - 1 / 60);
-      if (d > 0.05) s.phase += d * 0.45;
+      // walking: the stride follows the ground actually covered, so feet don't slide
+      const dx = f.x - s.lastX, dy = f.y - s.lastY, d = Math.hypot(dx, dy) / TILE;
+      // a stride cycle covers more ground the faster they go (an easy walk ~1.5 tiles, a run ~2.3), as real gaits do
+      if (d > 0.002 && d < 2) { s.spd += (d / step - s.spd) * Math.min(1, step * 10); s.moving = 0.12; s.phase += d * Math.PI * 2 / (1.1 + 0.18 * Math.min(7, s.spd)); }
+      else { s.moving = Math.max(0, s.moving - step); if (s.moving <= 0) s.spd = 0; }
       if (f.facing === "left") s.face = -1; else if (f.facing === "right") s.face = 1; else if (Math.abs(dx) > 0.05) s.face = dx < 0 ? -1 : 1;
       s.lastX = f.x; s.lastY = f.y;
       const u = f.x / TILE, v = f.y / TILE;
       s.obj.position.set(u, this.groundY(u, v - 0.05), v);
-      s.obj.rotation.y = s.painted && s.face === -1 ? Math.PI : 0;
-      const walk = s.painted && s.moving > 0;
       s.body.scale.set(s.w, s.h, 1);
-      s.body.position.y = walk ? Math.abs(Math.sin(s.phase)) * 0.06 : 0;
-      s.body.rotation.z = walk ? -Math.sin(s.phase) * 0.035 : 0;
+      if (s.rig) this.drawRig(s, now, Math.hypot(u - this.focus.x, v - this.focus.z));
       if (f.key === heroKey) this.hero = { x: u, y: v, face: s.face };
     }
-    for (const [k, s] of this.shown) if (!s.seen) { s.mat.map?.dispose(); s.mat.dispose(); s.body.geometry.dispose(); this.figs.remove(s.obj); this.shown.delete(k); }
+    for (const [k, s] of this.shown) if (!s.seen) this.drop(k, s);
+  }
+
+  private drop(key: string, s: Shown3): void {
+    if (!s.rig) s.mat.map?.dispose(); else s.rig.tex.dispose();
+    s.mat.dispose(); s.body.geometry.dispose(); this.figs.remove(s.obj); this.shown.delete(key);
+  }
+
+  /** Redraws a figure with the battle rig: the painting (or the drawn figure) cut into cells that breathe, sway and stride. */
+  private drawRig(s: Shown3, now: number, far: number): void {
+    const r = s.rig!, walking = s.moving > 0;
+    if (now < r.due) return;
+    r.due = now + (walking ? 1 / 30 : far > 16 ? 0.25 : 1 / 12);
+    const g = r.g, old = getScale();
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, r.cv.width, r.cv.height);
+    setScale(RIG.K);
+    try { drawLook(g, r.look, RIG.footX, RIG.footY, { t: now + r.seed, run: walking ? s.phase : undefined, stride: Math.min(1, 0.3 + 0.09 * s.spd), flip: s.face === -1 }, this.build(r.look, now), false); }
+    finally { setScale(old); }
+    r.tex.needsUpdate = true;
   }
 
   /** Screen position (CSS pixels) of a point given in map pixels, lifted `lift` tiles off the ground. */
@@ -709,12 +743,13 @@ export class World3D {
 
   frame(t: number, dt: number, focusPx: { x: number; y: number }): void {
     this.lastFrame = performance.now();
+    this.clock = t;
     this.canvas.style.visibility = "visible";
     const u = focusPx.x / TILE, v = focusPx.y / TILE, gy = this.groundY(u, v);
     const target = new THREE.Vector3(u, gy, v);
     if (!this.focusSet) { this.focus.copy(target); this.focusSet = true; } else this.focus.lerp(target, Math.min(1, dt * 5));
     const id = this.map.file.id, small = INDOORS.has(id) && !UNDER.has(id);
-    const dist = (this.world ? 30 : small ? 15 : 22) * this.zoomMul, pitch = this.world ? 0.95 : 0.86;
+    const dist = (this.world ? 42 : small ? 21 : 31) * this.zoomMul, pitch = this.world ? 0.95 : 0.86;
     this.camera.position.set(this.focus.x, this.focus.y + Math.sin(pitch) * dist, this.focus.z + Math.cos(pitch) * dist);
     this.camera.lookAt(this.focus.x, this.focus.y + 0.5, this.focus.z);
     const fog = this.scene.fog as THREE.Fog; fog.near = dist + (this.mood.sky ? 8 : 5); fog.far = dist + (this.mood.sky ? 70 : 40);
