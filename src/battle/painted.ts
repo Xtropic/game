@@ -77,7 +77,8 @@ function field(rig: Rig, u: number, v: number, o: Pose, lean: number, aspect: nu
     if (o.stride != null) { // out in the world (stride is set there): an easy stance, and a real walk when moving
       const st = o.stride, legs = 1 - smooth(0.04, 0.5, v), side = Math.max(-1, Math.min(1, (u - 0.5) * 7));
       const arms = bump(0.3, 0.8, v) * smooth(0.12, 0.3, Math.abs(u - 0.5)); // the outer columns at arm height
-      dx -= (u - 0.5) * aspect * (0.42 * legs + 0.22 * arms); // the battle stance's wide feet and ready arms come in
+      const narrow = 1 - smooth(0.02, 0.56, v); // strongest at the feet, easing out at the hips
+      dx -= (u - 0.5) * aspect * (0.62 * narrow + 0.22 * arms); // the battle stance's wide feet and ready arms come in
       if (o.run != null) {
         const ph = o.run, swing = Math.sin(ph) * side, fwd = Math.cos(ph) * side;
         dx += legs * swing * 0.06 * st; // each leg swings in turn
@@ -131,11 +132,13 @@ export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number
   const bob = o.run && o.stride == null ? -Math.abs(Math.cos(o.run)) * 0.02 : 0;
   g.translate((o.lunge ? 0.06 : 0) * H - flash * 0.03 * H, bob * H);
   g.scale(1, squash);
-  const sw = iw / COLS, sh = ih / ROWS, cw = W / COLS, ch = H / ROWS;
-  for (let r = 0; r < ROWS; r++) {
-    const v = 1 - (r + 0.5) / ROWS;
-    for (let c = 0; c < COLS; c++) {
-      const u = (c + 0.5) / COLS, [dx, dy] = field(rig, u, v, o, lean, W / H);
+  // the world's walk squeezes the legs together, which a coarse grid shows as steps: it gets a finer one
+  const cols = o.stride != null ? 24 : COLS, rows = o.stride != null ? 48 : ROWS;
+  const sw = iw / cols, sh = ih / rows, cw = W / cols, ch = H / rows;
+  for (let r = 0; r < rows; r++) {
+    const v = 1 - (r + 0.5) / rows;
+    for (let c = 0; c < cols; c++) {
+      const u = (c + 0.5) / cols, [dx, dy] = field(rig, u, v, o, lean, W / H);
       // cells overlap by a hair so no seams show between neighbours that moved apart
       g.drawImage(img, c * sw, r * sh, sw, sh, -W / 2 + c * cw + dx * H - 1, -H + r * ch + dy * H - 1, cw + 2, ch + 2);
     }
