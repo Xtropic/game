@@ -43,7 +43,9 @@ import { ShopPanel } from "../ui/shopPanel";
 import { DuelScene } from "../battle/duelScene";
 import { DUELS } from "../battle/duel";
 import { ArmyScene } from "../army/armyScene";
-import { ARMY_BATTLES } from "../army/army";
+import { ARMY_BATTLES, terrainAt, type ArmyDef } from "../army/army";
+import { rankOf, rankTick } from "../command/ranks";
+import { allies, marched, nation, tribute } from "../command/diplomacy";
 import { baseDay, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
@@ -390,7 +392,18 @@ export class ExploreScene implements Scene, StoryHost {
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
   toast(t: string): void { this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
-  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.baseTick(); this.refresh(); }
+  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.commandTick(); this.baseTick(); this.refresh(); }
+
+  /** Each time the story moves on: the rank's pay and what pacts and held nations send in. A promotion says what it opens. */
+  private commandTick(): void {
+    const f = this.flags, r = rankTick(f, String(f.stage ?? ""));
+    if (r.moved) {
+      const t = tribute(f);
+      this.game.coin += r.pay + t.coin;
+      if (t.supplies) f.supplies = (typeof f.supplies === "number" ? f.supplies : 0) + t.supplies;
+    }
+    if (r.promoted) this.toast(`${r.promoted.id}. ${r.promoted.opens.join(" ")}`);
+  }
 
   /** Thornwick is held from the night the Old Mother is beaten. Each time the story moves on after that, a day of
    *  work passes there (see base/base.ts), and a short report shows. */
@@ -453,6 +466,8 @@ export class ExploreScene implements Scene, StoryHost {
 
   openMenu(): void {
     this.menu.show({
+      hero: () => this.hero(),
+      march: (id) => this.march(id),
       game: this.game, names: this.story.cast,
       travelling: () => [this.hero(), ...this.followers.map((f) => f.id)],
       inParty: () => partyOf(this.flags),
@@ -483,7 +498,8 @@ export class ExploreScene implements Scene, StoryHost {
     if (!fights) return r?.role === "base" ? `${name} keeps things running at home, not on the road.` : `${name} serves with the Commons, not on the road.`;
     const list = partyOf(f), was = list.includes(id), walking = this.followers.map((x) => x.id);
     const together = walking.length === list.length && list.every((x) => walking.includes(x));
-    if (!was && list.filter((x) => x !== "ash").length >= MAX_TRAVEL) return `Five travel with Rhea at most. Leave someone at camp first.`;
+    const most = Math.min(MAX_TRAVEL, rankOf(f).party);
+    if (!was && list.filter((x) => x !== "ash").length >= most) return `${["", "One", "Two", "Three", "Four", "Five"][most]} travel with Rhea at most${most < MAX_TRAVEL ? ` while she's a ${rankOf(f).id.toLowerCase()}` : ""}. Leave someone at camp first.`;
     const next = was ? list.filter((x) => x !== id) : [...list, id];
     f.party = next.join(",");
     if (together) this.follow(next);
@@ -521,8 +537,38 @@ export class ExploreScene implements Scene, StoryHost {
     ]);
   }
   /** An army battle: the hero's company and everyone recruited as officers. */
+  /** Marches the Commons on a nation (from the menu's Command page): the army battle, then what it leaves. */
+  march(id: string): void {
+    const n = nation(id); if (!n?.march) return;
+    setTimeout(() => this.army(n.march!, (won) => {
+      const r = marched(this.flags, this.game.coin, n, won); if (r.coin !== undefined) this.game.coin = r.coin;
+      this.runner.run([{ say: "", text: r.text }]); this.save("auto");
+    }), 150);
+  }
+
+  /** Allied companies from pacts join beside your own company, as many as the rank allows, on open ground nearby. */
+  private withAllies(def: ArmyDef): ArmyDef {
+    if (this.hero() !== "rhea") return def;
+    const list = allies(this.flags).slice(0, rankOf(this.flags).allies); if (!list.length) return def;
+    const hq = def.ours[0], fake = { def } as Parameters<typeof terrainAt>[0], taken = def.ours.map((c) => c.at);
+    const ours = [...def.ours];
+    for (const a of list) {
+      let spot: [number, number] | undefined;
+      for (let r = 2; r < 14 && !spot; r++) for (const [dx, dy] of [[r, 0], [-r, 0], [r, 1], [-r, 1], [r, 2], [-r, 2]]) {
+        const x = hq.at[0] + dx, y = hq.at[1] + dy, t = terrainAt(fake, x, y);
+        if (x < 1 || x > def.terrain[0].length - 2 || t === "water" || t === "wall" || taken.some((p) => Math.hypot(p[0] - x, p[1] - y) < 1.6)) continue;
+        spot = [x, y]; break;
+      }
+      if (!spot) continue;
+      taken.push(spot);
+      ours.push({ id: `ally-${a.nation}`, name: a.name, kind: a.kind, at: spot, officer: "warden", level: a.level });
+    }
+    return { ...def, ours };
+  }
+
   army(id: string, done: (won: boolean) => void): void {
-    const def = ARMY_BATTLES[id]; if (!def) throw new Error(`no army battle ${id}`);
+    const base = ARMY_BATTLES[id]; if (!base) throw new Error(`no army battle ${id}`);
+    const def = this.withAllies(base);
     const off = (pid: string) => ({ id: pid, name: this.story.cast[pid] ?? pid, attrs: attrsAt(pid, this.game.progress(pid).level, this.game.modsOf(pid)) });
     const hero = this.hero(), pool = this.joinedIds().filter((p) => p !== hero && !this.game.kith[p] && PEOPLE[p]).map(off);
     this.game.scenes.push(new ArmyScene(def, pool, off(hero), (won, s) => {
@@ -538,7 +584,7 @@ export class ExploreScene implements Scene, StoryHost {
       this.refresh(); done(won);
       if (lines.length) this.runner.run(lines.map((text) => ({ say: "", text })));
       this.save("auto");
-    }, () => this.rng()));
+    }, () => this.rng(), { stratagems: this.hero() === "rhea" ? rankOf(this.flags).stratagems : 1 }));
   }
   /** A one-on-one duel for the hero; a win (or a yield) gives experience and any purse. */
   duel(id: string, done: (won: boolean) => void): void {

@@ -35,6 +35,8 @@ export interface Stratagem { id: string; name: string; text: string; /** Who say
 export interface ArmyDef {
   id: string; name: string; intro: string[]; terrain: string[]; legend: Record<string, Terrain>;
   /** Seconds the player must hold, if holding wins; otherwise break them. */ hold?: number;
+  /** We are the ones attacking: they hold their ground, and if they aren't broken by the limit (seconds), the day is lost. */
+  attack?: boolean; limit?: number;
   ours: CompanyDef[]; theirs: CompanyDef[]; commander: { name: string; cast: string; level: number };
   plan: PlanStep[]; stratagems: Stratagem[]; won: string; lost: string;
 }
@@ -52,9 +54,9 @@ const clamp = (x: number, lo: number, hi: number): number => Math.max(lo, Math.m
 export const terrainAt = (s: ArmyState, x: number, y: number): Terrain => { const r = s.def.terrain[Math.floor(y)]; return r ? s.def.legend[r[Math.floor(x)]] ?? "open" : "water"; };
 
 /** Officers in council: the companies of our side, each with whoever leads it. Unled companies have a sergeant (level 6 warden). */
-export function createArmy(def: ArmyDef, officers: Record<string, { attrs: Attrs } | undefined>, stratagem?: string, heroWits = 10): ArmyState {
-  const chosen = def.stratagems.find((x) => x.id === stratagem);
-  if (chosen?.effect.terrain) { const rows = def.terrain.map((r) => [...r]); for (const [x, y, ch] of chosen.effect.terrain) rows[y][x] = ch; def = { ...def, terrain: rows.map((r) => r.join("")) }; }
+export function createArmy(def: ArmyDef, officers: Record<string, { attrs: Attrs } | undefined>, stratagem?: string | string[], heroWits = 10): ArmyState {
+  const picked = (Array.isArray(stratagem) ? stratagem : stratagem ? [stratagem] : []).map((id) => def.stratagems.find((x) => x.id === id)).filter((x): x is Stratagem => !!x);
+  for (const chosen of picked) if (chosen.effect.terrain) { const rows = def.terrain.map((r) => [...r]); for (const [x, y, ch] of chosen.effect.terrain) rows[y][x] = ch; def = { ...def, terrain: rows.map((r) => r.join("")) }; }
   const make = (c: CompanyDef, side: "ours" | "theirs"): Company => {
     const a = officers[c.id]?.attrs ?? attrsAt(c.officer ?? "warden", c.level ?? 6), k = KINDS[c.kind];
     const men = Math.round(command.unitSize(a) * k.men), mor = command.morale(a);
@@ -64,8 +66,7 @@ export function createArmy(def: ArmyDef, officers: Record<string, { attrs: Attrs
   const cmd = attrsAt(def.commander.cast, def.commander.level);
   const wits = Math.max(heroWits, ...s.cos.filter((c) => c.side === "ours").map((c) => c.attrs.wits));
   s.intel = wits >= cmd.wits + 2 ? 2 : wits >= cmd.wits - 3 ? 1 : 0;
-  const st = def.stratagems.find((x) => x.id === stratagem);
-  if (st) {
+  for (const st of picked) {
     for (const id of st.effect.hide ?? []) { const c = s.cos.find((q) => q.id === id); if (c) { c.hidden = true; c.firstBlow = true; } }
     for (const [id, at] of Object.entries(st.effect.move ?? {})) { const c = s.cos.find((q) => q.id === id); if (c) { c.x = at[0]; c.y = at[1]; } }
     if (st.effect.stakes) s.stakes = st.effect.stakes;
@@ -149,7 +150,7 @@ export function tick(s: ArmyState, dt: number, rng: () => number): void {
   for (const c of live(s, "theirs")) {
     if (c.order.kind === "move") continue;
     const near = live(s, "ours").filter((o) => !o.hidden).sort((a, b) => dist(a, c) - dist(b, c))[0];
-    if (near && dist(near, c) < (c.kind === "bow" ? 9 : 6)) c.order = { kind: "attack", target: near.id };
+    if (near && dist(near, c) < (c.kind === "bow" ? 9 : 6) * (s.def.attack ? 0.6 : 1)) c.order = { kind: "attack", target: near.id };
   }
   // the hidden show themselves when they attack, or when the enemy blunders into them
   for (const c of live(s, "ours")) if (c.hidden && (c.order.kind === "attack" || live(s, "theirs").some((o) => dist(o, c) < 2.5))) c.hidden = false;
@@ -237,13 +238,16 @@ export function tick(s: ArmyState, dt: number, rng: () => number): void {
   if (!live(s, "theirs").length) s.over = "won";
   else if (!live(s, "ours").length || s.cos.find((q) => q.id === s.def.ours[0].id)?.state !== "ok") s.over = "lost";
   else if (s.def.hold && s.t >= s.def.hold) s.over = "won";
+  else if (s.def.attack && s.t >= attackLimit(s.def)) s.over = "lost";
 }
+export const attackLimit = (d: ArmyDef): number => d.limit ?? 420;
 
 /** Fair default officers: the best fit among those offered for each company's kind. */
 export function suggestOfficers(def: ArmyDef, pool: { id: string; attrs: Attrs }[], heroId: string): Record<string, string> {
   const fit = (k: Kind, a: Attrs): number => k === "horse" ? a.might + a.finesse + a.nerve : k === "bow" ? a.finesse * 2 + a.wits : k === "pike" ? a.nerve * 2 + a.grit : a.might + a.grit + a.presence;
   const out: Record<string, string> = { [def.ours[0].id]: heroId }, used = new Set([heroId]);
   for (const c of def.ours.slice(1)) {
+    if (c.id.startsWith("ally-")) continue; // allies come with their own captains
     const best = pool.filter((p) => !used.has(p.id)).sort((p, q) => fit(c.kind, q.attrs) - fit(c.kind, p.attrs))[0];
     if (best) { out[c.id] = best.id; used.add(best.id); }
   }

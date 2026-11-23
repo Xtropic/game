@@ -7,6 +7,7 @@ import data from "../../data/towns/shops.json";
 import { ITEMS, owned } from "../gear/items";
 import { FITTINGS, fittingSummary } from "../gear/weapons";
 import { sfx } from "../audio/music";
+import { priceAt } from "../command/diplomacy";
 
 export interface Shop { name: string; note: string; wares: [string, number][]; }
 export const SHOPS = data.shops as unknown as Record<string, Shop>;
@@ -32,6 +33,7 @@ export class ShopPanel {
   open = false;
   private game!: Game;
   private shop!: Shop;
+  private id = "";
   private i = 0;
   private msg = "";
   private w = 800;
@@ -40,7 +42,7 @@ export class ShopPanel {
   constructor() { this.view.visible = false; }
   show(game: Game, id: string, w: number, h: number): void {
     const s = SHOPS[id]; if (!s) return;
-    this.game = game; this.shop = s; this.w = w; this.h = h; this.i = 0; this.msg = ""; this.open = true; this.view.visible = true; sfx.bump(); this.draw();
+    this.game = game; this.shop = s; this.id = id; this.w = w; this.h = h; this.i = 0; this.msg = ""; this.open = true; this.view.visible = true; sfx.bump(); this.draw();
   }
   close(): void { this.open = false; this.view.visible = false; this.view.removeChildren().forEach((c) => c.destroy({ children: true })); }
   resize(w: number, h: number): void { this.w = w; this.h = h; if (this.open) this.draw(); }
@@ -57,7 +59,7 @@ export class ShopPanel {
   }
 
   private buyNow(): void {
-    const [id, price] = this.shop.wares[this.i];
+    const [id, list] = this.shop.wares[this.i], price = priceAt(this.game.flags, this.id, list);
     if (buy(this.game, id, price)) { this.msg = `Bought: ${wareInfo(id).name}. In the pack now.`; sfx.bump(); }
     else this.msg = `Not enough coin: it costs ${price}, you have ${this.game.coin}.`;
   }
@@ -78,7 +80,8 @@ export class ShopPanel {
     let y = y0 + 16 + fs + 14;
     y += this.text(s.note, x0 + 16, y, fs - 1, "#bfae8e", false, W - 32).height + 10;
     const listW = Math.round(small ? W * 0.5 : W * 0.46), rowH = fs + 20, x = x0 + 14;
-    s.wares.forEach(([id, price], k) => {
+    s.wares.forEach(([id, list], k) => {
+      const price = priceAt(g.flags, this.id, list);
       const on = k === this.i, ry = y + k * rowH, have = owned(g.flags, id);
       const box = new Graphics().roundRect(x, ry, listW, rowH - 4, 6).fill({ color: on ? SEL : 0x1c1610, alpha: on ? 1 : 0.6 });
       if (on) box.roundRect(x, ry, listW, rowH - 4, 6).stroke({ color: GOLD, width: 1 });
@@ -87,7 +90,7 @@ export class ShopPanel {
       this.text(wareInfo(id).name, x + 10, ry + 7, fs, on ? "#fff4dc" : "#e8dcc0", on);
       const p = this.text(`${price}${have ? `  (have ${have})` : ""}`, 0, ry + 8, fs - 2, price > g.coin ? "#a07060" : "#e0c070"); p.x = x + listW - p.width - 10;
     });
-    const [id, price] = s.wares[this.i], info = wareInfo(id), dx = x + listW + 18, dw = W - listW - 46;
+    const [id, list] = s.wares[this.i], price = priceAt(g.flags, this.id, list), info = wareInfo(id), dx = x + listW + 18, dw = W - listW - 46;
     let dy = y;
     dy += this.text(info.name, dx, dy, fs + 3, "#fff4dc", true, dw).height + 6;
     dy += this.text(info.text, dx, dy, fs - 1, "#d8ccb4", false, dw).height + 10;

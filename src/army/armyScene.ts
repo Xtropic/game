@@ -6,7 +6,7 @@ import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { sfx } from "../audio/music";
 import { PEOPLE, type Attrs } from "../cast/attributes";
-import { KINDS, createArmy, give, live, orderDelay, planAhead, suggestOfficers, terrainAt, tick, type ArmyDef, type ArmyState, type Company, type Terrain } from "./army";
+import { KINDS, attackLimit, createArmy, give, live, orderDelay, planAhead, suggestOfficers, terrainAt, tick, type ArmyDef, type ArmyState, type Company, type Terrain } from "./army";
 
 export interface Officer { id: string; name: string; attrs: Attrs; }
 type Phase = "intro" | "council" | "field" | "over";
@@ -22,7 +22,7 @@ export class ArmyScene implements Scene {
   phase: Phase = "intro";
   private introAt = 0;
   private officerOf: Record<string, string>;
-  private stratagem: string;
+  private stratagem: string[];
   private field = new Container();
   private ground = new Graphics();
   private marks = new Graphics();
@@ -36,9 +36,12 @@ export class ArmyScene implements Scene {
   private hudDirty = true;
   private keys = (e: KeyboardEvent) => { if (this.phase !== "field") return; if (e.key === "+" || e.key === "=") this.setSpeed(Math.min(3, this.speed + 1)); else if (e.key === "-") this.setSpeed(Math.max(1, this.speed - 1)); else if (e.key === "h" || e.key === "H") this.hold(); };
 
-  constructor(private def: ArmyDef, private pool: Officer[], private hero: Officer, private onDone: (won: boolean, s: ArmyState) => void, private rng: () => number = Math.random) {
+  /** How many stratagems the council may pick (by rank). */
+  private picks: number;
+  constructor(private def: ArmyDef, private pool: Officer[], private hero: Officer, private onDone: (won: boolean, s: ArmyState) => void, private rng: () => number = Math.random, opts: { stratagems?: number } = {}) {
     this.officerOf = suggestOfficers(def, pool, hero.id);
-    this.stratagem = def.stratagems[0]?.id ?? "";
+    this.picks = Math.max(1, opts.stratagems ?? 1);
+    this.stratagem = def.stratagems.slice(0, this.picks).map((x) => x.id);
   }
 
   enter(game: Game): void {
@@ -61,6 +64,12 @@ export class ArmyScene implements Scene {
     for (const c of s.cos) if (c.side === "ours") c.officer = this.officerOf[c.id];
     return s;
   }
+  /** One pick: replaces the choice. Two or more: toggles, and the oldest choice drops off when there's no room. */
+  private pickStratagem(id: string): void {
+    if (this.picks <= 1) { this.stratagem = [id]; return; }
+    if (this.stratagem.includes(id)) { if (this.stratagem.length > 1) this.stratagem = this.stratagem.filter((x) => x !== id); return; }
+    this.stratagem = [...this.stratagem, id].slice(-this.picks);
+  }
   private nameOf(id?: string): string { return id ? [this.hero, ...this.pool].find((o) => o.id === id)?.name ?? id : "a sergeant"; }
 
   resize(w: number, h: number): void {
@@ -74,7 +83,7 @@ export class ArmyScene implements Scene {
 
   // ---------------- council ----------------
   private cycleOfficer(cid: string): void {
-    if (cid === this.def.ours[0].id) return; // the hero leads their own company
+    if (cid === this.def.ours[0].id || cid.startsWith("ally-")) return; // the hero leads their own company; allies bring their own captains
     const taken = new Set(Object.entries(this.officerOf).filter(([c]) => c !== cid).map(([, id]) => id));
     const opts = [undefined, ...this.pool.map((o) => o.id).filter((id) => !taken.has(id))];
     const i = opts.indexOf(this.officerOf[cid]); const next = opts[(i + 1) % opts.length];
@@ -231,7 +240,7 @@ export class ArmyScene implements Scene {
       txt("Who leads what (tap to change)", bx + 18, y, fs - 1, "#e0c070", true); y += fs + 10;
       for (const cd of this.def.ours) {
         const co = s.cos.find((q) => q.id === cd.id)!, who = this.officerOf[cd.id];
-        btn(`${cd.name} (${KINDS[cd.kind].name}): ${cd.id === this.def.ours[0].id ? this.hero.name : this.nameOf(who)}  ·  ${co.men} strong`, bx + 18, y, col, fs + 18, () => this.cycleOfficer(cd.id));
+        btn(`${cd.name} (${KINDS[cd.kind].name}): ${cd.id === this.def.ours[0].id ? this.hero.name : cd.id.startsWith("ally-") ? "their own captain" : this.nameOf(who)}  ·  ${co.men} strong`, bx + 18, y, col, fs + 18, () => this.cycleOfficer(cd.id));
         y += fs + 24;
       }
       y += 6;
@@ -240,10 +249,10 @@ export class ArmyScene implements Scene {
       txt(notes.join("\n"), bx + 18, y, fs - 1, "#d8cdb6", false, col);
       // stratagems
       const sx = bx + col + 40, sw = bw - col - 58; let sy = by + 50;
-      txt("Stratagem (pick one)", sx, sy, fs - 1, "#e0c070", true); sy += fs + 10;
+      txt(this.picks > 1 ? `Stratagems (pick ${this.picks})` : "Stratagem (pick one)", sx, sy, fs - 1, "#e0c070", true); sy += fs + 10;
       for (const st of this.def.stratagems) {
-        const on = st.id === this.stratagem;
-        btn(st.name, sx, sy, sw, fs + 18, () => { this.stratagem = st.id; this.s = this.build(); this.drawGround(); }, on); sy += fs + 22;
+        const on = this.stratagem.includes(st.id);
+        btn(st.name, sx, sy, sw, fs + 18, () => { this.pickStratagem(st.id); this.s = this.build(); this.drawGround(); }, on); sy += fs + 22;
         if (on) {
           sy += txt(st.text, sx + 6, sy, fs - 1, "#d8cdb6", false, sw - 12).height + 6;
           for (const o of this.opinions(st.id)) sy += txt(o, sx + 6, sy, fs - 2, "#bfae8e", false, sw - 12).height + 4;
@@ -258,7 +267,7 @@ export class ArmyScene implements Scene {
     let y = py;
     const ours = live(s, "ours").length, theirs = live(s, "theirs").length;
     y += txt(`${this.def.name}`, px, y, fs + 2, "#fff4dc", true).height + 4;
-    y += txt(`${this.def.hold ? `Dark in ${Math.max(0, Math.ceil(this.def.hold - s.t))}s  ·  ` : ""}Yours ${ours}  ·  Theirs ${theirs}${this.paused ? "  ·  PAUSED" : ""}  ·  x${this.speed}`, px, y, fs - 1, "#e0c070").height + 8;
+    y += txt(`${this.def.hold ? `Dark in ${Math.max(0, Math.ceil(this.def.hold - s.t))}s  ·  ` : this.def.attack ? `Daylight left ${Math.max(0, Math.ceil(attackLimit(this.def) - s.t))}s  ·  ` : ""}Yours ${ours}  ·  Theirs ${theirs}${this.paused ? "  ·  PAUSED" : ""}  ·  x${this.speed}`, px, y, fs - 1, "#e0c070").height + 8;
     const sel = this.sel ? s.cos.find((q) => q.id === this.sel && q.state === "ok") : undefined;
     if (sel) {
       y += txt(`${sel.name}: ${KINDS[sel.kind].name}, led by ${sel.id === this.def.ours[0].id ? this.hero.name : this.nameOf(this.officerOf[sel.id])}`, px, y, fs, "#fff4dc", true).height + 2;

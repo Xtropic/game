@@ -1,8 +1,9 @@
-// The menu (Tab or M, or the Menu button): five pages.
+// The menu (Tab or M, or the Menu button): six pages.
 //   Party     everyone in the company: level, experience, health, the seven attributes, weapon; kith too.
 //             Enter picks who travels with Rhea (the party picker); the rest wait at camp
 //   Gear      each keepsake weapon: its tier and techniques, and the two fittings in it, which can be changed
 //   Items     bandages, salves and teas carried, used on whoever needs them
+//   Command   Rhea's rank and what it opens; the nations: standing, their price, and envoys, gifts, demands, pacts, marches
 //   Settings  sound, music, effects and voice levels, text speed, battle speed, auto timing, always run
 //   Save      save to a slot, or load one
 // Keys: Left/Right change page (or a setting), Up/Down move, Enter picks, Esc steps back, Tab/M closes.
@@ -20,6 +21,8 @@ import { BATTLE_SPEEDS, TEXT_SPEEDS, settings } from "../core/settings";
 import { joinerFor, portrait } from "./joinCard";
 import { unitIdOf } from "../battle/encounters";
 import type { Slot } from "../core/save";
+import { RANKS, rankIndex, rankOf } from "../command/ranks";
+import { ENVOY_COST, GIFT, bestEnvoy, canMarch, canTalk, demand, fate, knownNations, mood, owed, sealPact, sendEnvoy, sendGift, standing, type Nation, type Result } from "../command/diplomacy";
 
 export interface MenuHost {
   game: Game;
@@ -38,11 +41,16 @@ export interface MenuHost {
   save(slot: Slot): void;
   /** Loads a slot: the game starts again from it. */
   load(slot: Slot): void;
+  /** The hero now (only Rhea commands). */
+  hero(): string;
+  /** Leads the Commons against a nation (closes the menu; the army battle follows). */
+  march(nation: string): void;
 }
 
 interface Member { id: string; name: string; kith: boolean; unit: string; travelling: boolean; /** In the party the player picked (may be waiting at camp while a scene has Rhea alone). */ party: boolean; }
 
-const TABS = ["Party", "Gear", "Items", "Settings", "Save"] as const;
+const TABS = ["Party", "Gear", "Items", "Command", "Settings", "Save"] as const;
+const ACTIONS = ["Send an envoy", "Send a gift", "Make demands", "Seal the pact", "March on them"] as const;
 type Focus = "tabs" | "list" | "slots" | "pick" | "target" | "confirm";
 
 /** What each attribute does, in a few plain words. */
@@ -117,6 +125,12 @@ export class GameMenu {
       if (up || down) this.slot = 1 - this.slot;
       else if (ok) { this.focus = "pick"; this.pick = 0; }
       else if (back) this.focus = "list";
+    } else if (f === "pick" && TABS[this.tab] === "Command") {
+      const m = ACTIONS.length;
+      if (up) this.pick = (this.pick + m - 1) % m;
+      else if (down) this.pick = (this.pick + 1) % m;
+      else if (ok) this.act(this.pick);
+      else if (back) this.focus = "list";
     } else if (f === "pick" || f === "target") {
       const m = f === "pick" ? this.pickOptions().length : this.travellers().length;
       if (up) this.pick = (this.pick + m - 1) % Math.max(1, m);
@@ -161,6 +175,7 @@ export class GameMenu {
       case "Party": return this.members().length;
       case "Gear": return this.armed().length;
       case "Items": return itemsOwned(this.host.game.flags).length;
+      case "Command": return 1 + knownNations(this.host.game.flags).length;
       case "Settings": return this.settingRows().length;
       default: return this.saveRows().length;
     }
@@ -184,6 +199,11 @@ export class GameMenu {
       const id = itemsOwned(this.host.game.flags)[this.i]; if (!id) return;
       if (ITEMS[id].battle) { this.msg = "That one is for fights: choose it on someone's turn."; return; }
       if (ITEMS[id].who === "all") this.useOn(-1); else { this.focus = "target"; this.pick = 0; }
+    } else if (tab === "Command") {
+      if (this.i === 0) return;
+      if (this.host.hero() !== "rhea") { this.msg = "Only Rhea deals with the nations."; return; }
+      const n = this.nationAt(); if (n?.enemy) { this.msg = canTalk(this.host.game.flags, n) ?? ""; return; }
+      this.focus = "pick"; this.pick = 0;
     } else if (tab === "Settings") this.settingRows()[this.i]?.change(1);
     else if (tab === "Save") this.saveRows()[this.i]?.act();
   }
@@ -207,6 +227,88 @@ export class GameMenu {
     sfx.heal();
     this.focus = "list";
     this.i = Math.min(this.i, Math.max(0, itemsOwned(g.flags).length - 1));
+  }
+
+  // ---- command: rank and nations ----
+
+  private nationAt(): Nation | undefined { return this.i > 0 ? knownNations(this.host.game.flags)[this.i - 1] : undefined; }
+  private envoys() {
+    const g = this.host.game, hero = this.host.hero();
+    return this.host.company().filter((id) => id !== hero && !g.kith[id] && PEOPLE[id]).map((id) => ({ id, name: this.host.names[id] ?? cap(id), attrs: attrsAt(id, g.progress(id).level, g.modsOf(id)) }));
+  }
+  private act(k: number): void {
+    const n = this.nationAt(); if (!n) return;
+    const g = this.host.game, f = g.flags, a = ACTIONS[k];
+    let r: Result;
+    if (a === "Send an envoy") {
+      const e = bestEnvoy(this.envoys());
+      if (!e) { this.msg = "There's nobody in the company to send."; return; }
+      r = sendEnvoy(f, g.coin, n, e, Math.random);
+    } else if (a === "Send a gift") r = sendGift(f, g.coin, n);
+    else if (a === "Make demands") { const h = this.host.hero(); r = demand(f, g.coin, n, attrsAt(h, g.progress(h).level, g.modsOf(h)), Math.random); }
+    else if (a === "Seal the pact") r = sealPact(f, g.coin, n);
+    else {
+      const why = canMarch(f, n);
+      if (why) { this.msg = why; sfx.bump(); return; }
+      this.confirm = { text: `March the Commons on ${n.name}? This can't be taken back. Enter to march, Esc to think again.`, yes: () => { this.close(); this.host.march(n.id); } };
+      this.focus = "confirm"; return;
+    }
+    if (r.coin !== undefined) g.coin = r.coin;
+    this.msg = r.text;
+    if (r.ok) { if (a === "Seal the pact") sfx.join(); else sfx.pickup(); this.host.save("auto"); } else sfx.bump();
+  }
+
+  private drawCommand(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
+    const g = this.host.game, f = g.flags, ns = knownNations(f), r = rankOf(f);
+    const tag = (n: Nation): string => n.enemy ? "At war" : fate(f, n) === "pact" ? "Ally" : fate(f, n) === "held" ? "Held by force" : `${mood(standing(f, n))} (${standing(f, n)})`;
+    this.list([{ label: `Rank: ${f.rank ? r.id : "None yet"}`, sub: `Pay ${r.pay} coin as the story moves on` }, ...ns.map((n) => ({ label: n.name, sub: tag(n) }))], b, listW, fs, "");
+    const x = b.x + listW + 18, w = b.w - listW - 18;
+    let y = b.y;
+    const line = (t: string, size: number, fill: string, bold = false, gap = 4) => { y += this.text(t, x, y, size, fill, bold, w).height + gap; };
+    if (this.i === 0) {
+      line(f.rank ? r.id : "Not yet in the army", fs + 6, "#fff4dc", true, 8);
+      const me = rankIndex(f);
+      RANKS.forEach((rk, k) => {
+        if (k > me + 1) return;
+        const now = k === me && !!f.rank;
+        line(k <= me && f.rank ? `${rk.id}${now ? " (now)" : ""}` : `${rk.id} (not yet)`, fs, now ? "#e0c070" : k <= me ? "#d8ccb4" : "#8a7e68", true, 2);
+        for (const o of rk.opens) line(`  · ${o}`, fs - 2, k <= me && f.rank ? "#bfae8e" : "#7a705e", false, 1);
+        y += 4;
+      });
+      line("Promotions come with the story: time served, deeds done, a place to fill, and the company's voice.", fs - 2, "#8a7e68");
+      return;
+    }
+    const n = ns[this.i - 1]; if (!n) return;
+    line(n.name, fs + 6, "#fff4dc", true, 2);
+    line(`${n.seat}  ·  ${tag(n)}`, fs - 1, "#e0c070", false, 6);
+    line(n.blurb, fs - 1, "#d8ccb4", false, 8);
+    if (n.enemy) return;
+    if (fate(f, n) === "pact") { line(`Ally. ${n.perk?.text ?? ""}`, fs - 1, "#b8e0a0", false, 8); }
+    else if (fate(f, n) === "held") { line("Held by the Commons. Half their pact's worth comes in as tribute; nobody there will fight for you.", fs - 1, "#e8b8a0", false, 8); }
+    else {
+      line(`Their price: ${n.price.text}`, fs - 1, "#e8dcc0", false, 4);
+      const left = owed(f, g.coin, n);
+      if (n.price.or && f[n.price.or.flag] === n.price.or.eq) line(`  · Met: ${n.price.or.text}`, fs - 2, "#b8e0a0", false, 2);
+      else if (!left.length) line("  · Everything they ask is met. Seal the pact.", fs - 2, "#b8e0a0", false, 2);
+      else for (const o of left) line(`  · ${o}`, fs - 2, "#bfae8e", false, 2);
+      if (n.perk) line(`A pact gives: ${n.perk.text}`, fs - 2, "#9a8e78", false, 8);
+    }
+    const no = canTalk(f, n), e = bestEnvoy(this.envoys());
+    const notes: Record<(typeof ACTIONS)[number], string> = {
+      "Send an envoy": no ?? (e ? `${e.name} goes (presence ${e.attrs.presence}, wits ${e.attrs.wits}); ${ENVOY_COST} coin for the road.` : "Nobody in the company to send."),
+      "Send a gift": no ?? (n.likes === "coin" ? `${GIFT.coin} coin.` : `${GIFT.supplies} supplies from Thornwick.`),
+      "Make demands": no ?? "Tribute now; they'll like you a good deal less.",
+      "Seal the pact": no ?? (owed(f, g.coin, n).length ? "Not until their price is met." : "Their price is paid and they join the cause."),
+      "March on them": canMarch(f, n) ?? "An army battle. Won, they're held by force.",
+    };
+    if (this.focus !== "pick" && this.focus !== "confirm") { if (!this.msg && this.focus !== "tabs") this.msg = "Enter on a nation to deal with them."; return; }
+    ACTIONS.forEach((a, k) => {
+      const on = k === this.pick, rh = fs * 2 + 14;
+      this.hit(x, y, w, rh - 2, () => { this.pick = k; this.act(k); }, on);
+      this.text(a, x + 10, y + 3, fs, on ? "#fff4dc" : "#e8dcc0", on);
+      this.text(notes[a], x + 10, y + fs + 6, fs - 3, "#9a8e78", false, w - 20);
+      y += rh;
+    });
   }
 
   private settingRows(): SettingRow[] {
@@ -276,7 +378,7 @@ export class GameMenu {
     TABS.forEach((t, i) => {
       const tx = x0 + 12 + i * tw, on = i === this.tab;
       this.hit(tx, y0 + 10, tw - 6, 34, () => { this.tab = i; this.i = 0; this.focus = "list"; }, on, on && this.focus === "tabs" ? 0x5a4422 : SEL);
-      const label = new Text({ text: t, style: serif(small ? 14 : 18, on ? "#fff4dc" : "#a89a80", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = y0 + 27; this.view.addChild(label);
+      const label = new Text({ text: t, style: serif(small ? (W < 420 ? 11 : 13) : 17, on ? "#fff4dc" : "#a89a80", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = y0 + 27; this.view.addChild(label);
     });
     const body = { x: x0 + 14, y: y0 + 56, w: W - 28, h: H - 56 - 46 };
     const listW = Math.round(small ? Math.min(150, body.w * 0.4) : Math.min(250, body.w * 0.32));
@@ -284,6 +386,7 @@ export class GameMenu {
       case "Party": this.drawParty(body, listW, fs); break;
       case "Gear": this.drawGear(body, listW, fs); break;
       case "Items": this.drawItems(body, listW, fs); break;
+      case "Command": this.drawCommand(body, listW, fs); break;
       case "Settings": this.drawSettings(body, fs); break;
       default: this.drawSave(body, fs);
     }

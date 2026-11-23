@@ -1,0 +1,98 @@
+{
+  "note": "The nations of Ostrel for diplomacy (src/command/diplomacy.ts). Blurbs say only what anyone in Ostrel knows: no storyline, no twists. 'known' is the story stage from which they show; 'land' is the map their seat is on (a pact or a march needs the way there open); 'price' is what they ask; 'deed' parts are story flags their own storyline will set; 'perk' is what a pact gives; 'march' is the army battle to take them by force.",
+  "nations": [
+    {
+      "id": "cloudline", "name": "The Cloudline Clans", "seat": "Ume's terraces", "land": "cloudline", "known": "a1",
+      "blurb": "Terrace villages above the cloud sea. They grow duskwort and sell it to the Guild at a price their grandparents agreed to.",
+      "start": 15, "temper": 11, "likes": "supplies",
+      "price": { "standing": 50, "coin": 120, "supplies": 20, "text": "Help them pay down what they owe the Guild for the duskwort, and send grain for the lean months." },
+      "perk": { "supplies": 5, "company": { "name": "Clan slingers", "kind": "bow", "level": 13 }, "text": "Grain from the terraces each time the story moves on (5 supplies), and a company of clan slingers for your battles." },
+      "march": "march-cloudline"
+    },
+    {
+      "id": "millbridge", "name": "Millbridge", "seat": "Millbridge", "land": "vale", "known": "a1",
+      "blurb": "The market town on the Kerrow. It trades with anyone who keeps faith with it, and remembers who doesn't.",
+      "start": 5, "temper": 12, "likes": "coin", "trust": "millbridgeTrust",
+      "price": { "standing": 60, "supplies": 40, "text": "Stand by the town when it counts, and send grain to its stores for the winter.", "or": { "flag": "corranFate", "eq": "millbridge", "text": "Or bring the man who led the Wardens to Larkfold to stand trial there." } },
+      "perk": { "coin": 4, "discount": { "shops": ["millbridge"], "pct": 15 }, "company": { "name": "Millbridge militia", "kind": "foot", "level": 12 }, "text": "River tolls (4 coin each time the story moves on), 15% off at Millbridge's stalls, and the town militia for your battles." },
+      "march": "march-millbridge"
+    },
+    {
+      "id": "millcities", "name": "The Millcities", "seat": "Cinderwick", "land": "millcities", "known": "ad1",
+      "blurb": "Cinderwick and Lockside: mills, canals and foundries. The owners hold the purse; the mill hands hold the looms.",
+      "start": -10, "temper": 15, "likes": "coin",
+      "price": { "standing": 50, "coin": 200, "flags": [{ "flag": "won.army.lockside-hold", "text": "Corvel's hatchery at Lockside held against the Wardens." }], "text": "Show the Commons can protect the canal towns, and put coin into the cellar clinics." },
+      "perk": { "coin": 6, "discount": { "shops": ["cinderwick", "lockside"], "pct": 15 }, "company": { "name": "Mill hands", "kind": "pike", "level": 15 }, "text": "A share of the canal dues (6 coin), 15% off at the Cinderwick and Lockside stalls, and a company of mill hands with pikes." },
+      "march": "march-millcities"
+    },
+    {
+      "id": "guild", "name": "The Brood Guild", "seat": "Vantry", "land": "heartland", "known": "a1", "enemy": true,
+      "blurb": "The Houses that breed the lulls. The Commons is at war with them; no envoy of yours would come back.",
+      "start": -100, "temper": 30, "likes": "coin",
+      "price": { "standing": 999, "text": "No terms. This is the war." }
+    },
+    {
+      "id": "crown", "name": "The Crown of Ostrel", "seat": "Kingsmere", "land": "heartland", "known": "ad19b",
+      "blurb": "A young king at Kingsmere, crowned two years ago, and a court where everyone is owed something.",
+      "start": 0, "temper": 18, "likes": "coin",
+      "price": { "standing": 60, "coin": 300, "flags": [{ "flag": "deed.crown", "text": "Something the king will only ask in person, at Kingsmere." }], "text": "A king's terms are given face to face." },
+      "perk": { "coin": 10, "text": "The Crown's seal on the Commons' cause, and a share of the crown rents (10 coin)." }
+    },
+    {
+      "id": "league", "name": "The Corvane League", "seat": "Corvane", "land": "east", "known": "ad19b",
+      "blurb": "The banking houses of the hill towns. Half of Ostrel owes them money, and they'd like to know who'll pay it back.",
+      "start": -5, "temper": 16, "likes": "coin",
+      "price": { "standing": 60, "coin": 250, "flags": [{ "flag": "deed.league", "text": "A matter of their ledgers, settled at Corvane." }], "text": "Bankers want proof you'll still be standing when the debts come due." },
+      "perk": { "coin": 12, "text": "Credit from the League (12 coin each time the story moves on)." }
+    },
+    {
+      "id": "hollin", "name": "The Hollin Free Towns", "seat": "Hollin", "land": "west", "known": "ad19b",
+      "blurb": "Towns of the fens that decide everything by a public vote on the square, and keep to what they vote.",
+      "start": 10, "temper": 12, "likes": "supplies",
+      "price": { "standing": 55, "supplies": 30, "flags": [{ "flag": "deed.hollin", "text": "Win the vote on Hollin's square." }], "text": "Hollin joins whoever wins the vote on its square." },
+      "perk": { "supplies": 4, "company": { "name": "Fen bows", "kind": "bow", "level": 15 }, "text": "Fen grain (4 supplies) and a company of fen bows." }
+    },
+    {
+      "id": "college", "name": "The College of Physicians", "seat": "The College", "land": "west", "known": "ad19b",
+      "blurb": "Ostrel's doctors. They license who may treat the sick, and they have never said a word against the Guild.",
+      "start": 5, "temper": 14, "likes": "supplies",
+      "price": { "standing": 60, "supplies": 40, "flags": [{ "flag": "deed.college", "text": "A question of evidence, settled at the College." }], "text": "Physicians want evidence, not speeches." },
+      "perk": { "supplies": 3, "text": "Medicines from the College (3 supplies each time the story moves on)." }
+    },
+    {
+      "id": "drevka", "name": "The Drevka Clans", "seat": "Kestrel Fort", "land": "north", "known": "ad19b",
+      "blurb": "Highland riders of the north. They follow strength, and their champion speaks for them.",
+      "start": -5, "temper": 15, "likes": "supplies",
+      "price": { "standing": 50, "flags": [{ "flag": "deed.drevka", "text": "Face their champion, in the north." }], "text": "The clans follow whoever beats their champion." },
+      "perk": { "company": { "name": "Drevka riders", "kind": "horse", "level": 17 }, "text": "A company of Drevka riders." }
+    },
+    {
+      "id": "ember", "name": "The Ember Courts", "seat": "The Ember Courts", "land": "ember", "known": "ad19b",
+      "blurb": "The desert courts beyond the steppe: rich, proud, and very good customers of the Guild.",
+      "start": -15, "temper": 18, "likes": "coin",
+      "price": { "standing": 60, "coin": 300, "flags": [{ "flag": "deed.ember", "text": "A matter at court, settled in the desert." }], "text": "The courts deal only in person." },
+      "perk": { "coin": 15, "text": "Ember gold (15 coin each time the story moves on)." }
+    },
+    {
+      "id": "tarsis", "name": "Tarsis", "seat": "Tarsis", "land": "east", "known": "ad19b",
+      "blurb": "A fortress of sellswords on the steppe. They fight for whoever pays, and right now that's the Guild.",
+      "start": -20, "temper": 14, "likes": "coin",
+      "price": { "standing": 45, "coin": 400, "flags": [{ "flag": "deed.tarsis", "text": "Their contract with the Guild has to end first." }], "text": "Outbid the Guild when the contract runs out." },
+      "perk": { "company": { "name": "Tarsis sellswords", "kind": "foot", "level": 18 }, "text": "A company of Tarsis sellswords." }
+    },
+    {
+      "id": "ashby", "name": "Port Ashby", "seat": "Port Ashby", "land": "coast", "known": "ad19b",
+      "blurb": "The harbour town on the Salt Coast. Everything that goes by sea goes through Ashby, both ways.",
+      "start": 0, "temper": 12, "likes": "coin",
+      "price": { "standing": 55, "coin": 150, "flags": [{ "flag": "deed.ashby", "text": "A promise about the harbour, made in person." }], "text": "Ashby wants to know what the harbour gets after the war." },
+      "perk": { "coin": 8, "text": "Harbour dues (8 coin each time the story moves on)." }
+    },
+    {
+      "id": "lorne", "name": "The Kingdom of Lorne", "seat": "Holm", "land": "north", "known": "ad19b",
+      "blurb": "The cold kingdom in the far north. Lorne hangs anyone found with a lull ring.",
+      "start": -30, "temper": 18, "likes": "supplies",
+      "price": { "standing": 60, "flags": [{ "flag": "deed.lorne", "text": "Prove to Lorne's courts that the ringed can be weaned." }], "text": "Lorne would have to change its law." },
+      "perk": { "company": { "name": "Lorne pikes", "kind": "pike", "level": 18 }, "text": "A company of Lorne's pikes." }
+    }
+  ]
+}
