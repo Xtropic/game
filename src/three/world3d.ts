@@ -17,6 +17,7 @@ import { TILE, TILE_DEFS, WorldMap, type MapFile, type TileKind } from "../world
 import { bakeMap } from "../art/tiles";
 import { hash2 } from "../art/pixel";
 import { drawLook, getScale, setScale } from "../battle/art";
+import { hasPaintedFig } from "../battle/painted";
 import type { Build } from "../art/build";
 
 export type Facing = "down" | "up" | "left" | "right";
@@ -123,11 +124,13 @@ function averageColour(c: HTMLCanvasElement): THREE.Color {
 const m4 = new THREE.Matrix4(), q4 = new THREE.Quaternion(), v3 = new THREE.Vector3(), e3 = new THREE.Euler();
 
 interface Lamp { x: number; y: number; z: number; color: number; kind: "fire" | "window" | "glow" }
-interface Shown3 { obj: THREE.Group; body: THREE.Mesh; mat: THREE.MeshStandardMaterial; source: unknown; rig: { cv: HTMLCanvasElement; g: CanvasRenderingContext2D; tex: THREE.CanvasTexture; look: string; due: number; seed: number } | null; face: 1 | -1; lastX: number; lastY: number; phase: number; moving: number; spd: number; seen: boolean; w: number; h: number }
+interface Shown3 { obj: THREE.Group; body: THREE.Mesh; mat: THREE.MeshStandardMaterial; source: unknown; rig: { cv: HTMLCanvasElement; g: CanvasRenderingContext2D; tex: THREE.CanvasTexture; look: string; due: number; seed: number; painted: boolean } | null; face: 1 | -1; lastX: number; lastY: number; phase: number; moving: number; spd: number; seen: boolean; w: number; h: number }
 /** People and kith in the world are drawn with the same rig as in battle, into a canvas of this many stage units. */
 const RIG = { w: 96, h: 66, footX: 48, footY: 63, K: 4, perTile: 33.5 };
 /** Things on the map that aren't people or kith: they stay as their pixel sprites. */
 const PROPS = new Set(["note", "glint"]);
+/** Foes keep the drawn figure in the world like every other NPC; the party keep their own paintings. */
+const NPC_PAINTED = new Set(["warden", "archer", "cartwarden"]);
 
 // ---------------------------------------------------------------- the renderer
 export class World3D {
@@ -677,7 +680,7 @@ export class World3D {
         if (rigged) {
           const cv = document.createElement("canvas"); cv.width = RIG.w * RIG.K; cv.height = RIG.h * RIG.K;
           const ct = new THREE.CanvasTexture(cv); ct.colorSpace = THREE.SRGBColorSpace; ct.anisotropy = 4; ct.generateMipmaps = false; ct.minFilter = THREE.LinearFilter;
-          tex = ct; rig = { cv, g: cv.getContext("2d")!, tex: ct, look: f.look!, due: 0, seed: hash2(f.key.length, f.key.charCodeAt(f.key.length - 1)) * 10 };
+          tex = ct; rig = { cv, g: cv.getContext("2d")!, tex: ct, look: f.look!, due: 0, painted: hasPaintedFig(f.look!.split(":")[0]) && !NPC_PAINTED.has(f.look!.split(":")[0]), seed: hash2(f.key.length, f.key.charCodeAt(f.key.length - 1)) * 10 };
           w = RIG.w / RIG.perTile; h = RIG.h / RIG.perTile;
         } else {
           const base = this.texFor(source as object, () => { const t = new THREE.CanvasTexture(f.canvas as HTMLCanvasElement); t.colorSpace = THREE.SRGBColorSpace; t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; return t; });
@@ -729,7 +732,7 @@ export class World3D {
     const g = r.g, old = getScale();
     g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, r.cv.width, r.cv.height);
     setScale(RIG.K);
-    try { drawLook(g, r.look, RIG.footX, RIG.footY, { t: now + r.seed, run: walking ? s.phase : undefined, stride: Math.min(1, 0.3 + 0.09 * s.spd), flip: s.face === -1 }, this.build(r.look, now), false); }
+    try { drawLook(g, r.look, RIG.footX, RIG.footY, { t: now + r.seed, run: walking ? s.phase : undefined, stride: Math.min(1, 0.3 + 0.09 * s.spd), flip: s.face === -1 }, this.build(r.look, now), r.painted); }
     finally { setScale(old); }
     r.tex.needsUpdate = true;
   }

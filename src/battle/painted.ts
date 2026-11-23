@@ -63,7 +63,7 @@ const bump = (a: number, b: number, x: number) => smooth(a, (a + b) / 2, x) * (1
  * How far the point (u, v) of the picture moves, as fractions of the figure's height. u runs 0..1 from the
  * back (left) to the front (right); v runs 0..1 from the feet up.
  */
-function field(rig: Rig, u: number, v: number, o: Pose, lean: number): [number, number] {
+function field(rig: Rig, u: number, v: number, o: Pose, lean: number, aspect: number): [number, number] {
   const t = o.t, run = o.run ? Math.sin(o.run) : 0;
   let dx = 0, dy = 0;
   if (rig === "person") {
@@ -73,9 +73,21 @@ function field(rig: Rig, u: number, v: number, o: Pose, lean: number): [number, 
     dx += smooth(0.8, 1, v) * Math.sin(t * 1.1 + 0.6) * 0.004; // the head settles on its own beat
     // the braid and loose hair trail behind, a beat late
     const hair = (1 - smooth(0.3, 0.48, u)) * bump(0.5, 0.95, v);
-    dx += hair * (Math.sin(t * 2.4 - v * 4) * 0.007 - (o.run ? 0.02 : 0) - lean * 0.15);
-    // running: the legs scissor; the body bobs
-    if (o.run) { const legs = 1 - smooth(0.08, 0.45, v); dx += legs * run * 0.05 * (u < 0.5 ? -1 : 1); dy += legs * Math.abs(run) * 0.01 * (u < 0.5 ? 1 : -1); }
+    dx += hair * (Math.sin(t * 2.4 - v * 4) * 0.007 - (o.run && o.stride == null ? 0.02 : 0) - lean * 0.15);
+    if (o.stride != null) { // out in the world (stride is set there): an easy stance, and a real walk when moving
+      const st = o.stride, legs = 1 - smooth(0.04, 0.5, v), side = Math.max(-1, Math.min(1, (u - 0.5) * 7));
+      const arms = bump(0.3, 0.8, v) * smooth(0.12, 0.3, Math.abs(u - 0.5)); // the outer columns at arm height
+      dx -= (u - 0.5) * aspect * (0.42 * legs + 0.22 * arms); // the battle stance's wide feet and ready arms come in
+      if (o.run != null) {
+        const ph = o.run, swing = Math.sin(ph) * side, fwd = Math.cos(ph) * side;
+        dx += legs * swing * 0.06 * st; // each leg swings in turn
+        dy -= legs * legs * Math.max(0, fwd) * 0.07 * st; // the swinging foot lifts clear of the ground
+        dx -= arms * swing * 0.03 * st; // arms swing against the legs
+        dy -= smooth(0.45, 1, v) * Math.abs(Math.cos(ph)) * 0.014 * st; // the body rides up over each planted foot
+        dx += smooth(0.5, 1, v) * Math.sin(ph) * 0.006 * st; // and the shoulders roll with the hips
+      }
+    } else if (o.run) { // running in battle: the legs scissor; the body bobs
+      const legs = 1 - smooth(0.08, 0.45, v); dx += legs * run * 0.05 * (u < 0.5 ? -1 : 1); dy += legs * Math.abs(run) * 0.01 * (u < 0.5 ? 1 : -1); }
     // a brace: knees give, the body sinks and squares up
     if (o.brace) dy += smooth(0.1, 0.6, v) * 0.03 * v;
   } else {
@@ -108,7 +120,7 @@ export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number
   const p = painted[look]; if (!p) return;
   const { rig } = p, img = coat ? tintedImage(look, coat) : p.img, iw = p.img.width, ih = p.img.height, H = p.h * K, W = H * iw / ih;
   const flash = o.flash ?? 0;
-  const lean = (o.lunge ? 0.16 : 0) + (o.run ? 0.07 : 0) - (o.brace ? 0.05 : 0) - flash * 0.08;
+  const lean = (o.lunge ? 0.16 : 0) + (o.run ? (o.stride != null ? 0.025 * o.stride : 0.07) : 0) - (o.brace ? 0.05 : 0) - flash * 0.08;
   const squash = o.brace ? 0.95 : 1;
   g.save();
   g.translate(x * K, y * K);
@@ -116,16 +128,16 @@ export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number
   // ground shadow
   g.fillStyle = "rgba(5,5,15,.45)"; g.beginPath(); g.ellipse(0, 0, W * (rig === "beast" ? 0.42 : 0.3), H * 0.03, 0, 0, 7); g.fill();
   if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
-  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 0.02 : 0;
+  const bob = o.run && o.stride == null ? -Math.abs(Math.cos(o.run)) * 0.02 : 0;
   g.translate((o.lunge ? 0.06 : 0) * H - flash * 0.03 * H, bob * H);
   g.scale(1, squash);
   const sw = iw / COLS, sh = ih / ROWS, cw = W / COLS, ch = H / ROWS;
   for (let r = 0; r < ROWS; r++) {
     const v = 1 - (r + 0.5) / ROWS;
     for (let c = 0; c < COLS; c++) {
-      const u = (c + 0.5) / COLS, [dx, dy] = field(rig, u, v, o, lean);
+      const u = (c + 0.5) / COLS, [dx, dy] = field(rig, u, v, o, lean, W / H);
       // cells overlap by a hair so no seams show between neighbours that moved apart
-      g.drawImage(img, c * sw, r * sh, sw, sh, -W / 2 + c * cw + dx * H - 0.5, -H + r * ch + dy * H - 0.5, cw + 1, ch + 1);
+      g.drawImage(img, c * sw, r * sh, sw, sh, -W / 2 + c * cw + dx * H - 1, -H + r * ch + dy * H - 1, cw + 2, ch + 2);
     }
   }
   g.restore();
