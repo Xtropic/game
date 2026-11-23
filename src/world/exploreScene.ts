@@ -18,6 +18,13 @@ import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
 import { arrival, closedAt, findsNow, wayAt, wayBlocker, wayOpen, wayWhy } from "./gates";
 import { MAPS } from "./content";
+
+/** Where a town's map stands on the world map (its place there shares the map's id, less any "town-"), for its 3D surroundings. */
+function aroundOf(id: string): Around | undefined {
+  const pid = id.replace(/^town-/, "");
+  for (const m of Object.values(MAPS)) { const p = m.world ? m.places?.find((q) => q.id === pid) : undefined; if (p) return { land: m, x: p.x, y: p.y }; }
+  return undefined;
+}
 import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
 import { LOOKS, beastSheet, bodyOf, isBeast, glintTexture, noteTexture, personSheet, toneOf, type Facing } from "../art/people";
@@ -30,7 +37,7 @@ import { BATTLES, SKILLS } from "../battle/data";
 import { xpForFoe } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
 import { Atmosphere } from "./atmosphere";
-import { World3D, type Fig } from "../three/world3d";
+import { World3D, type Around, type Fig } from "../three/world3d";
 import { settings } from "../core/settings";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
@@ -792,7 +799,7 @@ export class ExploreScene implements Scene, StoryHost {
       this.w3.resize(this.game.width, this.game.height);
     }
     const w3 = this.w3;
-    if (this.w3Map !== this.map) { w3.setMap(this.map, { burnt: this.map.file.id === "larkfold" && !!this.flags.ash }); this.w3Map = this.map; this.w3Light = ""; this.w3FogKey = ""; }
+    if (this.w3Map !== this.map) { w3.setMap(this.map, { burnt: this.map.file.id === "larkfold" && !!this.flags.ash, around: aroundOf(this.map.file.id) }); this.w3Map = this.map; this.w3Light = ""; this.w3FogKey = ""; }
     const light = String(this.flags.light ?? "day"); if (light !== this.w3Light) { w3.setLight(light); this.w3Light = light; }
     const fk = this.fogCells.map((c) => c.join(",")).join(";"); if (fk !== this.w3FogKey) { w3.setFog(this.fogCells); this.w3FogKey = fk; }
     this.world.visible = false;

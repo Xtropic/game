@@ -23,6 +23,11 @@ import type { Build } from "../art/build";
 export type Facing = "down" | "up" | "left" | "right";
 
 /** One thing to stand in the world this frame: a person, a kith, a note on the ground, a barrier. */
+const smoothstep = (a: number, b: number, x: number): number => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+/** Where a local map stands on its land's world map, so its surroundings can be raised from the land around it. */
+export interface Around { land: MapFile; x: number; y: number }
+
 export interface Fig {
   key: string;
   /** The look id, so a painted figure can be used when there is one. */
@@ -220,10 +225,10 @@ export class World3D {
   }
 
   // ------------------------------------------------------------ building a map
-  setMap(map: WorldMap, opts: { burnt?: boolean } = {}): void {
+  setMap(map: WorldMap, opts: { burnt?: boolean; around?: Around } = {}): void {
     this.clear();
     this.map = map; this.world = !!map.file.world;
-    this.focusSet = false;
+    this.focusSet = false; this.around = opts.around ?? null;
     if (this.world) this.buildWorld(); else this.buildLocal(!!opts.burnt);
     this.applyMood();
   }
@@ -338,7 +343,8 @@ export class World3D {
 
     // what lies around the map: the cloud sea, or more of the same ground fading into the haze
     const hasCloud = Object.values(f.legend).includes("cloud");
-    if (hasCloud) this.cloudSea(W, H);
+    if (this.around && !under && !INDOORS.has(f.id)) this.surround(this.around, W, H, burnt);
+    else if (hasCloud) this.cloudSea(W, H);
     else if (!under && !INDOORS.has(f.id)) {
       const ring = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: averageColour(groundCanvas).multiplyScalar(0.8), roughness: 1 }));
       ring.rotation.x = -Math.PI / 2; ring.position.set(W / 2, -0.04, H / 2); ring.receiveShadow = true; this.level.add(ring);
@@ -476,6 +482,7 @@ export class World3D {
         if (!this.isHouseDoor(x, y)) this.lamps.push({ x: x + 0.5, y: b + 1.0, z: y + 0.9, color: 0xffb060, kind: "window" });
       }
     }
+    trees.push(...this.aroundTrees); this.aroundTrees = [];
     if (trees.length) this.plantTrees(trees, burnt);
     // the duskwort beds: low round clumps
     const moss: { x: number; y: number }[] = [];
@@ -528,6 +535,105 @@ export class World3D {
       pines.forEach((t, i) => { for (let j = 0; j < 2; j++) { m4.compose(v3.set(t.x, t.y + 0.35 * t.s + j * 0.45 * t.s, t.z), q4.identity(), new THREE.Vector3(t.s * (1 - j * 0.3), t.s * (1 - j * 0.25), t.s * (1 - j * 0.3))); pm.setMatrixAt(i * 2 + j, m4); } });
       pm.castShadow = pm.receiveShadow = true; this.level.add(pm);
     }
+  }
+
+  /**
+   * The country around a town: the cells of the world map around its place, each blown up to S local tiles, raised by
+   * the same heights the world map uses (higher here, since a local tile is far smaller), with woods, water and the
+   * nearby towns on it. It eases down to just under the town's own ground so the town sits in it, not on a plinth.
+   */
+  private surround(a: Around, W: number, H: number, burnt: boolean): void {
+    const S = 6, R = 11, N = R * 2 + 1, rows = a.land.rows, legend = a.land.legend;
+    const kindAt = (wx: number, wy: number): TileKind => {
+      const y = Math.max(0, Math.min(rows.length - 1, wy)), r = rows[y], x = Math.max(0, Math.min(r.length - 1, wx));
+      const k = legend[r[x]] ?? "plains"; return k === "cloud" ? "meadow" : k;
+    };
+    // the ground's picture: each world cell painted as S x S local tiles in the town's own tile art, so the
+    // country around reads at the same scale as the town (roads run as paths between neighbouring road cells)
+    const ROADY = new Set<TileKind>(["road", "pass", "bridge", "townground"]);
+    const localKind = (wx: number, wy: number, sx: number, sy: number): TileKind => {
+      const k = kindAt(wx, wy), r = hash2(wx * S + sx, wy * S + sy);
+      if (k === "road" || k === "pass" || k === "bridge") {
+        const mid = sx >= S / 2 - 1 && sx <= S / 2, midY = sy >= S / 2 - 1 && sy <= S / 2;
+        const toward = (dx: number, dy: number) => ROADY.has(kindAt(wx + dx, wy + dy));
+        if ((mid && midY) || (mid && sy < S / 2 && toward(0, -1)) || (mid && sy > S / 2 - 1 && toward(0, 1)) || (midY && sx < S / 2 && toward(-1, 0)) || (midY && sx > S / 2 - 1 && toward(1, 0))) return k === "bridge" ? "plank" : "path";
+        return "grass";
+      }
+      switch (k) {
+        case "sea": case "shoal": case "river": case "canal": return "water";
+        case "marsh": case "reeds": return r < 0.3 ? "water" : "grass";
+        case "meadow": return r < 0.12 ? "flowers" : "grass";
+        case "terraces": return sy % 3 === 0 ? "terrace" : "moss";
+        case "mount": case "ashrock": case "spire": return "rock";
+        case "snow": return r < 0.5 ? "flag" : "rock";
+        case "sand": case "saltpan": case "steppe": return r < 0.5 ? "path" : "grass";
+        case "townground": return "cobble";
+        default: return "grass";
+      }
+    };
+    const LT = N * S, chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", lg: Record<string, TileKind> = {}, chOf = new Map<TileKind, string>();
+    const lrows: string[] = [];
+    for (let ty = 0; ty < LT; ty++) {
+      let line = "";
+      for (let tx = 0; tx < LT; tx++) {
+        const k = localKind(a.x - R + Math.floor(tx / S), a.y - R + Math.floor(ty / S), tx % S, ty % S);
+        let ch = chOf.get(k); if (!ch) { ch = chars[chOf.size]; chOf.set(k, ch); lg[ch] = k; }
+        line += ch;
+      }
+      lrows.push(line);
+    }
+    const cropFile: MapFile = { id: a.land.id + ":around", name: "", legend: lg, rows: lrows, entities: [] };
+    const baked = bakeMap(new WorldMap(cropFile), { burnt });
+    const tex = pixelTex(baked);
+    // local position of world cell corner (wx, wy): the place's cell centre sits on the town's centre
+    const lx = (wx: number) => W / 2 + (wx - a.x - 0.5) * S, lz = (wy: number) => H / 2 + (wy - a.y - 0.5) * S;
+    const SUB = 3, V = N * SUB + 1;
+    const geo = new THREE.PlaneGeometry(N * S, N * S, N * SUB, N * SUB); geo.rotateX(-Math.PI / 2);
+    geo.translate(lx(a.x - R) + (N * S) / 2, 0, lz(a.y - R) + (N * S) / 2);
+    const pos = geo.attributes.position as THREE.BufferAttribute;
+    const hAt = (wx: number, wy: number): number => { const k = kindAt(wx, wy); return (WORLD_H[k] ?? 0) * 3.2 + (k === "mount" ? hash2(wx, wy) * 4 : k === "hills" ? hash2(wx, wy) * 1 : 0); };
+    // smooth heights: average the cells touching each vertex
+    const height = (u: number, v: number): number => {
+      const fx = a.x - R + u / S, fy = a.y - R + v / S; // in world cells
+      const x0 = Math.floor(fx - 0.5), y0 = Math.floor(fy - 0.5), tx = fx - 0.5 - x0, ty = fy - 0.5 - y0;
+      const h = (hAt(x0, y0) * (1 - tx) + hAt(x0 + 1, y0) * tx) * (1 - ty) + (hAt(x0, y0 + 1) * (1 - tx) + hAt(x0 + 1, y0 + 1) * tx) * ty;
+      // ease to just below the town near it: distance (local tiles) outside the town's rectangle
+      const X = lx(a.x - R) + u, Z = lz(a.y - R) + v, dx = Math.max(0, -X, X - W), dz = Math.max(0, -Z, Z - H), d = Math.hypot(dx, dz);
+      const k = smoothstep(2, 16, d);
+      return -0.08 + h * k;
+    };
+    for (let i = 0; i < pos.count; i++) { const ix = i % V, iz = Math.floor(i / V); pos.setY(i, height(ix * S / SUB, iz * S / SUB)); }
+    geo.computeVertexNormals();
+    const land = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95 }));
+    land.receiveShadow = true; this.level.add(land);
+    const ground = (X: number, Z: number) => height(X - lx(a.x - R), Z - lz(a.y - R));
+    // water, woods and the neighbouring towns
+    const wq = new Quads();
+    const trees: { x: number; y: number; z: number; s: number; kind?: "pine" | "round" | "orchard" | "cloud" }[] = [];
+    const houseMat = new THREE.MeshStandardMaterial({ color: 0xe8dcc0, roughness: 0.9 }), roofMat = new THREE.MeshStandardMaterial({ color: 0xb0553a, roughness: 0.8, flatShading: true });
+    const inside = (X: number, Z: number, m = 1.5) => X > -m && X < W + m && Z > -m && Z < H + m;
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+      const wx = a.x - R + i, wy = a.y - R + j, k = kindAt(wx, wy), x0 = lx(wx), z0 = lz(wy), r = (n: number) => hash2(wx * 31 + n, wy * 17 + n * 5);
+      if (["sea", "shoal", "river", "canal"].includes(k)) { const y = -0.42; wq.quad([[x0, y, z0], [x0, y, z0 + S], [x0 + S, y, z0 + S], [x0 + S, y, z0]], [[0, 0], [0, 1], [1, 1], [1, 0]]); continue; }
+      if (k === "forest" || k === "pines" || k === "cloudwood" || k === "orchard") {
+        const n = k === "orchard" ? 6 : 9;
+        for (let t = 0; t < n; t++) { const X = x0 + r(t) * S, Z = z0 + r(t + 20) * S; if (inside(X, Z)) continue; trees.push({ x: X, y: ground(X, Z) - 0.05, z: Z, s: 1.1 + r(t + 40) * 0.7, kind: k === "pines" ? "pine" : k === "orchard" ? "orchard" : k === "cloudwood" ? "cloud" : "round" }); }
+      } else if (k === "plains" || k === "meadow" || k === "hills") {
+        if (r(3) > 0.6) { const X = x0 + r(4) * S, Z = z0 + r(5) * S; if (!inside(X, Z)) trees.push({ x: X, y: ground(X, Z) - 0.05, z: Z, s: 1 + r(6) * 0.5, kind: "round" }); }
+      } else if (k === "townground" && !inside(x0 + S / 2, z0 + S / 2, 3)) {
+        for (let t = 0; t < 7; t++) {
+          const X = x0 + 0.8 + r(t) * (S - 1.6), Z = z0 + 0.8 + r(t + 9) * (S - 1.6), gy = ground(X, Z), w = 1.4 + r(t + 3), d = 1.2 + r(t + 5) * 0.6;
+          const hb = new THREE.Mesh(new THREE.BoxGeometry(w, 1.1, d), houseMat); hb.position.set(X, gy + 0.55, Z); hb.castShadow = hb.receiveShadow = true; this.level.add(hb);
+          const rf = new THREE.Mesh(new THREE.ConeGeometry(Math.max(w, d) * 0.78, 0.9, 4), roofMat); rf.rotation.y = Math.PI / 4; rf.scale.set(w / Math.max(w, d), 1, d / Math.max(w, d)); rf.position.set(X, gy + 1.55, Z); rf.castShadow = true; this.level.add(rf);
+          if (t === 0) this.lamps.push({ x: X, y: gy + 0.8, z: Z + d / 2 + 0.1, color: 0xffc274, kind: "window" });
+        }
+      }
+    }
+    if (!wq.empty) this.level.add(new THREE.Mesh(wq.build(), new THREE.MeshStandardMaterial({ color: 0x3a7ab8, emissive: 0x1e5a8a, emissiveIntensity: 0.6, roughness: 0.7, transparent: true, opacity: 0.85 })));
+    this.aroundTrees = trees; // planted with the town's own trees, so they share one wind
+    // far beyond: the same country's colour fading into the haze
+    const far = new THREE.Mesh(new THREE.PlaneGeometry(900, 900), new THREE.MeshStandardMaterial({ color: averageColour(baked).multiplyScalar(0.85), roughness: 1 }));
+    far.rotation.x = -Math.PI / 2; far.position.set(W / 2, -0.6, H / 2); this.level.add(far);
   }
 
   private cloudSea(W: number, H: number): void {
@@ -662,6 +768,8 @@ export class World3D {
     const b = this.buildFor(id.split(":")[0]); this.builds.set(id, { b, at: now }); return b;
   }
   private clock = 0;
+  private around: Around | null = null;
+  private aroundTrees: { x: number; y: number; z: number; s: number; kind?: "pine" | "round" | "orchard" | "cloud" }[] = [];
   private figT = 0;
 
   /** Stand everyone where they are this frame. */
