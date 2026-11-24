@@ -1,4 +1,5 @@
-// The Thornwick ledger (talk to the quartermaster's crates at Thornwick): five pages.
+// The Thornwick ledger (L, the gold button, or the quartermaster's crates at Thornwick): Rhea's home base.
+//   Party     who travels with Rhea and who stays at Thornwick; Enter takes someone along or leaves them here
 //   Works     the buildings: what each does now, what the next level costs and gives; Enter starts building it
 //   People    everyone staying at Thornwick and their job; Enter cycles the job (their best is marked)
 //   Forge     each keepsake weapon and what reforging it costs; Enter reforges (Masterwork asks which way)
@@ -36,9 +37,28 @@ export interface BaseHost {
   rng(): number;
   /** Lets a day pass at Thornwick; returns what happened. */
   passDay(): string;
+  /** Everyone recruited, in the order they joined. */
+  company(): string[];
+  /** Who the player has picked to travel. */
+  inParty(): string[];
+  /** Takes someone along or leaves them at Thornwick; says what happened. */
+  setTravelling(id: string): string;
+  /** How many may travel with Rhea at her rank (Ash not counted). */
+  partyRoom(): number;
 }
 
-const TABS = ["Works", "People", "Forge", "Pens", "Make", "Roads"] as const;
+const TABS = ["Party", "Works", "People", "Forge", "Pens", "Make", "Roads"] as const;
+/** What each page is called on screen, and what it is for, in plain words. */
+const TAB_NAMES: Record<(typeof TABS)[number], string> = { Party: "Party", Works: "Buildings", People: "Jobs", Forge: "Forge", Pens: "Kith pens", Make: "Workshop", Roads: "Expeditions" };
+const TAB_HELP: Record<(typeof TABS)[number], string> = {
+  Party: "Choose who travels with Rhea. Everyone you leave behind waits at Thornwick, where you can give them a job.",
+  Works: "Build and improve Thornwick's buildings. Each one opens new jobs and new things to make.",
+  People: "Give work to the people staying at Thornwick. The work gets done each day that passes.",
+  Forge: "Spend coin to reforge keepsake weapons so they hit harder.",
+  Pens: "Decide how the kith staying at Thornwick are fed, penned and worked, and breed them.",
+  Make: "Choose what the workshop and the infirmary make each day from supplies.",
+  Roads: "Send a kith staying at Thornwick off alone to find something rare or learn a new move.",
+};
 const serif = (size: number, fill: string, bold = false) => ({ fontFamily: "Georgia, serif", fontSize: size, fill, fontWeight: bold ? ("bold" as const) : ("normal" as const) });
 const GOLD = 0xe0c070, INK = 0x14100c, SEL = 0x3a2c18;
 const cap = (s: string): string => s[0].toUpperCase() + s.slice(1);
@@ -105,6 +125,7 @@ export class BasePanel {
 
   private rows(): number {
     switch (TABS[this.tab]) {
+      case "Party": return this.members().length;
       case "Works": return BUILDING_IDS.length + 1;
       case "People": return this.host.staying().length;
       case "Forge": return this.host.armed().length;
@@ -123,6 +144,11 @@ export class BasePanel {
   private choose(): void {
     const g = this.host.game, f = this.f;
     switch (TABS[this.tab]) {
+      case "Party": {
+        const id = this.members()[this.i]; if (!id) return;
+        this.msg = this.host.setTravelling(id);
+        return;
+      }
       case "Works": {
         if (this.i === BUILDING_IDS.length) { this.msg = this.host.passDay(); sfx.bump(); return; }
         const b = BUILDING_IDS[this.i], c = canRaise(f, g.coin, b);
@@ -158,6 +184,10 @@ export class BasePanel {
       }
     }
   }
+
+  /** Everyone recruited, Ash first, in the order they joined. */
+  private members(): string[] { const c = this.host.company(); return [...new Set([...(c.includes("ash") ? ["ash"] : []), ...c])].filter((id) => id !== "rhea"); }
+  private travels(id: string): boolean { return this.host.inParty().includes(id); }
 
   private smith(): Attrs | undefined {
     const smiths = this.host.staying().filter((id) => jobOf(this.f, id) === "forge").map((id) => this.attrs(id));
@@ -238,19 +268,27 @@ export class BasePanel {
     const small = W < 620, fs = small ? 13 : 15, g = this.host.game;
     const dim = new Graphics().rect(0, 0, w, h).fill({ color: 0, alpha: 0.6 }); dim.eventMode = "static"; this.view.addChild(dim);
     this.view.addChild(new Graphics().roundRect(x0, y0, W, H, 10).fill({ color: INK, alpha: 0.97 }).roundRect(x0, y0, W, H, 10).stroke({ color: GOLD, width: 2 }));
-    const tw = (W - 24) / TABS.length;
+    // title: what this is
+    this.text("\u{1F4D6}  Thornwick ledger", x0 + 16, y0 + 10, small ? 18 : 22, "#f0c060", true);
+    const sub = this.text(small ? "Your home base" : "Your home base: party, buildings, jobs, weapons and kith", 0, y0 + (small ? 14 : 16), small ? 11 : 13, "#a89a80"); sub.x = x0 + W - sub.width - 16;
+    const perRow = small ? 4 : TABS.length, tw = (W - 24) / perRow, rowsH = Math.ceil(TABS.length / perRow) * 40 - 6;
     TABS.forEach((t, i) => {
-      const tx = x0 + 12 + i * tw, on = i === this.tab;
-      this.hit(tx, y0 + 10, tw - 6, 34, () => { this.tab = i; this.i = 0; this.sub = "list"; }, on);
-      const label = new Text({ text: t, style: serif(small ? (W < 420 ? 11 : 13) : 17, on ? "#fff4dc" : "#a89a80", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = y0 + 27; this.view.addChild(label);
+      const tx = x0 + 12 + (i % perRow) * tw, ty = y0 + 44 + Math.floor(i / perRow) * 40, on = i === this.tab;
+      this.view.addChild(new Graphics().roundRect(tx, ty, tw - 6, 34, 5).fill({ color: on ? 0x5a4018 : 0x221a12, alpha: 0.95 }).roundRect(tx, ty, tw - 6, 34, 5).stroke({ color: on ? GOLD : 0x4a3c28, width: on ? 2 : 1 }));
+      this.hit(tx, ty, tw - 6, 34, () => { this.tab = i; this.i = 0; this.sub = "list"; });
+      const label = new Text({ text: TAB_NAMES[t], style: serif(small ? 13 : 16, on ? "#fff4dc" : "#c8b898", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = ty + 17; this.view.addChild(label);
     });
+    const help = this.text(TAB_HELP[TABS[this.tab]], x0 + 16, y0 + 44 + rowsH + 8, fs, "#fff4dc", false, W - 32);
     // what Thornwick holds
     const building = this.f["base.build"];
     const status = `Coin ${g.coin}   ·   Supplies ${supplies(this.f)}   ·   Day ${Number(this.f["base.day"] ?? 0)}${building ? `   ·   Building: ${BUILDINGS[String(building)].name} (${Number(this.f["base.work"] ?? 0)} / ${BUILDINGS[String(building)].levels[levelOf(this.f, String(building)) + 1]?.work ?? 0})` : ""}`;
-    this.text(status, x0 + 16, y0 + 52, fs - 1, "#e0c070", true, W - 32);
-    const body = { x: x0 + 14, y: y0 + 80, w: W - 28, h: H - 80 - 46 };
+    const st = this.text(status, x0 + 16, help.y + help.height + 6, fs - 2, "#e0c070", true, W - 32);
+    const top = st.y + st.height + 12;
+    this.view.addChild(new Graphics().rect(x0 + 12, top - 6, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
+    const body = { x: x0 + 14, y: top, w: W - 28, h: y0 + H - 46 - top };
     const listW = Math.round(small ? Math.min(160, body.w * 0.42) : Math.min(260, body.w * 0.33));
     switch (TABS[this.tab]) {
+      case "Party": this.drawParty(body, listW, fs); break;
       case "Works": this.drawWorks(body, listW, fs); break;
       case "People": this.drawPeople(body, listW, fs); break;
       case "Forge": this.drawForge(body, listW, fs); break;
@@ -261,8 +299,31 @@ export class BasePanel {
     const fy = y0 + H - 42;
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
     if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#cfe8b0", false, W - 32);
-    const keys = this.text(small ? "Esc closes" : "Arrows move · Enter picks · Esc back or close", 0, fy + 20, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
-    const closeBtn = this.text("Close", x0 + 16, fy + 20, 12, "#e0c070", true); closeBtn.eventMode = "static"; closeBtn.cursor = "pointer"; closeBtn.on("pointertap", () => this.close());
+    const keys = this.text(small ? "Tap a page, tap a row" : "Left/Right: change page · Up/Down: move · Enter: choose · Esc: close", 0, fy + 22, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
+    const close = new Container(); close.x = x0 + W - (small ? 70 : 96); close.y = y0 + 8;
+    if (!small) { sub.y = y0 + 16; sub.x = close.x - sub.width - 14; } else sub.visible = false;
+    const cbg = new Graphics().roundRect(0, 0, small ? 58 : 82, 28, 6).fill(0x3a2c18).stroke({ color: GOLD, width: 1 }); const ct = new Text({ text: "Close ✕", style: serif(13, "#f0c060", true) }); ct.x = ((small ? 58 : 82) - ct.width) / 2; ct.y = 6;
+    close.addChild(cbg, ct); close.eventMode = "static"; close.cursor = "pointer"; close.on("pointertap", () => this.close()); this.view.addChild(close);
+  }
+
+  private drawParty(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
+    const g = this.host.game, f = this.f, ids = this.members();
+    const lvl = (id: string) => g.kith[id]?.level ?? g.progress(id).level;
+    this.list(ids.map((id) => ({ label: `${this.travels(id) ? "\u2714 " : "    "}${this.name(id)}`, sub: `Level ${lvl(id)} · ${this.travels(id) ? "with Rhea" : "at Thornwick"}` })), b, listW, fs, "Nobody has joined Rhea yet.");
+    const x = b.x + listW + 18, w = b.w - listW - 18, going = this.host.inParty().filter((id) => id !== "ash");
+    let y = b.y;
+    y += this.text(`Travelling with Rhea: ${going.length} of ${this.host.partyRoom()}${this.host.inParty().includes("ash") ? " (plus Ash)" : ""}`, x, y, fs + 2, "#e0c070", true, w).height + 4;
+    y += this.text(going.length ? going.map((id) => this.name(id)).join(", ") : "Nobody yet: Rhea goes alone.", x, y, fs - 1, "#d8ccb4", false, w).height + 14;
+    const id = ids[this.i]; if (!id) return;
+    y += this.text(this.name(id), x, y, fs + 5, "#fff4dc", true).height + 4;
+    const job = jobOf(f, id);
+    y += this.text(this.travels(id) ? `Travels with Rhea and fights at her side.` : `Waits at Thornwick${job ? `, working: ${JOB_NAMES[job].toLowerCase()}` : ""}.`, x, y, fs, "#d8ccb4", false, w).height + 12;
+    const btnW = Math.min(w, 300), label = this.travels(id) ? "Leave at Thornwick" : "Take along";
+    this.view.addChild(new Graphics().roundRect(x, y, btnW, fs + 22, 8).fill(this.travels(id) ? 0x4a2a1a : 0x2c4a1c).stroke({ color: GOLD, width: 2 }));
+    this.hit(x, y, btnW, fs + 22, () => this.choose());
+    const t = this.text(`${label}  (Enter)`, x, y + 10, fs + 1, "#fff4dc", true); t.x = x + (btnW - t.width) / 2;
+    y += fs + 34;
+    this.text("Party changes take effect straight away when the party is with Rhea; otherwise the next time she sets out.", x, y, fs - 2, "#9a8e78", false, w);
   }
 
   private drawWorks(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {

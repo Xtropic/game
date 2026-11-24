@@ -168,7 +168,7 @@ export class ExploreScene implements Scene, StoryHost {
   /** Always on screen once Thornwick is Rhea's: a big gold Ledger button (L), pulsing until she first opens it. */
   private ledgerButton = new Container();
   private ledgerButtonBg = new Graphics();
-  private ledgerButtonLabel = new Text({ text: "\u{1F4D6}  Thornwick ledger  [L]", style: { fontFamily: "Georgia, serif", fontSize: 18, fontWeight: "bold", fill: "#2a1a08" } });
+  private ledgerButtonLabel = new Text({ text: "\u{1F4D6}  Ledger: party & base  [L]", style: { fontFamily: "Georgia, serif", fontSize: 18, fontWeight: "bold", fill: "#2a1a08" } });
   private ledgerNew = new Text({ text: "NEW", style: { fontFamily: "Georgia, serif", fontSize: 13, fontWeight: "bold", fill: "#ffffff", stroke: { color: 0xa02010, width: 4 } } });
   private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
@@ -468,7 +468,8 @@ export class ExploreScene implements Scene, StoryHost {
     this.flags.ledgerSeen = true;
     this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
       armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
-      addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.baseWork() }, this.screen.w, this.screen.h);
+      addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.baseWork(),
+      company: () => this.joinedIds(), inParty: () => partyOf(this.flags), setTravelling: (id) => this.setTravelling(id), partyRoom: () => Math.min(MAX_TRAVEL, rankOf(this.flags).party) }, this.screen.w, this.screen.h);
   }
 
   /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */
@@ -1016,7 +1017,7 @@ export class ExploreScene implements Scene, StoryHost {
     const lc = this.ledgerCell();
     if (lc) {
       const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;
-      this.ledgerSign.text = near ? "\u{1F4D6} Thornwick ledger\nPress Enter to open" : "\u{1F4D6} Thornwick ledger\n\u25BC";
+      this.ledgerSign.text = near ? "\u{1F4D6} Thornwick ledger\nparty, buildings, forge\nPress Enter to open" : "\u{1F4D6} Thornwick ledger\n\u25BC";
       const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 5;
       let gx: number, gy: number;
       if (in3d && this.w3) {
