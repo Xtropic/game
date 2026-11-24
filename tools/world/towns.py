@@ -35,6 +35,8 @@ TOWNS = [
         "KcTTTTTTTTTTTTTTTT:TTTTK",
         "KKKKKKKKKKKKKKKKKKeeKKKK",
     ], spawn=(18, 12), people=[
+        ("hm-steward", "", "vil6", 20, 9, [("tourney", "terrace-show"),
+            ("", "An old woman on a stool by a ring of moss-stones. \"The Terrace Show. Yearlings only. Up here the ground slopes and the kith that keep their feet win.\"")]),
         ("hm-gatherer", "Moss gatherer", "vil1", 9, 4, [
             "\"Moss for bedding, moss for wounds. It grows up here because nothing else will.\"",
             "\"The Commons buys all we can cut now. Kane's surgeons pack it into cuts. Better than the Guild paying us in tins.\""]),
@@ -191,6 +193,8 @@ TOWNS = [
         "TTTTTTTTTTTT:TTTTTTTTTTTTT",
         "TTTTTTTTTTTeeTTTTTTTTTTTTT",
     ], spawn=(12, 12), people=[
+        ("dh-steward", "", "vil4", 14, 9, [("tourney", "drove-fair"),
+            ("", "A steward with a slate, chalking names by a roped ring on the grass. \"Drove Fair. Young kith only, the ones with no rank yet. Win three rounds and they're Yearlings. Five coin to enter.\"")]),
         ("dh-host", "Innkeeper Marl", "vil7", 6, 5, [
             "\"Drovers' Halt. Last beds before the Drove Road goes up into nothing. The Commons drink here now. They pay, mostly.\"",
             "\"No rooms tonight, sorry. Every bed's full of Kane's lot sleeping off a march.\""]),
@@ -321,6 +325,7 @@ TOWNS = [
 # (data/maps/town-<town>--<district>.json, or <map>--<district> for a town with a hand-made map), joined to the
 # town by gates ('e' tiles at the side). GATES lists both ways: (map, x, y) -> (map, x, y, facing).
 # A person whose first line is ("shop", <id>) keeps a stall: talking opens that shop (data/towns/shops.json).
+# One with ("tourney", <id>) keeps a kith tournament's entry table (data/kith/tournaments.json).
 DISTRICTS = [
     dict(id="town-cinderwick--foundry", name="Cinderwick, the Foundry Ward", music="town", rows=[
         "hhhhhhhhhhhhhhhhhhhhhhhhhh",
@@ -391,6 +396,8 @@ DISTRICTS = [
         "hhhdhh...........hhdhhh..h",
         "hhhhhhhhhhhhhhhhhhhhhhhhhh",
     ], people=[
+        ("cm-cupman", "", "vil3", 16, 8, [("tourney", "canal-cup"),
+            ("", "A man in a good coat at a table by the moored barge, taking coin. \"The Canal Cup. Terrace-ranked kith, three to a side, on the barge deck. The owners bet heavy. Try not to fall in.\"")]),
         ("cm-trader", "", "vil5", 8, 6, [("shop", "cinderwick"),
             ("", "A trader behind a stall of bandages, glass jars and iron fittings. \"Coin first, questions never. What are you after?\"")]),
         ("cm-bargewife", "", "vil2", 20, 4, [
@@ -521,7 +528,7 @@ def add_people(story, mid, rows, people):
         assert rows[y][x] in ",.:*m/", f"{pid} stands on {rows[y][x]!r}"
         talk = []
         for ln in lines:
-            if isinstance(ln, tuple) and ln[0] == "shop": continue
+            if isinstance(ln, tuple) and ln[0] in ("shop", "tourney"): continue
             if isinstance(ln, tuple) and ln[0] == "steps": talk.extend(ln[1]); continue
             if isinstance(ln, tuple) and ln[0] == "from":  # only once the story has got that far
                 talk.append({"if": {"stage": ORDER[ORDER.index(ln[1]):]}, "then": [{"say": pid if name else "", "text": ln[2]}]})
@@ -529,6 +536,8 @@ def add_people(story, mid, rows, people):
             else: talk.append({"say": pid, "text": ln})
         shop = next((ln[1] for ln in lines if isinstance(ln, tuple) and ln[0] == "shop"), None)
         if shop: talk.append({"shop": shop})
+        ring = next((ln[1] for ln in lines if isinstance(ln, tuple) and ln[0] == "tourney"), None)
+        if ring: talk.append({"tourney": ring})
         if name: story["cast"][pid] = name
         story["actors"].append({"id": pid, "map": mid, "x": x, "y": y, "look": look, "when": {"stagePrefix": "a"}, "talk": talk})
 

@@ -1,0 +1,19 @@
+{
+ "note": "Kith expeditions from Thornwick (src/kith/expedition.ts). Each has ONE stated goal (a rare thing or a technique, which is a trait the kith learns) and trains one attribute on the way. 'test' is the attribute the kith needs; 'hard' the number it is measured against. 'days' counts each time the story moves on. 'land' must be reachable.",
+ "expeditions": [
+  { "id": "gorge-ledges", "name": "The Kerrow ledges", "land": "vale", "days": 2, "test": "finesse", "hard": 10, "minLevel": 3,
+    "text": "Up the gorge walls where the leapers nest, ledge to ledge.", "goal": { "trait": "sure-footed", "text": "Learn to keep its feet on any ground (sure-footed)." } },
+  { "id": "drove-bells", "name": "Down the old drove road", "land": "vale", "days": 2, "test": "grit", "hard": 10, "minLevel": 3,
+    "text": "Walk the whole drove road with a herd, the old way, and come back with a drover's bell.", "goal": { "fitting": "charm-bell", "text": "Bring back a drove bell (a charm fitting)." } },
+  { "id": "cloud-forest-night", "name": "A night in the cloud forest", "land": "cloudline", "days": 1, "test": "wits", "hard": 9, "minLevel": 2,
+    "text": "Alone in the cloud forest from dusk to dawn, finding its way back by smell.", "goal": { "trait": "night-eyed", "text": "Learn to see and fight in the dark (night-eyed)." } },
+  { "id": "moss-beds", "name": "The high moss beds", "land": "cloudline", "days": 2, "test": "heart", "hard": 11, "minLevel": 5,
+    "text": "Up to the duskwort beds with the gatherers, where the slopes are loose and the weather turns.", "goal": { "trait": "storm-calm", "text": "Learn to hold its nerve in bad weather (storm-calm)." } },
+  { "id": "weir-swim", "name": "Swim the weir", "land": "vale", "days": 1, "test": "might", "hard": 12, "minLevel": 6,
+    "text": "Against the current below Weirbank, every morning for a week.", "goal": { "trait": "water-born", "text": "Learn to fight well near water (water-born)." } },
+  { "id": "slag-heaps", "name": "The Cinderwick slag heaps", "land": "millcities", "days": 2, "test": "grit", "hard": 15, "minLevel": 10,
+    "text": "Across the hot slag behind the foundries, where the ground smokes.", "goal": { "trait": "heat-proof", "text": "Learn to bear heat and fire (heat-proof)." } },
+  { "id": "storm-feathers", "name": "The storm roost", "land": "north", "days": 3, "test": "nerve", "hard": 18, "minLevel": 15,
+    "text": "To the crags where the storm-crested mistwings moult.", "goal": { "fitting": "charm-feather", "text": "Bring back a storm-crested feather (a charm fitting)." } }
+ ]
+}

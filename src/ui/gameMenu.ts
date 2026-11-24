@@ -22,6 +22,7 @@ import { joinerFor, portrait } from "./joinCard";
 import { unitIdOf } from "../battle/encounters";
 import type { Slot } from "../core/save";
 import { RANKS, rankIndex, rankOf } from "../command/ranks";
+import { kithRank, rankName } from "../kith/tourney";
 import { ENVOY_COST, GIFT, bestEnvoy, canMarch, canTalk, demand, fate, knownNations, mood, owed, sealPact, sendEnvoy, sendGift, standing, type Nation, type Result } from "../command/diplomacy";
 
 export interface MenuHost {
@@ -431,7 +432,7 @@ export class GameMenu {
 
   private drawParty(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
     const ms = this.members(), hl = this.host.health();
-    this.list(ms.map((m) => ({ label: m.name, sub: `${m.kith ? "Kith · " : ""}Level ${m.kith ? this.host.game.kith[m.id].level : this.host.game.progress(m.id).level}${m.party ? " · in the party" : " · at camp"}` })), b, listW, fs, "Nobody yet.");
+    this.list(ms.map((m) => ({ label: m.name, sub: `${m.kith ? `Kith${kithRank(this.host.game.flags, m.id) ? ` · ${rankName(kithRank(this.host.game.flags, m.id))}` : ""} · ` : ""}Level ${m.kith ? this.host.game.kith[m.id].level : this.host.game.progress(m.id).level}${m.party ? " · in the party" : " · at camp"}` })), b, listW, fs, "Nobody yet.");
     if (this.focus !== "tabs" && !this.msg) this.msg = "Enter on someone: take them along, or leave them at camp.";
     const m = ms[this.i]; if (!m) return;
     const g = this.host.game, x = b.x + listW + 18, w = b.w - listW - 18, narrow = w < 380;

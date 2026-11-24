@@ -40,6 +40,10 @@ import { Atmosphere } from "./atmosphere";
 import { World3D, type Around, type Fig } from "../three/world3d";
 import { BasePanel } from "../ui/basePanel";
 import { ShopPanel } from "../ui/shopPanel";
+import { TourneyPanel } from "../ui/tourneyPanel";
+import { champions, roundBattle, type Tourney } from "../kith/tourney";
+import { away as awayOn, expeditionDay } from "../kith/expedition";
+import type { Kith } from "../kith/kith";
 import { DuelScene } from "../battle/duelScene";
 import { DUELS } from "../battle/duel";
 import { ArmyScene } from "../army/armyScene";
@@ -105,6 +109,7 @@ export class ExploreScene implements Scene, StoryHost {
   private menu = new GameMenu();
   private base = new BasePanel();
   private shop = new ShopPanel();
+  private ring = new TourneyPanel();
   private baseStage = "";
   private menuButton = new Text({ text: "☰ Menu", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private map!: WorldMap;
@@ -168,7 +173,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
     this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
@@ -362,7 +367,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
-    this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h);
+    this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h); this.ring.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
@@ -418,18 +423,19 @@ export class ExploreScene implements Scene, StoryHost {
   /** A day of work at Thornwick; returns the first lines of its report. */
   private baseWork(): string {
     const f = this.flags;
+    const back = expeditionDay(f, this.game.kith, this.rng);
     const out = baseDay({ flags: f, coin: this.game.coin, workers: this.baseStaying().map((id) => ({ id, name: this.story.cast[id] ?? id, attrs: attrsAt(id, this.game.progress(id).level, this.game.modsOf(id)) })), kith: this.baseKith().map((id) => this.game.kith[id]), rng: this.rng });
     this.game.coin = out.coin;
     for (const [id, xp] of Object.entries(out.drill)) this.game.giveXp(id, xp, this.story.cast[id] ?? id);
     const raid = raidCheck(f, String(f.stage ?? ""), this.rng);
     if (raid && this.map.file.id === "thornwick") setTimeout(() => this.raidNow(), 1200);
     this.save("auto");
-    if (raid) return raid;
-    return out.lines.length ? out.lines.slice(0, 3).join(" ") : "A quiet day: nobody is set to work.";
+    if (raid) return [...back, raid].join(" ");
+    return [...back, out.lines.length ? out.lines.slice(0, 3).join(" ") : back.length ? "" : "A quiet day: nobody is set to work."].join(" ").trim();
   }
   /** People who stay at Thornwick: everyone recruited who isn't travelling. */
   private baseStaying(): string[] { const trav = new Set([this.hero(), ...this.followers.map((f) => f.id), ...partyOf(this.flags)]); return this.joinedIds().filter((id) => !trav.has(id) && !this.game.kith[id] && PEOPLE[id]); }
-  private baseKith(): string[] { const trav = new Set([...this.followers.map((f) => f.id), ...partyOf(this.flags), "ash"]); return this.joinedIds().filter((id) => this.game.kith[id] && !trav.has(id)); }
+  private baseKith(): string[] { const trav = new Set([...this.followers.map((f) => f.id), ...partyOf(this.flags), "ash"]); return this.joinedIds().filter((id) => this.game.kith[id] && !trav.has(id) && !awayOn(this.flags, id)); }
   openBase(): void {
     this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
       armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
@@ -462,7 +468,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Nothing else is on screen or running: the menu can open. */
-  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && !this.shop.open && this.game.scenes.top === this; }
+  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && !this.shop.open && !this.ring.open && this.game.scenes.top === this; }
 
   openMenu(): void {
     this.menu.show({
@@ -494,6 +500,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.hero() !== "rhea") return "Only Rhea chooses who travels with her.";
     if (id === "rhea") return "Rhea leads. She always goes.";
     if (id === "ash") return "Ash goes where Rhea goes.";
+    const gone = awayOn(f, id); if (gone) return `${name} is away: ${gone.exp.name.toLowerCase()}, ${gone.left} day${gone.left === 1 ? "" : "s"} more.`;
     const r = recruit(id), fights = !!this.game.kith[id] || FIGHTERS.has(id) || r?.role === "party";
     if (!fights) return r?.role === "base" ? `${name} keeps things running at home, not on the road.` : `${name} serves with the Commons, not on the road.`;
     const list = partyOf(f), was = list.includes(id), walking = this.followers.map((x) => x.id);
@@ -624,7 +631,7 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Puts a battle over the map; on a win, records it, shares out experience, and continues the story. */
-  startBattle(which: string | BattleDef, onWin?: () => void): void {
+  startBattle(which: string | BattleDef, onWin?: () => void, onLose?: () => void): void {
     const found = typeof which === "string" ? BATTLES[which] : which; if (!found) throw new Error(`no battle ${String(which)}`);
     // a written fight with "party": whoever is travelling with the hero fights it, against the foes it names
     const def: BattleDef = found.party ? { ...found, units: [...partyUnits(this.hero(), this.travellers()), ...found.units.filter((u) => u.side === "foe")] } : found;
@@ -639,7 +646,7 @@ export class ExploreScene implements Scene, StoryHost {
       onDone: (r, s) => {
         for (const [k, n] of Object.entries(s.used)) this.game.flags[`have.${k}`] = Math.max(0, Number(this.game.flags[`have.${k}`] ?? 0) - n);
         this.setHealth(afterBattle(s));
-        if (r !== "won") { this.refresh(); this.save("auto"); return; } // ran, or let them go: nothing won, nothing learned
+        if (r !== "won") { this.refresh(); this.save("auto"); onLose?.(); return; } // ran, or let them go: nothing won, nothing learned
         if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
@@ -680,12 +687,30 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** A kith joins the company. */
   /** The roll-keeper's "menu" step: opens the party page once the line that led to it has closed. */
-  openPage(page: "party" | "base" | `shop:${string}`): void {
+  openPage(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void {
     setTimeout(() => {
       if (!this.free()) return;
-      if (page.startsWith("shop:")) this.shop.show(this.game, page.slice(5), this.screen.w, this.screen.h);
+      if (page.startsWith("tourney:")) this.ring.show(this.game, page.slice(8), this.screen.w, this.screen.h, (id) => !!awayOn(this.flags, id), (t, team) => this.runTourney(t, team));
+      else if (page.startsWith("shop:")) this.shop.show(this.game, page.slice(5), this.screen.w, this.screen.h);
       else if (page === "base") this.openBase(); else this.openMenu();
     }, 150);
+  }
+
+  /** A tournament: the fee, then each round in turn; a loss or a forfeit ends it, the final makes champions. */
+  private runTourney(t: Tourney, team: Kith[]): void {
+    this.game.coin -= t.fee;
+    for (const k of team) delete this.flags[`health.${k.id}`];
+    const round = (i: number): void => {
+      if (i >= t.rounds.length) {
+        const c = champions(this.flags, t, team); this.game.coin += c.coin;
+        sfx.join(); this.save("auto");
+        this.runner.run([{ say: "", text: `${t.name}: your kith win it. The crowd is on its feet.` }, ...c.lines.map((text) => ({ say: "", text }))]);
+        return;
+      }
+      setTimeout(() => this.startBattle(roundBattle(t, i, team, () => this.rng()), () => setTimeout(() => round(i + 1), 400),
+        () => { this.runner.run([{ say: "", text: `Out in the ${t.rounds[i].name.toLowerCase()}. Your kith limp out of the ring to a little applause.` }]); }), i ? 600 : 200);
+    };
+    round(0);
   }
 
   addKith(g: KithGift): void {
@@ -842,6 +867,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.menu.open) { if (!this.menu.update(inp)) this.settle = true; return; }
     if (this.base.open) { if (!this.base.update(inp)) this.settle = true; return; }
     if (this.shop.open) { if (!this.shop.update(inp)) this.settle = true; return; }
+    if (this.ring.open) { if (!this.ring.update(inp)) this.settle = true; return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);

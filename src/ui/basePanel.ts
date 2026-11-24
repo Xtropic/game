@@ -4,6 +4,7 @@
 //   Forge     each keepsake weapon and what reforging it costs; Enter reforges (Masterwork asks which way)
 //   Pens      kith staying at Thornwick: Enter steps through feed, pen and work for each
 //   Make      what the workshop and the infirmary make each day
+//   Roads     kith expeditions: send a kith staying here off after one goal (a rare thing, or a technique)
 // Keys as in the menu: Left/Right change page, Up/Down move, Enter picks, Esc steps back or closes. All tappable.
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
@@ -14,6 +15,8 @@ import { ITEMS } from "../gear/items";
 import { SPECIES, breedLitter, canBreed, foalToKith, type Kith } from "../kith/kith";
 import { SOURCES, readKith } from "../kith/upbringing";
 import { sfx } from "../audio/music";
+import { EXPEDITIONS, away, awayIds, cannotSend, odds, send } from "../kith/expedition";
+import { reachable } from "../command/diplomacy";
 import {
   PENS, ALL_JOBS, BUILDINGS, BUILDING_IDS, JOB_NAMES, RECIPES, bestJob, buildingFor, canRaise, forgeLevel, jobOf, levelOf, penChoices, penPlan,
   penSlots, recipesAt, setPenPlan, startRaise, supplies,
@@ -35,7 +38,7 @@ export interface BaseHost {
   passDay(): string;
 }
 
-const TABS = ["Works", "People", "Forge", "Pens", "Make"] as const;
+const TABS = ["Works", "People", "Forge", "Pens", "Make", "Roads"] as const;
 const serif = (size: number, fill: string, bold = false) => ({ fontFamily: "Georgia, serif", fontSize: size, fill, fontWeight: bold ? ("bold" as const) : ("normal" as const) });
 const GOLD = 0xe0c070, INK = 0x14100c, SEL = 0x3a2c18;
 const cap = (s: string): string => s[0].toUpperCase() + s.slice(1);
@@ -48,7 +51,7 @@ export class BasePanel {
   private tab = 0;
   private i = 0;
   private part = 0; // pens: which of feed/pen/work; forge: branch choice
-  private sub: "list" | "part" | "branch" = "list";
+  private sub: "list" | "part" | "branch" | "road" = "list";
   private mate = 0; // pens: index among the other kith here
   private msg = "";
   private w = 800;
@@ -81,6 +84,10 @@ export class BasePanel {
       else if (this.part === 3 && (left || right || ok)) { const n = Math.max(1, this.others().length); this.mate = (this.mate + (left ? n - 1 : 1)) % n; }
       else if (this.part < 3 && (left || right || ok)) this.cyclePen(right || ok ? 1 : -1);
       else if (back) this.sub = "list";
+    } else if (this.sub === "road") {
+      const n = Math.max(1, this.host.kithHere().length);
+      if (up || left) this.part = (this.part + n - 1) % n; else if (down || right) this.part = (this.part + 1) % n;
+      else if (ok) this.sendOff(); else if (back) this.sub = "list";
     } else if (this.sub === "branch") {
       const k = KEEPSAKES[this.host.armed()[this.i]]; const m = k?.branches.length ?? 0;
       if (up) this.part = (this.part + m - 1) % Math.max(1, m); else if (down) this.part = (this.part + 1) % Math.max(1, m);
@@ -102,6 +109,7 @@ export class BasePanel {
       case "People": return this.host.staying().length;
       case "Forge": return this.host.armed().length;
       case "Pens": return this.host.kithHere().length;
+      case "Roads": return EXPEDITIONS.length;
       default: return this.makeRows().length;
     }
   }
@@ -138,6 +146,10 @@ export class BasePanel {
         return;
       }
       case "Pens": if (this.host.kithHere()[this.i]) { this.sub = "part"; this.part = 0; } return;
+      case "Roads": {
+        if (!this.host.kithHere().length) { this.msg = "No kith are staying at Thornwick to send."; sfx.bump(); return; }
+        this.sub = "road"; this.part = 0; return;
+      }
       default: {
         const r = this.makeRows()[this.i]; if (!r) return;
         f[`base.make.${r.where}`] = r.recipe ?? ""; f[`base.made.${r.where}`] = 0;
@@ -160,6 +172,14 @@ export class BasePanel {
     if (!c.ok) { this.msg = c.why ?? ""; this.sub = "list"; sfx.bump(); return; }
     const out = reforge(l, opts); g.gear = { ...g.gear, [id]: out.loadout }; g.coin -= out.cost; this.sub = "list";
     this.msg = `Reforged for ${out.cost} coin: ${weaponName(id, out.loadout)}.`; sfx.pickup();
+  }
+
+  private sendOff(): void {
+    const e = EXPEDITIONS[this.i], id = this.host.kithHere()[this.part], k = id ? this.host.game.kith[id] : undefined; if (!e || !k) return;
+    const no = cannotSend(this.f, k, e, reachable(this.f, e.land));
+    if (no) { this.msg = no; sfx.bump(); return; }
+    send(this.f, k, e); this.sub = "list"; this.part = 0; sfx.pickup();
+    this.msg = `${k.name} sets off: ${e.name.toLowerCase()}. Back in ${e.days} day${e.days > 1 ? "s" : ""}.`;
   }
 
   private canBreedHere(): boolean { return levelOf(this.f, "pens") >= PENS.breedAt && this.host.kithHere().length >= 2; }
@@ -222,7 +242,7 @@ export class BasePanel {
     TABS.forEach((t, i) => {
       const tx = x0 + 12 + i * tw, on = i === this.tab;
       this.hit(tx, y0 + 10, tw - 6, 34, () => { this.tab = i; this.i = 0; this.sub = "list"; }, on);
-      const label = new Text({ text: t, style: serif(small ? 14 : 18, on ? "#fff4dc" : "#a89a80", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = y0 + 27; this.view.addChild(label);
+      const label = new Text({ text: t, style: serif(small ? (W < 420 ? 11 : 13) : 17, on ? "#fff4dc" : "#a89a80", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = y0 + 27; this.view.addChild(label);
     });
     // what Thornwick holds
     const building = this.f["base.build"];
@@ -235,6 +255,7 @@ export class BasePanel {
       case "People": this.drawPeople(body, listW, fs); break;
       case "Forge": this.drawForge(body, listW, fs); break;
       case "Pens": this.drawPens(body, listW, fs); break;
+      case "Roads": this.drawRoads(body, listW, fs); break;
       default: this.drawMake(body, listW, fs);
     }
     const fy = y0 + H - 42;
@@ -342,6 +363,31 @@ export class BasePanel {
       y += fs + 20;
     }
     this.text(this.sub === "part" ? "Up and Down choose, Left and Right change. Esc when done." : "Enter to change how it's raised, or to breed.", x, y + 4, fs - 2, "#9a8e78");
+  }
+
+  private drawRoads(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
+    const f = this.f, g = this.host.game;
+    this.list(EXPEDITIONS.map((e) => ({ label: e.name, sub: !reachable(f, e.land) ? "The way isn't open yet" : f[`exp.done.${e.id}`] ? `Done once · ${e.days} day${e.days > 1 ? "s" : ""}` : `${e.days} day${e.days > 1 ? "s" : ""} · tests ${e.test}` })), b, listW, fs, "");
+    const e = EXPEDITIONS[this.i]; if (!e) return;
+    const x = b.x + listW + 18, w = b.w - listW - 18;
+    let y = b.y;
+    y += this.text(e.name, x, y, fs + 5, "#fff4dc", true, w).height + 6;
+    y += this.text(e.text, x, y, fs, "#d8ccb4", false, w).height + 6;
+    y += this.text(`Goal: ${e.goal.text}${f[`exp.done.${e.id}`] ? " (already met once; going again still trains it)" : ""}`, x, y, fs - 1, "#e0c070", false, w).height + 4;
+    y += this.text(`On the way it gets better at ${e.test}, pass or fail. Needs level ${e.minLevel}.`, x, y, fs - 2, "#bfae8e", false, w).height + 10;
+    const gone = awayIds(f);
+    if (gone.length) { y += this.text(`On the road now: ${gone.map((id) => { const a = away(f, id); return `${g.kith[id]?.name ?? id} (${a?.exp.name.toLowerCase()}, ${a?.left} day${a?.left === 1 ? "" : "s"} left)`; }).join("; ")}.`, x, y, fs - 2, "#a8c0d8", false, w).height + 8; }
+    const here = this.host.kithHere();
+    if (this.sub !== "road") { this.text(here.length ? "Enter to choose which kith goes." : "No kith staying at Thornwick to send.", x, y, fs - 2, "#9a8e78", false, w); return; }
+    this.text("Who goes? (Enter sends, Esc back)", x, y, fs - 1, "#e0c070", true); y += fs + 8;
+    here.forEach((id, i) => {
+      const k = g.kith[id], on = i === this.part, rh = fs + 14, no = cannotSend(f, k, e, reachable(f, e.land));
+      if (y + rh > b.y + b.h) return;
+      this.hit(x, y, w, rh, () => { this.part = i; this.sendOff(); }, on);
+      this.text(`${k.name} · level ${k.level}`, x + 10, y + 5, fs - 1, on ? "#fff4dc" : "#e8dcc0", on);
+      this.text(no ?? `${Math.round(odds(k, e) * 100)}% to meet the goal`, x + w * 0.5, y + 6, fs - 3, no ? "#e8b8a0" : "#b8e0a0", false, w * 0.5 - 10);
+      y += rh + 2;
+    });
   }
 
   private drawMake(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {

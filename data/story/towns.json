@@ -29,6 +29,25 @@
  "objectives": {},
  "actors": [
   {
+   "id": "hm-steward",
+   "map": "town-highmoss",
+   "x": 20,
+   "y": 9,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old woman on a stool by a ring of moss-stones. \"The Terrace Show. Yearlings only. Up here the ground slopes and the kith that keep their feet win.\""
+    },
+    {
+     "tourney": "terrace-show"
+    }
+   ]
+  },
+  {
    "id": "hm-gatherer",
    "map": "town-highmoss",
    "x": 9,
@@ -329,6 +348,7 @@
        "ad17",
        "ad18",
        "ad19",
+       "ad19b",
        "ad20"
       ]
      },
@@ -450,6 +470,25 @@
     {
      "say": "",
      "text": "Ash allows one pat, then walks behind Rhea's legs."
+    }
+   ]
+  },
+  {
+   "id": "dh-steward",
+   "map": "town-drovers-halt",
+   "x": 14,
+   "y": 9,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A steward with a slate, chalking names by a roped ring on the grass. \"Drove Fair. Young kith only, the ones with no rank yet. Win three rounds and they're Yearlings. Five coin to enter.\""
+    },
+    {
+     "tourney": "drove-fair"
     }
    ]
   },
@@ -639,6 +678,7 @@
        "ad17",
        "ad18",
        "ad19",
+       "ad19b",
        "ad20"
       ]
      },
@@ -751,6 +791,7 @@
        "ad17",
        "ad18",
        "ad19",
+       "ad19b",
        "ad20"
       ]
      },
@@ -949,6 +990,7 @@
        "ad17",
        "ad18",
        "ad19",
+       "ad19b",
        "ad20"
       ]
      },
@@ -1141,6 +1183,25 @@
    ]
   },
   {
+   "id": "cm-cupman",
+   "map": "town-cinderwick--market",
+   "x": 16,
+   "y": 8,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A man in a good coat at a table by the moored barge, taking coin. \"The Canal Cup. Terrace-ranked kith, three to a side, on the barge deck. The owners bet heavy. Try not to fall in.\""
+    },
+    {
+     "tourney": "canal-cup"
+    }
+   ]
+  },
+  {
    "id": "cm-trader",
    "map": "town-cinderwick--market",
    "x": 8,
@@ -1294,6 +1355,7 @@
        "ad17",
        "ad18",
        "ad19",
+       "ad19b",
        "ad20"
       ]
      },
@@ -1416,6 +1478,7 @@
        "ad17",
        "ad18",
        "ad19",
+       "ad19b",
        "ad20"
       ]
      },

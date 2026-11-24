@@ -46,6 +46,8 @@ export type Step =
   | { menu: "party" | "base" }
   /** Opens a town stall (data/towns/shops.json). */
   | { shop: string }
+  /** Opens the entry table of a kith tournament (data/kith/tournaments.json). */
+  | { tourney: string }
   /** A one-on-one duel (data/battle/duels.json); win runs on a win or a yield, lose on a loss the story allows. */
   | { duel: string; win?: Step[]; lose?: Step[] }
   /** An army battle (data/army/battles.json): the war council, then the field. */
@@ -117,7 +119,7 @@ export interface StoryHost {
   /** Adds a kith to the company. */
   addKith?(k: KithGift): void;
   /** Opens the in-game menu on its party page. */
-  openPage?(page: "party" | "base" | `shop:${string}`): void;
+  openPage?(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void;
   duel?(id: string, done: (won: boolean) => void): void;
   army?(id: string, done: (won: boolean) => void): void;
 }
@@ -184,6 +186,7 @@ export class StoryRunner {
     if ("end" in st) { this.queue = []; this.host.end(st.end); return; }
     if ("menu" in st) { this.host.openPage?.(st.menu); return; }
     if ("shop" in st) { this.host.openPage?.(`shop:${st.shop}`); return; }
+    if ("tourney" in st) { this.host.openPage?.(`tourney:${st.tourney}`); return; }
     if ("kith" in st) { this.host.addKith?.(st.kith); f[`kith.${st.kith.id}`] = true; this.host.changed(); return; }
     if ("set" in st || "add" in st) {
       for (const [k, v] of Object.entries(st.set ?? {})) f[k] = v;
