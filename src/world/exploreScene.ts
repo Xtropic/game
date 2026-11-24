@@ -205,6 +205,8 @@ export class ExploreScene implements Scene, StoryHost {
     this.ledgerButton.on("pointertap", () => { if (this.free()) this.openLedger(); });
     this.placeLabel.anchor.set(0.5, 1); this.ledgerSign.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
+    // full-screen overlays (the fade cover, the vignette, wounds) must never swallow taps meant for the dialogue box
+    for (const o of [this.cover, this.atmos.vignette, this.wounds, this.caption, this.banner, this.ledgerMark, this.ledgerSign, this.toastLabel, this.objective, this.placeLabel]) o.eventMode = "none";
     this.dialog.view.eventMode = "static";
     this.dialog.view.on("pointertap", (e) => this.tapDialog(e.global.x, e.global.y));
     const s = this.start ?? {};
@@ -426,7 +428,8 @@ export class ExploreScene implements Scene, StoryHost {
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
   toast(t: string): void {
-    if (padState.used && t.startsWith("Walk with the arrow keys")) t = "Walk with the left stick or D-pad, hold RT to run, and press A to talk. Your goal is at the top left.";
+    if (this.game.touch && t.startsWith("Walk with the arrow keys")) t = "Tilt the screen to walk (or drag on the left half), lean further to run, and tap A to talk. Your goal is at the top left.";
+    else if (padState.used && t.startsWith("Walk with the arrow keys")) t = "Walk with the left stick or D-pad, hold RT to run, and press A to talk. Your goal is at the top left.";
     this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
   changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.commandTick(); this.baseTick(); this.refresh(); }
 
@@ -501,6 +504,8 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Nothing else is on screen or running: the menu can open. */
+  /** The player can walk about now (for the phone's tilt and stick). */
+  canWalk(): boolean { return this.free() && !this.ended; }
   private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && !this.shop.open && !this.ring.open && this.game.scenes.top === this; }
 
   openMenu(): void {

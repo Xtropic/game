@@ -1,6 +1,7 @@
 import { Application, Container } from "pixi.js";
 import { Input } from "./input";
 import { Gamepads } from "./gamepad";
+import type { TouchControls } from "./touch";
 import { SceneStack } from "./scene";
 import { SaveStore, browserKV } from "./save";
 import { Voices } from "../audio/voice";
@@ -16,6 +17,8 @@ export const STEP = 1 / 60; // fixed logic step in seconds
 export class Game {
   readonly app = new Application();
   readonly input = new Input();
+  /** On-screen controls and tilt walking on phones and tablets (set at boot on touch screens). */
+  touch?: TouchControls;
   readonly pads = new Gamepads(this.input, () => this.app.canvas as HTMLCanvasElement | undefined);
   readonly saves = new SaveStore(browserKV());
   readonly scenes = new SceneStack(this);
@@ -82,6 +85,7 @@ export class Game {
   /** Advance by real elapsed seconds: fixed-step updates, then one render pass. */
   frame(elapsed: number): void {
     this.pads.poll(Math.min(elapsed, 0.1));
+    this.touch?.poll();
     this.acc += Math.min(elapsed, 0.25);
     while (this.acc >= STEP) {
       this.input.beginFrame();

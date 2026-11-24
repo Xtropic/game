@@ -12,6 +12,7 @@ import { WorldMap } from "./world/map";
 import { fromOldWorld } from "./world/oldWorld";
 import { TRACK_NAMES, attachSound, audio } from "./audio/music";
 import { settings, type Settings } from "./core/settings";
+import { TouchControls } from "./core/touch";
 
 async function boot(): Promise<void> {
   const game = new Game();
@@ -22,6 +23,8 @@ async function boot(): Promise<void> {
   const scene = new ExploreScene(STORY, MAPS, saved && MAPS[saved.place.map] && saved.flags.stage ? saved.place : undefined);
   if (saved && saved.flags.stage) { game.playSeconds = saved.playSeconds; game.flags = { ...saved.flags }; game.party = { ...saved.party }; game.gear = { ...saved.gear }; game.coin = saved.coin; game.kith = { ...game.kith, ...saved.kith }; }
   game.scenes.replace(scene);
+  // phones and tablets: tilt (or a stick) to walk, A/B/Sing/Run buttons
+  if (TouchControls.wanted() || location.search.includes("touch")) { game.touch = new TouchControls(game.input, () => scene.canWalk()); game.touch.attach(); }
   // sound: starts on the first press; N switches music, effects and voices on and off together
   attachSound(window);
   game.voices.muted = !audio.on;

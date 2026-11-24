@@ -346,6 +346,7 @@ export class GameMenu {
       { label: "Auto battle", value: () => (settings.get("autoBattle") ? "On" : "Off"), change: () => settings.set("autoBattle", !settings.get("autoBattle")) },
       { label: "Always run", value: () => (settings.get("alwaysRun") ? "On" : "Off"), change: () => settings.set("alwaysRun", !settings.get("alwaysRun")) },
       { label: "3D world", value: () => (settings.get("world3d") ? "On" : "Off"), change: () => settings.set("world3d", !settings.get("world3d")) },
+      { label: "Tilt to walk", value: () => (settings.get("tilt") ? "On" : "Off"), change: () => settings.set("tilt", !settings.get("tilt")) },
       { label: "Controller", value: () => (typeof navigator !== "undefined" && navigator.getGamepads && [...navigator.getGamepads()].some((p) => p?.connected) ? "Connected" : "None found"), change: () => undefined },
     ];
   }
@@ -358,6 +359,7 @@ export class GameMenu {
     "Battle speed": "Hurries fights along. Timing rings keep their pace.",
     "Auto timing": "Hits and braces land well without pressing. T in a fight.",
     "Always run": "Run without holding Shift (RT on a controller).",
+    "Tilt to walk": "Phones and tablets: tilt the screen to walk, further to run. Off, or where tilt can't be read, drag on the left half of the screen instead.",
     Controller: "Xbox or other pad: left stick or D-pad walk and move through lists. A talk / choose / timed hits, B back, X sing, Y company, LB notes, RB ledger, LT auto timing, RT hold to run, left stick click run on/off, View auto battle, Menu opens this menu. The right stick moves a pointer; A then clicks where it points (army orders, any button).",
   };
 
