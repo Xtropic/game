@@ -46,11 +46,13 @@ export interface MenuHost {
   hero(): string;
   /** Leads the Commons against a nation (closes the menu; the army battle follows). */
   march(nation: string): void;
+  /** Opens Thornwick's ledger (closes the menu); says why not when it can't. */
+  ledger(): string | undefined;
 }
 
 interface Member { id: string; name: string; kith: boolean; unit: string; travelling: boolean; /** In the party the player picked (may be waiting at camp while a scene has Rhea alone). */ party: boolean; }
 
-const TABS = ["Party", "Gear", "Items", "Command", "Settings", "Save"] as const;
+const TABS = ["Party", "Gear", "Items", "Thornwick", "Command", "Settings", "Save"] as const;
 const ACTIONS = ["Send an envoy", "Send a gift", "Make demands", "Seal the pact", "March on them"] as const;
 type Focus = "tabs" | "list" | "slots" | "pick" | "target" | "confirm";
 
@@ -176,6 +178,7 @@ export class GameMenu {
       case "Party": return this.members().length;
       case "Gear": return this.armed().length;
       case "Items": return itemsOwned(this.host.game.flags).length;
+      case "Thornwick": return 1;
       case "Command": return 1 + knownNations(this.host.game.flags).length;
       case "Settings": return this.settingRows().length;
       default: return this.saveRows().length;
@@ -200,7 +203,8 @@ export class GameMenu {
       const id = itemsOwned(this.host.game.flags)[this.i]; if (!id) return;
       if (ITEMS[id].battle) { this.msg = "That one is for fights: choose it on someone's turn."; return; }
       if (ITEMS[id].who === "all") this.useOn(-1); else { this.focus = "target"; this.pick = 0; }
-    } else if (tab === "Command") {
+    } else if (tab === "Thornwick") { const why = this.host.ledger(); if (why) this.msg = why; }
+    else if (tab === "Command") {
       if (this.i === 0) return;
       if (this.host.hero() !== "rhea") { this.msg = "Only Rhea deals with the nations."; return; }
       const n = this.nationAt(); if (n?.enemy) { this.msg = canTalk(this.host.game.flags, n) ?? ""; return; }
@@ -257,6 +261,20 @@ export class GameMenu {
     if (r.coin !== undefined) g.coin = r.coin;
     this.msg = r.text;
     if (r.ok) { if (a === "Seal the pact") sfx.join(); else sfx.pickup(); this.host.save("auto"); } else sfx.bump();
+  }
+
+  private drawThornwick(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
+    const f = this.host.game.flags, open = !!f["base.open"];
+    this.list([{ label: "Open the ledger", sub: open ? "Works, people, forge, pens, roads" : "Not yet" }], b, listW, fs, "");
+    const x = b.x + listW + 18, w = b.w - listW - 18;
+    let y = b.y;
+    const line = (t: string, size: number, fill: string, bold = false, gap = 6) => { y += this.text(t, x, y, size, fill, bold, w).height + gap; };
+    line("Thornwick's ledger", fs + 6, "#fff4dc", true, 8);
+    if (!open) { line("Once Thornwick is yours, Dorrit keeps a ledger of it: what it holds, who works where, what is being built.", fs - 1, "#d8ccb4"); return; }
+    line("Dorrit's book of everything Thornwick holds: buildings and what they cost, who works where, the forge, the kith pens and breeding, things to make, and kith sent out on the roads.", fs - 1, "#d8ccb4");
+    line(`Coin ${this.host.game.coin}  ·  Supplies ${Number(f.supplies ?? 0)}`, fs - 1, "#e0c070");
+    line("Press Enter to open it from anywhere. At Thornwick it also lies on the crates in the yard, marked with a sign.", fs - 2, "#9a8e78");
+    if (this.focus !== "tabs" && !this.msg) this.msg = "Enter opens Thornwick's ledger.";
   }
 
   private drawCommand(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
@@ -387,6 +405,7 @@ export class GameMenu {
       case "Party": this.drawParty(body, listW, fs); break;
       case "Gear": this.drawGear(body, listW, fs); break;
       case "Items": this.drawItems(body, listW, fs); break;
+      case "Thornwick": this.drawThornwick(body, listW, fs); break;
       case "Command": this.drawCommand(body, listW, fs); break;
       case "Settings": this.drawSettings(body, fs); break;
       default: this.drawSave(body, fs);

@@ -50,7 +50,7 @@ import { ArmyScene } from "../army/armyScene";
 import { ARMY_BATTLES, terrainAt, type ArmyDef } from "../army/army";
 import { rankOf, rankTick } from "../command/ranks";
 import { allies, marched, nation, tribute } from "../command/diplomacy";
-import { baseDay, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
+import { baseDay, baseOpen, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
 import { newTerm } from "../story/terms";
@@ -150,6 +150,8 @@ export class ExploreScene implements Scene, StoryHost {
   private untilEncounter = 0;
   private fog = new Graphics();
   private barriers: Sprite[] = [];
+  /** Over Dorrit's crates at Thornwick once it's theirs: where the ledger is. */
+  private ledgerSign = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fontWeight: "bold", fill: "#ffe2a0", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private bannerTime = 0;
@@ -173,10 +175,10 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.ledgerSign, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
-    this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
+    this.placeLabel.anchor.set(0.5, 1); this.ledgerSign.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
     this.dialog.view.on("pointertap", (e) => this.tapDialog(e.global.x, e.global.y));
@@ -474,6 +476,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.menu.show({
       hero: () => this.hero(),
       march: (id) => this.march(id),
+      ledger: () => this.openLedger(),
       game: this.game, names: this.story.cast,
       travelling: () => [this.hero(), ...this.followers.map((f) => f.id)],
       inParty: () => partyOf(this.flags),
@@ -766,6 +769,20 @@ export class ExploreScene implements Scene, StoryHost {
     return best;
   }
 
+  /** Where the ledger lies (the crates at Thornwick), when Rhea can open it here; else undefined. */
+  private ledgerCell(): { x: number; y: number } | undefined {
+    if (this.map.file.id !== "thornwick" || !baseOpen(this.flags) || this.hero() !== "rhea") return undefined;
+    for (let y = 0; y < this.map.height; y++) for (let x = 0; x < this.map.width; x++) if (this.map.kindAt(x, y) === "crate") return { x, y };
+    return undefined;
+  }
+
+  /** Opens Thornwick's ledger from the menu, wherever Rhea is, once Thornwick is hers. */
+  openLedger(): string | undefined {
+    if (!baseOpen(this.flags)) return "Thornwick isn't yours yet.";
+    if (this.hero() !== "rhea") return "Only Rhea keeps Thornwick's ledger.";
+    this.menu.close(); this.openPage("base"); return undefined;
+  }
+
   private facingTile(): { kind: string | null } {
     const cx = this.player.x + BOX.ox + BOX.w / 2, cy = this.player.y + BOX.oy + BOX.h / 2;
     const d = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] }[this.player.facing];
@@ -946,6 +963,16 @@ export class ExploreScene implements Scene, StoryHost {
     const airDt = Math.max(0, Math.min(0.1, t - this.airAt)); this.airAt = t;
     const in3d = this.render3d(airDt, t);
     if (!in3d) this.atmos.update(airDt, t, this.game.app.renderer, p, { x: cx, y: cy, w: vw, h: vh });
+    // Thornwick's ledger: a sign over Dorrit's crates, bobbing, so nobody has to hunt for it
+    this.ledgerSign.text = "";
+    const lc = this.ledgerCell();
+    if (lc) {
+      const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;
+      this.ledgerSign.text = near ? "Thornwick ledger\nEnter: open" : "\u25BC Thornwick ledger";
+      const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 3;
+      if (in3d && this.w3) { const at = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 1.1); this.ledgerSign.x = at.x; this.ledgerSign.y = at.y + bob; }
+      else { this.ledgerSign.x = (lc.x * TILE + 8 - Math.round(cx)) * this.zoom; this.ledgerSign.y = (lc.y * TILE - 4 - Math.round(cy)) * this.zoom + bob; }
+    }
     // on the world map, name the nearest place within two tiles
     this.placeLabel.text = "";
     if (this.map.file.world) {

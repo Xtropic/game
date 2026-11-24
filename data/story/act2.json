@@ -3176,6 +3176,18 @@
     "text": "\"Road, gate, bathhouse, cellar and a cat the size of a cart. Right. Now the work starts. Come and find me by the fire when you've had a look round.\""
    },
    {
+    "say": "",
+    "text": "Brannoc drops a fat book on the crates in the middle of the yard, the kind every Commons post keeps, its first pages still blank."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"And that's the ledger. Whatever we build, whoever works where, what the forge is at, what's in the pens: it goes in there. Want to know what Thornwick's got, look in the book on the crates.\""
+   },
+   {
+    "say": "tamsin",
+    "text": "\"You can carry the sums in your head, I suppose. Rhea can't. Nor can I.\""
+   },
+   {
     "toast": "Thornwick is yours."
    },
    {
@@ -3319,6 +3331,14 @@
         "set": {
          "recruited.dorrit": true
         }
+       },
+       {
+        "say": "",
+        "text": "She picks up Brannoc's ledger from the crates in the yard, reads his first pages, winces, and turns to a clean one."
+       },
+       {
+        "say": "dorrit",
+        "text": "\"It stays on the crates, where anyone can find it. Works, stores, the forge, the pens. If you want to know what we've got, or start something, that's where you look.\""
        },
        {
         "toast": "Dorrit stays at Thornwick to run the stores."

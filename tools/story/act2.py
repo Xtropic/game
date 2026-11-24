@@ -267,6 +267,9 @@ S["cisternDone"] = [
     say("oda", R("Now that's a spring.")),
     say("tamsin", R("Rhea. Look at it. It's ours.")),
     say("brannoc", R("Road, gate, bathhouse, cellar and a cat the size of a cart. Right. Now the work starts. Come and find me by the fire when you've had a look round.")),
+    n("Brannoc drops a fat book on the crates in the middle of the yard, the kind every Commons post keeps, its first pages still blank."),
+    say("brannoc", R("And that's the ledger. Whatever we build, whoever works where, what the forge is at, what's in the pens: it goes in there. Want to know what Thornwick's got, look in the book on the crates.")),
+    say("tamsin", R("You can carry the sums in your head, I suppose. Rhea can't. Nor can I.")),
     toast("Thornwick is yours."),
     setf({"thornwickClaimed": True}),
     stage("ab4"),
@@ -300,6 +303,8 @@ S["dorrit"] = [
             say("dorrit", R("Well. It's a cellar with ideas above itself, but it's dry. I could keep stores in this. Properly, I mean. With a ledger.")),
             say("dorrit", R("Kane's got three of me down at the camp. He won't miss one. I'll stay, if you'll have me.")),
             setf({"recruited.dorrit": True}),
+            n("She picks up Brannoc's ledger from the crates in the yard, reads his first pages, winces, and turns to a clean one."),
+            say("dorrit", R("It stays on the crates, where anyone can find it. Works, stores, the forge, the pens. If you want to know what we've got, or start something, that's where you look.")),
             toast("Dorrit stays at Thornwick to run the stores."),
         ], [
             n("Rhea shows her the storeroom. Dorrit looks up through the roof at the sky."),
