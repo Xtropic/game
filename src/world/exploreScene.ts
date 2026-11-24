@@ -1,6 +1,7 @@
 // Exploring: the pixel-art world at 320 x 180 scaled by a whole number, with the dialogue box and HUD drawn in
 // HD on top. What happens here comes from the story data: who is where, what they say, what stepping on a door
 // or singing near a kith does. The scene only moves people about and shows things; StoryRunner decides.
+import { keyFor, padState } from "../core/input";
 import { Container, Graphics, Sprite, Text, type Texture } from "pixi.js";
 import { sfx, trackFor } from "../audio/music";
 import { CompanyPanel, JoinCards, joinerFor } from "../ui/joinCard";
@@ -82,8 +83,8 @@ interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 /** Where the story written so far runs out: one quiet line, then a new game. No acts, no chapter cards. */
 export function ledger(id: string, _f: Record<string, unknown>): string[] {
   const end = ENDINGS[id];
-  if (end) return [end.title, "", end.line, "", "The end.", "", "Press Enter to begin again"];
-  return ["The story goes on from here.", "This is as far as it has been written.", "", "Press Enter to begin again"];
+  if (end) return [end.title, "", end.line, "", "The end.", "", `Press ${keyFor("confirm")} to begin again`];
+  return ["The story goes on from here.", "This is as far as it has been written.", "", `Press ${keyFor("confirm")} to begin again`];
 }
 
 /** The five ways the story ends (data/story/act4.json "end" steps): a title and one line for the closing card. */
@@ -424,7 +425,9 @@ export class ExploreScene implements Scene, StoryHost {
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
-  toast(t: string): void { this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
+  toast(t: string): void {
+    if (padState.used && t.startsWith("Walk with the arrow keys")) t = "Walk with the left stick or D-pad, hold RT to run, and press A to talk. Your goal is at the top left.";
+    this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
   changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.commandTick(); this.baseTick(); this.refresh(); }
 
   /** Each time the story moves on: the rank's pay and what pacts and held nations send in. A promotion says what it opens. */
@@ -1011,13 +1014,15 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.ledgerButton.visible) {
       const fresh = !this.flags.ledgerSeen, pulse = fresh ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 5) : 0;
       this.ledgerNew.visible = fresh;
+      const lbl = `\u{1F4D6}  Ledger: party & base  [${keyFor("ledger")}]`;
+      if (this.ledgerButtonLabel.text !== lbl) { this.ledgerButtonLabel.text = lbl; this.ledgerButtonBg.clear().roundRect(0, 0, this.ledgerButtonLabel.width + 28, 40, 10).fill(0xf0c060).stroke({ color: 0x6a4410, width: 3 }); this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerButton.x = this.screen.w - this.ledgerButtonBg.width - 16; }
       this.ledgerButton.scale.set(1 + pulse * 0.06);
       this.ledgerButtonBg.tint = fresh ? (pulse > 0.5 ? 0xffffff : 0xffe8b0) : 0xffffff;
     }
     const lc = this.ledgerCell();
     if (lc) {
       const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;
-      this.ledgerSign.text = near ? "\u{1F4D6} Thornwick ledger\nparty, buildings, forge\nPress Enter to open" : "\u{1F4D6} Thornwick ledger\n\u25BC";
+      this.ledgerSign.text = near ? `\u{1F4D6} Thornwick ledger\nparty, buildings, forge\nPress ${keyFor("confirm")} to open` : "\u{1F4D6} Thornwick ledger\n\u25BC";
       const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 5;
       let gx: number, gy: number;
       if (in3d && this.w3) {

@@ -18,6 +18,15 @@ export const DEFAULT_KEYS: Record<string, Action> = {
   KeyL: "ledger",
 };
 
+/** Set once a game pad has been used, so on-screen prompts name pad buttons instead of keys. */
+export const padState = { used: false };
+const NAMES: Record<string, [string, string]> = {
+  confirm: ["Enter", "A"], space: ["Space", "A"], cancel: ["Esc", "B"], timing: ["T", "LT"], auto: ["B", "View"], company: ["R", "Y"],
+  notes: ["J", "LB"], ledger: ["L", "RB"], menu: ["Tab", "Menu"], sing: ["Q", "X"], hold: ["H", "Y"], run: ["Shift", "RT"],
+};
+/** The key or pad button to name in a prompt for an action. */
+export const keyFor = (a: keyof typeof NAMES | string): string => (NAMES[a] ?? [a, a])[padState.used ? 1 : 0];
+
 export class Input {
   private held = new Set<Action>();
   private pressedThisFrame = new Set<Action>();
@@ -44,6 +53,8 @@ export class Input {
 
   press(a: Action): void { if (!this.held.has(a)) this.queued.add(a); this.held.add(a); }
   release(a: Action): void { this.held.delete(a); }
+  /** A held button repeating (a pad's direction held down in a list): counts as a fresh press, stays held. */
+  repeat(a: Action): void { this.queued.add(a); this.held.add(a); }
 
   /** Call once at the start of each fixed update. */
   beginFrame(): void { this.pressedThisFrame = this.queued; this.queued = new Set(); }

@@ -10,7 +10,7 @@
 // Everything can also be tapped.
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
-import type { Input } from "../core/input";
+import { keyFor, padState, type Input } from "../core/input";
 import { ATTRS, PEOPLE, attrsAt, party as battle, xpToNext, MAX_LEVEL, type Attr, type Attrs } from "../cast/attributes";
 import { FITTINGS, KEEPSAKES, TIERS, equip, fittingSummary, fittingsFor, keepsake, spare, techniques, weaponName, weaponPower, withGear, type Loadout } from "../gear/weapons";
 import { ITEMS, itemsOwned, owned, useItem } from "../gear/items";
@@ -108,6 +108,7 @@ export class GameMenu {
   update(inp: Input): boolean {
     if (!this.open) return false;
     if (inp.wasPressed("menu")) { this.close(); return false; }
+    if ((inp.wasPressed("notes") || inp.wasPressed("ledger")) && (this.focus === "tabs" || this.focus === "list")) { this.msg = ""; this.goTab(this.tab + (inp.wasPressed("ledger") ? 1 : -1)); return true; } // LB / RB
     const up = inp.wasPressed("up"), down = inp.wasPressed("down"), left = inp.wasPressed("left"), right = inp.wasPressed("right");
     const ok = inp.wasPressed("confirm"), back = inp.wasPressed("cancel");
     if (!(up || down || left || right || ok || back)) return true;
@@ -273,7 +274,7 @@ export class GameMenu {
     if (!open) { line("Once Thornwick is yours, Dorrit keeps a ledger of it: what it holds, who works where, what is being built.", fs - 1, "#d8ccb4"); return; }
     line("Dorrit's book of everything Thornwick holds: buildings and what they cost, who works where, the forge, the kith pens and breeding, things to make, and kith sent out on the roads.", fs - 1, "#d8ccb4");
     line(`Coin ${this.host.game.coin}  ·  Supplies ${Number(f.supplies ?? 0)}`, fs - 1, "#e0c070");
-    line("Press Enter to open it from anywhere. At Thornwick it also lies on the crates in the yard, marked with a sign.", fs - 2, "#9a8e78");
+    line(`Press ${keyFor("confirm")} here, or ${keyFor("ledger")} anywhere, to open it. At Thornwick it also lies on the crates in the yard, marked with a sign.`, fs - 2, "#9a8e78");
     if (this.focus !== "tabs" && !this.msg) this.msg = "Enter opens Thornwick's ledger.";
   }
 
@@ -345,6 +346,7 @@ export class GameMenu {
       { label: "Auto battle", value: () => (settings.get("autoBattle") ? "On" : "Off"), change: () => settings.set("autoBattle", !settings.get("autoBattle")) },
       { label: "Always run", value: () => (settings.get("alwaysRun") ? "On" : "Off"), change: () => settings.set("alwaysRun", !settings.get("alwaysRun")) },
       { label: "3D world", value: () => (settings.get("world3d") ? "On" : "Off"), change: () => settings.set("world3d", !settings.get("world3d")) },
+      { label: "Controller", value: () => (typeof navigator !== "undefined" && navigator.getGamepads && [...navigator.getGamepads()].some((p) => p?.connected) ? "Connected" : "None found"), change: () => undefined },
     ];
   }
   private static SETTING_NOTES: Record<string, string> = {
@@ -355,7 +357,8 @@ export class GameMenu {
     "Text speed": "How fast words appear when a line isn't spoken.",
     "Battle speed": "Hurries fights along. Timing rings keep their pace.",
     "Auto timing": "Hits and braces land well without pressing. T in a fight.",
-    "Always run": "Run without holding Shift.",
+    "Always run": "Run without holding Shift (RT on a controller).",
+    Controller: "Xbox or other pad: left stick or D-pad walk and move through lists. A talk / choose / timed hits, B back, X sing, Y company, LB notes, RB ledger, LT auto timing, RT hold to run, left stick click run on/off, View auto battle, Menu opens this menu. The right stick moves a pointer; A then clicks where it points (army orders, any button).",
   };
 
   private saveRows(): { label: string; sub: string; act: () => void }[] {
@@ -415,7 +418,7 @@ export class GameMenu {
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
     if (this.confirm) this.text(this.confirm.text, x0 + 16, fy, fs, "#ffd890", true, W - 32);
     else if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#cfe8b0", false, W - 32);
-    const keys = this.text(small ? "Tab/M close" : "Arrows move · Enter picks · Esc back · Tab or M closes", 0, fy + 20, 12, "#8a7e68");
+    const keys = this.text(padState.used ? "D-pad moves · LB/RB page · A picks · B back · Menu closes" : small ? "Tab/M close" : "Arrows move · Enter picks · Esc back · Tab or M closes", 0, fy + 20, 12, "#8a7e68");
     keys.x = x0 + W - keys.width - 16;
     const closeBtn = this.text("Close", x0 + 16, fy + 20, 12, "#e0c070", true); closeBtn.eventMode = "static"; closeBtn.cursor = "pointer"; closeBtn.on("pointertap", () => this.close());
   }

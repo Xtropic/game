@@ -2,7 +2,7 @@
 // Up/Down move, Enter buys one, Esc closes. All tappable.
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
-import type { Input } from "../core/input";
+import { keyFor, type Input } from "../core/input";
 import data from "../../data/towns/shops.json";
 import { ITEMS, owned } from "../gear/items";
 import { FITTINGS, fittingSummary } from "../gear/weapons";
@@ -94,11 +94,11 @@ export class ShopPanel {
     let dy = y;
     dy += this.text(info.name, dx, dy, fs + 3, "#fff4dc", true, dw).height + 6;
     dy += this.text(info.text, dx, dy, fs - 1, "#d8ccb4", false, dw).height + 10;
-    this.text(g.coin >= price ? `Enter to buy one for ${price} coin.` : `Costs ${price} coin.`, dx, dy, fs - 1, g.coin >= price ? "#cfe8b0" : "#e8b8a0", false, dw);
+    this.text(g.coin >= price ? `${keyFor("confirm")} to buy one for ${price} coin.` : `Costs ${price} coin.`, dx, dy, fs - 1, g.coin >= price ? "#cfe8b0" : "#e8b8a0", false, dw);
     const fy = y0 + H - 42;
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
     if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#cfe8b0", false, W - 32);
-    const keys = this.text(small ? "Esc closes" : "Up/Down choose · Enter buys · Esc closes", 0, fy + 20, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
+    const keys = this.text(small ? `${keyFor("cancel")} closes` : `Up/Down choose · ${keyFor("confirm")} buys · ${keyFor("cancel")} closes`, 0, fy + 20, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
     const closeBtn = this.text("Close", x0 + 16, fy + 20, 12, "#e0c070", true); closeBtn.eventMode = "static"; closeBtn.cursor = "pointer"; closeBtn.on("pointertap", () => this.close());
   }
 }

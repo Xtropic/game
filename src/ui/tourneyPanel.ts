@@ -2,7 +2,7 @@
 // kith may go in. Up/Down move, Enter picks a kith (or takes the team into the ring on the last row), Esc closes.
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
-import type { Input } from "../core/input";
+import { keyFor, type Input } from "../core/input";
 import { SPECIES, type Kith } from "../kith/kith";
 import { cannotEnter, entrants, kithRank, rankName, tourney, type Tourney } from "../kith/tourney";
 import { sfx } from "../audio/music";
@@ -96,7 +96,7 @@ export class TourneyPanel {
     const fy = y0 + H - 42;
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
     if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#e8b8a0", false, W - 32);
-    const keys = this.text(small ? "Esc closes" : "Up/Down choose · Enter picks · Esc closes", 0, fy + 20, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
+    const keys = this.text(small ? `${keyFor("cancel")} closes` : `Up/Down choose · ${keyFor("confirm")} picks · ${keyFor("cancel")} closes`, 0, fy + 20, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
     const closeBtn = this.text("Close", x0 + 16, fy + 20, 12, "#e0c070", true); closeBtn.eventMode = "static"; closeBtn.cursor = "pointer"; closeBtn.on("pointertap", () => this.close());
   }
 }

@@ -1,6 +1,7 @@
 // An army battle: first the war council (who leads which company, which stratagem, what is known of their plan),
 // then the field in real time. Click one of your companies, then the ground to move or one of theirs to attack.
 // Space pauses, Tab picks the next company, T changes speed, H tells the chosen company to hold.
+import { padState } from "../core/input";
 import { Container, Graphics, Text, type FederatedPointerEvent } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -126,6 +127,7 @@ export class ArmyScene implements Scene {
     if (inp.wasPressed("menu")) { const ours = live(this.s, "ours"); const i = ours.findIndex((c) => c.id === this.sel); this.sel = ours[(i + 1) % ours.length]?.id ?? null; this.hudDirty = true; }
     if (inp.wasPressed("timing")) this.setSpeed(this.speed % 3 + 1);
     if (inp.wasPressed("cancel")) { this.sel = null; this.hudDirty = true; }
+    if (inp.wasPressed("company")) this.hold(); // Y on a pad: the chosen company holds
     if (this.paused) return;
     const n = this.s.log.length;
     for (let i = 0; i < this.speed; i++) tick(this.s, dt, this.rng);
@@ -134,7 +136,7 @@ export class ArmyScene implements Scene {
     if (Math.floor(this.s.t * 4) !== Math.floor((this.s.t - dt * this.speed) * 4)) this.hudDirty = true;
   }
   private next(): void { this.introAt++; if (this.introAt >= this.def.intro.length) this.phase = "council"; this.hudDirty = true; sfx.bump(); }
-  private toField(): void { this.s = this.build(); this.phase = "field"; this.sel = this.def.ours[0].id; this.logShown = "Space pauses. Click a company of yours, then where it should go."; this.hudDirty = true; sfx.choose(); }
+  private toField(): void { this.s = this.build(); this.phase = "field"; this.sel = this.def.ours[0].id; this.logShown = padState.used ? "A pauses. Point with the right stick and press A on a company of yours, then where it should go." : "Space pauses. Click a company of yours, then where it should go."; this.hudDirty = true; sfx.choose(); }
   private finish(): void { this.game.scenes.pop(); this.onDone(this.s.over === "won", this.s); }
 
   // ---------------- drawing ----------------
@@ -277,7 +279,7 @@ export class ArmyScene implements Scene {
     const bw = wide ? (pw - 8) / 2 : Math.min(140, (pw - 18) / 4), bh = 34;
     const row = (items: [string, () => void, boolean?][]) => { items.forEach(([l, f, lit], i) => btn(l, px + (wide ? (i % 2) * (bw + 8) : i * (bw + 6)), y + (wide ? Math.floor(i / 2) * (bh + 6) : 0), bw, bh, f, lit)); y += (wide ? Math.ceil(items.length / 2) : 1) * (bh + 6); };
     row([[this.paused ? "Resume" : "Pause", () => { this.paused = !this.paused; }, this.paused], [`Speed x${this.speed}`, () => this.setSpeed(this.speed % 3 + 1)], ["Hold", () => this.hold()], ["Next company", () => { const o = live(s, "ours"); const i = o.findIndex((c) => c.id === this.sel); this.sel = o[(i + 1) % o.length]?.id ?? null; }]]);
-    if (wide && y < h - 120) txt("Click ground to move, a red company to attack. Space pauses, Tab next, T speed, H hold. The faint red arrows are what you know of their plan.", px, y + 6, fs - 3, "#8a7e68");
+    if (wide && y < h - 120) txt(padState.used ? "Right stick points, A on ground to move, on a red company to attack. A (no pointer) pauses, Menu next, LT speed, Y hold." : "Click ground to move, a red company to attack. Space pauses, Tab next, T speed, H hold. The faint red arrows are what you know of their plan.", px, y + 6, fs - 3, "#8a7e68");
     if (this.phase === "over") {
       const bw2 = Math.min(520, w - 32), bx = (this.ox + (this.def.terrain[0].length * this.cell) / 2) - bw2 / 2, by2 = h / 2 - 70;
       panel(Math.max(8, bx), by2, bw2, 140);

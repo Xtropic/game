@@ -9,7 +9,7 @@
 // Keys as in the menu: Left/Right change page, Up/Down move, Enter picks, Esc steps back or closes. All tappable.
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
-import type { Input } from "../core/input";
+import { keyFor, padState, type Input } from "../core/input";
 import { attrsAt, jobSkill, type Attrs, type Job } from "../cast/attributes";
 import { KEEPSAKES, TIERS, canReforge, keepsake, reforge, weaponName, type Loadout } from "../gear/weapons";
 import { ITEMS } from "../gear/items";
@@ -92,6 +92,9 @@ export class BasePanel {
   update(inp: Input): boolean {
     if (!this.open) return false;
     if (inp.wasPressed("menu")) { this.close(); return false; }
+    if (inp.wasPressed("notes") || inp.wasPressed("ledger")) { // LB / RB on a pad (J / L on keys): previous / next page
+      this.tab = (this.tab + (inp.wasPressed("ledger") ? 1 : -1) + TABS.length) % TABS.length; this.i = 0; this.sub = "list"; this.msg = ""; sfx.bump(); this.draw(); return true;
+    }
     const up = inp.wasPressed("up"), down = inp.wasPressed("down"), left = inp.wasPressed("left"), right = inp.wasPressed("right");
     const ok = inp.wasPressed("confirm"), back = inp.wasPressed("cancel");
     if (!(up || down || left || right || ok || back)) return true;
@@ -299,7 +302,7 @@ export class BasePanel {
     const fy = y0 + H - 42;
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
     if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#cfe8b0", false, W - 32);
-    const keys = this.text(small ? "Tap a page, tap a row" : "Left/Right: change page · Up/Down: move · Enter: choose · Esc: close", 0, fy + 22, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
+    const keys = this.text(padState.used ? "LB/RB or D-pad Left/Right: page · Up/Down: move · A: choose · B: close" : small ? "Tap a page, tap a row" : "Left/Right: change page · Up/Down: move · Enter: choose · Esc: close", 0, fy + 22, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
     const close = new Container(); close.x = x0 + W - (small ? 70 : 96); close.y = y0 + 8;
     if (!small) { sub.y = y0 + 16; sub.x = close.x - sub.width - 14; } else sub.visible = false;
     const cbg = new Graphics().roundRect(0, 0, small ? 58 : 82, 28, 6).fill(0x3a2c18).stroke({ color: GOLD, width: 1 }); const ct = new Text({ text: "Close ✕", style: serif(13, "#f0c060", true) }); ct.x = ((small ? 58 : 82) - ct.width) / 2; ct.y = 6;
@@ -321,7 +324,7 @@ export class BasePanel {
     const btnW = Math.min(w, 300), label = this.travels(id) ? "Leave at Thornwick" : "Take along";
     this.view.addChild(new Graphics().roundRect(x, y, btnW, fs + 22, 8).fill(this.travels(id) ? 0x4a2a1a : 0x2c4a1c).stroke({ color: GOLD, width: 2 }));
     this.hit(x, y, btnW, fs + 22, () => this.choose());
-    const t = this.text(`${label}  (Enter)`, x, y + 10, fs + 1, "#fff4dc", true); t.x = x + (btnW - t.width) / 2;
+    const t = this.text(`${label}  (${keyFor("confirm")})`, x, y + 10, fs + 1, "#fff4dc", true); t.x = x + (btnW - t.width) / 2;
     y += fs + 34;
     this.text("Party changes take effect straight away when the party is with Rhea; otherwise the next time she sets out.", x, y, fs - 2, "#9a8e78", false, w);
   }

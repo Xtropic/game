@@ -1,6 +1,7 @@
 // The battle scene: a stage where every move is animated, timed presses (hits, braces, song notes) are graded,
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
+import { keyFor, padState } from "../core/input";
 import type { Loadout } from "../gear/weapons";
 import { sfx } from "../audio/music";
 import { settings } from "../core/settings";
@@ -584,7 +585,7 @@ export class BattleScene implements Scene {
       const col = q.mode === "brace" ? "#9ad0ff" : q.mode === "note" ? "#ffe6a8" : "#ffe39a";
       ringFX(g, x, cy, 6, col, true);
       ringFX(g, x, cy, 6 + (rem / q.lead) * 22, col);
-      if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? "Brace! Press Space or tap as the ring closes" : "Press Space or tap as the ring closes", CW / 2, CH - 8, "#f2e3c4", 5.5);
+      if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? `Brace! Press ${keyFor("space")} or tap as the ring closes` : `Press ${keyFor("space")} or tap as the ring closes`, CW / 2, CH - 8, "#f2e3c4", 5.5);
     }
     // meters along the top
     textFX(g, "CALL", 14, 7, s.bond >= 100 ? "#ffd890" : "#d8c8a0", 5); barFX(g, 24, 6, 44, s.bond / 100, s.bond >= 100 && ((T * 4) | 0) % 2 ? "#ffe0a0" : "#e0905a", 2);
@@ -614,7 +615,7 @@ export class BattleScene implements Scene {
       const per = Math.max(3, Math.floor((this.hudRect.h - 76) / 24)), col = Math.floor(i / per);
       t.x = x + 20 + col * (this.narrow ? 150 : 180); t.y = y + 42 + (i % per) * 24;
     });
-    this.cmdNote.text = this.mode === "over" ? (s.phase === "won" || s.escaped ? "Press Enter or tap to go on" : "Press Enter or tap to try again") : ks.length ? this.entry(ks[this.cursor]).note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
+    this.cmdNote.text = this.mode === "over" ? (s.phase === "won" || s.escaped ? `Press ${keyFor("confirm")} or tap to go on` : `Press ${keyFor("confirm")} or tap to try again`) : ks.length ? this.entry(ks[this.cursor]).note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
     // log
     this.logText.text = s.log.slice(-4).join("\n");
     // party
@@ -631,7 +632,7 @@ export class BattleScene implements Scene {
     });
     const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
     p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
-    this.hint.text = `${this.narrow ? "Tap" : "T"}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow ? "" : "B: "}auto battle ${this.autoBattle ? "on" : "off"}`;
+    this.hint.text = `${this.narrow && !padState.used ? "Tap" : keyFor("timing")}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow && !padState.used ? "" : `${keyFor("auto")}: `}auto battle ${this.autoBattle ? "on" : "off"}`;
   }
 
   /** Read-only view for tests and debugging. */

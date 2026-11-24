@@ -1,5 +1,6 @@
 import { Application, Container } from "pixi.js";
 import { Input } from "./input";
+import { Gamepads } from "./gamepad";
 import { SceneStack } from "./scene";
 import { SaveStore, browserKV } from "./save";
 import { Voices } from "../audio/voice";
@@ -15,6 +16,7 @@ export const STEP = 1 / 60; // fixed logic step in seconds
 export class Game {
   readonly app = new Application();
   readonly input = new Input();
+  readonly pads = new Gamepads(this.input, () => this.app.canvas as HTMLCanvasElement | undefined);
   readonly saves = new SaveStore(browserKV());
   readonly scenes = new SceneStack(this);
   readonly stage = new Container();
@@ -79,6 +81,7 @@ export class Game {
 
   /** Advance by real elapsed seconds: fixed-step updates, then one render pass. */
   frame(elapsed: number): void {
+    this.pads.poll(Math.min(elapsed, 0.1));
     this.acc += Math.min(elapsed, 0.25);
     while (this.acc >= STEP) {
       this.input.beginFrame();
