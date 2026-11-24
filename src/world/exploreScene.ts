@@ -47,7 +47,7 @@ import type { Kith } from "../kith/kith";
 import { DuelScene } from "../battle/duelScene";
 import { DUELS } from "../battle/duel";
 import { ArmyScene } from "../army/armyScene";
-import { ARMY_BATTLES, terrainAt, type ArmyDef } from "../army/army";
+import { ARMY_BATTLES, terrainAt, withoutAbsent, type ArmyDef } from "../army/army";
 import { rankOf, rankTick } from "../command/ranks";
 import { allies, marched, nation, tribute } from "../command/diplomacy";
 import { baseDay, baseOpen, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
@@ -492,7 +492,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Whoever is walking with the hero now, as battle sees them: kith carry their species and level. */
   private travellers(): Traveller[] {
-    return this.followers.map((f) => { const k = this.game.kith[f.id]; return { id: f.id, name: k?.name ?? this.story.cast[f.id] ?? f.id, ...(k ? { kith: { species: k.species, level: k.level } } : {}) }; });
+    return this.followers.filter((f) => !this.flags[`nofight.${f.id}`]).map((f) => { const k = this.game.kith[f.id]; return { id: f.id, name: k?.name ?? this.story.cast[f.id] ?? f.id, ...(k ? { kith: { species: k.species, level: k.level } } : {}) }; });
   }
 
   /** The party picker (menu, Party page): puts someone recruited into the travelling party, or leaves them at camp.
@@ -504,6 +504,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (id === "rhea") return "Rhea leads. She always goes.";
     if (id === "ash") return "Ash goes where Rhea goes.";
     const gone = awayOn(f, id); if (gone) return `${name} is away: ${gone.exp.name.toLowerCase()}, ${gone.left} day${gone.left === 1 ? "" : "s"} more.`;
+    if (f[`nofight.${id}`]) return id === "brannoc" ? "Brannoc can't fight any more. His back never mended from Sallow. He keeps Thornwick's works." : `${name} can't fight any more.`;
     const r = recruit(id), fights = !!this.game.kith[id] || FIGHTERS.has(id) || r?.role === "party";
     if (!fights) return r?.role === "base" ? `${name} keeps things running at home, not on the road.` : `${name} serves with the Commons, not on the road.`;
     const list = partyOf(f), was = list.includes(id), walking = this.followers.map((x) => x.id);
@@ -558,6 +559,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Allied companies from pacts join beside your own company, as many as the rank allows, on open ground nearby. */
   private withAllies(def: ArmyDef): ArmyDef {
+    def = withoutAbsent(def, this.flags);
     if (this.hero() !== "rhea") return def;
     const list = allies(this.flags).slice(0, rankOf(this.flags).allies); if (!list.length) return def;
     const hq = def.ours[0], fake = { def } as Parameters<typeof terrainAt>[0], taken = def.ours.map((c) => c.at);
@@ -714,6 +716,15 @@ export class ExploreScene implements Scene, StoryHost {
         () => { this.runner.run([{ say: "", text: `Out in the ${t.rounds[i].name.toLowerCase()}. Your kith limp out of the ring to a little applause.` }]); }), i ? 600 : 200);
     };
     round(0);
+  }
+
+  loseKith(id: string): void {
+    if (!this.game.kith[id]) return;
+    delete this.game.kith[id];
+    const f = this.flags;
+    f.party = partyOf(f).filter((x) => x !== id).join(",");
+    delete f[`pen.${id}`]; delete f[`exp.${id}`];
+    if (this.followers.some((x) => x.id === id)) this.follow(this.followers.map((x) => x.id).filter((x) => x !== id));
   }
 
   addKith(g: KithGift): void {

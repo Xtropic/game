@@ -21,6 +21,9 @@
    "checkpoint": "tension",
    "lockside": "dread",
    "lockGuards": "fire",
+   "lockGuardsWon": "dread",
+   "smokeComes3": "tender",
+   "fennickAfter": "grief",
    "lockKid1": "dread",
    "lockKid2": "dread",
    "lockKid3": "dread",
@@ -144,8 +147,23 @@
      ],
      "else": [
       {
-       "say": "tamsin",
-       "text": "\"Ninety-one children in a chapel. Larkfold had forty, and we thought that was a lot.\""
+       "if": {
+        "eq": {
+         "northRoad": "high"
+        }
+       },
+       "then": [
+        {
+         "say": "tamsin",
+         "text": "\"I keep going up to the high road in my head. Two cairns. We should have gone by the river.\""
+        }
+       ],
+       "else": [
+        {
+         "say": "tamsin",
+         "text": "\"Ninety-one children in a chapel. Larkfold had forty, and we thought that was a lot.\""
+        }
+       ]
       }
      ]
     }
@@ -230,7 +248,7 @@
    "talk": [
     {
      "say": "dorrit",
-     "text": "\"Ninety-one more mouths. I've written to Kane for flour four times. He's sent it twice. I'm counting.\""
+     "text": "\"All these more mouths. I've written to Kane for flour four times. He's sent it twice. I'm counting.\""
     }
    ]
   },
@@ -2257,32 +2275,65 @@
     "regroup": true
    },
    {
-    "battle": "lockside-guards",
-    "win": [
+    "if": {
+     "flag": [
+      "ferrisWhy",
+      "recruited.ferris"
+     ]
+    },
+    "then": [
      {
-      "say": "",
-      "text": "The guards are down or gone. The children come out of the brood house in a long line, holding hands, the way they're made to walk to the trays."
+      "say": "ferris",
+      "text": "\"Not that way. There's a back gate by the boiler house that nobody locks. Every Guild yard has one. The drivers use it to fetch their beer.\""
      },
      {
       "say": "",
-      "text": "Then hooves on the cobbles. A rider on a huge grey loftbuck comes round the end of the officers' house at a gallop, and pulls up across the gate, between the children and the road."
+      "text": "Half the guards are still at the front, watching the wrong door, when Ferris brings the section in behind them."
      },
      {
-      "say": "",
-      "text": "He wears a Warden's helm with the visor down. He has a spear. He doesn't say a word."
-     },
+      "battle": "lockside-guards-back",
+      "win": [
+       {
+        "run": "lockGuardsWon"
+       }
+      ]
+     }
+    ],
+    "else": [
      {
-      "say": "warden2",
-      "text": "\"Ninety! Hold them, Ninety! Hold the gate!\""
-     },
-     {
-      "say": "",
-      "text": "The shout comes from the gatehouse, where Varro's people are sitting on the watchmen. Somebody shuts him up."
-     },
-     {
-      "stage": "ad6"
+      "battle": "lockside-guards",
+      "win": [
+       {
+        "run": "lockGuardsWon"
+       }
+      ]
      }
     ]
+   }
+  ],
+  "lockGuardsWon": [
+   {
+    "say": "",
+    "text": "The guards are down or gone. The children come out of the brood house in a long line, holding hands, the way they're made to walk to the trays."
+   },
+   {
+    "say": "",
+    "text": "Then hooves on the cobbles. A rider on a huge grey loftbuck comes round the end of the officers' house at a gallop, and pulls up across the gate, between the children and the road."
+   },
+   {
+    "say": "",
+    "text": "He wears a Warden's helm with the visor down. He has a spear. He doesn't say a word."
+   },
+   {
+    "say": "warden2",
+    "text": "\"Ninety! Hold them, Ninety! Hold the gate!\""
+   },
+   {
+    "say": "",
+    "text": "The shout comes from the gatehouse, where Varro's people are sitting on the watchmen. Somebody shuts him up."
+   },
+   {
+    "stage": "ad6"
    }
   ],
   "lockRider": [
@@ -2390,7 +2441,86 @@
   ],
   "northRoad": [
    {
-    "fade": "Nine days on the north road, with ninety-one children."
+    "fade": "The north road, with ninety-one children."
+   },
+   {
+    "say": "",
+    "text": "Three days of walking, with the youngest carried in turns and the oldest carrying the youngest. They have never walked further than the trays. Their feet bleed by the second morning, and none of them says so."
+   },
+   {
+    "say": "",
+    "text": "On the fourth day the fever comes down the line. A wet cough, then the heat. By evening the two youngest, a boy and a girl of four, can't be woken properly."
+   },
+   {
+    "if": {
+     "flag": "recruited.ketti"
+    },
+    "then": [
+     {
+      "say": "ketti",
+      "text": "\"Brood-room fever. They catch it from the trays and it waits for them to get tired. They need a roof and a fire, not another four days on a mountain.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "tamsin",
+      "text": "\"They need a roof, Rhea. Not four more days of mountain.\""
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "The high road goes round by the cloud forest. Four more days, and nobody on it but kith. The Kerrow road is two days shorter, but it crosses the river at Kerrow bridge, where the Guild keeps a toll warden and a hut, and every cart that crosses is written down."
+   },
+   {
+    "choose": "Ninety-one children, and two of them burning.",
+    "options": [
+     {
+      "label": "\"The Kerrow road. Pay the warden. Threaten him if he won't take it.\"",
+      "hint": "Two days shorter. The Guild has a man on the bridge.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "northRoad": "bridge",
+         "roadKnown": true
+        }
+       },
+       {
+        "say": "",
+        "text": "The toll warden at Kerrow bridge is an old man with a lamp. He takes the Commons coin, and looks at the children going by, and writes nothing down while Rhea is watching."
+       },
+       {
+        "say": "",
+        "text": "Six days. Nobody is lost. Oda counts them through Thornwick's gate twice, because she doesn't believe it the first time."
+       }
+      ]
+     },
+     {
+      "label": "\"The high road. Nobody can follow us on the high road.\"",
+      "hint": "Nobody will ever know which way they went. It's two days longer.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "northRoad": "high"
+        }
+       },
+       {
+        "say": "",
+        "text": "Two more days. On the sixth night the little girl stops coughing, and in the morning she doesn't wake. The boy holds on until the seventh."
+       },
+       {
+        "say": "",
+        "text": "They're buried under cairns on the high road, above the cloud, with their tray numbers scratched off their wrists first. Wren asks what their names were. Nobody knows."
+       },
+       {
+        "say": "",
+        "text": "Eight days. Oda counts eighty-nine children through Thornwick's gate, and then goes into the chapel and sits down."
+       }
+      ]
+     }
+    ]
    },
    {
     "goto": {
@@ -2410,19 +2540,30 @@
    },
    {
     "say": "",
-    "text": "Nine days of walking, with the youngest carried in turns and the oldest carrying the youngest. Nobody is lost. Oda counts them through the gate twice, because she doesn't believe it the first time."
-   },
-   {
-    "say": "",
     "text": "Wren runs down the line of them, looking at faces. She stops at one, a thin girl of twelve, and the two of them stand and stare at each other, and then they're both crying."
    },
    {
-    "say": "",
-    "text": "Ninety-one children asleep in the chapel. The section sleeps in the bathhouse."
+    "if": {
+     "eq": {
+      "northRoad": "high"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Eighty-nine children asleep in the chapel. The section sleeps in the bathhouse."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Ninety-one children asleep in the chapel. The section sleeps in the bathhouse."
+     }
+    ]
    },
    {
     "say": "",
-    "text": "On the ninth evening a rider comes up the road from the camp."
+    "text": "The next evening a rider comes up the road from the camp."
    },
    {
     "stage": "ad7"
@@ -2660,6 +2801,24 @@
    {
     "say": "varro",
     "text": "\"The orders came from Kane's tent. The prisoners speak to nobody, and nobody speaks to them. I didn't think anything of it. Kane is always careful.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "bridgeAct": "ran"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "There's blood on Rhea's cheek. The bolt's chip of stone opened it to the bone. Varro's surgeon stitches it by lamplight, and it leaves a white line from her eye to her ear."
+     },
+     {
+      "set": {
+       "bridgeScar": true
+      }
+     }
+    ]
    }
   ],
   "toKane": [
@@ -3262,8 +3421,23 @@
     }
    },
    {
-    "say": "",
-    "text": "The snow is going off the terraces. Ninety-one children have wintered at Thornwick, and nobody has died of it, though Oda says she's aged ten years."
+    "if": {
+     "eq": {
+      "northRoad": "high"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The snow is going off the terraces. Eighty-nine children have wintered at Thornwick, and nobody else has died, though Oda says she's aged ten years."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The snow is going off the terraces. Ninety-one children have wintered at Thornwick, and nobody has died of it, though Oda says she's aged ten years."
+     }
+    ]
    },
    {
     "say": "",
@@ -3375,7 +3549,7 @@
     "else": [
      {
       "say": "haldane",
-      "text": "\"Ninety-one children and a hot spring. If I'd known, I'd have come up years ago.\""
+      "text": "\"All these children and a hot spring. If I'd known, I'd have come up years ago.\""
      }
     ]
    }
@@ -3407,6 +3581,29 @@
     "text": "\"Mire. House Mire's hatchery is in Vantry's outer ward, against the wall. Three hundred children. The Houses think nobody can reach it.\""
    },
    {
+    "if": {
+     "eq": {
+      "passes": "kept"
+     }
+    },
+    "then": [
+     {
+      "say": "kane",
+      "text": "\"We know it's three hundred because of you, Lieutenant. Your passes from the Sallow guardhouse. Forty-one children carted south last year, and thirty of them went to Mire. The slate and the passes agree.\""
+     },
+     {
+      "say": "varro",
+      "text": "\"My clerks have copied every name. When we've got them out, we'll know who's missing.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "hallet",
+      "text": "\"Three hundred, says a girl with a slate. If somebody hadn't burned the Sallow passes, we'd know.\""
+     }
+    ]
+   },
+   {
     "say": "varro",
     "text": "\"At midnight my company makes a noise at the Spindle gate. Every Warden in the ward runs to see what it is.\""
    },
@@ -3423,8 +3620,38 @@
     "text": "\"Your company goes in through Wren's drain, from the canal at Cinderwick. You open the brood room and bring out everyone who can walk. Hallet holds the canal bank.\""
    },
    {
-    "say": "hallet",
-    "text": "\"And we don't stop for anyone who can't walk, Caddow. I've heard about your nine days on the north road.\""
+    "if": {
+     "eq": {
+      "northRoad": "high"
+     }
+    },
+    "then": [
+     {
+      "say": "hallet",
+      "text": "\"And we don't stop for anyone who can't walk, Caddow. I heard about your high road. Eight days, and two cairns.\""
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "northRoad": "bridge"
+       }
+      },
+      "then": [
+       {
+        "say": "hallet",
+        "text": "\"And we don't take the short road home past a Guild toll hut, Caddow. That warden at Kerrow bridge is hanging from his own rail, and the Guild knows exactly which mountain you went up.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "hallet",
+        "text": "\"And we don't stop for anyone who can't walk, Caddow. I've heard about your nine days on the north road.\""
+       }
+      ]
+     }
+    ]
    },
    {
     "stage": "ad13"
@@ -3717,6 +3944,36 @@
        {
         "say": "posy",
         "text": "\"A guard offered him a lull for our names. He said no. He lay there and shook all night and said no.\""
+       }
+      ]
+     },
+     {
+      "if": {
+       "eq": {
+        "letter": "line"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Posy takes a folded paper out of her sleeve, soft as cloth from handling, and pushes it at Rhea without looking at her."
+       },
+       {
+        "say": "posy",
+        "text": "\"He had this sewn in his coat. The guards took the coat. I took this first. It's to you.\""
+       },
+       {
+        "say": "",
+        "text": "Four lines in Corran's hand. I took Finch out of the brood rooms. He's well. He's growing. He doesn't"
+       },
+       {
+        "say": "",
+        "text": "It stops there, in the middle of the line."
+       },
+       {
+        "set": {
+         "letterRead": true
+        }
        }
       ]
      },
@@ -4019,6 +4276,29 @@
        "offerKnown": true,
        "confessed": "corran"
       }
+     },
+     {
+      "if": {
+       "flag": "letterRead"
+      },
+      "then": [
+       {
+        "say": "rhea",
+        "text": "\"Your letter. He doesn't what, Corran?\""
+       },
+       {
+        "say": "",
+        "text": "It takes him a long time."
+       },
+       {
+        "say": "corran",
+        "text": "\"He doesn't sing it any more. The foal song. He used to sing it to the loftbuck every night, in my yard, and then one night he stopped, and he wouldn't say why.\""
+       },
+       {
+        "say": "corran",
+        "text": "\"I couldn't write that to you. I couldn't find a way to write it that wasn't my fault.\""
+       }
+      ]
      },
      {
       "add": {
@@ -4691,12 +4971,41 @@
     "text": "\"And the Guild wants it seen that the Commons can't hold what it takes.\""
    },
    {
-    "say": "kane",
-    "text": "\"The Houses column is yours. Varro's people, Thornwick's companies, whoever you can raise. Hold the hatchery.\""
-   },
-   {
-    "say": "varro",
-    "text": "\"They'll come over the lock bridges. There are two. They'll want both.\""
+    "if": {
+     "flag": "kaneConfronted"
+    },
+    "then": [
+     {
+      "say": "kane",
+      "text": "\"The Houses column is yours. Thornwick's companies, whoever you can raise. Hold the hatchery.\""
+     },
+     {
+      "say": "varro",
+      "text": "\"And mine, Marshal.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"Yours goes to Mire's gate, Varro. The captain has made it clear she can manage without me. She can manage without you.\""
+     },
+     {
+      "say": "",
+      "text": "Varro looks at Rhea, and then at the floor."
+     },
+     {
+      "say": "hallet",
+      "text": "\"They'll come over the lock bridges. There are two. They'll want both.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "kane",
+      "text": "\"The Houses column is yours. Varro's people, Thornwick's companies, whoever you can raise. Hold the hatchery.\""
+     },
+     {
+      "say": "varro",
+      "text": "\"They'll come over the lock bridges. There are two. They'll want both.\""
+     }
+    ]
    },
    {
     "fade": "Lockside. Two days later."
@@ -4824,12 +5133,106 @@
     "end": "act3"
    }
   ],
+  "fennickAfter": [
+   {
+    "if": {
+     "flag": "fennickStayed"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "At midsummer a runaway comes up the drain road from Vantry with a message for Posy, and Posy brings it to Rhea without a word."
+     },
+     {
+      "say": "posy",
+      "text": "\"They hanged a clerk on the Mire gate. Fennick. They say he burned the books and then sat down by the stove and waited for them.\""
+     },
+     {
+      "say": "posy",
+      "text": "\"And the House can't find anyone any more. Kids are walking out of Mire every week now, and nobody comes after them, because nobody knows who they are.\""
+     },
+     {
+      "set": {
+       "fennickHanged": true
+      }
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "recruited.fennick"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "At midsummer, House catchers come up the Kerrow in the night. They know what they're looking for: the clerk who burned Mire's books, and anyone he brought with him."
+     },
+     {
+      "say": "",
+      "text": "They don't find Fennick. They find two of the Mire children at the spring below the terraces, fetching water before dawn, and they take them down the mountain before the watch can stop them."
+     },
+     {
+      "say": "fennick",
+      "text": "\"They're looking for me. They took those two because they couldn't find me. I should have stayed and let them hang me.\""
+     },
+     {
+      "set": {
+       "catchersCame": true
+      }
+     }
+    ]
+   }
+  ],
+  "smokeComes3": [
+   {
+    "say": "",
+    "text": "Three nights after Kell's Bridge, the watch wakes Rhea. There's something at the gate."
+   },
+   {
+    "say": "",
+    "text": "A grey loftbuck, huge, with a chewed rope trailing from its halter and its knees cut from the scree. It has come up the mountain alone, in the dark, following a song it heard once at sunset."
+   },
+   {
+    "say": "",
+    "text": "Smoke puts his head down against her chest and leaves it there."
+   },
+   {
+    "kith": {
+     "species": "loftbuck",
+     "level": 8,
+     "id": "smoke-grey",
+     "name": "Smoke",
+     "temperament": "gentle"
+    }
+   },
+   {
+    "add": {
+     "finchTrust": -8
+    }
+   },
+   {
+    "say": "",
+    "text": "Somewhere down in the grey tents, Finch has woken up to an empty picket line. He'll know where Smoke went. He'll know who called him."
+   }
+  ],
   "thornBed3": [
    {
     "if": {
      "stage": "ad10"
     },
     "then": [
+     {
+      "if": {
+       "eq": {
+        "bridgeAct": "sang"
+       }
+      },
+      "then": [
+       {
+        "run": "smokeComes3"
+       }
+      ]
+     },
      {
       "set": {
        "light": "night"
@@ -4855,6 +5258,9 @@
         "set": {
          "light": "day"
         }
+       },
+       {
+        "run": "fennickAfter"
        },
        {
         "stage": "ad18"

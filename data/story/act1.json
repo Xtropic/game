@@ -2032,6 +2032,39 @@
       "text": "\"He's done, Caddow. Leave him for the Wardens to find. The children first.\""
      },
      {
+      "choose": "The cart warden lies in the road.",
+      "options": [
+       {
+        "label": "Leave him in the road",
+        "do": [
+         {
+          "set": {
+           "carter": "spared"
+          }
+         },
+         {
+          "say": "",
+          "text": "Rhea steps over him."
+         }
+        ]
+       },
+       {
+        "label": "Tie him up. He goes to Kane.",
+        "do": [
+         {
+          "set": {
+           "carter": "taken"
+          }
+         },
+         {
+          "say": "",
+          "text": "Brannoc ties the warden's wrists with his own belt and slings him across a loftbuck. He doesn't say anything, which isn't like Brannoc."
+         }
+        ]
+       }
+      ]
+     },
+     {
       "stage": "a3b"
      }
     ]
@@ -2118,6 +2151,23 @@
    {
     "say": "kane",
     "text": "\"Eight children out of a Guild cart and not a scratch on them. Brannoc says you held your nerve, Caddow. Good.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "carter": "taken"
+     }
+    },
+    "then": [
+     {
+      "say": "kane",
+      "text": "\"And you brought me a Guild cart warden. He'll hang at first light, from the oak by the drove road, where every Guild driver on the road will see him.\""
+     },
+     {
+      "say": "",
+      "text": "He does. By morning the warden is hanging from the oak by the drove road. He's still there a week later, and then he isn't, and nobody asks who cut him down."
+     }
+    ]
    },
    {
     "say": "kane",
@@ -2326,7 +2376,72 @@
    },
    {
     "say": "",
-    "text": "Brannoc and Tamsin go in with wet cloths over their faces and come out with four more. Brannoc goes back for the last two alone. He comes out with both children and the brood-house roof comes down behind him, across his back. Nobody dies in the Sallow hatchery tonight. Brannoc very nearly does."
+    "text": "Brannoc and Tamsin go in with wet cloths over their faces and come out with four more. Brannoc goes back for the last two alone."
+   },
+   {
+    "say": "",
+    "text": "The roof over the back corner is sagging. Through the smoke you can see Brannoc's shape, bent over the trays. Tamsin has the others back from the door."
+   },
+   {
+    "choose": "The roof groans.",
+    "options": [
+     {
+      "label": "Go in after him",
+      "do": [
+       {
+        "say": "",
+        "text": "Rhea pulls the wet cloth over her face and goes in."
+       },
+       {
+        "say": "",
+        "text": "She finds him on his knees with a child under each arm, and gets her shoulder under his. They're two steps from the door when the roof comes down."
+       },
+       {
+        "say": "",
+        "text": "A burning beam lands across Brannoc's back. Rhea gets her hands under it and lifts, and keeps lifting, while it burns her palms. Tamsin drags all four of them clear."
+       },
+       {
+        "say": "",
+        "text": "Nobody dies in the Sallow hatchery tonight. Brannoc very nearly does. Before dawn, Rhea's hands are wrapped to the wrist, and the nurse doesn't promise her anything about them."
+       },
+       {
+        "set": {
+         "sallowFire": "went",
+         "mods.rhea": "burned",
+         "rheaHands": true
+        }
+       }
+      ]
+     },
+     {
+      "label": "Hold the door",
+      "do": [
+       {
+        "say": "",
+        "text": "Rhea keeps Tamsin and the others back from the door. Somebody has to, or the roof takes all of them."
+       },
+       {
+        "say": "",
+        "text": "Brannoc comes out with one child, a little girl, and the roof comes down behind him, across his back. He tries to go back in for the other. It takes three soldiers to hold him down in the yard while the brood house falls in."
+       },
+       {
+        "say": "ketti",
+        "text": "\"That was Wil. He was four. He used to sleep under my tray.\""
+       },
+       {
+        "say": "",
+        "text": "One child dies in the Sallow hatchery tonight. Brannoc's back is burned from his shoulders to his belt."
+       },
+       {
+        "set": {
+         "sallowFire": "door",
+         "nofight.brannoc": true,
+         "brannocBuilder": true
+        }
+       }
+      ]
+     }
+    ]
    },
    {
     "choose": "The girl stands there with the two children, daring anyone to try.",
@@ -2380,8 +2495,23 @@
     }
    },
    {
-    "say": "",
-    "text": "By dawn the Sallow hatchery is ash, and two hundred and six children are sitting in the road wrapped in Commons blankets."
+    "if": {
+     "eq": {
+      "sallowFire": "door"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "By dawn the Sallow hatchery is ash, and two hundred and five children are sitting in the road wrapped in Commons blankets."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "By dawn the Sallow hatchery is ash, and two hundred and six children are sitting in the road wrapped in Commons blankets."
+     }
+    ]
    },
    {
     "say": "",
@@ -2766,6 +2896,10 @@
         "text": "\"I let her out at the ford and drove the empty cart into the river. Then I walked here.\""
        },
        {
+        "say": "ferris",
+        "text": "\"Four years of it, and I still know which back gate nobody locks in every Guild yard from here to Vantry. Drivers learn that in their first month.\""
+       },
+       {
         "set": {
          "ferrisWhy": true
         }
@@ -2949,12 +3083,46 @@
   ],
   "brannocDown": [
    {
+    "if": {
+     "flag": "kettiLeft"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The nurses are still talking about the girl from Sallow. She came back in the night, took both little ones out of the tent while the nurse slept, and walked off with them. Nobody has seen any of them since."
+     }
+    ]
+   },
+   {
     "say": "",
     "text": "Brannoc is lying on his front in the nurses' tent, with his back wrapped in wet linen from shoulders to waist. He turns his head when he hears you."
    },
    {
     "say": "brannoc",
     "text": "\"Don't. I know what it looks like. The nurse says a month on my belly, and I'm not to laugh, which is no hardship.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "sallowFire": "door"
+     }
+    },
+    "then": [
+     {
+      "say": "brannoc",
+      "text": "\"She says I'll walk. She says I'll never lift a shield again. I'll argue with her about that for a year, and lose.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"And the boy. Don't tell me it was the right call, Caddow. I know it was. That's the worst of it.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "brannoc",
+      "text": "\"And look at your hands. You great fool. You'll never hold a staff the same.\""
+     }
+    ]
    },
    {
     "say": "brannoc",
@@ -3014,6 +3182,25 @@
    {
     "say": "tamsin",
     "text": "\"I'll say it, since nobody else will. She's from Larkfold, and Larkfold's greenlings killed people in Millbridge. Some of you lost family to them. If that sticks in your throat, say so now, not later.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "sallowFire": "door"
+     }
+    },
+    "then": [
+     {
+      "say": "soldier",
+      "text": "\"Wil was four. She held the door while Brannoc went back in. I know why she did it. I'm still not putting my hand up.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "soldier",
+      "text": "\"She went in after him with her bare hands. Ask to see them. That's my vote.\""
+     }
+    ]
    },
    {
     "if": {

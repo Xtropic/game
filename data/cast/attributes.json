@@ -111,6 +111,7 @@
     "lull":       { "nerve": 3, "heart": -3, "wits": -2, "note": "Wearing a fresh Guild lull: steadier and duller. Corran's interludes." },
     "raw":        { "nerve": -4, "grit": -3, "finesse": -2, "note": "In the raw: every nerve burns." },
     "weaning":    { "nerve": -1, "grit": -1, "note": "On greenlings, weaning down." },
+    "burned":     { "finesse": -2, "note": "Burned hands from the Sallow fire. The scars never quite let go." },
     "steadied":   { "nerve": 2, "note": "Steadied by Rhea's song, for one battle." }
   }
 }

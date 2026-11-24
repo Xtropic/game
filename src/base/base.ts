@@ -93,7 +93,7 @@ export function baseDay(inp: DayInput): DayOutput {
   // building: one project at a time; everyone on "build" adds to it
   const b = f["base.build"];
   if (typeof b === "string" && b) {
-    const need = BUILDINGS[b].levels[levelOf(f, b) + 1]?.work ?? 0, done = num(f, "base.work") + skill("build") * fed;
+    const need = BUILDINGS[b].levels[levelOf(f, b) + 1]?.work ?? 0, done = num(f, "base.work") + (skill("build") + (f.brannocBuilder ? 2 : 0)) * fed; // Brannoc, off the fighting line after Sallow, runs the works
     if (done >= need) { f[`base.lv.${b}`] = levelOf(f, b) + 1; f["base.build"] = ""; f["base.work"] = 0; lines.push(`The ${BUILDINGS[b].levels[levelOf(f, b)].name.toLowerCase()} is finished.`); }
     else { f["base.work"] = Math.round(done * 10) / 10; if (skill("build") === 0) lines.push(`Nobody is building: the ${BUILDINGS[b].name.toLowerCase()} waits.`); }
   }
@@ -184,7 +184,9 @@ export function raidCheck(f: Flags, stage: string, rng: () => number): string | 
   if (!baseOpen(f) || !QUIET(stage)) return undefined;
   const d = day(f), due = num(f, "base.raid");
   if (due) return d >= due ? "The Warden column is at Thornwick's gate." : undefined;
-  if (d - num(f, "base.lastRaid") < 8 || rng() > 0.18) return undefined;
+  // once the Wardens know the road (the children came by Kerrow ferry), they come oftener
+  const known = !!f.roadKnown;
+  if (d - num(f, "base.lastRaid") < (known ? 5 : 8) || rng() > (known ? 0.32 : 0.18)) return undefined;
   const warn = 2 + levelOf(f, "watch");
   f["base.raid"] = d + warn;
   return `Scouts: a Warden column on the road, ${warn} days out. They'll come for Thornwick.`;

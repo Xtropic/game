@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { StoryRunner, checkStory, holds, storyLines, type Flags, type StoryHost } from "../../src/story/story";
 import { MAPS, STORY } from "../../src/world/content";
 import { BATTLES } from "../../src/battle/data";
+import { NATIONS, owed } from "../../src/command/diplomacy";
+import { ARMY_BATTLES, withoutAbsent } from "../../src/army/army";
 
 /** A host that answers instantly and records what happened. Choices are picked from `picks` in order. */
 function host(flags: Flags, picks: number[] = []) {
@@ -174,10 +176,11 @@ describe("story", () => {
   });
 
   it("the Sallow hatchery: Ketti joins, Brannoc is hurt, the section votes Rhea Sergeant, then the harvest alone", () => {
-    const f: Flags = { ...fresh(), stage: "a6", party: "tamsin,ash,brannoc", rank: "Recruit", millbridge: "truth" }, { h, log, map } = host(f, [0, 0]);
+    const f: Flags = { ...fresh(), stage: "a6", party: "tamsin,ash,brannoc", rank: "Recruit", millbridge: "truth" }, { h, log, map } = host(f, [0, 0, 0]);
     const r = new StoryRunner(STORY, h);
     r.run([{ run: "sallowGate" }]); expect(f.stage).toBe("a6b"); expect(f.sallowBurning).toBe(true);
     r.run([{ run: "ketti" }]);
+    expect(f.sallowFire).toBe("went"); expect(f["mods.rhea"]).toBe("burned"); expect(f["nofight.brannoc"]).toBeUndefined(); // she went in after Brannoc: her hands, not a child
     expect(f["recruited.ketti"]).toBe(true); expect(f.party).toBe("tamsin,ash,ketti"); expect(f.rank).toBe("Recruit"); expect(f.stage).toBe("a6c"); expect(map()).not.toBe("camp"); // she walks back herself
     r.run([{ run: "brannocDown" }]); expect(f.stage).toBe("a6d");
     r.run([{ run: "sectionVote" }]); expect(f.rank).toBe("Sergeant"); expect(log).toContain("kane: \"That's the section's answer, then. Sergeant Caddow.\"");
@@ -191,9 +194,15 @@ describe("story", () => {
   });
 
   it("handing Ketti's children to the nurses: she leaves", () => {
-    const f: Flags = { ...fresh(), stage: "a6b", party: "tamsin,ash" }, { h } = host(f, [1]);
-    new StoryRunner(STORY, h).run([{ run: "ketti" }]);
+    const f: Flags = { ...fresh(), stage: "a6b", party: "tamsin,ash" }, { h, log } = host(f, [1, 1, 0]);
+    const r = new StoryRunner(STORY, h);
+    r.run([{ run: "ketti" }]);
     expect(f.kettiLeft).toBe(true); expect(f["recruited.ketti"]).toBeUndefined(); expect(f.party).toBe("tamsin,ash");
+    // held the door: a child dies, Brannoc never fights again but builds Thornwick
+    expect(f.sallowFire).toBe("door"); expect(f["nofight.brannoc"]).toBe(true); expect(f.brannocBuilder).toBe(true); expect(f["mods.rhea"]).toBeUndefined();
+    expect(log.join("\n")).toContain("two hundred and five children");
+    r.run([{ run: "brannocDown" }]); expect(log.join("\n")).toContain("took both little ones out of the tent");
+    expect(log.join("\n")).toContain("never lift a shield again");
   });
 
   it("later acts' doors are checked first: the Larkfold caves open at the harvest", () => {
@@ -231,6 +240,35 @@ describe("music tells the player how to feel", () => {
 });
 
 describe("Act II: the field", () => {
+  it("decisions that stay made: Tobin's worst night, the kits, the carter from Hob's Bend", () => {
+    // a lull from the crates: Ume takes him home ringed, the moss stops, the clans' pact is closed for good
+    const f: Flags = { ...fresh(), act2: true, stage: "ab18", hero: "rhea", "recruited.tobin": true }, { h, log } = host(f, [1]);
+    const r = new StoryRunner(STORY, h);
+    r.run([{ run: "thornBed" }]);
+    expect(f.tobinRelapse).toBe(true); expect(f.stage).toBe("ab19");
+    f.stage = "ab22"; r.run([{ run: "tobinClean" }]);
+    expect(f.tobinClean).toBeUndefined(); expect(f["recruited.tobin"]).toBe(false); expect(f.stage).toBe("ab23");
+    expect(log.join("\n")).toContain("The gleanings stop today");
+    const clans = NATIONS.find((n) => n.id === "cloudline")!;
+    expect(owed({ ...f, "standing.cloudline": 100, supplies: 99 }, 999, clans)[0]).toContain("never");
+    // sat up with him: he comes home clean, and the clans warm to the Commons
+    const g: Flags = { ...fresh(), act2: true, stage: "ab18", hero: "rhea" }, b = host(g, [0]);
+    new StoryRunner(STORY, b.h).run([{ run: "thornBed" }]);
+    expect(g.tobinNight).toBe("sat"); expect(g.clanTrust).toBe(15);
+    // drove the kits off: the Old Mother comes back for Burr at the first snow
+    const k: Flags = { ...fresh(), act2: true, stage: "ac3", kitsWay: "driven", "kith.thornwick-yearling": true }, kh = host(k);
+    new StoryRunner(STORY, kh.h).run([{ run: "backToRhea1" }]);
+    expect(k["lost.thornwick-yearling"]).toBe(true); expect(kh.log.join("\n")).toContain("Burr is gone");
+    // sang to them: one of her kits comes to the gate
+    const w: Flags = { ...fresh(), act2: true, stage: "ac3", kitsWay: "sung" }, wh = host(w);
+    new StoryRunner(STORY, wh.h).run([{ run: "backToRhea1" }]);
+    expect(w["kith.thornwick-kit"]).toBe(true);
+    // the cart warden Rhea left in the road tells her straight whose crates they are
+    const c: Flags = { ...fresh(), act2: true, stage: "ab13", carter: "spared" }, ch = host(c);
+    new StoryRunner(STORY, ch.h).run([{ run: "carter" }]);
+    expect(c.carterTold).toBe(true); expect(ch.log.join("\n")).toContain("You left me in the road"); expect(ch.log.join("\n")).not.toContain("? The carter");
+  });
+
   it("autumn to summer: Thornwick, Ume and Tobin, the crates, the prisoners, the bridge, Lieutenant, and Corran's four nights", () => {
     const f: Flags = { ...fresh(), stage: "a7c", hero: "rhea", party: "tamsin,ash,brannoc", "party.brannoc": true, ash: true, sela: true, "recruited.oda": true }, { h, log, map } = host(f, []);
     const r = new StoryRunner(STORY, h);
@@ -361,5 +399,34 @@ describe("Act III: the Houses", () => {
     f.stage = "ad15"; pick(2, 0); r.run([{ run: "mireCorran" }]); expect(f.corranSentenced).toBe(true); expect(f.surveyTold).toBe(true); expect(map()).toBe("thornwick");
     f.stage = "ad18"; r.run([{ run: "summerTrial" }]); expect(f.collegeProof).toBe(false);
     pick(0); r.run([{ run: "captain" }]); expect(f.rank).toBe("Captain"); expect(f.kaneConfronted).toBe(true); // Kane voted against, and lost
+  });
+
+  it("decisions that stay made: the north road, the bridge, Fennick, Corran's letter, Ferris's gate, Kane told", () => {
+    // the short road past the toll hut: all of them home, and the Guild knows the way to Thornwick
+    let t = start({ stage: "ad6b" }); t.pick(0); t.r.run([{ run: "northRoad" }]);
+    expect(t.f.northRoad).toBe("bridge"); expect(t.f.roadKnown).toBe(true); expect(t.log.join("\n")).toContain("Ninety-one children asleep");
+    t.f.stage = "ad12"; t.r.run([{ run: "councilMire" }]); expect(t.log.join("\n")).toContain("hanging from his own rail");
+    // the high road: two cairns, eighty-nine children, and every count after it says so
+    t = start({ stage: "ad6b", passes: "kept" }); t.pick(1); t.r.run([{ run: "northRoad" }]);
+    expect(t.f.northRoad).toBe("high"); expect(t.f.roadKnown).toBeUndefined(); expect(t.log.join("\n")).toContain("Eighty-nine children asleep");
+    t.r.run([{ run: "councilMire" }]); expect(t.log.join("\n")).toContain("two cairns"); expect(t.log.join("\n")).toContain("Sallow guardhouse");
+    // sang on the bridge: Smoke comes up the mountain, and Finch knows who called him
+    t = start({ stage: "ad10", bridgeAct: "sang", finchTrust: 10 }); t.pick(1); t.r.run([{ run: "thornBed3" }]);
+    expect(t.f["kith.smoke-grey"]).toBe(true); expect(t.f.finchTrust).toBe(2);
+    // ran onto the bridge: a scar
+    t = start({ stage: "ad9", bridgeAct: "ran" }); t.r.run([{ run: "varroAfter" }]); expect(t.f.bridgeScar).toBe(true);
+    // Fennick: hanged if he stayed; if he came, the catchers came after him
+    t = start({ stage: "ad17", fennickStayed: true }); t.r.run([{ run: "thornBed3" }]); expect(t.f.fennickHanged).toBe(true); expect(t.f.stage).toBe("ad18");
+    t = start({ stage: "ad17", "recruited.fennick": true }); t.r.run([{ run: "thornBed3" }]); expect(t.f.catchersCame).toBe(true);
+    // the letter Corran never finished
+    t = start({ stage: "ad15", letter: "line", brood: "refused" }); t.pick(0); t.r.run([{ run: "mireCorran" }]); expect(t.f.letterRead).toBe(true);
+    t.pick(1, 1); t.r.run([{ run: "corranBath" }]); expect(t.log.join("\n")).toContain("He doesn't sing it any more");
+    // Ferris knows the back gate: half the guards
+    t = start({ stage: "ad5", ferrisWhy: true, "recruited.ferris": true }); t.r.run([{ run: "lockGuards" }]);
+    expect(t.log).toContain("battle lockside-guards-back"); expect(t.f.stage).toBe("ad6");
+    // Kane told to his face: Varro's company is sent elsewhere
+    const def = withoutAbsent(ARMY_BATTLES["lockside-hold"], { kaneConfronted: true });
+    expect(def.ours.some((c) => c.id === "varro")).toBe(false); expect(def.stratagems.some((s) => s.id === "willows")).toBe(false);
+    expect(withoutAbsent(ARMY_BATTLES["lockside-hold"], {}).ours.some((c) => c.id === "varro")).toBe(true);
   });
 });

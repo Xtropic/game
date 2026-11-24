@@ -222,7 +222,8 @@
    "y": 7,
    "look": "vil1",
    "when": {
-    "stagePrefix": "a"
+    "stagePrefix": "a",
+    "not": "roadKnown"
    },
    "talk": [
     {
@@ -261,6 +262,17 @@
     "stagePrefix": "a"
    },
    "talk": [
+    {
+     "if": {
+      "flag": "roadKnown"
+     },
+     "then": [
+      {
+       "say": "kr-mother",
+       "text": "\"They hanged the bridge warden off his own bridge, for letting your children cross. Twenty years he kept that toll. Get away from my door, Commons.\""
+      }
+     ]
+    },
     {
      "say": "kr-mother",
      "text": "\"The indenture carts take the gorge road because it's quiet. My eldest went on one, two winters back.\""

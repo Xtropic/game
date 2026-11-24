@@ -23,7 +23,9 @@ export interface Nation {
   /** A story flag whose value adds to the standing (millbridgeTrust). */
   trust?: string;
   enemy?: boolean;
-  price: { standing: number; coin?: number; supplies?: number; flags?: { flag: string; text: string }[]; text: string; or?: { flag: string; eq: string | number | boolean; text: string } };
+  price: { standing: number; coin?: number; supplies?: number; flags?: { flag: string; text: string }[]; text: string; or?: { flag: string; eq: string | number | boolean; text: string };
+    /** A story flag that closes the pact for good once it is set (a choice that can't be taken back). */
+    never?: { flag: string; text: string } };
   perk?: { supplies?: number; coin?: number; discount?: { shops: string[]; pct: number }; company?: { name: string; kind: CompanyDef["kind"]; level: number }; text: string };
   march?: string;
 }
@@ -63,6 +65,7 @@ export function reachable(f: Flags, land: string): boolean {
 /** What still stands between the Commons and a pact. Empty means it can be sealed. */
 export function owed(f: Flags, coin: number, n: Nation): string[] {
   if (n.enemy) return [n.price.text];
+  if (n.price.never && f[n.price.never.flag]) return [n.price.never.text];
   if (n.price.or && f[n.price.or.flag] === n.price.or.eq) return [];
   const out: string[] = [];
   if (!reachable(f, n.land)) out.push(`The way to ${n.seat} isn't open yet.`);

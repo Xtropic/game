@@ -220,11 +220,11 @@ S["kits"] = [
            opt("Step back and sing", [n("You back off a few steps and set the lamps down. The foal song works best when they can see you aren't coming closer. Press Q.")], hint="The foal song (Q).")),
 ]
 S["kitsFight"] = [
-    {"battle": "thornwick-kits", "win": [n("The kits bolt away past the sluices and through the bars of an iron grate at the far end."), setf({"kits": True})]},
+    {"battle": "thornwick-kits", "win": [n("The kits bolt away past the sluices and through the bars of an iron grate at the far end."), setf({"kits": True, "kitsWay": "driven"})]},
 ]
 S["kitsSong"] = [
     n("Rhea sings low. The kits' ears come round. One sits. The other yawns, enormously, the way frightened cats do, and then they both slip away through the bars of an iron grate at the far end of the passage."),
-    setf({"kits": True}),
+    setf({"kits": True, "kitsWay": "sung"}),
 ]
 S["carving"] = [
     n("Words cut into the wall over three iron wheels, worn shallow, filled with green: THE HIGH WATER FIRST. THE LOW WATER AFTER. LAST, THE WHEEL THAT SINGS."),
@@ -331,7 +331,7 @@ S["heskComes"] = [
 S["thornBed"] = [
     iff({"stage": "ab7"}, [setf({"light": "evening"}), fade("Vantry. The same autumn."), run("evenings")], [
     iff({"stage": "ab12"}, [setf({"light": "evening"}), fade("Vantry, midwinter."), run("birthday")], [
-    iff({"stage": "ab18"}, [fade("The snow melts off the terraces. Spring."), setf({"light": "day"}), stage("ab19"), run("springRider")], [
+    iff({"stage": "ab18"}, [run("tobinNight")], [
     iff({"stage": "ab21"}, [setf({"light": "evening"}), fade("Vantry. That same spring."), run("hiding")], [
     iff({"stage": "ab23"}, [fade("Summer comes up the mountain."), setf({"light": "day"}), run("summer")], [
     iff({"stage": "ab25"}, [setf({"light": "evening"}), fade("Vantry. A hot summer night."), run("bell")], [
@@ -406,6 +406,22 @@ S["backToRhea1"] = [
     fade("Thornwick. The first snow."),
     {"hero": "rhea"}, setf({"light": "snow", "showHold": False, "mods.corran": ""}),
     stage("ab8"), goto("thornwick", 3, 14, "up"),
+    iff({"eq": {"kitsWay": "sung"}}, [
+        n("In the night someone heard a reedcat at the gate. In the morning there's a half-grown kit sitting in the snow by the gatepost, grey as the fog, waiting to be let in."),
+        n("Out on the white slope above the road, a much bigger shape watches until the gate opens. Then it turns away."),
+        {"kith": {"species": "fog-reedcat", "level": 4, "id": "thornwick-kit", "name": "Wisp", "temperament": "shy"}},
+        toast("The Old Mother's kit stays at Thornwick. Oda calls her Wisp."),
+    ]),
+    iff({"eq": {"kitsWay": "driven"}}, [
+        iff({"flag": "kith.thornwick-yearling"}, [
+            n("Tracks in the new snow, as big as a man's hand, from the broken wall to the pens and back again. The pen gate is down. Burr is gone."),
+            n("There's blood on the snow, not much, and a trail of it going up the slope toward the old cistern crack, and then nothing."),
+            {"loseKith": "thornwick-yearling"},
+            say("tamsin", R("She came back for her kits. We were the ones who drove them off.")),
+        ], [
+            n("Tracks in the new snow, as big as a man's hand, all round the pens. Something tried every gate in the night. Hesk's kith won't settle all day."),
+        ]),
+    ]),
 ]
 
 # ------------------------------------------------------------------ Thornwick, early winter: the moss, Ume, Tobin
@@ -485,9 +501,35 @@ S["tobinVisit"] = [
         setf({"tobinWean": 2}),
     ], [
     iff({"stage": ["ab16", "ab17", "ab18"]}, [
-        say("tobin", R("Third strength. Last one, Oda says. I slept the whole night through last night. First time since I was sixteen.")),
+        say("tobin", R("Third strength. Last one, Oda says. It's the nights that are the worst.")),
         setf({"tobinWean": 3}),
-    ], [say("tobin", R("Nothing on my neck at all. I keep reaching for it."))])])]),
+    ], [iff({"flag": "tobinRelapse"}, [say("tobin", R("First strength again. All winter for nothing. Don't look at me like that, Caddow. I asked you."))],
+            [say("tobin", R("Nothing on my neck at all. I keep reaching for it."))])])])]),
+]
+
+S["tobinNight"] = [
+    setf({"light": "night"}),
+    n("Late in the night, someone scratches at the tent flap."),
+    n("Tobin, wrapped in his blanket, shaking so hard his teeth click. The greenling on his neck is the third strength, the last and weakest."),
+    say("tobin", R("It's not working, Caddow. It's too weak. I can feel the raw coming up the back of my neck like water filling a boot.")),
+    say("tobin", R("The Marshal's crates are in the storeroom. Hundreds of tins. One. Just tonight, so I can sleep. I'll start again tomorrow, I swear on my mother.")),
+    n("Oda is asleep in the cellar. Ume is a day's walk away through the snow. There's nobody else awake at Thornwick."),
+    choose("Tobin holds out his shaking hand.",
+           opt("Sit up with him", [
+               n("Rhea sits him by the brazier and puts her blanket round him on top of his own, and doesn't go to get a tin."),
+               say("tobin", R("You don't know what this is. You've never had one on.")),
+               say("rhea", R("No. But I've sat with a lot of people who did.")),
+               n("It's a long night. Near the end of it his breathing goes ragged and fast, and for a while Rhea thinks she has made a terrible mistake. She keeps talking to him: about Larkfold, about her mother, about nothing."),
+               n("A little before dawn he falls asleep sitting up. He sleeps until noon. When he wakes, the greenling is still on his neck, and there's no new ring beside it."),
+               setf({"tobinNight": "sat"}), add({"clanTrust": 15}),
+           ]),
+           opt("Get him a lull from the crates", [
+               n("The storeroom is dark and cold. The crate's lid lifts easily. Rhea takes one tin and puts it in Tobin's hand, and doesn't watch him open it."),
+               n("He sleeps the whole night through, curled by the brazier, and looks ten years younger in the morning."),
+               n("There's a fresh ring on his neck, red and raised, next to all the old ones. Oda looks at it for a long time, and then starts him again from the first strength without a word."),
+               setf({"tobinNight": "lull", "tobinRelapse": True, "rings.tobin": 1}),
+           ])),
+    fade("The snow melts off the terraces. Spring."), setf({"light": "day"}), stage("ab19"), run("springRider"),
 ]
 
 # ------------------------------------------------------------------ Corran: the birthday (midwinter)
@@ -553,10 +595,15 @@ S["carter"] = [
         n("The cart lies tipped against the gatepost. Sacks of flour, a barrel of lamp oil, and three long crates. One of the crates has split open on the stones."),
         n("It's packed with duskwort moss. In the moss, row on row, are lull tins. Guild tins, each with a House seal stamped in the lid."),
         n("The crate was tied with a miners' hitch with a red thread laid through it. The Commons knot. The same knot Dorrit tied on your flour."),
-        say("carter", R("Don't touch that, Sergeant. Those aren't yours.")),
-        choose("The carter is already pushing the moss back over the tins.",
+        iff({"eq": {"carter": "spared"}}, [
+            n("The carter is the cart warden from Hob's Bend. There's a white scar through his eyebrow where Rhea's staff opened it."),
+            say("carter", R("You left me in the road, Sergeant. The Wardens found me, and I walked out of the Guild the next week. I owe you that.")),
+            say("carter", R("So I'll tell you straight. They're the Marshal's. Guild lulls, taken off Guild carts and sold in the lowlands under Guild prices. That's how the Commons eats. Ask him about the north road.")),
+            setf({"carterTold": True}),
+        ], [say("carter", R("Don't touch that, Sergeant. Those aren't yours."))]),
+        iff({"not": "carterTold"}, [choose("The carter is already pushing the moss back over the tins.",
                opt(R("Whose are they?"), [say("carter", R("The Marshal's. They go down to the lowlands on the north road. They don't stop here, and you didn't see them."))], by="rhea"),
-               opt(R("Those are Guild lulls. In a Commons crate."), [say("carter", R("Taken off a Guild cart, fair and square. Where they go after that is the Marshal's business, not mine and not yours."))], by="rhea")),
+               opt(R("Those are Guild lulls. In a Commons crate."), [say("carter", R("Taken off a Guild cart, fair and square. Where they go after that is the Marshal's business, not mine and not yours."))], by="rhea"))]),
         iff({"flag": "recruited.tobin"}, [n("Tobin is standing at the storeroom door with a sack on his shoulder, looking at the tins. He doesn't move until the carter has nailed the crate shut again.")]),
         setf({"sawCrates": True, "noWild": False}),
         stage("ab14"),
@@ -652,12 +699,16 @@ S["verdict"] = [
 S["springRider"] = [
     goto("thornwick", 4, 14, "up"),
     n("Water runs everywhere. The terraces below the walls are turning green."),
-    iff({"flag": "party.brannoc"}, [
+    iff({"flag": "nofight.brannoc"}, [
+        say("brannoc", R("Kane wants me at a desk at the camp, counting other men's arrows. I told him no. I can't carry a shield, but I can carry a wall.")),
+        say("brannoc", R("I'll stay, if you'll have me. Somebody has to build this place properly, and the monks are dead.")),
+        toast("Brannoc stays at Thornwick as master builder. The works go faster with him."),
+    ], [iff({"flag": "party.brannoc"}, [
         say("brannoc", R("Back's mended. Kane's sent word: the Millbridge company has waited all winter for me, and it can't wait any longer.")),
         say("brannoc", R("You've done well up here, Caddow. Don't let anyone tell you different. Not even you.")),
         {"leave": "brannoc"},
         toast("Brannoc goes down to the Millbridge company."),
-    ]),
+    ])]),
 ]
 S["rider"] = [
     iff({"stage": "ab19"}, [
@@ -805,7 +856,7 @@ S["backToRhea3"] = [
 
 # ------------------------------------------------------------------ late spring: Tobin walks down clean
 S["tobinClean"] = [
-    iff({"stage": "ab22"}, [
+    iff({"stage": "ab22"}, [iff({"flag": "tobinRelapse"}, [run("tobinHomeRinged")], [
         n("Tobin stands at the gate with his pack on, in his mended miner's coat. There's nothing on the back of his neck. The rings on his neck have gone pale, and there's no new one."),
         n("Ume has come down from the terraces on a loftbuck, with her stick across her knees, to see it."),
         say("ume", R("Turn round. Let me look.")),
@@ -818,7 +869,22 @@ S["tobinClean"] = [
         n("Tobin walks down the road into the cloud without looking back, the way people do when they're sure."),
         setf({"tobinClean": True}),
         stage("ab23"),
-    ], [say("ume", R("Go on with you. I'm an old woman watching a road."))]),
+    ])], [say("ume", R("Go on with you. I'm an old woman watching a road."))]),
+]
+S["tobinHomeRinged"] = [
+    n("Tobin stands at the gate with his pack on. The greenling on his neck is the second strength again. Beside it is a ring that wasn't there at the first snow."),
+    n("Ume has come down from the terraces on a loftbuck, with her stick across her knees."),
+    say("ume", R("Turn round.")),
+    n("He turns round. She looks at the back of his neck, and counts the rings with one finger, the way you'd count beads. She stops at the new one."),
+    say("ume", R("I said bring him back to me clean. Not nearly. Not next spring.")),
+    say("tobin", R("Ma, it was me. I asked her for it.")),
+    say("ume", R("And she gave it to you. That's what the Guild does, son. Somebody asks, and they give it.")),
+    say("ume", R("He comes home with me. Oda can send his greenlings up the mountain. The gleanings stop today, Caddow. The clans won't give the Commons another basket.")),
+    n("She doesn't raise her voice once. That's the worst of it."),
+    {"leave": "tobin"},
+    setf({"recruited.tobin": False, "clanTrust": -30, "umeMoss": False}),
+    toast("Ume takes Tobin home. The clans send no more moss."),
+    stage("ab23"),
 ]
 
 # ------------------------------------------------------------------ summer: Lieutenant, and the crates on the road
@@ -831,7 +897,8 @@ S["promotion"] = [
     iff({"stage": "ab24"}, [
         n("Kane is in the chapel, looking up at the new roof. Brannoc is with him, standing straight for the first time since Sallow. Varro is sitting on the altar step with a ledger."),
         say("kane", R("Caddow. Look at this place. I gave you a section and a ruin.")),
-        say("kane", R("Thornwick weans more people than every tent at the camp. The clans send moss. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you.")),
+        iff({"flag": "tobinClean"}, [say("kane", R("Thornwick weans more people than every tent at the camp. The clans send moss. And word's going round the pits at Coldharrow that there's a place up the mountain where they take the rings off you."))],
+            [say("kane", R("Thornwick weans more people than every tent at the camp, even with the clans sending nothing. Whatever you did to old Ume, she tells everyone who'll listen."))]),
         iff({"flag": "recruited.oakes"}, [say("kane", R("And there's a Warden sergeant in your company who walked away from the Guild on a bridge. Nobody's done that in ten years."))]),
         say("kane", R("It's not a section's post any more. It's a company's. A company needs a lieutenant, and the officers have to agree on who.")),
         say("varro", R("I've put my name to it. For what that's worth.")),
@@ -1167,7 +1234,7 @@ moods = {
                "halloranBell": "dread", "childGate": "grief", "bucks": "tension", "bathDone": "hope", "thornGate": "camp", "underDown": "dread", "kits": "tension", "sluiceOpen": "tension",
                "cisternBoss": "fire", "cisternDone": "hope", "kitsFight": "tension", "kitsSong": "tender", "carving": "dread",
                "valveHigh": "dread", "valveLow": "dread", "valveSing": "dread", "sluiceWrong": "tension", "underUp": "dread",
-               "factor": "tension", "tobinVisit": "tender", "finchBirthday": "tender", "passClimb": "hope", "backToRhea2": "tension",
+               "factor": "tension", "tobinVisit": "tender", "finchBirthday": "tender", "passClimb": "hope", "backToRhea2": "tension", "backToRhea1": "tender", "tobinNight": "dread", "tobinHomeRinged": "dread",
                "varroBridge": "tension", "bellOut": "fire", "bellChild1": "fire", "bellChild2": "fire", "bellChild3": "fire", "bellSteamFail": "fire"},
     "stages": {"ab3": "tension", "ab3c": "dread", "ab3e": "tension", "ab6": "tender", "ab9": "road", "ab13": "tension", "ab16": "dread", "ab17": "dread", "ab20": "tension",
                "ac6": "tender", "ac8": "dread", "ac10": "dread", "ac11": "fire", "ac12": "grief", "ac13": "grief", "ab26": "grief"},

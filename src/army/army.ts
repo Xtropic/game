@@ -29,7 +29,7 @@ const TER: Record<Terrain, { move: number; shelter: number; pass: boolean }> = {
   wall: { move: 0, shelter: 1, pass: false }, gate: { move: 0.6, shelter: 0.5, pass: true }, yard: { move: 1, shelter: 0.6, pass: true },
 };
 
-export interface CompanyDef { id: string; name: string; kind: Kind; at: [number, number]; facing?: number; officer?: string; level?: number; }
+export interface CompanyDef { id: string; name: string; kind: Kind; at: [number, number]; facing?: number; officer?: string; level?: number; /** Left out of the field when this story flag is set. */ unless?: string; }
 export interface PlanStep { at?: number; when?: "contact" | "half"; orders: { company: string; to: [number, number]; via?: [number, number] }[]; note: string; }
 export interface Stratagem { id: string; name: string; text: string; /** Who says what about it in council: archetype -> line. */ opinions?: Record<string, string>; effect: { hide?: string[]; move?: Record<string, [number, number]>; stakes?: [number, number, number, number]; skipPlan?: number; enemyMorale?: number; /** Cells whose ground changes (a bridge raised): [x, y, legend char]. */ terrain?: [number, number, string][]; }; }
 export interface ArmyDef {
@@ -252,4 +252,12 @@ export function suggestOfficers(def: ArmyDef, pool: { id: string; attrs: Attrs }
     if (best) { out[c.id] = best.id; used.add(best.id); }
   }
   return out;
+}
+
+/** Companies whose `unless` flag is set stay off the field, with any stratagem that moves or hides them. */
+export function withoutAbsent(def: ArmyDef, flags: Record<string, unknown>): ArmyDef {
+  const gone = new Set(def.ours.filter((c) => c.unless && flags[c.unless]).map((c) => c.id));
+  if (!gone.size) return def;
+  const uses = (st: ArmyDef["stratagems"][number]) => [...(st.effect.hide ?? []), ...Object.keys(st.effect.move ?? {})].some((id) => gone.has(id));
+  return { ...def, ours: def.ours.filter((c) => !gone.has(c.id)), stratagems: def.stratagems.filter((st) => !uses(st)) };
 }

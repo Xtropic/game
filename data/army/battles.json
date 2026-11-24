@@ -423,7 +423,8 @@
      "at": [
       12,
       7
-     ]
+     ],
+     "unless": "kaneConfronted"
     },
     {
      "id": "pikes",

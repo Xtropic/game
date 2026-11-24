@@ -149,7 +149,7 @@ BATTLES = {
         commander=dict(name="The Warden major", cast="warden", level=20),
         ours=[
             dict(id="hq", name="Your company", kind="foot", at=[20, 3]),
-            dict(id="varro", name="Second company", kind="foot", at=[12, 7]),
+            dict(id="varro", name="Second company", kind="foot", at=[12, 7], unless="kaneConfronted"),
             dict(id="pikes", name="Pikes", kind="pike", at=[20, 6.6]),
             dict(id="bows-w", name="West bows", kind="bow", at=[9, 6.6]),
             dict(id="bows-e", name="East bows", kind="bow", at=[31, 6.6]),

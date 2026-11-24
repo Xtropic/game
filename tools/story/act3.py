@@ -132,14 +132,19 @@ for i, line in enumerate([
 S["lockGuards"] = [
     n("Lamps at the boiler end. Corvel's house guards, half-dressed, with cudgels and a hatchery reedcat on a chain."),
     {"regroup": True},
-    {"battle": "lockside-guards", "win": [
+    iff({"flag": ["ferrisWhy", "recruited.ferris"]}, [
+        say("ferris", R("Not that way. There's a back gate by the boiler house that nobody locks. Every Guild yard has one. The drivers use it to fetch their beer.")),
+        n("Half the guards are still at the front, watching the wrong door, when Ferris brings the section in behind them."),
+        {"battle": "lockside-guards-back", "win": [run("lockGuardsWon")]},
+    ], [{"battle": "lockside-guards", "win": [run("lockGuardsWon")]}]),
+]
+S["lockGuardsWon"] = [
         n("The guards are down or gone. The children come out of the brood house in a long line, holding hands, the way they're made to walk to the trays."),
         n("Then hooves on the cobbles. A rider on a huge grey loftbuck comes round the end of the officers' house at a gallop, and pulls up across the gate, between the children and the road."),
         n("He wears a Warden's helm with the visor down. He has a spear. He doesn't say a word."),
         say("warden2", R("Ninety! Hold them, Ninety! Hold the gate!")),
         n("The shout comes from the gatehouse, where Varro's people are sitting on the watchmen. Somebody shuts him up."),
         stage("ad6"),
-    ]},
 ]
 S["lockRider"] = [
     iff({"stage": "ad6"}, [
@@ -164,12 +169,29 @@ S["lockRider"] = [
     ], [n("Hoof marks on the cobbles, and a dent in the stones where the rider fell.")]),
 ]
 S["northRoad"] = [
-    fade("Nine days on the north road, with ninety-one children."),
+    fade("The north road, with ninety-one children."),
+    n("Three days of walking, with the youngest carried in turns and the oldest carrying the youngest. They have never walked further than the trays. Their feet bleed by the second morning, and none of them says so."),
+    n("On the fourth day the fever comes down the line. A wet cough, then the heat. By evening the two youngest, a boy and a girl of four, can't be woken properly."),
+    iff({"flag": "recruited.ketti"}, [say("ketti", R("Brood-room fever. They catch it from the trays and it waits for them to get tired. They need a roof and a fire, not another four days on a mountain."))],
+        [say("tamsin", R("They need a roof, Rhea. Not four more days of mountain."))]),
+    n("The high road goes round by the cloud forest. Four more days, and nobody on it but kith. The Kerrow road is two days shorter, but it crosses the river at Kerrow bridge, where the Guild keeps a toll warden and a hut, and every cart that crosses is written down."),
+    choose("Ninety-one children, and two of them burning.",
+           opt(R("The Kerrow road. Pay the warden. Threaten him if he won't take it."), [
+               setf({"northRoad": "bridge", "roadKnown": True}),
+               n("The toll warden at Kerrow bridge is an old man with a lamp. He takes the Commons coin, and looks at the children going by, and writes nothing down while Rhea is watching."),
+               n("Six days. Nobody is lost. Oda counts them through Thornwick's gate twice, because she doesn't believe it the first time."),
+           ], by="rhea", hint="Two days shorter. The Guild has a man on the bridge."),
+           opt(R("The high road. Nobody can follow us on the high road."), [
+               setf({"northRoad": "high"}),
+               n("Two more days. On the sixth night the little girl stops coughing, and in the morning she doesn't wake. The boy holds on until the seventh."),
+               n("They're buried under cairns on the high road, above the cloud, with their tray numbers scratched off their wrists first. Wren asks what their names were. Nobody knows."),
+               n("Eight days. Oda counts eighty-nine children through Thornwick's gate, and then goes into the chapel and sits down."),
+           ], by="rhea", hint="Nobody will ever know which way they went. It's two days longer.")),
     goto(TW, 13, 12, "up"), {"alone": True}, setf({"light": "dusk"}),
-    n("Nine days of walking, with the youngest carried in turns and the oldest carrying the youngest. Nobody is lost. Oda counts them through the gate twice, because she doesn't believe it the first time."),
     n("Wren runs down the line of them, looking at faces. She stops at one, a thin girl of twelve, and the two of them stand and stare at each other, and then they're both crying."),
-    n("Ninety-one children asleep in the chapel. The section sleeps in the bathhouse."),
-    n("On the ninth evening a rider comes up the road from the camp."),
+    iff({"eq": {"northRoad": "high"}}, [n("Eighty-nine children asleep in the chapel. The section sleeps in the bathhouse.")],
+        [n("Ninety-one children asleep in the chapel. The section sleeps in the bathhouse.")]),
+    n("The next evening a rider comes up the road from the camp."),
     stage("ad7"),
 ]
 
@@ -228,6 +250,10 @@ S["varroAfter"] = [
     say("varro", R("The stockade sergeant said he asked for the Thornwick lieutenant every morning. By that name. I thought he wanted to spit at you for Lockside.")),
     iff({"eq": {"lockOrder": "kind"}}, [say("varro", R("They all knew you'd ordered them fed and kept warm. I think that's why he asked."))]),
     say("varro", R("The orders came from Kane's tent. The prisoners speak to nobody, and nobody speaks to them. I didn't think anything of it. Kane is always careful.")),
+    iff({"eq": {"bridgeAct": "ran"}}, [
+        n("There's blood on Rhea's cheek. The bolt's chip of stone opened it to the bone. Varro's surgeon stitches it by lamplight, and it leaves a white line from her eye to her ear."),
+        setf({"bridgeScar": True}),
+    ]),
 ]
 S["toKane"] = [
     fade("The Commons camp, before dawn."),
@@ -366,7 +392,8 @@ S["backToRhea5"] = [
     fade("Thornwick. The thaw."),
     {"hero": "rhea"}, setf({"light": "day", "showHold": False, "mods.corran": ""}),
     stage("ad11"), goto(TW, 13, 11, "down"),
-    n("The snow is going off the terraces. Ninety-one children have wintered at Thornwick, and nobody has died of it, though Oda says she's aged ten years."),
+    iff({"eq": {"northRoad": "high"}}, [n("The snow is going off the terraces. Eighty-nine children have wintered at Thornwick, and nobody else has died, though Oda says she's aged ten years.")],
+        [n("The snow is going off the terraces. Ninety-one children have wintered at Thornwick, and nobody has died of it, though Oda says she's aged ten years.")]),
     n("There's an old man in a black physician's robe at the gate, arguing with whoever is on watch."),
 ]
 
@@ -395,18 +422,26 @@ S["haldane"] = [
         toast("Professor Haldane stays at Thornwick to run the greenling trial."),
         n("While they're still at the table, a runner comes up the road from the camp. Kane has sent for his officers."),
         stage("ad12"),
-    ], [say("haldane", R("Ninety-one children and a hot spring. If I'd known, I'd have come up years ago."))]),
+    ], [say("haldane", R("All these children and a hot spring. If I'd known, I'd have come up years ago."))]),
 ]
 S["councilMire"] = [
     n("Kane, Varro, Hallet. Wren's slate has been copied big onto the map table."),
     iff({"flag": "kaneWarned"}, [say("kane", R("Lieutenant. I haven't forgotten what you said in this tent in the autumn. Neither should you."))],
         [say("kane", R("Lieutenant."))]),
     say("kane", R("Mire. House Mire's hatchery is in Vantry's outer ward, against the wall. Three hundred children. The Houses think nobody can reach it.")),
+    iff({"eq": {"passes": "kept"}}, [
+        say("kane", R("We know it's three hundred because of you, Lieutenant. Your passes from the Sallow guardhouse. Forty-one children carted south last year, and thirty of them went to Mire. The slate and the passes agree.")),
+        say("varro", R("My clerks have copied every name. When we've got them out, we'll know who's missing.")),
+    ], [
+        say("hallet", R("Three hundred, says a girl with a slate. If somebody hadn't burned the Sallow passes, we'd know.")),
+    ]),
     say("varro", R("At midnight my company makes a noise at the Spindle gate. Every Warden in the ward runs to see what it is.")),
     say("hallet", R("And Caddow crawls through a sewer.")),
     say("rhea", R("A drain. A ten-year-old walked out through it.")),
     say("kane", R("Your company goes in through Wren's drain, from the canal at Cinderwick. You open the brood room and bring out everyone who can walk. Hallet holds the canal bank.")),
-    say("hallet", R("And we don't stop for anyone who can't walk, Caddow. I've heard about your nine days on the north road.")),
+    iff({"eq": {"northRoad": "high"}}, [say("hallet", R("And we don't stop for anyone who can't walk, Caddow. I heard about your high road. Eight days, and two cairns."))],
+        [iff({"eq": {"northRoad": "bridge"}}, [say("hallet", R("And we don't take the short road home past a Guild toll hut, Caddow. That warden at Kerrow bridge is hanging from his own rail, and the Guild knows exactly which mountain you went up."))],
+             [say("hallet", R("And we don't stop for anyone who can't walk, Caddow. I've heard about your nine days on the north road."))])]),
     stage("ad13"),
 ]
 S["drainIn"] = [
@@ -475,6 +510,13 @@ S["mireCorran"] = [
             say("posy", R("He sold four of us to a guard for that thing on his neck. I know he did. I still won't let you kill him. Not in here. Not in front of them.")),
         ], [
             say("posy", R("A guard offered him a lull for our names. He said no. He lay there and shook all night and said no.")),
+        ]),
+        iff({"eq": {"letter": "line"}}, [
+            n("Posy takes a folded paper out of her sleeve, soft as cloth from handling, and pushes it at Rhea without looking at her."),
+            say("posy", R("He had this sewn in his coat. The guards took the coat. I took this first. It's to you.")),
+            n("Four lines in Corran's hand. I took Finch out of the brood rooms. He's well. He's growing. He doesn't"),
+            n("It stops there, in the middle of the line."),
+            setf({"letterRead": True}),
         ]),
         n("Outside, Varro's noise at the gate is getting closer. There isn't long."),
         choose("Corran, on the pallet.",
@@ -559,6 +601,12 @@ S["corranBath"] = [
                    ], hint="Days, or weeks.")),
         ]),
         *confession("corran"),
+        iff({"flag": "letterRead"}, [
+            say("rhea", R("Your letter. He doesn't what, Corran?")),
+            n("It takes him a long time."),
+            say("corran", R("He doesn't sing it any more. The foal song. He used to sing it to the loftbuck every night, in my yard, and then one night he stopped, and he wouldn't say why.")),
+            say("corran", R("I couldn't write that to you. I couldn't find a way to write it that wasn't my fault.")),
+        ]),
         add({"hold": 10}),
         run("surveyRead"),
     ], [
@@ -680,8 +728,16 @@ S["firstCommand"] = [
     n("Kane waits until the chapel has emptied of everyone but his officers. Then he unrolls a map on the altar stone."),
     say("kane", R("Your first order, then, Captain. A Warden column came out of Cinderwick two nights ago, up the towpath. Six companies, and riders. They want Corvel's back.")),
     say("hallet", R("And the Guild wants it seen that the Commons can't hold what it takes.")),
-    say("kane", R("The Houses column is yours. Varro's people, Thornwick's companies, whoever you can raise. Hold the hatchery.")),
-    say("varro", R("They'll come over the lock bridges. There are two. They'll want both.")),
+    iff({"flag": "kaneConfronted"}, [
+        say("kane", R("The Houses column is yours. Thornwick's companies, whoever you can raise. Hold the hatchery.")),
+        say("varro", R("And mine, Marshal.")),
+        say("kane", R("Yours goes to Mire's gate, Varro. The captain has made it clear she can manage without me. She can manage without you.")),
+        n("Varro looks at Rhea, and then at the floor."),
+        say("hallet", R("They'll come over the lock bridges. There are two. They'll want both.")),
+    ], [
+        say("kane", R("The Houses column is yours. Varro's people, Thornwick's companies, whoever you can raise. Hold the hatchery.")),
+        say("varro", R("They'll come over the lock bridges. There are two. They'll want both.")),
+    ]),
     fade("Lockside. Two days later."), setf({"light": "evening"}),
     n("Corvel's hatchery stands empty behind its wall, the brood rooms cold, the boilers silent. The children are long gone north. What's left to hold is the building, and what it means."),
     n("Down the towpath, drums. Grey coats in the evening light, coming on in good order."),
@@ -710,9 +766,31 @@ S["lastNight"] = [
     ]),
     {"end": "act3"},
 ]
+S["fennickAfter"] = [
+    iff({"flag": "fennickStayed"}, [
+        n("At midsummer a runaway comes up the drain road from Vantry with a message for Posy, and Posy brings it to Rhea without a word."),
+        say("posy", R("They hanged a clerk on the Mire gate. Fennick. They say he burned the books and then sat down by the stove and waited for them.")),
+        say("posy", R("And the House can't find anyone any more. Kids are walking out of Mire every week now, and nobody comes after them, because nobody knows who they are.")),
+        setf({"fennickHanged": True}),
+    ]),
+    iff({"flag": "recruited.fennick"}, [
+        n("At midsummer, House catchers come up the Kerrow in the night. They know what they're looking for: the clerk who burned Mire's books, and anyone he brought with him."),
+        n("They don't find Fennick. They find two of the Mire children at the spring below the terraces, fetching water before dawn, and they take them down the mountain before the watch can stop them."),
+        say("fennick", R("They're looking for me. They took those two because they couldn't find me. I should have stayed and let them hang me.")),
+        setf({"catchersCame": True}),
+    ]),
+]
+S["smokeComes3"] = [
+    n("Three nights after Kell's Bridge, the watch wakes Rhea. There's something at the gate."),
+    n("A grey loftbuck, huge, with a chewed rope trailing from its halter and its knees cut from the scree. It has come up the mountain alone, in the dark, following a song it heard once at sunset."),
+    n("Smoke puts his head down against her chest and leaves it there."),
+    {"kith": {"species": "loftbuck", "level": 8, "id": "smoke-grey", "name": "Smoke", "temperament": "gentle"}},
+    add({"finchTrust": -8}),
+    n("Somewhere down in the grey tents, Finch has woken up to an empty picket line. He'll know where Smoke went. He'll know who called him."),
+]
 S["thornBed3"] = [
-    iff({"stage": "ad10"}, [setf({"light": "night"}), fade("Lockside. Ten days earlier."), run("raidNight")], [
-        iff({"stage": "ad17"}, [fade("Summer."), setf({"light": "day"}), stage("ad18"), goto(TW, 4, 13, "up")], [
+    iff({"stage": "ad10"}, [iff({"eq": {"bridgeAct": "sang"}}, [run("smokeComes3")]), setf({"light": "night"}), fade("Lockside. Ten days earlier."), run("raidNight")], [
+        iff({"stage": "ad17"}, [fade("Summer."), setf({"light": "day"}), run("fennickAfter"), stage("ad18"), goto(TW, 4, 13, "up")], [
             iff({"stage": "ad20"}, [run("lastNight")], [n("Not yet. There's still a lot of the day left.")])])]),
 ]
 
@@ -733,12 +811,12 @@ actors = [
     # Thornwick in Act III: the company at home (the party waits inside the walls, as in Act II)
     actor("wren", TW, 11, 8, "child", [run("wrenSlate")], HOME),
     actor("tamsin-3", TW, 11, 12, "tamsin", [iff({"flag": "finchSeen"}, [say("tamsin", R("He's alive, Rhea. Whatever else. He's alive, and he's got Smoke."))],
-                                                [say("tamsin", R("Ninety-one children in a chapel. Larkfold had forty, and we thought that was a lot."))])], HOME),
+                                                [iff({"eq": {"northRoad": "high"}}, [say("tamsin", R("I keep going up to the high road in my head. Two cairns. We should have gone by the river."))], [say("tamsin", R("Ninety-one children in a chapel. Larkfold had forty, and we thought that was a lot."))])])], HOME),
     actor("oda-3", TW, 17, 9, "oda", [iff({"eq": {"corranFate": "thornwick"}}, [say("oda", R("He eats what I give him and says thank you. I hate that he says thank you."))],
                                            [say("oda", R("New trays every week, child. The spring's never been so busy."))])], home("recruited.oda")),
     actor("ferris-3", TW, 22, 14, "ferris", [say("ferris", R("Thistle's adopted three of the Lockside children. Or they've adopted her. Hard to tell."))], home("recruited.ferris")),
     actor("ketti-3", TW, 7, 14, "ketti", [say("ketti", R("I'm teaching the little ones to wash. They've never been allowed to get the trays wet, so they think water is a punishment."))], home("recruited.ketti")),
-    actor("dorrit-3", TW, 6, 11, "dorrit", [say("dorrit", R("Ninety-one more mouths. I've written to Kane for flour four times. He's sent it twice. I'm counting."))], home("recruited.dorrit")),
+    actor("dorrit-3", TW, 6, 11, "dorrit", [say("dorrit", R("All these more mouths. I've written to Kane for flour four times. He's sent it twice. I'm counting."))], home("recruited.dorrit")),
     actor("hesk-3", TW, 22, 10, "hesk", [iff({"flag": "finchSeen"}, [say("hesk", R("A grey loftbuck that turns for a song it learned as a foal. I've only heard of that once before. It doesn't forget, Caddow. Neither will he."))],
                                               [say("hesk", R("The Lockside children want to feed the kith. I've told them yes, if they ask the kith first."))])], home("recruited.hesk")),
     actor("oakes-3", TW, 20, 13, "oakes", [say("oakes", R("I know the Lockside road, Lieutenant. I've walked it the other way, with carts."))], {"stagePrefix": "ad", "flag": "recruited.oakes", "not": "party.oakes"}),
@@ -870,6 +948,13 @@ BATTLES = {
                   unit("lg2", "House guard", "cartwarden", "front", [196, 116], cast="warden", level=6, skills=["wstrike"]),
                   unit("lrc", "Hatchery reedcat", "reedcat:#8a7a6a", "front", [162, 130], hp=24, kith=True, level=6, skills=["pounce"], species="market-reedcat"),
                   unit("lab", "Guard archer", "archer", "back", [230, 100], cast="archer", level=6, skills=["bow"])]},
+    "lockside-guards-back": {
+        "id": "lockside-guards-back", "name": "Corvel's house guards", "backdrop": "fire", "party": True,
+        "intro": ["In through the boiler-house gate, behind the guards. Half of them are still at the front door.",
+                  "Keep them off the children."],
+        "won": "The brood house is open", "lost": "Driven out of the brood house",
+        "units": [unit("lg1", "House guard", "cartwarden", "front", [170, 94], cast="warden", level=6, skills=["wstrike"]),
+                  unit("lrc", "Hatchery reedcat", "reedcat:#8a7a6a", "front", [162, 130], hp=24, kith=True, level=6, skills=["pounce"], species="market-reedcat")]},
     "lockside-rider": {
         "id": "lockside-rider", "name": "The rider at the gate", "backdrop": "fire",
         "intro": ["A rider on a huge grey loftbuck, across the gate. Warden's helm, visor down. He hasn't said a word.",
@@ -899,7 +984,7 @@ BATTLES = {
 # ------------------------------------------------------------------ voices and music
 voiced = ["exchange", "kaneFinch", "halloranStrip", "guardOffer", "mireCorran", "corranBath", "posyPool", "surveyTell", "summerTrial", "captain"]
 moods = {
-    "scenes": {"act3Start": "hope", "wrenSlate": "tender", "council": "camp", "checkpoint": "tension", "lockside": "dread", "lockGuards": "fire",
+    "scenes": {"act3Start": "hope", "wrenSlate": "tender", "council": "camp", "checkpoint": "tension", "lockside": "dread", "lockGuards": "fire", "lockGuardsWon": "dread", "smokeComes3": "tender", "fennickAfter": "grief",
                "lockKid1": "dread", "lockKid2": "dread", "lockKid3": "dread", "lockRider": "fire", "northRoad": "hope", "exchangeRider": "tension",
                "exchange": "grief", "varroAfter": "grief", "toKane": "dread", "kaneFinch": "dread", "raidNight": "night", "raidTin": "dread",
                "halloranStrip": "dread", "posyRaw": "tender", "guardOffer": "dread", "backToRhea5": "hope", "haldane": "hope", "councilMire": "camp",

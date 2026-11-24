@@ -42,6 +42,8 @@ export type Step =
   | { end: string }
   /** A kith joins: a wild one won over (by the song and food, or bait). The game makes it from its kind and level. */
   | { kith: KithGift }
+  /** A kith is gone for good (taken, run off, dead): out of the company, the pens and the party. */
+  | { loseKith: string }
   /** Opens the party picker (the roll-keeper at camp and at Thornwick). */
   | { menu: "party" | "base" }
   /** Opens a town stall (data/towns/shops.json). */
@@ -118,6 +120,7 @@ export interface StoryHost {
   end(id: string): void;
   /** Adds a kith to the company. */
   addKith?(k: KithGift): void;
+  loseKith?(id: string): void;
   /** Opens the in-game menu on its party page. */
   openPage?(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void;
   duel?(id: string, done: (won: boolean) => void): void;
@@ -187,6 +190,7 @@ export class StoryRunner {
     if ("menu" in st) { this.host.openPage?.(st.menu); return; }
     if ("shop" in st) { this.host.openPage?.(`shop:${st.shop}`); return; }
     if ("tourney" in st) { this.host.openPage?.(`tourney:${st.tourney}`); return; }
+    if ("loseKith" in st) { this.host.loseKith?.(st.loseKith); f[`lost.${st.loseKith}`] = true; this.host.changed(); return; }
     if ("kith" in st) { this.host.addKith?.(st.kith); f[`kith.${st.kith.id}`] = true; this.host.changed(); return; }
     if ("set" in st || "add" in st) {
       for (const [k, v] of Object.entries(st.set ?? {})) f[k] = v;

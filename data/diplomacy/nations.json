@@ -4,8 +4,9 @@
     {
       "id": "cloudline", "name": "The Cloudline Clans", "seat": "Ume's terraces", "land": "cloudline", "known": "a1",
       "blurb": "Terrace villages above the cloud sea. They grow duskwort and sell it to the Guild at a price their grandparents agreed to.",
-      "start": 15, "temper": 11, "likes": "supplies",
-      "price": { "standing": 50, "coin": 120, "supplies": 20, "text": "Help them pay down what they owe the Guild for the duskwort, and send grain for the lean months." },
+      "start": 15, "temper": 11, "likes": "supplies", "trust": "clanTrust",
+      "price": { "standing": 50, "coin": 120, "supplies": 20, "text": "Help them pay down what they owe the Guild for the duskwort, and send grain for the lean months.",
+        "never": { "flag": "tobinRelapse", "text": "Ume's son went home with a new ring on his neck. The clans will never seal anything with the Commons." } },
       "perk": { "supplies": 5, "company": { "name": "Clan slingers", "kind": "bow", "level": 13 }, "text": "Grain from the terraces each time the story moves on (5 supplies), and a company of clan slingers for your battles." },
       "march": "march-cloudline"
     },

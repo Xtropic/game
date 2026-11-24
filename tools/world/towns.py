@@ -115,12 +115,12 @@ TOWNS = [
         "cTTTTTTTTTT::TTTTTTTTTTTTc",
         "ccccccccccceeccccccccccccc",
     ], spawn=(11, 12), people=[
-        ("kr-ferry", "Bridge warden", "vil1", 12, 7, [
+        ("kr-ferry", "Bridge warden", "vil1", 12, 7, [("gone", "roadKnown"),
             "\"Kerrow's bridge, Kerrow's toll. One copper, or a song, or a good story. Commons go free since spring.\""]),
         ("kr-smith", "Smith Garra", "vil4", 18, 9, [
             "\"I shoe the Guild's cart horses and I shoe the Commons' too. A horse doesn't pick a side.\"",
             "\"But I put the Guild's nails in a little crooked. Don't tell anyone.\""]),
-        ("kr-mother", "Annick", "vil2", 7, 3, [
+        ("kr-mother", "Annick", "vil2", 7, 3, [("flag", "roadKnown", "\"They hanged the bridge warden off his own bridge, for letting your children cross. Twenty years he kept that toll. Get away from my door, Commons.\""),
             "\"The indenture carts take the gorge road because it's quiet. My eldest went on one, two winters back.\"",
             ("from", "a3", "\"You're with the Commons now? If you ever stop one of those carts, would you look for a boy called Dell? Freckles. Laughs like a goose.\"")]),
     ], signs=[(5, 4, "Gorge walls on both sides. The river under the bridge is loud enough to talk under.")]),
@@ -528,7 +528,9 @@ def add_people(story, mid, rows, people):
         assert rows[y][x] in ",.:*m/", f"{pid} stands on {rows[y][x]!r}"
         talk = []
         for ln in lines:
-            if isinstance(ln, tuple) and ln[0] in ("shop", "tourney"): continue
+            if isinstance(ln, tuple) and ln[0] in ("shop", "tourney", "gone"): continue
+            if isinstance(ln, tuple) and ln[0] == "flag":  # said first, once a story flag is set
+                talk.append({"if": {"flag": ln[1]}, "then": [{"say": pid if name else "", "text": ln[2]}]}); continue
             if isinstance(ln, tuple) and ln[0] == "steps": talk.extend(ln[1]); continue
             if isinstance(ln, tuple) and ln[0] == "from":  # only once the story has got that far
                 talk.append({"if": {"stage": ORDER[ORDER.index(ln[1]):]}, "then": [{"say": pid if name else "", "text": ln[2]}]})
@@ -539,7 +541,8 @@ def add_people(story, mid, rows, people):
         ring = next((ln[1] for ln in lines if isinstance(ln, tuple) and ln[0] == "tourney"), None)
         if ring: talk.append({"tourney": ring})
         if name: story["cast"][pid] = name
-        story["actors"].append({"id": pid, "map": mid, "x": x, "y": y, "look": look, "when": {"stagePrefix": "a"}, "talk": talk})
+        gone = next((ln[1] for ln in lines if isinstance(ln, tuple) and ln[0] == "gone"), None)  # gone for good once a flag is set
+        story["actors"].append({"id": pid, "map": mid, "x": x, "y": y, "look": look, "when": {"stagePrefix": "a", **({"not": gone} if gone else {})}, "talk": talk})
 
 
 def main():
