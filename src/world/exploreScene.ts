@@ -151,7 +151,14 @@ export class ExploreScene implements Scene, StoryHost {
   private fog = new Graphics();
   private barriers: Sprite[] = [];
   /** Over Dorrit's crates at Thornwick once it's theirs: where the ledger is. */
-  private ledgerSign = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fontWeight: "bold", fill: "#ffe2a0", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
+  private ledgerSign = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 22, fontWeight: "bold", fill: "#ffe2a0", align: "center", stroke: { color: 0x2a1a08, width: 4 }, dropShadow: { color: 0, distance: 2, blur: 4, alpha: 1 } } });
+  /** A gold panel behind the sign and a ring on the ground under the crates. */
+  private ledgerMark = new Graphics();
+  /** Always on screen once Thornwick is Rhea's: a big gold Ledger button (L), pulsing until she first opens it. */
+  private ledgerButton = new Container();
+  private ledgerButtonBg = new Graphics();
+  private ledgerButtonLabel = new Text({ text: "\u{1F4D6}  Thornwick ledger  [L]", style: { fontFamily: "Georgia, serif", fontSize: 18, fontWeight: "bold", fill: "#2a1a08" } });
+  private ledgerNew = new Text({ text: "NEW", style: { fontFamily: "Georgia, serif", fontSize: 13, fontWeight: "bold", fill: "#ffffff", stroke: { color: 0xa02010, width: 4 } } });
   private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private bannerTime = 0;
@@ -175,9 +182,15 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.ledgerSign, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.ledgerMark, this.ledgerSign, this.ledgerButton, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
+    this.ledgerButtonLabel.x = 14; this.ledgerButtonLabel.y = 9;
+    this.ledgerButton.addChild(this.ledgerButtonBg, this.ledgerButtonLabel, this.ledgerNew);
+    this.ledgerButtonBg.roundRect(0, 0, this.ledgerButtonLabel.width + 28, 40, 10).fill(0xf0c060).stroke({ color: 0x6a4410, width: 3 });
+    this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerNew.y = -12;
+    this.ledgerButton.eventMode = "static"; this.ledgerButton.cursor = "pointer"; this.ledgerButton.visible = false;
+    this.ledgerButton.on("pointertap", () => { if (this.free()) this.openLedger(); });
     this.placeLabel.anchor.set(0.5, 1); this.ledgerSign.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
     this.hud.eventMode = "static";
     this.dialog.view.eventMode = "static";
@@ -369,6 +382,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
+    this.ledgerButton.x = w - this.ledgerButtonBg.width - 16; this.ledgerButton.y = h - 84;
     this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h); this.ring.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
@@ -439,6 +453,7 @@ export class ExploreScene implements Scene, StoryHost {
   private baseStaying(): string[] { const trav = new Set([this.hero(), ...this.followers.map((f) => f.id), ...partyOf(this.flags)]); return this.joinedIds().filter((id) => !trav.has(id) && !this.game.kith[id] && PEOPLE[id]); }
   private baseKith(): string[] { const trav = new Set([...this.followers.map((f) => f.id), ...partyOf(this.flags), "ash"]); return this.joinedIds().filter((id) => this.game.kith[id] && !trav.has(id) && !awayOn(this.flags, id)); }
   openBase(): void {
+    this.flags.ledgerSeen = true;
     this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
       armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
       addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.baseWork() }, this.screen.w, this.screen.h);
@@ -791,6 +806,7 @@ export class ExploreScene implements Scene, StoryHost {
   openLedger(): string | undefined {
     if (!baseOpen(this.flags)) return "Thornwick isn't yours yet.";
     if (this.hero() !== "rhea") return "Only Rhea keeps Thornwick's ledger.";
+    this.flags.ledgerSeen = true;
     this.menu.close(); this.openPage("base"); return undefined;
   }
 
@@ -916,6 +932,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (inp.wasPressed("company")) { this.toggleCompany(); return; }
     if (inp.wasPressed("notes")) { this.toggleNotes(); return; }
     if (inp.wasPressed("menu")) { this.openMenu(); return; }
+    if (inp.wasPressed("ledger")) { const why = this.openLedger(); if (why) this.toast(why); return; }
     const a = inp.axis();
     if (this.settle) { if (a.x || a.y) return; this.settle = false; }
     this.player.moving = a.x !== 0 || a.y !== 0;
@@ -975,14 +992,32 @@ export class ExploreScene implements Scene, StoryHost {
     const in3d = this.render3d(airDt, t);
     if (!in3d) this.atmos.update(airDt, t, this.game.app.renderer, p, { x: cx, y: cy, w: vw, h: vh });
     // Thornwick's ledger: a sign over Dorrit's crates, bobbing, so nobody has to hunt for it
-    this.ledgerSign.text = "";
+    this.ledgerSign.text = ""; this.ledgerMark.clear();
+    const owns = baseOpen(this.flags) && this.hero() === "rhea";
+    this.ledgerButton.visible = owns && this.game.scenes.top === this && !this.menu.open && !this.base.open;
+    if (this.ledgerButton.visible) {
+      const fresh = !this.flags.ledgerSeen, pulse = fresh ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 5) : 0;
+      this.ledgerNew.visible = fresh;
+      this.ledgerButton.scale.set(1 + pulse * 0.06);
+      this.ledgerButtonBg.tint = fresh ? (pulse > 0.5 ? 0xffffff : 0xffe8b0) : 0xffffff;
+    }
     const lc = this.ledgerCell();
     if (lc) {
       const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;
-      this.ledgerSign.text = near ? "Thornwick ledger\nEnter: open" : "\u25BC Thornwick ledger";
-      const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 3;
-      if (in3d && this.w3) { const at = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 1.1); this.ledgerSign.x = at.x; this.ledgerSign.y = at.y + bob; }
-      else { this.ledgerSign.x = (lc.x * TILE + 8 - Math.round(cx)) * this.zoom; this.ledgerSign.y = (lc.y * TILE - 4 - Math.round(cy)) * this.zoom + bob; }
+      this.ledgerSign.text = near ? "\u{1F4D6} Thornwick ledger\nPress Enter to open" : "\u{1F4D6} Thornwick ledger\n\u25BC";
+      const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 5;
+      let gx: number, gy: number;
+      if (in3d && this.w3) {
+        const at = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 1.1); this.ledgerSign.x = at.x; this.ledgerSign.y = at.y + bob - 10;
+        const g = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 0); gx = g.x; gy = g.y;
+      } else {
+        this.ledgerSign.x = (lc.x * TILE + 8 - Math.round(cx)) * this.zoom; this.ledgerSign.y = (lc.y * TILE - 8 - Math.round(cy)) * this.zoom + bob;
+        gx = this.ledgerSign.x; gy = (lc.y * TILE + 12 - Math.round(cy)) * this.zoom;
+      }
+      const sw = this.ledgerSign.width + 24, sh = this.ledgerSign.height + 12;
+      this.ledgerMark.roundRect(this.ledgerSign.x - sw / 2, this.ledgerSign.y - sh + 4, sw, sh, 10).fill({ color: 0x1a1208, alpha: 0.72 }).stroke({ color: 0xf0c060, width: 2 });
+      const r = 22 + Math.sin(this.game.playSeconds * 4) * 4;
+      this.ledgerMark.ellipse(gx, gy, r * 1.6, r * 0.7).stroke({ color: 0xffd070, width: 3, alpha: 0.9 });
     }
     // on the world map, name the nearest place within two tiles
     this.placeLabel.text = "";

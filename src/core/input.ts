@@ -1,5 +1,5 @@
 // Input: maps keys and touch buttons to game actions, so scenes never read raw keys.
-export type Action = "up" | "down" | "left" | "right" | "confirm" | "cancel" | "run" | "menu" | "timing" | "auto" | "sing" | "company" | "notes";
+export type Action = "up" | "down" | "left" | "right" | "confirm" | "cancel" | "run" | "menu" | "timing" | "auto" | "sing" | "company" | "notes" | "ledger";
 
 export const DEFAULT_KEYS: Record<string, Action> = {
   ArrowUp: "up", KeyW: "up",
@@ -15,6 +15,7 @@ export const DEFAULT_KEYS: Record<string, Action> = {
   KeyQ: "sing",
   KeyR: "company",
   KeyJ: "notes",
+  KeyL: "ledger",
 };
 
 export class Input {
