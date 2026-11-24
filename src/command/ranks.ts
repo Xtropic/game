@@ -34,6 +34,8 @@ export const RANKS: Rank[] = [
     opens: ["A major's pay: 18 coin.", "The war council may pick two stratagems.", "Two allied companies can join each army battle."] },
   { id: "Commander", party: 5, pay: 25, stratagems: 2, envoys: true, pacts: true, allies: 3,
     opens: ["A commander's pay: 25 coin.", "Three allied companies can join each army battle."] },
+  { id: "Marshal", party: 5, pay: 35, stratagems: 3, envoys: true, pacts: true, allies: 4,
+    opens: ["A marshal's pay: 35 coin.", "The war council may pick three stratagems.", "Four allied companies can join each army battle."] },
 ];
 
 /** The hero's rank now (Corran's ranks are his own and don't count). Before the army takes her in, a recruit's. */

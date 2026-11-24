@@ -80,9 +80,20 @@ interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 
 /** Which script starts the act after each ending. */
 /** Where the story written so far runs out: one quiet line, then a new game. No acts, no chapter cards. */
-export function ledger(_id: string, _f: Record<string, unknown>): string[] {
+export function ledger(id: string, _f: Record<string, unknown>): string[] {
+  const end = ENDINGS[id];
+  if (end) return [end.title, "", end.line, "", "The end.", "", "Press Enter to begin again"];
   return ["The story goes on from here.", "This is as far as it has been written.", "", "Press Enter to begin again"];
 }
+
+/** The five ways the story ends (data/story/act4.json "end" steps): a title and one line for the closing card. */
+export const ENDINGS: Record<string, { title: string; line: string }> = {
+  burning: { title: "The Burning", line: "The breeding lines are gone for ever. So is everyone who was in the Broodhouse." },
+  empty: { title: "The Empty Valley", line: "Every harvest she sings on the empty terraces, and nothing comes." },
+  table: { title: "The Long Table", line: "Three chairs, and a ring on the table that nobody has picked up yet." },
+  green: { title: "The Green Year", line: "A year of weaning, and a country that comes out the other side." },
+  guild: { title: "The New Guild", line: "The same trade, under new management." },
+};
 
 export class ExploreScene implements Scene, StoryHost {
   readonly id = "explore";
@@ -204,6 +215,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
     else if (this.flags.ended === "act1") { this.flags.ended = false; this.runner.run([{ run: "act2Start" }]); } // a save made where Act I used to end
     else if (this.flags.ended === "act2") { this.flags.ended = false; this.runner.run([{ run: "act3Start" }]); } // ...or where Act II did
+    else if (this.flags.ended === "act3") { this.flags.ended = false; this.runner.run([{ run: "act4Start" }]); } // ...or where Act III did
     else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
   }
 

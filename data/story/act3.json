@@ -1877,37 +1877,49 @@
   "kane3": [
    {
     "if": {
-     "stage": "ad2"
+     "flag": "act4"
     },
     "then": [
      {
-      "run": "council"
+      "run": "kane4"
      }
     ],
     "else": [
      {
       "if": {
-       "stage": "ad9"
+       "stage": "ad2"
       },
       "then": [
        {
-        "run": "kaneFinch"
+        "run": "council"
        }
       ],
       "else": [
        {
         "if": {
-         "stage": "ad12"
+         "stage": "ad9"
         },
         "then": [
          {
-          "run": "councilMire"
+          "run": "kaneFinch"
          }
         ],
         "else": [
          {
-          "say": "kane",
-          "text": "\"Lieutenant. You have your orders.\""
+          "if": {
+           "stage": "ad12"
+          },
+          "then": [
+           {
+            "run": "councilMire"
+           }
+          ],
+          "else": [
+           {
+            "say": "kane",
+            "text": "\"Lieutenant. You have your orders.\""
+           }
+          ]
          }
         ]
        }
@@ -5130,7 +5142,7 @@
     ]
    },
    {
-    "end": "act3"
+    "run": "act4Start"
    }
   ],
   "fennickAfter": [

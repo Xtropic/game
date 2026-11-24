@@ -203,6 +203,296 @@
    ],
    "won": "Champion of the Foundry ring",
    "lost": "Down in the slag-sand"
+  },
+  "kane-tent": {
+   "name": "Kane",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Kane, in his own tent, with his sword out. He has drilled half the Commons Army himself. He fights the way he plans: patiently."
+   ],
+   "foe": {
+    "name": "Marshal Kane",
+    "look": "kane",
+    "cast": "kane",
+    "level": 24,
+    "moves": {
+     "high": 2,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.25,
+    "lines": {
+     "hit": [
+      "His point opens your sleeve.",
+      "The flat of his blade cracks across your wrist."
+     ],
+     "hurt": [
+      "He steps back, measuring.",
+      "He breathes out hard through his nose."
+     ],
+     "yield": "He lowers the point, and looks at it as if it belongs to someone else.",
+     "down": "Your blow drives him back into the map table."
+    }
+   },
+   "words": [
+    {
+     "id": "sum",
+     "label": "\"You did the sum. Do it again.\"",
+     "attr": "wits",
+     "vs": "wits",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You did the sum. Four hundred against the rest. Do it again, with my brother in it.\"",
+     "land": "His guard falters. He's doing it.",
+     "miss": "\"I have,\" he says. \"It comes out the same.\""
+    },
+    {
+     "id": "kept",
+     "label": "\"You kept me in the war. Here I am.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 35,
+     "line": "\"You kept me in the war, Kane. Here I am. This is what you kept.\"",
+     "land": "He hears it. The point wavers.",
+     "miss": "He doesn't hear it. He doesn't let himself."
+    }
+   ],
+   "won": "Kane is down",
+   "lost": "Kane holds his tent"
+  },
+  "halloran": {
+   "name": "Halloran",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Halloran, in his shirt sleeves, by the fire in the inner yard. Thirty years a Warden. He doesn't waste a step."
+   ],
+   "foe": {
+    "name": "Captain Halloran",
+    "look": "halloran",
+    "cast": "halloran",
+    "level": 30,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.3,
+    "lines": {
+     "hit": [
+      "His blade comes round faster than it should.",
+      "He steps inside your guard and hits you with the hilt."
+     ],
+     "hurt": [
+      "He gives ground, a step.",
+      "Blood on his sleeve. He looks at it, interested."
+     ],
+     "yield": "He sets his sword down on the stones, and sits beside it.",
+     "down": "Your blow takes him across the ribs."
+    }
+   },
+   "words": [
+    {
+     "id": "larkfold",
+     "label": "\"You drew a question mark.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You drew a question mark where Larkfold was, and you let a man burn his home to answer it.\"",
+     "land": "Something closes in his face. His next step is short.",
+     "miss": "\"That's war, Caddow. Everyone draws question marks.\""
+    },
+    {
+     "id": "children",
+     "label": "\"Four hundred children.\"",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"There are four hundred children in those halls. Yours. You put them there.\"",
+     "land": "He glances at the halls. Just once.",
+     "miss": "He doesn't look. He's made a point of never looking."
+    }
+   ],
+   "won": "Halloran is down",
+   "lost": "Thrown down by the fire"
+  },
+  "halloran-two": {
+   "name": "Halloran",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Halloran, by the fire in the inner yard. Corran is beside you. Every time Halloran turns to one, the other is there."
+   ],
+   "foe": {
+    "name": "Captain Halloran",
+    "look": "halloran",
+    "cast": "halloran",
+    "level": 27,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "His blade comes round faster than it should.",
+      "He gets past you, and Corran is there, and only just."
+     ],
+     "hurt": [
+      "He gives ground.",
+      "He has to turn to watch Corran, and you're there."
+     ],
+     "yield": "He sets his sword down on the stones, and sits beside it.",
+     "down": "Your blow and Corran's land together."
+    }
+   },
+   "words": [
+    {
+     "id": "dace",
+     "label": "\"Look at him, Halloran.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 35,
+     "line": "\"Look at him. Look at what you made of him, with one story.\"",
+     "land": "He looks at Corran. It's a mistake, and he knows it as he makes it.",
+     "miss": "\"I made a Warden of him once. He unmade himself.\""
+    },
+    {
+     "id": "larkfold",
+     "label": "\"You drew a question mark.\"",
+     "attr": "wits",
+     "vs": "wits",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You drew a question mark where Larkfold was. We found the map.\"",
+     "land": "That reaches him. He didn't know it had been found.",
+     "miss": "He shrugs. \"Then you know what I am. Good.\""
+    }
+   ],
+   "won": "Halloran is down",
+   "lost": "Thrown down by the fire"
+  },
+  "corran-gate": {
+   "name": "Corran",
+   "backdrop": "fire",
+   "mustWin": true,
+   "intro": [
+    "Corran, in the inner gate with the fire behind him and a fresh lull on his neck. He can't feel the heat. He can't feel anything."
+   ],
+   "foe": {
+    "name": "Corran",
+    "look": "corran",
+    "cast": "corran",
+    "level": 22,
+    "moves": {
+     "high": 2,
+     "low": 3,
+     "thrust": 2
+    },
+    "feint": 0.1,
+    "lines": {
+     "hit": [
+      "He hits you, and doesn't seem to notice he's done it.",
+      "He shoves you back from the gate."
+     ],
+     "hurt": [
+      "Your blow lands. He doesn't flinch. He doesn't feel it.",
+      "He staggers, and smiles."
+     ],
+     "yield": "He sits down in the gate, very suddenly, and looks at his hands.",
+     "down": "He goes down on the stones."
+    }
+   },
+   "words": [
+    {
+     "id": "song",
+     "label": "Sing the third line",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 40,
+     "line": "You sing the third line of the foal song, the one he always got wrong.",
+     "land": "He stops. Under the lull, something in him stops.",
+     "miss": "He doesn't hear it. The lull hears everything for him."
+    },
+    {
+     "id": "finch",
+     "label": "\"Finch is in there.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"Finch is in there, Corran. Get out of my way.\"",
+     "land": "His face changes. The lull can't quite hold it.",
+     "miss": "\"I know,\" he says, calmly. \"That's why it has to be me.\""
+    }
+   ],
+   "won": "Corran is down",
+   "lost": "Knocked back from the gate"
+  },
+  "hallet-gate": {
+   "name": "Hallet",
+   "backdrop": "fire",
+   "mustWin": true,
+   "intro": [
+    "Hallet, in the inner gate, in a Commons coat, with the fire behind him."
+   ],
+   "foe": {
+    "name": "Captain Hallet",
+    "look": "hallet",
+    "cast": "hallet",
+    "level": 26,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 2
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "He's strong. Your arm goes numb to the shoulder.",
+      "He drives you back a step toward the yard."
+     ],
+     "hurt": [
+      "He grunts, and gives no ground.",
+      "He wipes his eyes. The smoke's in them."
+     ],
+     "yield": "He throws his sword down. \"Go on, then. Go and burn with them.\"",
+     "down": "You get under his guard."
+    }
+   },
+   "words": [
+    {
+     "id": "coat",
+     "label": "\"You're wearing a Commons coat.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You're wearing a Commons coat, Hallet. There are children behind you.\"",
+     "land": "He looks down at the coat. His sword drops an inch.",
+     "miss": "\"So are you. Look where it's got us.\""
+    },
+    {
+     "id": "song",
+     "label": "Listen",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "You stop, in the smoke, and make him listen to what's coming out of the halls.",
+     "land": "He listens. Nobody could not.",
+     "miss": "He won't listen. He's made himself deaf to it on purpose."
+    }
+   ],
+   "won": "Hallet is down",
+   "lost": "Thrown back from the gate"
   }
  }
 }

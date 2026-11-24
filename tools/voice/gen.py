@@ -70,6 +70,8 @@ CAST = {
     "hallet": (V(("am_fenrir", 1)), 0.94, -0.5),
     "haldane": (V(("bm_fable", 1)), 0.86, 0),
     "fennick": (V(("am_puck", 1)), 1.0, 0),
+    # Act IV
+    "tam": (V(("am_puck", 1)), 1.0, 2.0),
 }
 # the accent each voice was trained on (a = American, b = British)
 def lang_for(who):

@@ -68,9 +68,11 @@ S["wrenSlate"] = [
 ]
 
 S["kane3"] = [
+  iff({"flag": "act4"}, [run("kane4")], [
     iff({"stage": "ad2"}, [run("council")], [
         iff({"stage": "ad9"}, [run("kaneFinch")], [
             iff({"stage": "ad12"}, [run("councilMire")], [say("kane", R("Lieutenant. You have your orders."))])])]),
+  ]),
 ]
 S["council"] = [
     n("Kane's tent is full. Varro is there, and a broad captain with a burn scar down one cheek and a dented steel gorget at his throat, who doesn't get up."),
@@ -764,7 +766,7 @@ S["lastNight"] = [
         n("Late, when the children are asleep, Rhea goes up onto the terrace wall and sings the foal song out over the cloud, toward Vantry."),
         n("Nothing comes. Somewhere down there, a grey loftbuck lifts its head."),
     ]),
-    {"end": "act3"},
+    run("act4Start"),
 ]
 S["fennickAfter"] = [
     iff({"flag": "fennickStayed"}, [

@@ -384,7 +384,7 @@ describe("Act III: the Houses", () => {
     r.run([{ run: "thornBed3" }]); expect(f.stage).toBe("ad18");
     r.run([{ run: "summerTrial" }]); expect(f.collegeProof).toBe(true); expect(f.stage).toBe("ad19");
     pick(1); r.run([{ run: "captain" }]); expect(f.rank).toBe("Captain"); expect(f.stage).toBe("ad20"); expect(log).toContain("army lockside-hold"); expect(f.lockHeld).toBe(true);
-    r.run([{ run: "thornBed3" }]); expect(log.at(-1)).toBe("end act3");
+    r.run([{ run: "thornBed3" }]); expect(f.stage).toBe("af1"); expect(f.act4).toBe(true); // straight on into the autumn
     expect(r.busy).toBe(false);
   });
 
@@ -428,5 +428,74 @@ describe("Act III: the Houses", () => {
     const def = withoutAbsent(ARMY_BATTLES["lockside-hold"], { kaneConfronted: true });
     expect(def.ours.some((c) => c.id === "varro")).toBe(false); expect(def.stratagems.some((s) => s.id === "willows")).toBe(false);
     expect(withoutAbsent(ARMY_BATTLES["lockside-hold"], {}).ours.some((c) => c.id === "varro")).toBe(true);
+  });
+});
+
+describe("Act IV: the Broodhouse, and the end", () => {
+  const start = (extra: Flags = {}, picks: number[] = []) => {
+    const f: Flags = { ...fresh(), stage: "ad20", hero: "rhea", rank: "Captain", act2: true, act3: true, hold: 60, kaneTrust: 10, finchTrust: 50, finchCorran: 0,
+      trade: "shut", millbridge: "truth", corranFate: "thornwick", surveyTold: true, offerKnown: true, "recruited.posy": true, "recruited.dorrit": true, ...extra };
+    const { h, log, map } = host(f, picks);
+    return { f, log, map, r: new StoryRunner(STORY, h) };
+  };
+  /** Plays from the autumn to the end; picks are the choices in the order they come. */
+  const play = (extra: Flags, picks: number[]) => {
+    const t = start(extra, picks);
+    const { f, r } = t;
+    r.run([{ run: "act4Start" }]); expect(f.stage).toBe("af1");
+    r.run([{ run: "runaway4" }]); expect(f.stage).toBe("af2"); expect(f.finchInBroodhouse).toBe(true);
+    r.run([{ run: "kane4" }]); expect(f.rank).toBe("Commander"); expect(f.stage).toBe("af3");
+    r.run([{ run: "drainIn4" }]); expect(t.map()).toBe("underdrain"); expect(f.stage).toBe("af4");
+    r.run([{ run: "grate" }]); expect(f.stage).toBe("af5");
+    r.run([{ run: "thornBed4" }]); expect(f.stage).toBe("af6"); expect(f.hero).toBe("rhea");
+    r.run([{ run: "oilLedger" }]); expect(f.stage).toBe("af7");
+    r.run([{ run: "kane4" }]); expect(f.stage).toBe("af8");
+    r.run([{ run: "thornBed4" }]); expect(f.stage).toBe("af9");
+    r.run([{ run: "vantry" }]); expect(t.map()).toBe("broodhouse"); expect(f.stage).toBe("af10");
+    r.run([{ run: "halloranYard" }]);
+    if (f.stage === "af11") r.run([{ run: "theGate" }]);
+    expect(r.busy).toBe(false);
+    return t;
+  };
+
+  it("the Long Table: Finch tells her, Kane arrested, the tin given away, Corran spared at the gate", () => {
+    const { f, log } = play({ finchTrust: 70 }, [0, 0, 2, 0]);
+    expect(f.finchTold).toBe("rhea"); expect(f.kaneArrested).toBe(true); expect(f.rank).toBe("Marshal"); expect(f.hardlinersGone).toBe(true);
+    expect(f.southGone).toBeUndefined(); // the burned offer read to the council keeps the south captains
+    expect(f.tinGiven).toBe(true); expect(log).toContain("duel halloran-two"); expect(log).toContain("army spindle-gate");
+    expect(f.gateChoice).toBe("spared"); expect(log.at(-1)).toBe("end table");
+  });
+
+  it("the Burning: Kane's plan goes ahead, and the gate comes an hour too late", () => {
+    const { f, log } = play({ finchTrust: 70, surveyTold: false }, [0, 1, 1]);
+    expect(f.kanePlan).toBe("ahead"); expect(f.rank).toBe("Commander"); expect(log).toContain("duel halloran");
+    expect(log.join("\n")).toContain("There was never a column"); // Halloran says it himself
+    expect(log.at(-1)).toBe("end burning");
+  });
+
+  it("the Empty Valley: Corran killed in front of Finch; or Finch's trust gone", () => {
+    expect(play({ finchTrust: 70 }, [0, 0, 1, 1]).log.at(-1)).toBe("end empty");
+    // he won't talk at the grate; he sends Corran a letter; Corran keeps it; Kane resists arrest; a lull on the last night
+    const t = play({ finchTrust: 20, finchCorran: 5, kaneTrust: -10 }, [1, 0, 0, 0]);
+    expect(t.f.finchLetter).toBe(true); expect(t.f.corranKnowsMoss).toBe(true); expect(t.f.finchCorran).toBe(17);
+    expect(t.log).toContain("duel kane-tent"); expect(t.f.corranWearing).toBe(true); expect(t.log).toContain("duel corran-gate");
+    expect(t.log.at(-1)).toBe("end empty");
+  });
+
+  it("the Green Year: Corran dies in the halls, Hallet holds the gate; the trade shut, the College and the Millcities won", () => {
+    const { f, log } = play({ corranFate: "left", hold: 20, collegeProof: true, "nation.millcities": "pact" }, [0, 0]);
+    expect(f.corranDead).toBe("broodhouse"); expect(log).toContain("duel hallet-gate"); expect(f.gateChoice).toBe("none");
+    expect(log.at(-1)).toBe("end green");
+  });
+
+  it("the New Guild: the trade left running; Corran hanged at Millbridge; Millbridge turns when the moss comes out", () => {
+    const { f, log } = play({ corranFate: "millbridge", surveyTold: false, trade: "run", millbridge: "elders", finchTrust: 70 }, [0, 1, 0]);
+    expect(f.corranDead).toBe("hanged"); expect(f.millbridgeTold).toBe(false); expect(f.millbridgeGone).toBe(true);
+    expect(log.at(-1)).toBe("end guild");
+  });
+
+  it("the Spindle gate fields only the companies that stayed", () => {
+    const def = withoutAbsent(ARMY_BATTLES["spindle-gate"], { hardlinersGone: true, millbridgeGone: true });
+    expect(def.ours.map((c) => c.id)).toEqual(["hq", "varro", "bows", "riders", "south"]);
   });
 });

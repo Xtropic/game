@@ -1,0 +1,32 @@
+{
+ "id": "underdrain",
+ "name": "The drains under Vantry",
+ "music": "caves",
+ "legend": {
+  "R": "rock",
+  "_": "cavefloor",
+  "~": "water",
+  "e": "exit",
+  "o": "cave",
+  "|": "fence"
+ },
+ "rows": [
+  "RRRRRRRRRRoRRRRRRRRRRRRRRRRRRR",
+  "RRRRRRRRRR__RRRRRRRRRRRRRRRRRR",
+  "RRRRRRRRRR__RRRRRRRRRRRR|____R",
+  "e_______________________|____R",
+  "e_______________________|____R",
+  "R~~~~~~~~~~~~~~~~~~~~~~~|____R",
+  "RRRRRRRRRRRRRRRR___RRRRR|~~~~R",
+  "RRRRRRRRRRRRRRRR___RRRRRRRRRRR",
+  "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 3
+  }
+ ]
+}

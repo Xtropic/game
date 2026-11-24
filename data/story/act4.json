@@ -1,0 +1,3159 @@
+{
+ "id": "act4",
+ "title": "Act IV: The Broodhouse",
+ "voiced": [
+  "runaway4",
+  "council4",
+  "grate",
+  "finchTruth",
+  "finchShut",
+  "kaneOil",
+  "arrestKane",
+  "relapse",
+  "halloranYard",
+  "halloranDown",
+  "gateClean",
+  "gateWearing",
+  "gateHallet"
+ ],
+ "moods": {
+  "scenes": {
+   "act4Start": "hope",
+   "runaway4": "tender",
+   "council4": "camp",
+   "kane4": "camp",
+   "drainIn4": "dread",
+   "grate": "grief",
+   "finchTruth": "grief",
+   "finchShut": "grief",
+   "thornBed4": "night",
+   "corranAutumn": "night",
+   "corranRoom": "tender",
+   "corranHalls": "grief",
+   "corranGaol": "dread",
+   "backToRhea6": "camp",
+   "oilLedger": "tension",
+   "millbridgeWord": "tension",
+   "kaneOil": "dread",
+   "arrestKane": "tension",
+   "kaneTaken": "tension",
+   "planAhead": "dread",
+   "winter4": "night",
+   "relapse": "dread",
+   "relapseChained": "night",
+   "vantry": "tension",
+   "millbridgeTurns": "tension",
+   "wardensYard": "fire",
+   "halloranYard": "dread",
+   "halloranDown": "fire",
+   "theGate": "fire",
+   "gateClean": "fire",
+   "gateWearing": "fire",
+   "gateHallet": "fire",
+   "gateChoice": "grief",
+   "burning": "grief",
+   "ending": "grief",
+   "endBurning": "grief",
+   "endEmpty": "grief",
+   "endTable": "tender",
+   "endGreen": "hope",
+   "endGuild": "dread"
+  },
+  "stages": {
+   "af4": "dread",
+   "af10": "tension",
+   "af11": "fire",
+   "ag1": "night"
+  }
+ },
+ "cast": {
+  "tam": "Tam",
+  "loyalist": "Kane's sergeant"
+ },
+ "objectives": {
+  "af1": "Wren has brought someone up from Vantry. They're by the warm pool.",
+  "af2": "Kane has called his officers. Go down to the Commons camp.",
+  "af3": "The Broodhouse drain comes out on the canal bank at Cinderwick, by the old Mire drain. Go there at midnight.",
+  "af4": "Follow the drain east, to the Broodhouse grate.",
+  "af5": "Go home to Thornwick. Turn in at your tent.",
+  "af6": "Dorrit wants you. She's at the crates with the ledger.",
+  "af7": "Kane is in his tent at the top of the Commons camp.",
+  "af8": "Winter. Turn in at your tent when you're ready.",
+  "af9": "The column is waiting at Cinderwick. Go to Vantry.",
+  "af10": "The Broodhouse. Halloran is in the inner yard.",
+  "af11": "The inner gate. The fire is already lit.",
+  "ag1": "Thornwick, an evening in autumn."
+ },
+ "actors": [
+  {
+   "id": "tam",
+   "map": "thornwick",
+   "x": 11,
+   "y": 9,
+   "look": "kid2",
+   "when": {
+    "stage": [
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9"
+    ]
+   },
+   "talk": [
+    {
+     "run": "runaway4"
+    }
+   ]
+  },
+  {
+   "id": "wren-4",
+   "map": "thornwick",
+   "x": 12,
+   "y": 9,
+   "look": "child",
+   "when": {
+    "stage": [
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9"
+    ]
+   },
+   "talk": [
+    {
+     "say": "wren",
+     "text": "\"Tam's teaching the Lockside lot a game from the Houses. It's mostly hiding. They're very good at it.\""
+    }
+   ]
+  },
+  {
+   "id": "tamsin-4",
+   "map": "thornwick",
+   "x": 11,
+   "y": 12,
+   "look": "tamsin",
+   "when": {
+    "stagePrefix": "af"
+   },
+   "talk": [
+    {
+     "if": {
+      "flag": "finchTold"
+     },
+     "then": [
+      {
+       "say": "tamsin",
+       "text": "\"Whatever he told you down there, you've been carrying it round since like a full pail. Put it down for an hour. I'll hold it.\""
+      }
+     ],
+     "else": [
+      {
+       "say": "tamsin",
+       "text": "\"Commander Caddow. Larkfold would have laughed itself sick. Then it would have followed you anywhere.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "oda-4",
+   "map": "thornwick",
+   "x": 17,
+   "y": 9,
+   "look": "oda",
+   "when": {
+    "stagePrefix": "af",
+    "flag": "recruited.oda"
+   },
+   "talk": [
+    {
+     "say": "oda",
+     "text": "\"Every tray I've got is breeding, child. If you're going where I think you're going, there'll be four hundred more needing them by spring.\""
+    }
+   ]
+  },
+  {
+   "id": "dorrit-4",
+   "map": "thornwick",
+   "x": 6,
+   "y": 11,
+   "look": "dorrit",
+   "when": {
+    "stagePrefix": "af",
+    "flag": "recruited.dorrit"
+   },
+   "talk": [
+    {
+     "run": "oilLedger"
+    }
+   ]
+  },
+  {
+   "id": "qm-4",
+   "map": "thornwick",
+   "x": 6,
+   "y": 11,
+   "look": "varro",
+   "when": {
+    "stage": "af6",
+    "not": "recruited.dorrit"
+   },
+   "talk": [
+    {
+     "run": "oilLedger"
+    }
+   ]
+  },
+  {
+   "id": "haldane-4",
+   "map": "thornwick",
+   "x": 18,
+   "y": 12,
+   "look": "haldane",
+   "when": {
+    "stagePrefix": "af",
+    "flag": "recruited.haldane"
+   },
+   "talk": [
+    {
+     "say": "haldane",
+     "text": "\"If you bring those children out of the Broodhouse, bring me their numbers. Not for the books. So I know how many trays.\""
+    }
+   ]
+  },
+  {
+   "id": "posy-4",
+   "map": "thornwick",
+   "x": 7,
+   "y": 4,
+   "look": "posy",
+   "when": {
+    "stagePrefix": "af",
+    "flag": "recruited.posy",
+    "not": "party.posy"
+   },
+   "talk": [
+    {
+     "say": "posy",
+     "text": "\"Four hundred. I keep saying it to myself, so it'll mean something. It doesn't. It's just a lot of Mires.\""
+    }
+   ]
+  },
+  {
+   "id": "corran-4",
+   "map": "thornwick",
+   "x": 5,
+   "y": 4,
+   "look": "corran",
+   "when": {
+    "stage": [
+     "af6",
+     "af7",
+     "af8"
+    ],
+    "eq": {
+     "corranFate": "thornwick"
+    }
+   },
+   "talk": [
+    {
+     "say": "corran",
+     "text": "\"The Broodhouse halls run north and south, with the line house between. The back doors of the halls are chained. I walked them with Halloran. I'll draw you every door I remember.\""
+    }
+   ]
+  },
+  {
+   "id": "varro-4",
+   "map": "camp",
+   "x": 13,
+   "y": 5,
+   "look": "varro",
+   "when": {
+    "stage": [
+     "af2",
+     "af7"
+    ]
+   },
+   "talk": [
+    {
+     "say": "varro",
+     "text": "\"Talk to Kane, Caddow. Then talk to me.\""
+    }
+   ]
+  },
+  {
+   "id": "hallet-4",
+   "map": "camp",
+   "x": 17,
+   "y": 5,
+   "look": "hallet",
+   "when": {
+    "stage": "af2"
+   },
+   "talk": [
+    {
+     "say": "hallet",
+     "text": "\"Commander.\""
+    }
+   ]
+  },
+  {
+   "id": "finch-grate",
+   "map": "underdrain",
+   "x": 26,
+   "y": 3,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "af4"
+    ]
+   },
+   "talk": [
+    {
+     "run": "grate"
+    }
+   ]
+  },
+  {
+   "id": "halloran-4",
+   "map": "broodhouse",
+   "x": 15,
+   "y": 10,
+   "look": "halloran",
+   "when": {
+    "stage": [
+     "af10"
+    ]
+   },
+   "talk": [
+    {
+     "run": "halloranYard"
+    }
+   ]
+  },
+  {
+   "id": "gate-corran",
+   "map": "broodhouse",
+   "x": 15,
+   "y": 12,
+   "look": "corran",
+   "when": {
+    "stage": "af11",
+    "not": "corranDead"
+   },
+   "talk": [
+    {
+     "run": "theGate"
+    }
+   ]
+  },
+  {
+   "id": "gate-hallet",
+   "map": "broodhouse",
+   "x": 16,
+   "y": 12,
+   "look": "hallet",
+   "when": {
+    "stage": "af11",
+    "flag": "corranDead",
+    "eq": {
+     "kanePlan": "stopped"
+    }
+   },
+   "talk": [
+    {
+     "run": "theGate"
+    }
+   ]
+  },
+  {
+   "id": "smoke-bh",
+   "map": "broodhouse",
+   "x": 26,
+   "y": 18,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "af10",
+     "af11"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The grey loftbuck. He won't settle. He keeps turning his head toward the west hall."
+    }
+   ]
+  }
+ ],
+ "steps": [
+  {
+   "map": "land-millcities",
+   "at": [
+    20,
+    12
+   ],
+   "do": [
+    {
+     "run": "drainIn4"
+    }
+   ],
+   "when": {
+    "stage": [
+     "af3"
+    ]
+   }
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    20,
+    12
+   ],
+   "do": [
+    {
+     "run": "vantry"
+    }
+   ],
+   "when": {
+    "stage": [
+     "af9"
+    ]
+   }
+  },
+  {
+   "map": "underdrain",
+   "at": [
+    0,
+    3
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 20,
+      "y": 13,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "underdrain",
+   "at": [
+    0,
+    4
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 20,
+      "y": 13,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "underdrain",
+   "at": [
+    10,
+    0
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The old Mire drain. Somebody has chalked a little drawing of a girl with a slate on the bricks."
+    }
+   ]
+  },
+  {
+   "map": "broodhouse",
+   "at": [
+    15,
+    21
+   ],
+   "do": [
+    {
+     "toast": "Not now. Not with the children still in there."
+    }
+   ],
+   "when": {
+    "stage": [
+     "af10",
+     "af11"
+    ]
+   }
+  },
+  {
+   "map": "broodhouse",
+   "at": [
+    16,
+    21
+   ],
+   "do": [
+    {
+     "toast": "Not now. Not with the children still in there."
+    }
+   ],
+   "when": {
+    "stage": [
+     "af10",
+     "af11"
+    ]
+   }
+  },
+  {
+   "map": "broodhouse",
+   "at": [
+    15,
+    13
+   ],
+   "do": [
+    {
+     "run": "halloranYard"
+    }
+   ],
+   "when": {
+    "stage": "af10"
+   }
+  },
+  {
+   "map": "broodhouse",
+   "at": [
+    16,
+    13
+   ],
+   "do": [
+    {
+     "run": "halloranYard"
+    }
+   ],
+   "when": {
+    "stage": "af10"
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    13,
+    15
+   ],
+   "do": [
+    {
+     "toast": "Not now."
+    }
+   ],
+   "when": {
+    "stage": [
+     "af1",
+     "af6"
+    ]
+   }
+  },
+  {
+   "map": "thornwick",
+   "at": [
+    14,
+    15
+   ],
+   "do": [
+    {
+     "toast": "Not now."
+    }
+   ],
+   "when": {
+    "stage": [
+     "af1",
+     "af6"
+    ]
+   }
+  }
+ ],
+ "zones": [
+  {
+   "map": "thornwick",
+   "area": [
+    3,
+    14,
+    4,
+    14
+   ],
+   "when": {
+    "stage": [
+     "af5",
+     "af8"
+    ]
+   },
+   "do": [
+    {
+     "run": "thornBed4"
+    }
+   ]
+  },
+  {
+   "map": "underdrain",
+   "area": [
+    23,
+    3,
+    23,
+    4
+   ],
+   "when": {
+    "stage": [
+     "af4"
+    ]
+   },
+   "do": [
+    {
+     "run": "grate"
+    }
+   ]
+  },
+  {
+   "map": "broodhouse",
+   "area": [
+    12,
+    14,
+    19,
+    16
+   ],
+   "when": {
+    "stage": "af10",
+    "not": "yardFought"
+   },
+   "do": [
+    {
+     "run": "wardensYard"
+    }
+   ]
+  }
+ ],
+ "looks": [
+  {
+   "map": "broodhouse",
+   "tile": "tray",
+   "do": [
+    {
+     "say": "",
+     "text": "Broodhouse trays, row on row, the moss turned by small hands. The larvae twist toward the lamps."
+    }
+   ]
+  },
+  {
+   "map": "broodhouse",
+   "tile": "shelf",
+   "do": [
+    {
+     "say": "",
+     "text": "The line house shelves. Two sealed tanks, warm to the touch, each with a brass plate: the Guild's breeding lines."
+    }
+   ]
+  },
+  {
+   "map": "broodhouse",
+   "tile": "hay",
+   "do": [
+    {
+     "say": "",
+     "text": "Hay for the Wardens' loftbucks."
+    }
+   ]
+  },
+  {
+   "map": "underdrain",
+   "tile": "fence",
+   "do": [
+    {
+     "say": "",
+     "text": "The grate. The lock is on the far side, where nobody in the drain can reach it."
+    }
+   ]
+  },
+  {
+   "map": "underdrain",
+   "tile": "water",
+   "do": [
+    {
+     "say": "",
+     "text": "Warm water from the Broodhouse halls, running down to the canal."
+    }
+   ]
+  }
+ ],
+ "songs": [
+  {
+   "when": {
+    "map": "broodhouse",
+    "stage": "af10"
+   },
+   "near": "smoke-bh",
+   "range": 6,
+   "do": [
+    {
+     "say": "",
+     "text": "Rhea sings a line of the foal song. The grey loftbuck comes to her at once, and stands at her shoulder, and won't be sent away."
+    }
+   ]
+  }
+ ],
+ "hazards": [],
+ "scripts": {
+  "act4Start": [
+   {
+    "fade": "Autumn."
+   },
+   {
+    "set": {
+     "act4": true,
+     "light": "day",
+     "hero": "rhea"
+    }
+   },
+   {
+    "stage": "af1"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "say": "",
+    "text": "The terraces are gold. The first frost is on the chapel roof in the mornings, and the children who came out of Lockside and Mire have learned to run without being told to."
+   },
+   {
+    "say": "",
+    "text": "Wren has brought someone up the mountain in the night. A boy, thin as a rake, sitting by the warm pool with his feet in it and his shoes in his lap."
+   }
+  ],
+  "runaway4": [
+   {
+    "if": {
+     "stage": "af1"
+    },
+    "then": [
+     {
+      "say": "wren",
+      "text": "\"This is Tam. He came out of Rennick's, in the Houses' quarter. He came the drain way. I told him you'd want to hear.\""
+     },
+     {
+      "say": "tam",
+      "text": "\"They came for all of us. Rennick's, Ashby's, Dunmore's. Every House that's still got children. Carts at night, with the covers tied down.\""
+     },
+     {
+      "say": "tam",
+      "text": "\"They're putting everybody in the Broodhouse. The big one, inside the wall. They said it's so the Commons can't take us. They said it like it was for us.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"How many?\""
+     },
+     {
+      "say": "tam",
+      "text": "\"Nobody counts out loud in there. More than three hundred. Less than five.\""
+     },
+     {
+      "say": "",
+      "text": "He takes his feet out of the water and looks at them, as if they belong to somebody else."
+     },
+     {
+      "say": "tam",
+      "text": "\"And the rider. The one they called Ninety. He came in on the trays last week, same as us. They took his coat and gave him his number back.\""
+     },
+     {
+      "say": "tam",
+      "text": "\"He doesn't talk. He just works. The little ones go and stand next to him, and nobody touches them while they do.\""
+     },
+     {
+      "if": {
+       "eq": {
+        "corranFate": "thornwick"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Behind the bathhouse wall, something is put down very carefully, the way a man puts something down when his hands won't stop shaking."
+       }
+      ]
+     },
+     {
+      "say": "wren",
+      "text": "\"I told him you'd do something. You always do something.\""
+     },
+     {
+      "set": {
+       "finchInBroodhouse": true
+      }
+     },
+     {
+      "say": "",
+      "text": "By noon a runner comes up the road from the camp. Kane has called his officers."
+     },
+     {
+      "stage": "af2"
+     }
+    ],
+    "else": [
+     {
+      "say": "tam",
+      "text": "\"I'm going to stay in the water till my feet stop hurting. Wren says that's allowed here.\""
+     }
+    ]
+   }
+  ],
+  "council4": [
+   {
+    "say": "",
+    "text": "Kane, Varro, Hallet, and the captains from the south. Somebody has pinned a drawing of Vantry's inner wards to the map table, and the Broodhouse is in the middle of it, inked black."
+   },
+   {
+    "say": "kane",
+    "text": "\"The Guild has put every child it has left in one building, around the two breeding lines every Guild lull in Ostrel comes from. It thinks we won't come.\""
+   },
+   {
+    "say": "hallet",
+    "text": "\"It's built a wall of children. Clever. Filthy, but clever.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "lockHeld": false
+     }
+    },
+    "then": [
+     {
+      "say": "varro",
+      "text": "\"And it's taken Corvel's back. They'll say the Commons can't hold a hatchery. They'll say it at every town gate this winter.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "varro",
+      "text": "\"They saw what happened at Lockside. They know we can hold what we take. That's why they've pulled everything back inside the wall.\""
+     }
+    ]
+   },
+   {
+    "say": "kane",
+    "text": "\"The council wants Vantry before the spring. I want the Broodhouse. One column, and one officer to take it.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Captain Caddow. You've walked children out of two hatcheries. You'll be Commander of the Vantry column, from today. Varro is your second.\""
+   },
+   {
+    "say": "hallet",
+    "text": "\"And the hardliners? My companies?\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Yours march with her. Under her.\""
+   },
+   {
+    "say": "",
+    "text": "Hallet looks at Rhea for a long moment. Then he nods, once, the way a man nods at weather."
+   },
+   {
+    "set": {
+     "rank": "Commander"
+    }
+   },
+   {
+    "toast": "Promoted: Commander, of the Vantry column."
+   },
+   {
+    "say": "kane",
+    "text": "\"Find me a way in, Commander.\""
+   },
+   {
+    "if": {
+     "flag": "recruited.posy"
+    },
+    "then": [
+     {
+      "say": "posy",
+      "text": "\"There's a way in. The Broodhouse drain runs into the canal at Cinderwick, by Mire's. Every runaway in the Houses knows it. It's got a grate at the top, and the grate's got a lock, and the lock's on their side.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "varro",
+      "text": "\"The Mire boy, Tam, says the Broodhouse drain comes out at Cinderwick, by Mire's. There's a grate at the top. Locked, from their side.\""
+     }
+    ]
+   },
+   {
+    "say": "rhea",
+    "text": "\"Then I'll go and look at it.\""
+   },
+   {
+    "stage": "af3"
+   }
+  ],
+  "kane4": [
+   {
+    "if": {
+     "stage": "af2"
+    },
+    "then": [
+     {
+      "run": "council4"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "af7"
+      },
+      "then": [
+       {
+        "run": "kaneOil"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "flag": "kaneArrested"
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "Kane's tent. Varro has the map table now. Kane is in the stockade, and asks for nobody."
+         }
+        ],
+        "else": [
+         {
+          "say": "kane",
+          "text": "\"Commander.\""
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "drainIn4": [
+   {
+    "fade": "Cinderwick. Midnight."
+   },
+   {
+    "set": {
+     "light": "night"
+    }
+   },
+   {
+    "regroup": true
+   },
+   {
+    "goto": {
+     "map": "underdrain",
+     "x": 1,
+     "y": 3,
+     "facing": "right"
+    }
+   },
+   {
+    "say": "",
+    "text": "The old drain to Mire goes off to the left, a black mouth in the brick. This one goes on, east, under the wall. It's bigger. The Broodhouse makes a lot of warm water."
+   },
+   {
+    "stage": "af4"
+   }
+  ],
+  "grate": [
+   {
+    "if": {
+     "stage": "af4"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The grate. Iron bars as thick as a wrist, set into the stone, and a lock on the far side. Beyond it, a low room where the warm water comes down a chute from the brood halls."
+     },
+     {
+      "say": "",
+      "text": "Someone is sitting on the step inside, with his back to the wall and his knees up. He has been there a while. He has been waiting for whoever Tam would bring."
+     },
+     {
+      "say": "",
+      "text": "Fifteen. Taller than Rhea now. Sandy hair cropped to the skull, the way the Houses crop it. A number inked on his wrist."
+     },
+     {
+      "say": "finch",
+      "text": "\"Tam got out, then. Good.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Finch.\""
+     },
+     {
+      "say": "finch",
+      "text": "\"Don't. Not through bars. I've had enough of people looking at me through bars.\""
+     },
+     {
+      "if": {
+       "atLeast": {
+        "finchTrust": 60
+       }
+      },
+      "then": [
+       {
+        "run": "finchTruth"
+       }
+      ],
+      "else": [
+       {
+        "run": "finchShut"
+       }
+      ]
+     },
+     {
+      "say": "finch",
+      "text": "\"And I'm not coming out. Don't ask. There are four hundred in here, and the little ones sleep against me, and if I go they'll take it out on them.\""
+     },
+     {
+      "say": "finch",
+      "text": "\"Halloran sleeps in the line house, in the middle, with the lines. The Wardens are on the outer wall and the street gate. Nobody guards the halls. Nobody has to. Where would we go?\""
+     },
+     {
+      "say": "",
+      "text": "Somewhere above, a bell rings for the night shift. Finch gets up."
+     },
+     {
+      "say": "finch",
+      "text": "\"Don't come down here again. They count the grate.\""
+     },
+     {
+      "say": "",
+      "text": "He goes up the chute without looking back. He climbs like someone who has done it a hundred times in the dark."
+     },
+     {
+      "set": {
+       "grateSeen": true
+      }
+     },
+     {
+      "stage": "af5"
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The grate, and the empty step behind it."
+     }
+    ]
+   }
+  ],
+  "finchTruth": [
+   {
+    "say": "",
+    "text": "He looks at the water for a long time. When he speaks, it's to the water."
+   },
+   {
+    "say": "finch",
+    "text": "\"I've got something to tell you. I've been going to tell you for six years. I used to practise it on Smoke.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"The last tray. At Larkfold. The brood that went down to Millbridge.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"Corran's mother was so sick from weaning. You remember. She couldn't keep anything down. And I thought, if her greenling was a bit stronger, it would work faster, and she'd stop being sick.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"So I gave the last tray a double measure of moss. I was nine. I didn't tell anyone. I wrote it in the brood book in my own hand, like I'd been told to, and nobody ever reads the brood book.\""
+   },
+   {
+    "say": "",
+    "text": "Millbridge. Forty dead. The warning. The night on the cloud path. The fire. The carts."
+   },
+   {
+    "say": "finch",
+    "text": "\"All of it. Every bit of it, from a measure of moss. I've known since I was nine.\""
+   },
+   {
+    "set": {
+     "finchTold": "rhea"
+    }
+   },
+   {
+    "choose": "Finch won't look up from the water.",
+    "options": [
+     {
+      "label": "\"You were nine. You were trying to help her. Halloran did the rest, and Halloran knew what he was doing.\"",
+      "hint": "Take it off him.",
+      "by": "rhea",
+      "do": [
+       {
+        "add": {
+         "finchTrust": 10
+        }
+       },
+       {
+        "set": {
+         "mossAnswer": "absolved"
+        }
+       },
+       {
+        "say": "finch",
+        "text": "\"You don't know that. You can't know that.\""
+       },
+       {
+        "say": "rhea",
+        "text": "\"I know you. I know who taught you to measure moss. I did.\""
+       },
+       {
+        "say": "",
+        "text": "He puts his face in his hands. When he takes them away he's fifteen again, and also nine."
+       }
+      ]
+     },
+     {
+      "label": "\"Forty people died in Millbridge, Finch. You don't get to carry that alone, and you don't get to put it down either.\"",
+      "hint": "Don't lie to him.",
+      "by": "rhea",
+      "do": [
+       {
+        "add": {
+         "finchTrust": 2
+        }
+       },
+       {
+        "set": {
+         "mossAnswer": "shared"
+        }
+       },
+       {
+        "say": "",
+        "text": "He nods. He nods for a long time, as if somebody has finally said the thing he was waiting to hear."
+       },
+       {
+        "say": "finch",
+        "text": "\"Yes. That's right. That's fair.\""
+       }
+      ]
+     },
+     {
+      "label": "Say nothing",
+      "hint": "There's nothing to say.",
+      "do": [
+       {
+        "add": {
+         "finchTrust": -6
+        }
+       },
+       {
+        "set": {
+         "mossAnswer": "silent"
+        }
+       },
+       {
+        "say": "",
+        "text": "Rhea can't speak. Finch waits, and when nothing comes, he wipes his face with the back of his wrist, over the number."
+       },
+       {
+        "say": "finch",
+        "text": "\"Right. Well. Now you know.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "finchShut": [
+   {
+    "say": "finch",
+    "text": "\"Whatever you've come to say, I don't want it. You sang my loftbuck off a bridge. You let them put me in a stockade for nine days. You never came.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "bridgeAct": "sang"
+     }
+    },
+    "then": [
+     {
+      "say": "finch",
+      "text": "\"Smoke was the only thing I had that was mine. Is he warm? Do you feed him properly? No. Don't tell me.\""
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "He doesn't say anything else for a while. The water runs under the grate."
+   },
+   {
+    "if": {
+     "eq": {
+      "corranFate": "thornwick"
+     },
+     "atLeast": {
+      "finchCorran": 0,
+      "hold": 50
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Then he takes a folded paper out of his shirt and pushes it through the bars, and lets go of it before she can touch his hand."
+     },
+     {
+      "say": "finch",
+      "text": "\"That's for him. Not for you. Don't read it. Give it to him.\""
+     },
+     {
+      "set": {
+       "finchLetter": true
+      }
+     }
+    ]
+   }
+  ],
+  "thornBed4": [
+   {
+    "if": {
+     "stage": "af5"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "run": "corranAutumn"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "af8"
+      },
+      "then": [
+       {
+        "run": "winter4"
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Not yet. There's still a lot of the day left."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "corranAutumn": [
+   {
+    "if": {
+     "eq": {
+      "corranFate": "thornwick"
+     }
+    },
+    "then": [
+     {
+      "run": "corranRoom"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "corranFate": "left"
+       }
+      },
+      "then": [
+       {
+        "run": "corranHalls"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "eq": {
+          "corranFate": "millbridge"
+         }
+        },
+        "then": [
+         {
+          "run": "corranGaol"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "run": "backToRhea6"
+   }
+  ],
+  "corranRoom": [
+   {
+    "fade": "Thornwick. The same night."
+   },
+   {
+    "set": {
+     "hero": "corran"
+    }
+   },
+   {
+    "stage": "ag1"
+   },
+   {
+    "say": "",
+    "text": "Oda has given him the cell at the end of the bathhouse, the one with a door. He has never had a door at Thornwick before. He keeps it open."
+   },
+   {
+    "say": "",
+    "text": "He can sleep now, most nights. He can eat. The rings on his neck are fading to pale marks, the way old scars do, and some mornings he forgets to touch them."
+   },
+   {
+    "if": {
+     "flag": "finchLetter"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Rhea comes to the door with a folded paper, and holds it out, and doesn't come in."
+     },
+     {
+      "say": "rhea",
+      "text": "\"From Finch. He said not to read it. I haven't.\""
+     },
+     {
+      "say": "",
+      "text": "She goes. He sits on the pallet with it for an hour before he opens it."
+     },
+     {
+      "say": "",
+      "text": "Finch's hand. He wrote like a nine-year-old for years, and then one winter he didn't. Four lines."
+     },
+     {
+      "say": "",
+      "text": "I doubled the moss in the last tray at Larkfold. For your mother. It was me, not the Guild. I thought you should know before somebody kills you for it."
+     },
+     {
+      "say": "",
+      "text": "He reads it until the lamp goes out."
+     },
+     {
+      "set": {
+       "corranKnowsMoss": true
+      }
+     },
+     {
+      "choose": "The letter, in the dark.",
+      "options": [
+       {
+        "label": "Tell Rhea what it says",
+        "hint": "She has a right to know. He asked you not to.",
+        "do": [
+         {
+          "set": {
+           "mossToRhea": true,
+           "finchTold": "rhea"
+          }
+         },
+         {
+          "add": {
+           "finchCorran": -10,
+           "hold": 4
+          }
+         },
+         {
+          "say": "",
+          "text": "In the morning he goes to her tent and tells her, word for word, standing in the door. Then he goes back to his cell and shuts the door for the first time."
+         }
+        ]
+       },
+       {
+        "label": "Keep it",
+        "hint": "It was given to you. Only you.",
+        "do": [
+         {
+          "add": {
+           "finchCorran": 12
+          }
+         },
+         {
+          "say": "",
+          "text": "He folds it small and puts it inside his shirt, where Finch kept it. He never tells anyone what it says."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Haldane comes by at the end of the day to look at his neck and write in the trial ledger. He's volunteer one hundred and five now. A number again, but a different kind."
+     },
+     {
+      "say": "haldane",
+      "text": "\"You're doing well. Annoyingly well. You'll ruin my averages.\""
+     },
+     {
+      "say": "",
+      "text": "When the old man has gone, Corran sits at the open door until late, humming the foal song. He gets the third line right now, nearly every time."
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranHalls": [
+   {
+    "fade": "The Broodhouse. Autumn."
+   },
+   {
+    "set": {
+     "hero": "corran"
+    }
+   },
+   {
+    "say": "",
+    "text": "When they emptied Mire into the carts, the sick-room orderly went with the children. Nobody asked him. Nobody asks anything of him. He carries the bitten ones to the sick room and the dead ones to the cart, and he isn't a Warden or a father or anything at all."
+   },
+   {
+    "if": {
+     "atLeast": {
+      "hold": 35
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "On the third night, at the trays in the west hall, a boy with a cropped head and a number on his wrist looks up and sees who is carrying the water."
+     },
+     {
+      "say": "finch",
+      "text": "\"You.\""
+     },
+     {
+      "say": "corran",
+      "text": "\"Finch.\""
+     },
+     {
+      "choose": "Finch is waiting. The little ones are asleep against his legs.",
+      "options": [
+       {
+        "label": "\"Halloran told me they'd burn Larkfold. It was a lie. I showed them the way in, and it was a lie, and it was me.\"",
+        "hint": "Tell him all of it.",
+        "by": "corran",
+        "do": [
+         {
+          "set": {
+           "finchKnowsWhy": true
+          }
+         },
+         {
+          "add": {
+           "finchCorran": 8,
+           "hold": 6
+          }
+         },
+         {
+          "say": "finch",
+          "text": "\"I know it was you. I watched you do it, for six years, every night, with the tin.\""
+         },
+         {
+          "say": "",
+          "text": "He goes back to the moss. But in the morning there's a bowl of the children's porridge by Corran's pallet, and nobody else would have put it there."
+         }
+        ]
+       },
+       {
+        "label": "Say nothing, and go back to work",
+        "hint": "He's earned nothing from you.",
+        "do": [
+         {
+          "add": {
+           "finchCorran": -4
+          }
+         },
+         {
+          "say": "",
+          "text": "He goes back to carrying water. Finch watches him all the way down the hall."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "set": {
+       "corranInBroodhouse": true
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "He gets the cough in the first week of the frost. Everybody in the halls gets it. He gives his blanket to a girl who coughs worse."
+     },
+     {
+      "say": "",
+      "text": "On the last night, he can hear a boy singing at the far end of the hall, to keep the little ones quiet. The foal song. The third line right."
+     },
+     {
+      "say": "",
+      "text": "He tries to sing it with him, and can't find the breath for it, and then he doesn't need to."
+     },
+     {
+      "set": {
+       "corranDead": "broodhouse"
+      }
+     },
+     {
+      "say": "",
+      "text": "They carry him to the cart in the morning with the others. Finch carries one end."
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranGaol": [
+   {
+    "fade": "Millbridge. The gaol under the reeve's house."
+   },
+   {
+    "set": {
+     "hero": "corran"
+    }
+   },
+   {
+    "if": {
+     "flag": "surveyTold"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The reeve comes down at first frost, with a lamp and the Wardens' map, the one with Larkfold left blank."
+     },
+     {
+      "say": "reeve",
+      "text": "\"I'm supposed to hang you this week. I've read this every night since the summer instead.\""
+     },
+     {
+      "say": "reeve",
+      "text": "\"The Commons is going for the Broodhouse. They need someone who's been inside it. Someone who knows the halls.\""
+     },
+     {
+      "say": "corran",
+      "text": "\"I watched over Mire's brood room. The Broodhouse is bigger. I walked its halls with Halloran twice. I know where the lines are.\""
+     },
+     {
+      "say": "reeve",
+      "text": "\"Then you'll go with the column, in irons. And when it's done, you'll come back here, and we'll talk about the rope.\""
+     },
+     {
+      "say": "",
+      "text": "He doesn't argue. It's the most anyone has offered him in a year."
+     },
+     {
+      "set": {
+       "corranChained": true
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "They hang him at the first frost, on the well steps, where they tried him. It's done early, before the market, without a crowd."
+     },
+     {
+      "say": "",
+      "text": "He asks for nothing. At the end, he asks them to tell Rhea that he got the third line right. The reeve writes it down, and never sends it."
+     },
+     {
+      "set": {
+       "corranDead": "hanged"
+      }
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "backToRhea6": [
+   {
+    "fade": "Thornwick. Morning."
+   },
+   {
+    "hero": "rhea"
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "stage": "af6"
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 4,
+     "y": 13,
+     "facing": "up"
+    }
+   },
+   {
+    "if": {
+     "eq": {
+      "corranDead": "hanged"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A letter comes up from Millbridge with the flour cart, in the reeve's square hand. Two lines. Rhea reads it standing at the gate, and then she puts it in the fire, and then she goes and sits in the chapel by herself until noon."
+     }
+    ]
+   },
+   {
+    "if": {
+     "eq": {
+      "corranDead": "broodhouse"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Tam brings word up the drain road: the orderly from Mire died in the frost, in the west hall. The children sang over him. He doesn't know the man's name. Rhea does."
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "recruited.dorrit"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Dorrit is waiting at the crates with the ledger open, and a face like a shut door."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Varro's quartermaster is waiting at the crates with a ledger, and a face like a shut door."
+     }
+    ]
+   }
+  ],
+  "oilLedger": [
+   {
+    "if": {
+     "stage": "af6"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": "recruited.dorrit"
+      },
+      "then": [
+       {
+        "say": "dorrit",
+        "text": "\"I keep the camp's books as well as ours now. Kane's quartermaster sends me his tallies because he can't add. Look at this.\""
+       },
+       {
+        "say": "dorrit",
+        "text": "\"Forty barrels of lamp oil, drawn from the Lockside stores and sent down the canal to Cinderwick. Signed by Kane's own sergeant. Lamp oil, Caddow. Nobody needs forty barrels of light.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "varro",
+        "text": "\"Forty barrels of lamp oil, drawn from the Lockside stores and sent to Cinderwick. On Kane's seal. I've been a soldier twenty years. Nobody needs forty barrels of light.\""
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "Cinderwick is where the Broodhouse drain comes out. Rhea has stood in it."
+     },
+     {
+      "if": {
+       "flag": "finchTold"
+      },
+      "then": [
+       {
+        "run": "millbridgeWord"
+       }
+      ]
+     },
+     {
+      "stage": "af7"
+     }
+    ],
+    "else": [
+     {
+      "say": "dorrit",
+      "text": "\"The books balance. They always balance. That's the frightening thing about books.\""
+     }
+    ]
+   }
+  ],
+  "millbridgeWord": [
+   {
+    "if": {
+     "eq": {
+      "millbridge": "elders"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "And there's the other thing, the one she's carried since the grate. Millbridge believes the Guild poisoned its brood, because she stood on the well steps and told them so."
+     },
+     {
+      "choose": "What Millbridge believes.",
+      "options": [
+       {
+        "label": "Write to the reeve, and tell her the truth",
+        "hint": "It will come out. Better from you.",
+        "do": [
+         {
+          "set": {
+           "millbridgeTold": true
+          }
+         },
+         {
+          "add": {
+           "millbridgeTrust": -10
+          }
+         },
+         {
+          "say": "",
+          "text": "She writes it plainly: a boy of nine, a measure of moss, and her own lie on the well steps afterwards. She doesn't ask for anything."
+         }
+        ]
+       },
+       {
+        "label": "Leave it",
+        "hint": "The war needs Millbridge.",
+        "do": [
+         {
+          "set": {
+           "millbridgeTold": false
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "kaneOil": [
+   {
+    "say": "",
+    "text": "Kane is alone, at the map table, with the drawing of the Broodhouse pinned flat under four stones."
+   },
+   {
+    "say": "rhea",
+    "text": "\"Forty barrels of lamp oil, to Cinderwick.\""
+   },
+   {
+    "say": "",
+    "text": "He doesn't pretend. She'll give him that, afterwards. He never once pretends."
+   },
+   {
+    "say": "kane",
+    "text": "\"The breeding lines, Commander. Two lines, in one room. Every Guild lull that has ever been put on a neck came from them. While they live, the Guild lives. Take Vantry and leave the lines, and they'll be breeding again in a year, somewhere we can't reach.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Hallet's men go in through the drain the night you take the Spindle gate. They oil the halls and the line house. One fire, and it's finished, for ever.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"There are four hundred children in the halls.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"Yes.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"And when the lines are gone, half of Ostrel goes into the raw in one winter, and some of them die of it, and I'll answer for that too. I've done the sum, Caddow. I've done it every night for a month. Four hundred against every child who'll ever be put on a tray again.\""
+   },
+   {
+    "if": {
+     "flag": "offerKnown"
+    },
+    "then": [
+     {
+      "say": "rhea",
+      "text": "\"You did a sum once before. Every Larkfold child in the Houses, for me at Kell's Bridge. You burned that one too.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"I did. And you're here, and you've taken three hatcheries. The sum was right.\""
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "finchInBroodhouse"
+    },
+    "then": [
+     {
+      "say": "rhea",
+      "text": "\"My brother is in there.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"I know. I'm sorry. I'm not sorry enough to stop.\""
+     }
+    ]
+   },
+   {
+    "choose": "Kane waits for her answer. His hand is flat on the drawing of the Broodhouse.",
+    "options": [
+     {
+      "label": "\"You're relieved, Marshal. Varro, take his sword.\"",
+      "hint": "Arrest him. The hardliners won't stand for it.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "kanePlan": "stopped"
+        }
+       },
+       {
+        "run": "arrestKane"
+       }
+      ]
+     },
+     {
+      "label": "\"Take the gate, and leave the rest to you. Is that what you want me to say?\"",
+      "hint": "Let it go ahead. It may be the only way the Guild ever ends.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "kanePlan": "ahead"
+        }
+       },
+       {
+        "run": "planAhead"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "arrestKane": [
+   {
+    "say": "",
+    "text": "Varro comes in. He looks at Kane, and at Rhea, and he puts his hand on his sword hilt and leaves it there."
+   },
+   {
+    "if": {
+     "atLeast": {
+      "kaneTrust": 0
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Kane looks at the hand on the hilt. Then he unbuckles his own sword and lays it on the drawing of the Broodhouse, across the line house."
+     },
+     {
+      "say": "kane",
+      "text": "\"You'll be wrong, Caddow. And you'll be Marshal. Those go together more often than you'd think.\""
+     },
+     {
+      "run": "kaneTaken"
+     }
+    ],
+    "else": [
+     {
+      "say": "kane",
+      "text": "\"No. Not from you. Not after everything I kept you in the war for.\""
+     },
+     {
+      "say": "",
+      "text": "He draws."
+     },
+     {
+      "duel": "kane-tent",
+      "win": [
+       {
+        "say": "",
+        "text": "He goes down on one knee among the stones from the map table, and doesn't get up, and Varro takes the sword out of his hand."
+       },
+       {
+        "run": "kaneTaken"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "kaneTaken": [
+   {
+    "set": {
+     "kaneArrested": true,
+     "rank": "Marshal",
+     "hardlinersGone": true
+    }
+   },
+   {
+    "say": "",
+    "text": "By evening the whole camp knows. By morning, Hallet is gone, and his three companies with him, and the forty barrels of lamp oil with them."
+   },
+   {
+    "if": {
+     "flag": "offerKnown"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Varro reads the council the Guild's letter about Larkfold's children, the one that came to Kane's tent under a truce flag. The south captains stay to a man."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Nobody tells the council why. Two of the south captains go after Hallet in the night. The rest stay, and watch her."
+     },
+     {
+      "set": {
+       "southGone": true
+      }
+     }
+    ]
+   },
+   {
+    "toast": "Rhea is Marshal of the Commons Army."
+   },
+   {
+    "say": "varro",
+    "text": "\"Marshal. Hallet's still got the oil. Wherever he's gone, he took that with him.\""
+   },
+   {
+    "stage": "af8"
+   }
+  ],
+  "planAhead": [
+   {
+    "say": "kane",
+    "text": "\"I want you to take the Spindle gate and hold it, so nobody comes up the ward while Hallet's in the drain. That's all I want.\""
+   },
+   {
+    "say": "kane",
+    "text": "\"When it's over, you can hate me. You'll have the war to do it in.\""
+   },
+   {
+    "say": "",
+    "text": "She walks out. Varro is outside the tent. He has heard all of it. He doesn't say anything, and neither does she."
+   },
+   {
+    "stage": "af8"
+   }
+  ],
+  "winter4": [
+   {
+    "fade": "Winter."
+   },
+   {
+    "set": {
+     "light": "night"
+    }
+   },
+   {
+    "if": {
+     "flag": "roadKnown"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "In the deep of the winter, the Guild comes up the Kerrow road that the toll warden let them by. A Warden column, in the snow, with ladders."
+     },
+     {
+      "army": "thornwick-raid",
+      "win": [
+       {
+        "say": "",
+        "text": "They go back down the Kerrow road, carrying their ladders and their dead. They won't come again this winter."
+       }
+      ],
+      "lose": [
+       {
+        "say": "",
+        "text": "They burn the stores and the kith pens before they go. Nobody inside the walls is taken. It's the only thing Rhea lets herself count."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "tobinRelapse"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "No moss comes down from Ume's terraces this winter. Oda breeds the trays on what she has, and goes to bed later every night."
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "brannocBuilder"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Brannoc builds scaling ladders in the chapel all winter, with his back strapped. Sixty of them, light enough for a child to carry. He doesn't say what they're for. Everybody knows."
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "catchersCame"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Fennick sleeps in the gatehouse now, with a lamp, as if being where the catchers would come first could pay for the two they took."
+     }
+    ]
+   },
+   {
+    "if": {
+     "eq": {
+      "corranFate": "thornwick"
+     }
+    },
+    "then": [
+     {
+      "run": "relapse"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "corranChained"
+      },
+      "then": [
+       {
+        "run": "relapseChained"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "fade": "Spring."
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "say": "",
+    "text": "The column gathers at Cinderwick in the thaw. Every company the Commons can raise, and some it can't afford."
+   },
+   {
+    "stage": "af9"
+   }
+  ],
+  "relapse": [
+   {
+    "fade": "The night before Vantry."
+   },
+   {
+    "set": {
+     "hero": "corran"
+    }
+   },
+   {
+    "say": "",
+    "text": "Corran's tent is at the edge of the column, where Varro put him, because he's the only one who has walked the Broodhouse's halls, and he's going in with them."
+   },
+   {
+    "say": "",
+    "text": "There's a tin in his coat pocket. He doesn't know how it got there. That isn't true. A sutler at Cinderwick sold it to him for the last of his pay, and he told himself he'd throw it in the canal on the way back."
+   },
+   {
+    "say": "",
+    "text": "A fresh lull, warm in the tin, turning slowly toward the heat of his hand."
+   },
+   {
+    "say": "",
+    "text": "Tomorrow he walks into the place where Halloran is. One fresh lull, and he'd be steady for it. Nobody would ever know."
+   },
+   {
+    "choose": "The tin, in his hand.",
+    "options": [
+     {
+      "label": "Put it on. Just for tomorrow.",
+      "hint": "He'll be steady at the gate.",
+      "do": [
+       {
+        "set": {
+         "relapseNight": "used",
+         "corranWearing": true,
+         "mods.corran": "lull"
+        }
+       },
+       {
+        "add": {
+         "hold": -25,
+         "rings.corran": 1
+        }
+       },
+       {
+        "say": "",
+        "text": "The cold, then the warmth, climbing up the back of his skull. The shaking stops. Tomorrow stops mattering. He sleeps like a child."
+       }
+      ]
+     },
+     {
+      "label": "Crush it",
+      "hint": "Alone, in the dark.",
+      "do": [
+       {
+        "set": {
+         "relapseNight": "crushed"
+        }
+       },
+       {
+        "add": {
+         "hold": 10
+        }
+       },
+       {
+        "say": "",
+        "text": "He crushes it under his heel in the mud, and stands there for a long time afterwards, and then he goes and sits by the watch fire until dawn, because he can't be alone with what he's just done."
+       }
+      ]
+     },
+     {
+      "label": "Take it to Rhea",
+      "hint": "Somebody else has to hold it.",
+      "do": [
+       {
+        "set": {
+         "relapseNight": "given",
+         "tinGiven": true
+        }
+       },
+       {
+        "add": {
+         "hold": 14
+        }
+       },
+       {
+        "say": "",
+        "text": "He walks the length of the column in the dark to her tent, and stands in the door, and holds out the tin."
+       },
+       {
+        "say": "corran",
+        "text": "\"I bought this. I'm not going to use it. I need you to have it, so I can't.\""
+       },
+       {
+        "say": "",
+        "text": "She takes it. She doesn't say anything. She doesn't need to. She holds the tin in one hand and, after a moment, his wrist in the other, the way she used to take a pulse."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "relapseChained": [
+   {
+    "fade": "The night before Vantry."
+   },
+   {
+    "say": "",
+    "text": "They keep Corran in irons at the back of the column. Varro has a man sit with him. On the last night, the man comes to Rhea."
+   },
+   {
+    "say": "varro",
+    "text": "\"He asked me to tell you he knows the way to the west hall. He said to say it was the only thing he could give you that was any use.\""
+   }
+  ],
+  "vantry": [
+   {
+    "fade": "Vantry. The Spindle gate, at dawn."
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "if": {
+     "flag": "hardlinersGone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Hallet's companies are gone, and the forty barrels with them. Nobody knows where."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Hallet's companies are on the left of the line, with the drain detail held back behind them. Nobody talks to them."
+     }
+    ]
+   },
+   {
+    "run": "millbridgeTurns"
+   },
+   {
+    "army": "spindle-gate",
+    "win": [
+     {
+      "set": {
+       "spindleWon": true
+      }
+     },
+     {
+      "say": "",
+      "text": "The Spindle gate goes in at the third push, and the Commons pours up the ward behind it, and the Wardens on the Broodhouse's outer wall throw down their crossbows and run."
+     }
+    ],
+    "lose": [
+     {
+      "set": {
+       "spindleWon": false
+      }
+     },
+     {
+      "say": "",
+      "text": "The column breaks at the Spindle gate and falls back down the ward. But Rhea's own section is already in the drain, and the grate's lock is on the inside, and someone has left it open."
+     }
+    ]
+   },
+   {
+    "regroup": true
+   },
+   {
+    "goto": {
+     "map": "broodhouse",
+     "x": 15,
+     "y": 19,
+     "facing": "up"
+    }
+   },
+   {
+    "stage": "af10"
+   },
+   {
+    "say": "",
+    "text": "The Broodhouse's outer yard. Carts with their covers tied down. A well. Behind the inner wall, the long roofs of the brood halls, and the line house between them with smoke coming quietly out of its chimney."
+   },
+   {
+    "if": {
+     "flag": "kith.smoke-grey"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Smoke comes in behind her through the street gate, with nobody on his back, and stands in the middle of the yard with his ears up, listening for something."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "In the corner of the yard there's a kith pen, and in it a huge grey loftbuck with a chewed rope, who lifts his head when Rhea comes in and doesn't put it down again."
+     }
+    ]
+   }
+  ],
+  "millbridgeTurns": [
+   {
+    "if": {
+     "flag": "finchTold"
+    },
+    "then": [
+     {
+      "if": {
+       "eq": {
+        "millbridge": "elders"
+       }
+      },
+      "then": [
+       {
+        "if": {
+         "flag": "millbridgeTold"
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "Millbridge's company is on the right of the line. The reeve sent them with a letter: Millbridge will fight, it says, for the Broodhouse's children, and not for her."
+         }
+        ],
+        "else": [
+         {
+          "say": "",
+          "text": "Millbridge's company isn't on the line. A runaway's story got to Millbridge in the winter, about a Larkfold boy and a measure of moss. The reeve called her company home, and sent no letter."
+         },
+         {
+          "set": {
+           "millbridgeGone": true
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "wardensYard": [
+   {
+    "if": {
+     "not": "yardFought"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Broodhouse's own guard comes out of the stores at a run: Wardens, half-armed, and a hatchery reedcat on a chain."
+     },
+     {
+      "regroup": true
+     },
+     {
+      "battle": "broodhouse-yard",
+      "win": [
+       {
+        "say": "",
+        "text": "The yard is clear. The inner gate is shut, and barred from inside."
+       },
+       {
+        "set": {
+         "yardFought": true
+        }
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The inner gate is barred."
+     }
+    ]
+   }
+  ],
+  "halloranYard": [
+   {
+    "if": {
+     "stage": "af10"
+    },
+    "then": [
+     {
+      "if": {
+       "not": "yardFought"
+      },
+      "then": [
+       {
+        "run": "wardensYard"
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "The bar comes off the inner gate from the inside, and it opens."
+     },
+     {
+      "say": "",
+      "text": "Halloran is standing in the inner yard, by the fire, in his shirt sleeves, with his sword in his hand and his coat folded on a crate. He has been waiting. He has the look of a man who has always known how this would end and is only interested in the details."
+     },
+     {
+      "say": "halloran",
+      "text": "\"Caddow. I wondered if it would be you or Kane. I'm glad it's you. Kane would have just burned it.\""
+     },
+     {
+      "if": {
+       "flag": [
+        "surveyTold"
+       ],
+       "not": [
+        "corranDead",
+        "corranWearing"
+       ]
+      },
+      "then": [
+       {
+        "if": {
+         "eq": {
+          "corranFate": "thornwick"
+         }
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "Corran comes through the gate behind her. Halloran sees him, and for the first time, something moves in his face."
+         }
+        ]
+       },
+       {
+        "if": {
+         "flag": "corranChained"
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "Corran comes through the gate behind her, with the irons struck off his wrists for this. Halloran sees him, and for the first time, something moves in his face."
+         }
+        ]
+       },
+       {
+        "if": {
+         "flag": "corranInBroodhouse"
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "Corran comes out of the west hall with a water yoke on his shoulders, and puts it down, and walks across the yard to stand beside her."
+         }
+        ]
+       },
+       {
+        "say": "corran",
+        "text": "\"There was no column. You never knew where Larkfold was. You'd drawn a cloud on the map where it should be.\""
+       },
+       {
+        "say": "halloran",
+        "text": "\"I drew a question mark, Dace. You answered it.\""
+       },
+       {
+        "duel": "halloran-two",
+        "win": [
+         {
+          "run": "halloranDown"
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "duel": "halloran",
+        "win": [
+         {
+          "run": "halloranDown"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The inner yard. The fire has burned down."
+     }
+    ]
+   }
+  ],
+  "halloranDown": [
+   {
+    "say": "",
+    "text": "He goes down by the fire, and stays down, and lies there looking at the sky over the Broodhouse as if it's the first time he's noticed it."
+   },
+   {
+    "if": {
+     "not": "surveyTold"
+    },
+    "then": [
+     {
+      "say": "halloran",
+      "text": "\"You never found it, did you. The survey. There was never a column, Caddow. Nobody in the Guild could have found your valley with a map and a year.\""
+     },
+     {
+      "say": "halloran",
+      "text": "\"I told Dace a story, and he believed it, because he loved you. That's all. That's all it ever takes.\""
+     }
+    ]
+   },
+   {
+    "set": {
+     "halloranBeaten": true
+    }
+   },
+   {
+    "say": "",
+    "text": "Then the smell reaches her. Lamp oil, and under it, smoke. Not the line house chimney. The halls."
+   },
+   {
+    "if": {
+     "eq": {
+      "kanePlan": "ahead"
+     }
+    },
+    "then": [
+     {
+      "run": "burning"
+     }
+    ],
+    "else": [
+     {
+      "stage": "af11"
+     }
+    ]
+   }
+  ],
+  "theGate": [
+   {
+    "if": {
+     "stage": "af11"
+    },
+    "then": [
+     {
+      "if": {
+       "eq": {
+        "kanePlan": "ahead"
+       }
+      },
+      "then": [
+       {
+        "run": "burning"
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Smoke is coming out under the brood hall doors, black and thick, and somewhere inside the west hall children are beginning to scream."
+       },
+       {
+        "say": "",
+        "text": "Hallet's men came up the drain with the oil while the column was at the Spindle gate. They're gone again. The fire isn't."
+       },
+       {
+        "if": {
+         "flag": "corranDead"
+        },
+        "then": [
+         {
+          "run": "gateHallet"
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "flag": "corranWearing"
+          },
+          "then": [
+           {
+            "run": "gateWearing"
+           }
+          ],
+          "else": [
+           {
+            "run": "gateClean"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The gate."
+     }
+    ]
+   }
+  ],
+  "gateClean": [
+   {
+    "say": "",
+    "text": "Corran is at her side. He's grey in the face and he isn't shaking."
+   },
+   {
+    "say": "corran",
+    "text": "\"The west hall has a door at the back that the Wardens chained. The children won't know it's there. I know. I watched it for two years.\""
+   },
+   {
+    "say": "corran",
+    "text": "\"I can't carry them all, Rhea. Come with me.\""
+   },
+   {
+    "say": "",
+    "text": "They go in together, through the smoke, with wet cloths over their faces, and he takes her to the chained door by touch, and she breaks the chain."
+   },
+   {
+    "say": "",
+    "text": "They come out with the children in a long line, holding hands the way they were made to walk to the trays. The little ones first. Then the bigger ones, carrying the little ones. Then the last of them, and Finch behind the last of them, with the smallest one on his back."
+   },
+   {
+    "say": "",
+    "text": "He puts her down. He looks at Rhea. Then he sees who is with her."
+   },
+   {
+    "run": "gateChoice"
+   }
+  ],
+  "gateWearing": [
+   {
+    "say": "",
+    "text": "Corran is standing in the inner gate, with his back to the fire, between her and the halls. There's a fresh lull on his neck. He's steady as a stone."
+   },
+   {
+    "say": "corran",
+    "text": "\"You'll get lost in there. You don't know the halls. Let me go in. Let me do one thing.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"Get out of the way.\""
+   },
+   {
+    "say": "corran",
+    "text": "\"I can't feel anything, Rhea. Do you understand? I can't feel the heat. I can go in where you can't.\""
+   },
+   {
+    "say": "",
+    "text": "She doesn't believe him. Why would she? She has believed him before."
+   },
+   {
+    "duel": "corran-gate",
+    "win": [
+     {
+      "say": "",
+      "text": "He goes down on the stones of the gate, and lies there smiling at nothing, and doesn't feel it."
+     },
+     {
+      "say": "",
+      "text": "And out of the smoke behind him, one after another, the children come. Finch has found the back door himself. He has a girl on his back and a boy by the hand, and he stops dead in the gate when he sees who is lying in it."
+     },
+     {
+      "run": "gateChoice"
+     }
+    ]
+   }
+  ],
+  "gateHallet": [
+   {
+    "say": "",
+    "text": "Someone is standing in the inner gate with a sword, between her and the halls. Not a Warden. A Commons coat."
+   },
+   {
+    "say": "hallet",
+    "text": "\"Go home, Marshal. It's done. In an hour there won't be a breeding line left in Ostrel. Whatever it cost.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"Get out of my way, Hallet.\""
+   },
+   {
+    "duel": "hallet-gate",
+    "win": [
+     {
+      "say": "",
+      "text": "He goes down hard, and his sword skids away across the stones, and Rhea goes past him into the smoke."
+     },
+     {
+      "say": "",
+      "text": "She can't see. She doesn't know the halls. And then, somewhere ahead and to the left, through the roaring, somebody is singing."
+     },
+     {
+      "say": "",
+      "text": "The foal song. The third line right."
+     },
+     {
+      "say": "",
+      "text": "She follows it. It takes her to a door at the back of the west hall, chained from the outside, and she breaks the chain, and Finch comes out of the dark with the children behind him, singing so they'll keep walking."
+     },
+     {
+      "set": {
+       "gateChoice": "none"
+      }
+     },
+     {
+      "run": "ending"
+     }
+    ]
+   }
+  ],
+  "gateChoice": [
+   {
+    "choose": "Finch is watching. Corran is on the stones at her feet.",
+    "options": [
+     {
+      "label": "\"Get up. There are more children in the east hall, and you know the way.\"",
+      "hint": "Spare him.",
+      "by": "rhea",
+      "do": [
+       {
+        "set": {
+         "gateChoice": "spared"
+        }
+       },
+       {
+        "say": "",
+        "text": "Corran gets up. He goes back into the smoke, and Finch, after a moment, goes with him. They bring out the east hall between them."
+       }
+      ]
+     },
+     {
+      "label": "Kill him",
+      "hint": "For Larkfold. In front of Finch.",
+      "do": [
+       {
+        "set": {
+         "gateChoice": "killed",
+         "corranDead": "gate"
+        }
+       },
+       {
+        "add": {
+         "finchTrust": -40
+        }
+       },
+       {
+        "say": "",
+        "text": "She does it quickly. It's the one mercy in it."
+       },
+       {
+        "say": "",
+        "text": "Finch watches the whole thing from the gate, with the girl on his back. Then he turns round, and goes back into the smoke for the east hall, alone."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "run": "ending"
+   }
+  ],
+  "burning": [
+   {
+    "say": "",
+    "text": "Kane's sergeant told her the drain detail would go in at noon. It's an hour past noon. She'd have known that, if anyone had told her the truth."
+   },
+   {
+    "say": "",
+    "text": "The brood halls are already burning from end to end, and the line house with them, and the heat comes across the inner yard like a wall. Nobody could go through that. Nobody does."
+   },
+   {
+    "if": {
+     "not": "corranDead"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Except Corran. She sees him go: one figure going into the fire at the west hall door, the way you'd walk into the sea. He doesn't come out."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "And from somewhere inside the west hall, high and steady over the roaring, someone is singing the foal song. The third line right."
+   },
+   {
+    "say": "",
+    "text": "It goes on for a long time."
+   },
+   {
+    "say": "",
+    "text": "Then it stops."
+   },
+   {
+    "set": {
+     "gateChoice": "burning"
+    }
+   },
+   {
+    "run": "ending"
+   }
+  ],
+  "ending": [
+   {
+    "if": {
+     "eq": {
+      "nation.millcities": "pact"
+     }
+    },
+    "then": [
+     {
+      "set": {
+       "millcitiesWon": true
+      }
+     }
+    ]
+   },
+   {
+    "if": {
+     "eq": {
+      "nation.millcities": "held"
+     }
+    },
+    "then": [
+     {
+      "set": {
+       "millcitiesWon": true
+      }
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "collegeProof"
+    },
+    "then": [
+     {
+      "set": {
+       "collegeWon": true
+      }
+     }
+    ]
+   },
+   {
+    "if": {
+     "eq": {
+      "nation.college": "pact"
+     }
+    },
+    "then": [
+     {
+      "set": {
+       "collegeWon": true
+      }
+     }
+    ]
+   },
+   {
+    "if": {
+     "eq": {
+      "kanePlan": "ahead"
+     }
+    },
+    "then": [
+     {
+      "run": "endBurning"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "gateChoice": "killed"
+       }
+      },
+      "then": [
+       {
+        "run": "endEmpty"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "atLeast": {
+          "finchTrust": 35
+         }
+        },
+        "then": [
+         {
+          "if": {
+           "eq": {
+            "corranFate": "thornwick",
+            "gateChoice": "spared"
+           },
+           "flag": "tinGiven",
+           "atLeast": {
+            "finchTrust": 60
+           }
+          },
+          "then": [
+           {
+            "run": "endTable"
+           }
+          ],
+          "else": [
+           {
+            "if": {
+             "eq": {
+              "trade": "shut"
+             },
+             "flag": [
+              "collegeWon",
+              "millcitiesWon"
+             ]
+            },
+            "then": [
+             {
+              "run": "endGreen"
+             }
+            ],
+            "else": [
+             {
+              "run": "endGuild"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "else": [
+         {
+          "run": "endEmpty"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "endBurning": [
+   {
+    "fade": "That winter."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "dusk"
+    }
+   },
+   {
+    "say": "",
+    "text": "The breeding lines are gone. There will never be another Guild lull bred in Ostrel. Kane was right about that."
+   },
+   {
+    "say": "",
+    "text": "He was right about the rest, too. Half the country goes into the raw that winter, all at once, in the cities and the canal towns and the mill rows. Oda's trays can't breed greenlings fast enough. Nobody's could."
+   },
+   {
+    "say": "",
+    "text": "Rhea spends the winter at Thornwick with the children who were never in the Broodhouse, and doesn't sing."
+   },
+   {
+    "end": "burning"
+   }
+  ],
+  "endEmpty": [
+   {
+    "fade": "The war ends in the summer."
+   },
+   {
+    "goto": {
+     "map": "larkfold",
+     "x": 12,
+     "y": 10,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "dusk"
+    }
+   },
+   {
+    "say": "",
+    "text": "The Guild signs at Vantry. The Houses are opened. The children go home, those who have homes."
+   },
+   {
+    "say": "",
+    "text": "Finch doesn't come to the signing. He takes Smoke from the Commons pens the night before, and rides north alone, and nobody stops him, because nobody would have known how."
+   },
+   {
+    "say": "",
+    "text": "Every harvest after that, Rhea goes back up to Larkfold, and stands on the empty terraces at sunset, and sings the foal song out over the cloud."
+   },
+   {
+    "say": "",
+    "text": "Nothing comes."
+   },
+   {
+    "end": "empty"
+   }
+  ],
+  "endTable": [
+   {
+    "fade": "The next harvest. Larkfold."
+   },
+   {
+    "goto": {
+     "map": "larkfold",
+     "x": 12,
+     "y": 10,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "dusk"
+    }
+   },
+   {
+    "say": "",
+    "text": "The terraces are green again. Oda planted them in the spring with greenling moss, and the children from the Houses dug them, and Ume came over the ridge to tell them they were doing it wrong."
+   },
+   {
+    "say": "",
+    "text": "On the first night of the harvest there's a table outside the rebuilt house, where the old house stood. Three chairs."
+   },
+   {
+    "say": "",
+    "text": "Finch sits at one end. Corran at the other. Rhea between them. Nobody says very much. Nobody has forgiven anybody anything. They eat."
+   },
+   {
+    "say": "",
+    "text": "When the plates are cleared, Rhea takes the ring off the cord round her neck, the one she's worn since the fire, and puts it on the table between them."
+   },
+   {
+    "say": "",
+    "text": "Nobody picks it up. Nobody has to, yet."
+   },
+   {
+    "end": "table"
+   }
+  ],
+  "endGreen": [
+   {
+    "fade": "The Green Year."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "say": "",
+    "text": "The Broodhouse is taken whole, and the lines in it are kept alive, and bred down, tray by tray, into greenlings. The Guild breaks in a month. The College puts its name to the weaning, and the Millcities open their cellar clinics to anyone who asks."
+   },
+   {
+    "say": "",
+    "text": "It takes a year to wean the cities. A hard year, with deaths in it. Fewer than anyone feared."
+   },
+   {
+    "say": "",
+    "text": "Finch comes home to Thornwick in the spring, and takes over the kith pens, and doesn't talk about the Broodhouse."
+   },
+   {
+    "if": {
+     "flag": "corranDead"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Corran isn't there to see it. Rhea goes up to the terrace wall some evenings and sings, and gets the third line right, for both of them."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Corran isn't there to see it. He went south after Vantry, alone, and nobody's heard from him. Some evenings Rhea goes up to the terrace wall and sings, in case."
+     }
+    ]
+   },
+   {
+    "end": "green"
+   }
+  ],
+  "endGuild": [
+   {
+    "fade": "A year after Vantry."
+   },
+   {
+    "goto": {
+     "map": "thornwick",
+     "x": 13,
+     "y": 12,
+     "facing": "up"
+    }
+   },
+   {
+    "alone": true
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "say": "",
+    "text": "The Commons holds the Broodhouse, and the breeding lines, and the royal charter that came with them."
+   },
+   {
+    "say": "",
+    "text": "There's a peace to pay for, and an army, and a country to feed through the winter. The council votes, and the Broodhouse opens again, under the Commons' seal. The children in it are paid now, and go home at night. The lulls are just as strong."
+   },
+   {
+    "say": "",
+    "text": "Rhea signs the first year's ledger herself. It's the same trade. It has new management."
+   },
+   {
+    "end": "guild"
+   }
+  ]
+ }
+}

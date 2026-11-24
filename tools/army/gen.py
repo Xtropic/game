@@ -91,6 +91,19 @@ def foundry(g):
     fill_in(g, 34, 10, 39, 13, "T")                       # a dump of slag and scrub
 
 
+def spindle(g):
+    """Vantry's outer ward: we muster in the street at the top; the Spindle wall across the middle, its gate and a
+    postern; the ward beyond, with house blocks and the road up to the Broodhouse."""
+    W, H = len(g[0]), len(g)
+    fill_in(g, 0, 0, W - 1, 5, ":")                         # the muster street
+    fill_in(g, 0, 8, W - 1, 8, "#")                         # the Spindle wall
+    fill_in(g, 19, 8, 20, 8, "g"); fill_in(g, 6, 8, 6, 8, "g")   # the Spindle gate, and the postern
+    fill_in(g, 2, 11, 8, 15, "T"); fill_in(g, 30, 11, 37, 15, "T")  # house blocks
+    fill_in(g, 11, 17, 16, 21, "T"); fill_in(g, 23, 17, 28, 21, "T")
+    fill_in(g, 0, 9, W - 1, 10, "y")                        # the yard behind the wall
+    for y in range(9, H): g[y][19] = ":"; g[y][20] = ":"
+
+
 BATTLES = {
     "thornwick-raid": dict(
         name="The Wardens at Thornwick", hold=180,
@@ -296,6 +309,51 @@ BATTLES = {
                  effect=dict(terrain=[[29, 7, "~"], [30, 7, "~"], [29, 8, "~"], [30, 8, "~"]])),
         ],
         won="The foundry yards fall", lost="Thrown back at the cut",
+    ),
+    "spindle-gate": dict(
+        name="The Spindle gate", attack=True,
+        intro=["Vantry's outer ward. The Spindle wall stands across the street, with its gate and a postern. Behind it, the ward runs up to the Broodhouse.",
+               "You're attacking: break every company they have. The gate is strong; the postern is narrow, and nobody's watching it closely.",
+               "Click a blue company, then the ground or a red company. Space pauses."],
+        terrain=field(40, 24, spindle),
+        commander=dict(name="The Warden colonel of Vantry", cast="warden", level=28),
+        ours=[
+            dict(id="hq", name="Your company", kind="foot", at=[20, 2]),
+            dict(id="varro", name="Varro's company", kind="foot", at=[13, 3]),
+            dict(id="bows", name="Bows", kind="bow", at=[20, 5]),
+            dict(id="riders", name="Kith riders", kind="horse", at=[33, 2]),
+            dict(id="hallet1", name="Hallet's foot", kind="foot", at=[6, 3], unless="hardlinersGone"),
+            dict(id="hallet2", name="Hallet's pikes", kind="pike", at=[9, 5], unless="hardlinersGone"),
+            dict(id="south", name="The south companies", kind="pike", at=[27, 4], unless="southGone"),
+            dict(id="millbridge", name="Millbridge's company", kind="foot", at=[30, 5], unless="millbridgeGone"),
+        ],
+        theirs=[
+            dict(id="v-gate", name="Gate guard", kind="pike", at=[19.5, 10], officer="warden", level=26),
+            dict(id="v-wall1", name="Wall crossbows", kind="bow", at=[12, 10], officer="archer", level=26),
+            dict(id="v-wall2", name="Wall crossbows", kind="bow", at=[27, 10], officer="archer", level=26),
+            dict(id="v-foot1", name="Wardens", kind="foot", at=[10, 17], officer="warden", level=27),
+            dict(id="v-foot2", name="Wardens", kind="foot", at=[30, 17], officer="warden", level=27),
+            dict(id="v-horse", name="Warden riders", kind="horse", at=[20, 22], officer="warden", level=28),
+            dict(id="v-reserve", name="The Broodhouse guard", kind="foot", at=[19.5, 19], officer="warden", level=28),
+        ],
+        plan=[
+            dict(when="contact", note="They hold the gate. Once you're through it, the Wardens in the ward close in from both sides.", orders=[
+                dict(company="v-foot1", via=[15, 12], to=[17, 10]), dict(company="v-foot2", via=[25, 12], to=[22, 10])]),
+            dict(when="half", note="When it goes badly, their riders and the Broodhouse guard come down the road.", orders=[
+                dict(company="v-horse", to=[20, 11]), dict(company="v-reserve", to=[19.5, 12])]),
+        ],
+        stratagems=[
+            dict(id="ladders", name="Ladders on the wall", text="Light scaling ladders, carried up in the dark. Your pikes and bows go over the wall either side of the gate while it's still shut.",
+                 opinions={"artisan": "\"Light enough for a child to carry. That was the point.\"", "guardian": "\"Ladders are slow. Slow is dead, under crossbows.\""},
+                 effect=dict(move={"bows": [14, 9.5]}, enemyMorale=6)),
+            dict(id="postern", name="The postern, before dawn", text="A company goes through the postern in the last of the dark, and comes at the gate guard from behind.",
+                 opinions={"skirmisher": "\"Nobody watches a postern. Nobody ever has.\"", "commander": "\"And if it's watched, that company's alone.\""},
+                 effect=dict(hide=["varro"], move={"varro": [6, 11]})),
+            dict(id="runaways", name="The runaways open the drains", text="Posy's runaways have been in the ward for a week. At the first push they set the Wardens' stores alight and shout that the Commons is in the drains.",
+                 opinions={"talker": "\"Children are the best spies in Vantry. Nobody looks at them.\"", "hero": "\"Not one of them goes near a fight.\""},
+                 effect=dict(enemyMorale=14)),
+        ],
+        won="The Spindle gate falls", lost="Thrown back from the Spindle gate",
     ),
 }
 
