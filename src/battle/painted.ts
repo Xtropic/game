@@ -5,6 +5,7 @@
 //   { "rhea": { "file": "rhea.png", "rig": "person", "h": 51 } }
 // where h is the height in stage units. A look with no painting falls back to the drawn figure.
 import type { Pose } from "./art";
+import { drawPuppet, puppetOf } from "./puppet";
 
 export type Rig = "person" | "beast";
 interface Painted { img: HTMLImageElement; rig: Rig; h: number; }
@@ -63,7 +64,7 @@ const bump = (a: number, b: number, x: number) => smooth(a, (a + b) / 2, x) * (1
  * How far the point (u, v) of the picture moves, as fractions of the figure's height. u runs 0..1 from the
  * back (left) to the front (right); v runs 0..1 from the feet up.
  */
-function field(rig: Rig, u: number, v: number, o: Pose, lean: number, aspect: number): [number, number] {
+function field(rig: Rig, u: number, v: number, o: Pose, lean: number, aspect: number, puppet = false): [number, number] {
   const t = o.t, run = o.run ? Math.sin(o.run) : 0;
   let dx = 0, dy = 0;
   if (rig === "person") {
@@ -78,6 +79,11 @@ function field(rig: Rig, u: number, v: number, o: Pose, lean: number, aspect: nu
       const st = o.stride, legs = 1 - smooth(0.04, 0.5, v), side = Math.max(-1, Math.min(1, (u - 0.5) * 7));
       const arms = bump(0.3, 0.8, v) * smooth(0.12, 0.3, Math.abs(u - 0.5)); // the outer columns at arm height
       const narrow = Math.max(0, Math.min(1, (0.52 - v) / 0.48)); // a straight line from hip to foot, so each splayed leg comes in straight, not bowed
+      if (puppet) { // the legs are separate pieces (puppet.ts): only the ready arms come in, and swing
+        dx -= (u - 0.5) * aspect * 0.22 * arms;
+        if (o.run != null) { dx -= arms * Math.sin(o.run) * side * 0.03 * st; dx += smooth(0.5, 1, v) * Math.sin(o.run) * 0.005 * st; }
+        return [dx, dy];
+      }
       dx -= (u - 0.5) * aspect * (0.62 * narrow + 0.22 * arms);
       dx -= side * bump(0.06, 0.48, v) * 0.032; // the fighting crouch bows each knee outward: bring both knees in over the feet // the battle stance's wide feet and ready arms come in
       if (o.run != null) {
@@ -122,6 +128,30 @@ const COLS = 12, ROWS = 18;
 export function drawPainted(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, K: number, coat?: string): void {
   const p = painted[look]; if (!p) return;
   const { rig } = p, img = coat ? tintedImage(look, coat) : p.img, iw = p.img.width, ih = p.img.height, H = p.h * K, W = H * iw / ih;
+  // out in the world a person walks as a cut-out puppet: legs apart from the body, swinging from the hips
+  const pp = o.stride != null && rig === "person" && !o.fall ? puppetOf(img as HTMLImageElement) : null;
+  if (pp) {
+    g.save();
+    g.translate(x * K, y * K);
+    if (o.flip) g.scale(-1, 1);
+    g.scale(H / ih, H / ih);
+    g.translate(-iw / 2, -ih);
+    const lean = o.run != null ? 0.02 * (o.stride ?? 0.5) : 0;
+    drawPuppet(g, pp, o.run, o.stride ?? 0.5, o.t, (breathe) => {
+      const cols = 16, rows = 28, sw = iw / cols, sh = ih / rows, crow = Math.ceil(pp.crotch / sh) + 1;
+      for (let r = 0; r < Math.min(rows, crow + 1); r++) {
+        const v = 1 - (r + 0.5) / rows;
+        for (let c = 0; c < cols; c++) {
+          const u = (c + 0.5) / cols, [dx, dy] = field(rig, u, v, o, lean, iw / ih, true);
+          g.drawImage(pp.body, c * sw, r * sh, sw, sh, c * sw + dx * ih - 0.6, r * sh + dy * ih - 0.6 + breathe * smooth(0.45, 1, v), sw + 1.2, sh + 1.2);
+        }
+      }
+      // whatever hangs below the crotch with the body (a sling, a spear's foot) is drawn as it is
+      g.drawImage(pp.body, 0, (crow + 1) * sh, iw, ih - (crow + 1) * sh, 0, (crow + 1) * sh, iw, ih - (crow + 1) * sh);
+    });
+    g.restore();
+    return;
+  }
   const flash = o.flash ?? 0;
   const lean = (o.lunge ? 0.16 : 0) + (o.run ? (o.stride != null ? 0.025 * o.stride : 0.07) : 0) - (o.brace ? 0.05 : 0) - flash * 0.08;
   const squash = o.brace ? 0.95 : 1;
