@@ -6,7 +6,7 @@ import { Container, Graphics, Sprite, Text, type Texture } from "pixi.js";
 import { sfx, trackFor } from "../audio/music";
 import { CompanyPanel, JoinCards, joinerFor } from "../ui/joinCard";
 import companions from "../../data/kith/companions.json";
-import { wildKith, type Temperament } from "../kith/kith";
+import { addKithXp, kithXpToNext, wildKith, type Temperament } from "../kith/kith";
 import { afterBattle, seeded } from "../battle/rules";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -38,7 +38,7 @@ import { RECRUITS, recruit } from "../cast/recruits";
 const RECRUITABLE = new Set(RECRUITS.map((r) => r.id));
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
-import { PEOPLE, attrsAt, xpForFoe } from "../cast/attributes";
+import { PEOPLE, attrsAt, xpForFoe, xpToNext } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
 import { Atmosphere } from "./atmosphere";
 import { World3D, type Around, type Fig } from "../three/world3d";
@@ -64,6 +64,11 @@ import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
 import type { Slot } from "../core/save";
 import { StoryRunner, holds, partyOf, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
+
+/** Where resting is free (home, friends), what an inn charges per wounded fighter, and how far a barn night heals. */
+const FREE_REST = new Set(["camp", "umes", "thornwick"]), INN_COST = 4, BARN_REST = 0.7;
+/** Days the company may wait at Thornwick for each turn of the story. */
+const WAIT_DAYS = 3;
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
@@ -483,6 +488,18 @@ export class ExploreScene implements Scene, StoryHost {
     if (raid) return [...back, raid].join(" ");
     return [...back, out.lines.length ? out.lines.slice(0, 3).join(" ") : back.length ? "" : "A quiet day: nobody is set to work."].join(" ").trim();
   }
+  /** "Let a day pass": only at Thornwick, a few days per turn of the story, and every idle day eats the stores. */
+  private waitDay(): string {
+    const f = this.flags, here = this.map.file.id;
+    if (here !== "thornwick" && !here.startsWith("thornwick-")) return "You can only wait out a day at Thornwick. On the road, days pass as you travel.";
+    const st = String(f.stage ?? ""), [ws, wn] = String(f["base.waited"] ?? "").split(":"), waited = ws === st ? Number(wn) || 0 : 0;
+    if (waited >= WAIT_DAYS) return "The company has waited long enough. Word keeps coming up the road: the story won't wait any longer. Move on, and Thornwick will keep working while you're away.";
+    const mouths = Math.max(1, this.baseStaying().length + partyOf(f).length + 1), stores = typeof f.supplies === "number" ? f.supplies : 0;
+    if (stores < mouths) return `An idle day costs ${mouths} supplies to feed everyone, and the stores hold ${stores}. Set someone to haul, or move on.`;
+    f.supplies = stores - mouths; f["base.waited"] = `${st}:${waited + 1}`;
+    const report = this.baseWork();
+    return `A day passes (${mouths} supplies eaten; ${WAIT_DAYS - waited - 1} more before you must move on). ${report}`.trim();
+  }
   /** People who stay at Thornwick: everyone recruited who isn't travelling. */
   private baseStaying(): string[] { const trav = new Set([this.hero(), ...this.followers.map((f) => f.id), ...partyOf(this.flags)]); return this.joinedIds().filter((id) => !trav.has(id) && !this.game.kith[id] && PEOPLE[id]); }
   private baseKith(): string[] { const trav = new Set([...this.followers.map((f) => f.id), ...partyOf(this.flags), "ash"]); return this.joinedIds().filter((id) => this.game.kith[id] && !trav.has(id) && !awayOn(this.flags, id)); }
@@ -490,7 +507,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.flags.ledgerSeen = true;
     this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
       armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
-      addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.baseWork(),
+      addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.waitDay(),
       company: () => this.joinedIds(), inParty: () => partyOf(this.flags), setTravelling: (id) => this.setTravelling(id), partyRoom: () => Math.min(MAX_TRAVEL, rankOf(this.flags).party),
       attend: (k, d, done) => this.game.scenes.push(new TrainingScene(d, k, (score) => { const o = train(this.flags, k, d, score, true, this.rng); this.save("auto"); setTimeout(() => done(o), 0); return o; }, this.rng)) }, this.screen.w, this.screen.h);
   }
@@ -783,6 +800,24 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.followers.some((x) => x.id === id)) this.follow(this.followers.map((x) => x.id).filter((x) => x !== id));
   }
 
+  /** Weeks of road and drilling: whoever in the company is below this level catches up to it (never lowers anyone). */
+  drill(level: number): void {
+    let raised = 0;
+    for (const id of [this.hero(), ...this.joinedIds()].filter((x, i, a) => a.indexOf(x) === i)) {
+      const k = this.game.kith[id];
+      if (k) {
+        let need = 0; for (let l = k.level; l < level; l++) need += kithXpToNext(l);
+        if (need > k.xp) { addKithXp(k, need - k.xp); raised++; }
+        continue;
+      }
+      if (!PEOPLE[id]) continue;
+      const p = this.game.progress(id);
+      let need = 0; for (let l = p.level; l < level; l++) need += xpToNext(l);
+      if (need > p.xp) { this.game.giveXp(id, need - p.xp); raised++; }
+    }
+    if (raised) this.toast(`Weeks of road and drilling: everyone in the company is level ${level} or better.`);
+  }
+
   addKith(g: KithGift): void {
     if (this.game.kith[g.id]) return;
     const region = this.regionNow;
@@ -802,11 +837,16 @@ export class ExploreScene implements Scene, StoryHost {
     for (const [id, v] of Object.entries(h)) this.flags[`health.${id}`] = v;
     this.drawWounds();
   }
-  /** Rest in a town, inn or camp: everyone's wounds are seen to. */
+  /** Rest in a town, inn or camp: everyone's wounds are seen to. At home it's free; an inn wants paying, and
+   *  without the coin the company sleeps in a barn and is only patched up. */
   private rest(where: string): void {
-    if (!Object.keys(this.health()).length) return;
-    this.setHealth({});
-    this.toast(`The party rests in ${where}. Wounds are cleaned and bound.`);
+    const h = this.health(), hurt = Object.keys(h).length; if (!hurt) return;
+    const id = this.map?.file.id ?? "";
+    if (FREE_REST.has(id) || id.startsWith("thornwick")) { this.setHealth({}); this.toast(`The party rests in ${where}. Wounds are cleaned and bound.`); sfx.heal(); return; }
+    const cost = INN_COST * hurt;
+    if (this.game.coin >= cost) { this.game.coin -= cost; this.setHealth({}); this.toast(`Beds and a surgeon in ${where}: ${cost} coin. Wounds are cleaned and bound.`); sfx.heal(); return; }
+    this.setHealth(Object.fromEntries(Object.entries(h).filter(([, v]) => v < BARN_REST).map(([k]) => [k, BARN_REST])));
+    this.toast(`No coin for an inn in ${where} (${cost} needed). The company sleeps in a barn: wounds bound, but not healed.`);
     sfx.heal();
   }
   /** A small line in the corner while anyone is hurt, so the player knows to rest. */

@@ -22,6 +22,9 @@ import {
   slashFX, smokeFX, sparkFX, textFX, withFlash,
 } from "./art";
 
+/** After a loss and a retry, each ally starts no lower than this share of their health. */
+const RETRY_FLOOR = 0.5;
+
 type PoseName = "idle" | "run" | "lunge" | "brace" | "aim" | "cast" | "guard" | "down" | "cheer";
 interface Vis { ox: number; oy: number; kx: number; hop: number; fall: number; flash: number; pose: PoseName; run: number; flee: boolean; out: boolean; fade: number; }
 interface Fx { kind: string; x: number; y: number; x2?: number; y2?: number; t: number; dur: number; text?: string; col?: string; big?: boolean; dir?: number; size?: number; proj?: string; }
@@ -109,7 +112,9 @@ export class BattleScene implements Scene {
   exit(): void { this.tex?.destroy(true); }
 
   private reset(): void {
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, {}, this.opts.pack); // after a loss the party falls back and binds its wounds: the retry starts whole
+    // after a loss the party falls back and binds its wounds: the retry starts as hurt as they came in, but never below half
+    const back = Object.fromEntries(Object.entries(this.opts.health ?? {}).map(([k, v]) => [k, Math.max(RETRY_FLOOR, v)]));
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, back, this.opts.pack);
     this.vis.clear(); this.fx = [];
     for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;

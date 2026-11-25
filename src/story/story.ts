@@ -33,6 +33,8 @@ export type Step =
   /** Changes the music's mood partway through a scene ("" goes back to the stage's mood). */
   | { mood: string }
   | { toast: string }
+  /** Weeks of road and drilling: everyone in the company (people and kith) below this level is brought up to it. */
+  | { drill: number }
   | { fade: string }
   | { goto: { map: string; x: number; y: number; facing?: "up" | "down" | "left" | "right" } }
   | { battle: string; win?: Step[] }
@@ -121,6 +123,8 @@ export interface StoryHost {
   /** Adds a kith to the company. */
   addKith?(k: KithGift): void;
   loseKith?(id: string): void;
+  /** Brings everyone in the company up to at least this level. */
+  drill?(level: number): void;
   /** Opens the in-game menu on its party page. */
   openPage?(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void;
   duel?(id: string, done: (won: boolean) => void): void;
@@ -177,6 +181,7 @@ export class StoryRunner {
     if ("alone" in st) { this.host.follow([]); return; }
     if ("regroup" in st) { this.host.follow(partyOf(f)); return; }
     if ("toast" in st) { this.host.toast(st.toast); return; }
+    if ("drill" in st) { this.host.drill?.(st.drill); return; }
     if ("fade" in st) { this.block(); this.host.fade(st.fade, this.resume); return; }
     if ("goto" in st) { this.block(); const g = st.goto; this.host.goto(g.map, g.x, g.y, g.facing, this.resume); return; }
     if ("battle" in st) { const win = st.win ?? []; this.block(); this.host.battle(st.battle, () => { this.front(win); this.resume(); }); return; }

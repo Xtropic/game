@@ -120,6 +120,8 @@ S["roadStart"] = [
 # ---- the fair, outside the gate
 S["fairArrive"] = [
     iff({"stage": "ah1"}, [
+        n("Three weeks on the west road. Every evening, wherever they stop, Rhea has the company drill until it's too dark to see the staves."),
+        {"drill": 13},
         stage("ah2"),
         n("Hollin's harvest fair spills out of the gate and down the meadow: stalls, tents, a fiddler, and the smell of hot cider. Half the Free Towns are here."),
         n("The gate itself is shut. A gate-ward with a halberd and a list stands in front of it, turning people away."),
@@ -470,7 +472,7 @@ S["saul"] = [
     ]),
 ]
 S["roadOpen"] = [
-    setf({"open.west-coast": True}), stage("ah9"),
+    setf({"open.west-coast": True}), stage("ah9"), {"drill": 15},
     toast("The coast road to Port Ashby is open."),
 ]
 
@@ -707,13 +709,13 @@ S["abel"] = [
                    setf({"abelDone": True, "recruited.abel": True}), {"join": "abel"},
                    n("The carts wait. The ironbacks go up the drove road in a long brown river, bells clanking, and Abel walks at the head with his crook."),
                    say("abel", R("Come on, then, captain. Walk with me, and the riders will think you're mine.")),
-                   setf({"open.vale-north": True}), stage("ah15"), toast("The drove road north is open."),
+                   setf({"open.vale-north": True}), stage("ah15"), {"drill": 17}, toast("The drove road north is open."),
                ], hint="The army's supplies wait a day."),
                opt(R("The army's carts go first."), [
                    setf({"abelDone": True}),
                    n("Abel spits, very precisely, beside the toll sergeant's boot. The carts go through. The herd goes up the next morning, in sleet."),
                    say("abel", R("You'll still want the riders to let you up. I'll tell them you're nobody worth killing. That's the best I can do.")),
-                   setf({"open.vale-north": True}), stage("ah15"), toast("The drove road north is open."),
+                   setf({"open.vale-north": True}), stage("ah15"), {"drill": 17}, toast("The drove road north is open."),
                ], hint="The war first.")),
     ], [say("abel", R("Ironbacks don't care who wins. They care about grass. Wise beasts."))]),
 ]
@@ -782,7 +784,7 @@ S["gerdBeaten"] = [
         toast("A pact with the Drevka clans. Arvo rides to the Guild."),
     ]),
     say("gerd", R("And now Lorne. If the King signs that paper, Lorne's riders come over the high pass in the spring, and the clans fight on two fronts. My riders will see you to Holm. Through Snowgate, before the pass shuts.")),
-    stage("ah18"),
+    stage("ah18"), {"drill": 18},
 ]
 S["snowgate"] = [
     iff({"stage": "ah18", "not": "snowDone"}, [
@@ -1018,7 +1020,7 @@ S["corranSentence"] = [
 ]
 S["backToRoad2"] = [
     fade("Spring, on the road south."),
-    setf({"hero": "rhea", "light": "day", "open.vale-east": True}), stage("ah23"), goto("town-longbarrow", 12, 11, "up"),
+    setf({"hero": "rhea", "light": "day", "open.vale-east": True}), stage("ah23"), {"drill": 19}, goto("town-longbarrow", 12, 11, "up"),
     n("Longbarrow, at the foot of the hill road. Ilse Varn's letter has a League seal on it, and the toll-men on the hill road are said to bow to that seal like a priest."),
     toast("East to Corvane, before the League's spring settling. The hill road leaves the vale past Longbarrow."),
 ]
@@ -1244,7 +1246,7 @@ S["imari"] = [
         {"battle": "road-dunes", "win": [
             n("The raiders run for the dunes. Everybody drinks."),
             setf({"open.east-ember": True}),
-            fade("Ember."), goto(EMB, 14, 16, "up"), stage("ah32"),
+            fade("Ember."), goto(EMB, 14, 16, "up"), stage("ah32"), {"drill": 21},
             n("Ember rises out of the sand in red stone and green gardens, with water running in channels along every street. After the desert it looks like a lie."),
             toast("Present yourself at Prince Khalis' palace."),
         ]},
@@ -1401,7 +1403,7 @@ S["corranRace"] = [
 ]
 S["backToRoad3"] = [
     fade("Late summer. The royal road east, out of the steppe."),
-    setf({"hero": "rhea", "light": "day"}), stage("ah37"), goto(TARS, 14, 15, "down"),
+    setf({"hero": "rhea", "light": "day"}), stage("ah37"), {"drill": 23}, goto(TARS, 14, 15, "down"),
     toast("To the King's hunting lodge in the royal parks. The royal road leaves the steppe to the north-east."),
 ]
 

@@ -4172,6 +4172,13 @@
     },
     "then": [
      {
+      "say": "",
+      "text": "Three weeks on the west road. Every evening, wherever they stop, Rhea has the company drill until it's too dark to see the staves."
+     },
+     {
+      "drill": 13
+     },
+     {
       "stage": "ah2"
      },
      {
@@ -5610,6 +5617,9 @@
     "stage": "ah9"
    },
    {
+    "drill": 15
+   },
+   {
     "toast": "The coast road to Port Ashby is open."
    }
   ],
@@ -6837,6 +6847,9 @@
           "stage": "ah15"
          },
          {
+          "drill": 17
+         },
+         {
           "toast": "The drove road north is open."
          }
         ]
@@ -6865,6 +6878,9 @@
          },
          {
           "stage": "ah15"
+         },
+         {
+          "drill": 17
          },
          {
           "toast": "The drove road north is open."
@@ -7171,6 +7187,9 @@
    },
    {
     "stage": "ah18"
+   },
+   {
+    "drill": 18
    }
   ],
   "snowgate": [
@@ -8369,6 +8388,9 @@
     "stage": "ah23"
    },
    {
+    "drill": 19
+   },
+   {
     "goto": {
      "map": "town-longbarrow",
      "x": 12,
@@ -9317,6 +9339,9 @@
         "stage": "ah32"
        },
        {
+        "drill": 21
+       },
+       {
         "say": "",
         "text": "Ember rises out of the sand in red stone and green gardens, with water running in channels along every street. After the desert it looks like a lie."
        },
@@ -10076,6 +10101,9 @@
    },
    {
     "stage": "ah37"
+   },
+   {
+    "drill": 23
    },
    {
     "goto": {

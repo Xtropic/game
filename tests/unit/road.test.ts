@@ -168,4 +168,13 @@ describe("the Long Road: the West", () => {
     r.run([{ run: "kingsmereArrive" }, { run: "aldousLodge" }, { run: "odileHerd" }, { run: "queenDinner" }, { run: "galleryGuards" }, { run: "theAnswer" }]);
     expect(f["road.crown"]).toBe("buried"); expect(f.aldousFree).toBeUndefined(); expect(f.finchYard).toBe("silent"); expect(f.stage).toBe("af1");
   });
+
+  it("drills the company up leg by leg, so the Road's fights never jump far ahead of the party", () => {
+    const floors: number[] = [];
+    const walk = (x: unknown): void => { if (Array.isArray(x)) x.forEach(walk); else if (x && typeof x === "object") { const o = x as Record<string, unknown>; if (typeof o.drill === "number") floors.push(o.drill); Object.values(o).forEach(walk); } };
+    for (const id of ["fairArrive", "roadStart"]) walk(STORY.scripts[id]);
+    expect(floors).toEqual([13]);
+    floors.length = 0; walk(STORY.scripts);
+    expect(Math.min(...floors)).toBe(13); expect(Math.max(...floors)).toBe(23);
+  });
 });

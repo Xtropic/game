@@ -4202,15 +4202,15 @@
      },
      {
       "say": "corran",
-      "text": "\"Halloran came to see me, the summer before the raid. At Millbridge, after the brood went wrong. He said the Wardens had a column coming up the cloud path in the autumn. That they knew the valley. That they'd burn it, and hang everyone over fifteen.\""
+      "text": "\"Halloran found me at Millbridge, at my mother's grave, the day I buried her and my sister. He said a column had traced the greenlings up the mountain, and they'd come before the snows. Same orders as Hask.\""
      },
      {
       "say": "corran",
-      "text": "\"He said there was another way. If I showed him the way in, at night, he'd take the elders and the trays and nobody would be hurt. And he'd put me on the Guild's books, with a line of my own, so I'd never go through the raw again.\""
+      "text": "\"He said there was another way. Show him the way in, at night, and he'd take the brood and the elders down to Vantry. An arrest. No hangings, no burning, no carts. He gave me the token so the pickets would let me through.\""
      },
      {
       "say": "corran",
-      "text": "\"I begged you to run. You remember. You thought I meant the brood. You said Larkfold doesn't run.\""
+      "text": "\"I begged you to run. You remember. Over the passes into Lorne, that night. You wouldn't.\""
      },
      {
       "say": "rhea",
@@ -4218,7 +4218,7 @@
      },
      {
       "say": "corran",
-      "text": "\"So I sent you down the mountain that night for salve. There was nothing wrong with my burns. I wanted you off the mountain when they came.\""
+      "text": "\"So I went to Maren and gave you my place on the greenling run. I told her I couldn't face the market. I wanted you down the trail with Tamsin when they came. Then I walked them up the cloud path and blinked the lamp three times, and Davin opened the gate.\""
      },
      {
       "say": "corran",
@@ -4354,11 +4354,11 @@
      },
      {
       "say": "posy",
-      "text": "\"Halloran told him there was a column coming up the cloud path to burn Larkfold. Unless he showed them the way in, at night, and then nobody would be hurt.\""
+      "text": "\"Halloran found him at a grave and told him a column was coming to burn Larkfold. Unless he showed them the way in, at night. Then it'd be an arrest, and nobody would be hurt.\""
      },
      {
       "say": "posy",
-      "text": "\"He said he begged you to run, and you wouldn't. So he sent you down the mountain for salve he didn't need, to get you out of it.\""
+      "text": "\"He said he begged you to run, and you wouldn't. So he gave you his place on the greenling run, to get you off the mountain. Then he blinked the lamp at the cloud gate. Three times. He said that one over and over.\""
      },
      {
       "say": "posy",
@@ -4432,15 +4432,15 @@
    },
    {
     "say": "corran",
-    "text": "\"Halloran came to see me, the summer before the raid. At Millbridge, after the brood went wrong. He said the Wardens had a column coming up the cloud path in the autumn. That they knew the valley. That they'd burn it, and hang everyone over fifteen.\""
+    "text": "\"Halloran found me at Millbridge, at my mother's grave, the day I buried her and my sister. He said a column had traced the greenlings up the mountain, and they'd come before the snows. Same orders as Hask.\""
    },
    {
     "say": "corran",
-    "text": "\"He said there was another way. If I showed him the way in, at night, he'd take the elders and the trays and nobody would be hurt. And he'd put me on the Guild's books, with a line of my own, so I'd never go through the raw again.\""
+    "text": "\"He said there was another way. Show him the way in, at night, and he'd take the brood and the elders down to Vantry. An arrest. No hangings, no burning, no carts. He gave me the token so the pickets would let me through.\""
    },
    {
     "say": "corran",
-    "text": "\"I begged you to run. You remember. You thought I meant the brood. You said Larkfold doesn't run.\""
+    "text": "\"I begged you to run. You remember. Over the passes into Lorne, that night. You wouldn't.\""
    },
    {
     "say": "rhea",
@@ -4448,7 +4448,7 @@
    },
    {
     "say": "corran",
-    "text": "\"So I sent you down the mountain that night for salve. There was nothing wrong with my burns. I wanted you off the mountain when they came.\""
+    "text": "\"So I went to Maren and gave you my place on the greenling run. I told her I couldn't face the market. I wanted you down the trail with Tamsin when they came. Then I walked them up the cloud path and blinked the lamp three times, and Davin opened the gate.\""
    },
    {
     "say": "corran",

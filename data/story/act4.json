@@ -1024,7 +1024,7 @@
      },
      {
       "say": "",
-      "text": "Fifteen. Taller than Rhea now. Sandy hair cropped to the skull, the way the Houses crop it. A number inked on his wrist."
+      "text": "Sixteen. Taller than Rhea now. Sandy hair cropped to the skull, the way the Houses crop it. A number inked on his wrist."
      },
      {
       "say": "finch",
@@ -1099,7 +1099,7 @@
    },
    {
     "say": "finch",
-    "text": "\"I've got something to tell you. I've been going to tell you for six years. I used to practise it on Smoke.\""
+    "text": "\"I've got something to tell you. I've been going to tell you for four years. I used to practise it on Smoke.\""
    },
    {
     "say": "finch",
@@ -1111,15 +1111,15 @@
    },
    {
     "say": "finch",
-    "text": "\"So I gave the last tray a double measure of moss. I was nine. I didn't tell anyone. I wrote it in the brood book in my own hand, like I'd been told to, and nobody ever reads the brood book.\""
+    "text": "\"So I gave the last tray a double measure of moss. I was twelve. I didn't tell anyone. And in the brood book I wrote Mother's measure, the right one, in my own hand. So the book said it was fine. So nobody would know.\""
    },
    {
     "say": "",
-    "text": "Millbridge. Forty dead. The warning. The night on the cloud path. The fire. The carts."
+    "text": "Millbridge. Eleven dead. The warning. The night on the cloud path. The fire. The carts."
    },
    {
     "say": "finch",
-    "text": "\"All of it. Every bit of it, from a measure of moss. I've known since I was nine.\""
+    "text": "\"All of it. Every bit of it, from a measure of moss. I've known since I was twelve.\""
    },
    {
     "set": {
@@ -1130,7 +1130,7 @@
     "choose": "Finch won't look up from the water.",
     "options": [
      {
-      "label": "\"You were nine. You were trying to help her. Halloran did the rest, and Halloran knew what he was doing.\"",
+      "label": "\"You were twelve. You were trying to help her. Halloran did the rest, and Halloran knew what he was doing.\"",
       "hint": "Take it off him.",
       "by": "rhea",
       "do": [
@@ -1154,7 +1154,7 @@
        },
        {
         "say": "",
-        "text": "He puts his face in his hands. When he takes them away he's fifteen again, and also nine."
+        "text": "He puts his face in his hands. When he takes them away he's sixteen again, and also twelve."
        }
       ]
      },
@@ -1378,7 +1378,7 @@
      },
      {
       "say": "",
-      "text": "Finch's hand. He wrote like a nine-year-old for years, and then one winter he didn't. Four lines."
+      "text": "Finch's hand. He wrote like a twelve-year-old for years, and then one winter he didn't. Four lines."
      },
      {
       "say": "",
@@ -1510,7 +1510,7 @@
          },
          {
           "say": "finch",
-          "text": "\"I know it was you. I watched you do it, for six years, every night, with the tin.\""
+          "text": "\"I know it was you. I watched you do it, for three years, every night, with the tin.\""
          },
          {
           "say": "",
@@ -1788,7 +1788,7 @@
          },
          {
           "say": "",
-          "text": "She writes it plainly: a boy of nine, a measure of moss, and her own lie on the well steps afterwards. She doesn't ask for anything."
+          "text": "She writes it plainly: a boy of twelve, a measure of moss, and her own lie on the well steps afterwards. She doesn't ask for anything."
          }
         ]
        },

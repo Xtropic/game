@@ -550,11 +550,11 @@ def confession(teller):
     c = "corran" if teller == "corran" else "posy"
     if teller == "corran":
         lines = [
-            say("corran", R("Halloran came to see me, the summer before the raid. At Millbridge, after the brood went wrong. He said the Wardens had a column coming up the cloud path in the autumn. That they knew the valley. That they'd burn it, and hang everyone over fifteen.")),
-            say("corran", R("He said there was another way. If I showed him the way in, at night, he'd take the elders and the trays and nobody would be hurt. And he'd put me on the Guild's books, with a line of my own, so I'd never go through the raw again.")),
-            say("corran", R("I begged you to run. You remember. You thought I meant the brood. You said Larkfold doesn't run.")),
+            say("corran", R("Halloran found me at Millbridge, at my mother's grave, the day I buried her and my sister. He said a column had traced the greenlings up the mountain, and they'd come before the snows. Same orders as Hask.")),
+            say("corran", R("He said there was another way. Show him the way in, at night, and he'd take the brood and the elders down to Vantry. An arrest. No hangings, no burning, no carts. He gave me the token so the pickets would let me through.")),
+            say("corran", R("I begged you to run. You remember. Over the passes into Lorne, that night. You wouldn't.")),
             say("rhea", R("I remember.")),
-            say("corran", R("So I sent you down the mountain that night for salve. There was nothing wrong with my burns. I wanted you off the mountain when they came.")),
+            say("corran", R("So I went to Maren and gave you my place on the greenling run. I told her I couldn't face the market. I wanted you down the trail with Tamsin when they came. Then I walked them up the cloud path and blinked the lamp three times, and Davin opened the gate.")),
             say("corran", R("He lied. They burned it anyway. They hanged the elders anyway. And they took Finch for the carts.")),
             say("corran", R("I asked for the night watch at the hatcheries. The post nobody wants. In return Halloran signed Finch's indenture over to my household. Not the carts. That's what I gave for him. Me.")),
             iff({"eq": {"raidNight": "lull"}}, [say("corran", R("And at Lockside I was asleep with a lull on my neck, and he rode out to hold the gate in my place."))],
@@ -570,8 +570,8 @@ def confession(teller):
     else:
         lines = [
             say("posy", R("He talked. In the raw. Every night for two months, to the wall, to me, to nobody.")),
-            say("posy", R("Halloran told him there was a column coming up the cloud path to burn Larkfold. Unless he showed them the way in, at night, and then nobody would be hurt.")),
-            say("posy", R("He said he begged you to run, and you wouldn't. So he sent you down the mountain for salve he didn't need, to get you out of it.")),
+            say("posy", R("Halloran found him at a grave and told him a column was coming to burn Larkfold. Unless he showed them the way in, at night. Then it'd be an arrest, and nobody would be hurt.")),
+            say("posy", R("He said he begged you to run, and you wouldn't. So he gave you his place on the greenling run, to get you off the mountain. Then he blinked the lamp at the cloud gate. Three times. He said that one over and over.")),
             say("posy", R("He said he gave himself to the Guild for Finch. The night watch at the hatcheries, so Finch went to his house and not the carts. Like me.")),
             n("Rhea doesn't say anything. Posy goes on, looking at the water."),
             say("posy", R("And the letter. He said it every night. The Guild offered the Commons all of us, every Larkfold child in the Houses, if you'd give yourself up. And the answer came back that you refused.")),
