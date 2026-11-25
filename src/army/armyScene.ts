@@ -284,7 +284,7 @@ export class ArmyScene implements Scene {
       const bw2 = Math.min(520, w - 32), bx = (this.ox + (this.def.terrain[0].length * this.cell) / 2) - bw2 / 2, by2 = h / 2 - 70;
       panel(Math.max(8, bx), by2, bw2, 140);
       txt(s.over === "won" ? this.def.won : this.def.lost, Math.max(8, bx) + 18, by2 + 16, fs + 8, s.over === "won" ? "#ffe39a" : "#f2c4b4", true, bw2 - 36);
-      txt(s.over === "won" ? (live(s, "theirs").length ? "Dark comes down. The Wardens pull back down the road." : "The last of them break and run for the ford.") : "Your company breaks. The yard is theirs for the night.", Math.max(8, bx) + 18, by2 + 56, fs, "#d8cdb6", false, bw2 - 36);
+      txt(s.over === "won" ? this.def.wonNote ?? (live(s, "theirs").length ? "Dark comes down. The Wardens pull back down the road." : "The last of them break and run for the ford.") : this.def.lostNote ?? "Your company breaks. The yard is theirs for the night.", Math.max(8, bx) + 18, by2 + 56, fs, "#d8cdb6", false, bw2 - 36);
       btn("Done", Math.max(8, bx) + bw2 - 120, by2 + 94, 100, 34, () => this.finish(), true);
     }
   }

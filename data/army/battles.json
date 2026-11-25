@@ -1684,7 +1684,9 @@
     }
    ],
    "won": "Vela yields the field",
-   "lost": "You yield the field"
+   "lost": "You yield the field",
+   "wonNote": "Vela rides out to the middle of the flat with her hand up. On the fort wall, the sellswords cheer both sides.",
+   "lostNote": "Your companies give the field. Nobody runs. Vela rides out to look at your lines anyway."
   },
   "ashby-mole": {
    "id": "ashby-mole",
@@ -2654,7 +2656,9 @@
     }
    ],
    "won": "The harbour mouth holds",
-   "lost": "Thrown out of the harbour"
+   "lost": "Thrown out of the harbour",
+   "wonNote": "The tide turns, and the marines wade back to the quay. The chain across the harbour mouth holds.",
+   "lostNote": "The marines are on the boats. The chain is cut, and the harbour is Ashby's again."
   },
   "spindle-gate": {
    "id": "spindle-gate",

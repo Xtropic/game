@@ -38,7 +38,7 @@ export interface ArmyDef {
   /** We are the ones attacking: they hold their ground, and if they aren't broken by the limit (seconds), the day is lost. */
   attack?: boolean; limit?: number;
   ours: CompanyDef[]; theirs: CompanyDef[]; commander: { name: string; cast: string; level: number };
-  plan: PlanStep[]; stratagems: Stratagem[]; won: string; lost: string;
+  plan: PlanStep[]; stratagems: Stratagem[]; won: string; lost: string; /** The line under the result, when the default (a Warden road fight) doesn't fit. */ wonNote?: string; lostNote?: string;
 }
 export const ARMY_BATTLES = data.battles as unknown as Record<string, ArmyDef>;
 

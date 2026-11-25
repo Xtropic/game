@@ -256,12 +256,12 @@ VAULT = town("corvane-vault", "The counting house, at night", "night", X, (2, 9)
 
 # ---------------- Tarsis: the sellsword fortress on the steppe ----------------
 # 30 x 18. A walled fort on the dry steppe: Vela's hall (north), barracks (west), the practice yard, the gate.
-U = G(30, 18, "s")
-U.box(1, 1, 28, 16, "#")
+U = G(30, 18, ":")
+U.box(0, 0, 29, 17, ","); U.box(1, 1, 28, 16, "#")
 house(U, 9, 2, 20, 6, (14, 15))                                                        # Vela's hall
 house(U, 2, 8, 8, 11, (5,))                                                            # the barracks
 house(U, 22, 8, 27, 11, (24,))                                                         # the infirmary
-U.box(11, 9, 18, 13, "f"); U.rect(12, 10, 17, 12, "a"); U.put(14, 13, "a"); U.put(15, 13, "a")   # the practice yard
+U.box(11, 9, 18, 13, "f"); U.rect(12, 10, 17, 12, "."); U.put(14, 13, "."); U.put(15, 13, ".")   # the practice yard
 U.put(4, 14, "F"); U.rect(22, 14, 23, 14, "x"); U.rect(25, 13, 26, 13, "C")
 U.rect(14, 16, 15, 16, ":"); U.rect(14, 17, 15, 17, "e")
 TARSIS = town("town-tarsis", "Tarsis", "camp", U, (14, 15))
@@ -270,7 +270,7 @@ TARSIS = town("town-tarsis", "Tarsis", "camp", U, (14, 15))
 # ---------------- Ember: the city of the courts ----------------
 # 30 x 18. Sand streets, the palace of Prince Khalis (north), the gate to the Prince's Garden (east),
 # the caravanserai (west), the market, the city gate (bottom middle).
-E = G(30, 18, "a")
+E = G(30, 18, ":")
 E.rect(0, 0, 29, 0, "#"); E.rect(0, 17, 29, 17, "#"); E.rect(0, 0, 0, 17, "#"); E.rect(29, 0, 29, 17, "#")
 house(E, 8, 1, 21, 5, (14, 15))                                                        # the palace
 house(E, 1, 7, 7, 10, (4,))                                                            # the caravanserai

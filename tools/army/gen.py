@@ -369,6 +369,8 @@ BATTLES = {
                  effect=dict(enemyMorale=6)),
         ],
         won="Vela yields the field", lost="You yield the field",
+        wonNote="Vela rides out to the middle of the flat with her hand up. On the fort wall, the sellswords cheer both sides.",
+        lostNote="Your companies give the field. Nobody runs. Vela rides out to look at your lines anyway.",
     ),
     "ashby-mole": dict(
         name="Ashby's harbour mouth", hold=200,
@@ -407,6 +409,8 @@ BATTLES = {
                  effect=dict(terrain=[[x, y, "~"] for x in list(range(2, 8)) + list(range(32, 38)) for y in range(3, 15)])),
         ],
         won="The harbour mouth holds", lost="Thrown out of the harbour",
+        wonNote="The tide turns, and the marines wade back to the quay. The chain across the harbour mouth holds.",
+        lostNote="The marines are on the boats. The chain is cut, and the harbour is Ashby's again.",
     ),
     "spindle-gate": dict(
         name="The Spindle gate", attack=True,
