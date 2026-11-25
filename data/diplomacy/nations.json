@@ -91,7 +91,7 @@
     {
       "id": "lorne", "name": "The Kingdom of Lorne", "seat": "Holm", "land": "north", "known": "ad19b",
       "blurb": "The cold kingdom in the far north. Lorne hangs anyone found with a lull ring.",
-      "start": -30, "temper": 18, "likes": "supplies",
+      "start": -30, "trust": "lorneTrust", "temper": 18, "likes": "supplies",
       "price": { "standing": 60, "flags": [{ "flag": "deed.lorne", "text": "Prove to Lorne's courts that the ringed can be weaned." }], "text": "Lorne would have to change its law." },
       "perk": { "company": { "name": "Lorne pikes", "kind": "pike", "level": 18 }, "text": "A company of Lorne's pikes." }
     }

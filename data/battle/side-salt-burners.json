@@ -1,0 +1,62 @@
+{
+ "id": "side-salt-burners",
+ "name": "The record house",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "Guild riders on the salt causeway, with torches in broad daylight.",
+  "Two hundred years of ledgers behind you, and a lot of dry oilcloth."
+ ],
+ "won": "The riders go back down the causeway",
+ "lost": "The record house burns",
+ "units": [
+  {
+   "id": "sb1",
+   "name": "Guild rider",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 17,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "sb2",
+   "name": "Guild rider",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 17,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    198,
+    118
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "sb3",
+   "name": "Guild agent",
+   "look": "factor",
+   "side": "foe",
+   "row": "back",
+   "level": 18,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    110
+   ],
+   "cast": "archer"
+  }
+ ]
+}

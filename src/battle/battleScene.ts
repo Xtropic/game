@@ -23,6 +23,9 @@ import {
   slashFX, smokeFX, sparkFX, textFX, withFlash,
 } from "./art";
 
+/** The story's hardest fights: the Old Mother, the Broodhouse yard, the palace guards, the gallery. */
+const BOSS_FIGHTS = new Set(["thornwick-cistern", "broodhouse-yard", "road-palace", "road-gallery", "mire-guards", "lockside-guards-back", "road-vault"]);
+
 /** After a loss and a retry, each ally starts no lower than this share of their health. */
 const RETRY_FLOOR = 0.5;
 
@@ -33,12 +36,14 @@ interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" |
 type Co = Generator<number | Qte, void, unknown>;
 
 export type BattleResult = "won" | "lost" | "fled" | "released";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; /** A fight the story doesn't need: the party may run, or let much weaker foes go. */ escape?: boolean; }
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; /** A fight the story doesn't need: the party may run, or let much weaker foes go. */ escape?: boolean; /** The Spire verses: the foal song reaches further. */ songBoost?: number; }
 
 const readAuto = (): boolean => settings.get("autoTiming");
 
 export class BattleScene implements Scene {
   readonly id = "battle";
+  /** The fight's music: chance meetings on the road are lighter, the story's hardest fights get their own. */
+  get music(): string { return BOSS_FIGHTS.has(this.def.id) ? "boss" : this.opts.escape ? "skirmish" : "battle"; }
   readonly view = new Container();
   private builds: Record<string, Build> = {};
   private game!: Game;
@@ -97,7 +102,7 @@ export class BattleScene implements Scene {
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health, opts.pack);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health, opts.pack); this.s.songBoost = opts.songBoost;
     // each fighter's look follows their attributes (cast and owned kith); the rest are drawn as designed
     for (const u of this.s.units) {
       const k = u.kith ? opts.kith?.[u.id] : undefined, start = u.cast ? person(u.cast)?.level : undefined;
@@ -121,7 +126,7 @@ export class BattleScene implements Scene {
   private reset(): void {
     // after a loss the party falls back and binds its wounds: the retry starts as hurt as they came in, but never below half
     const back = Object.fromEntries(Object.entries(this.opts.health ?? {}).map(([k, v]) => [k, Math.max(RETRY_FLOOR, v)]));
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, back, this.opts.pack);
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, back, this.opts.pack); this.s.songBoost = this.opts.songBoost;
     this.vis.clear(); this.fx = [];
     for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;

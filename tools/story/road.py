@@ -1361,6 +1361,7 @@ S["royalMessenger"] = [
 S["corranSummerRoad"] = [
     iff({"eq": {"corranFate": "thornwick"}}, [run("corranPlay")], [
         iff({"eq": {"corranFate": "left"}}, [run("corranDrain")], [run("corranRace")])]),
+    iff({"flag": "oskDone"}, [setf({"hero": "corran"}), run("side.corranOsk"), setf({"hero": "rhea"})]),
     run("backToRoad3"),
 ]
 S["corranPlay"] = [

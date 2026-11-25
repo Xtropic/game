@@ -215,6 +215,29 @@ const TRACKS: Record<string, Track> = {
     v("bass", roots[b] + [0, 0, 12, 0, 3, 0, 7, 5][i], t, e * 0.9, 0.28, o);
     if (i === 0 || i === 3 || i === 6) { const c = [CH[0], CH[0], CH[5], CH[6]][b]; v("pluck", c[2] + 12, t, e, 0.1, o); v("pluck", c[3] + 12, t, e, 0.08, o); }
     if (b === 3 && i === 0) v("flute", 74, t, e * 2, 0.1, o); if (b === 3 && i === 2) v("flute", 69, t, e * 2, 0.1, o); if (b === 3 && i === 4) v("flute", 77, t, e * 4, 0.1, o); } },
+  // ---- fights: a light one for chance meetings, a hard one for bosses, a duel and a war march ----
+  skirmish: { bpm: 126, vol: 0.5, play(n, t, o, e) { const i = n % 8, b = bar(n, 4), c = CH[[0, 2, 0, 6][b]];
+    if (i === 0 || i === 4) v("drum", 0, t, e, i === 0 ? 0.4 : 0.25, o);
+    if (i % 2 === 1) v("tick", 0, t, e, 0.035, o);
+    v("bass", c[0] - 12 + [0, 0, 7, 0, 0, 12, 7, 0][i], t, e * 0.8, 0.2, o);
+    v("pluck", c[[2, 3, 2, 1, 2, 3, 1, 3][i]] + 12, t, e, 0.07, o); } },
+  boss: { bpm: 112, vol: 0.6, play(n, t, o, e) { const i = n % 8, b = bar(n, 8), roots = [38, 38, 41, 36, 38, 34, 33, 36];
+    if (n % 32 === 0) { v("pad", roots[b], t, e * 32, 0.4, o); v("pad", roots[b] + 3, t, e * 32, 0.25, o); }
+    if (i === 0 || i === 2 || i === 3 || i === 6) v("drum", 0, t, e, i === 0 ? 0.6 : 0.38, o);
+    v("bass", roots[b] - 12 + [0, 0, 0, 1, 0, 0, 3, 1][i], t, e * 0.85, 0.32, o);
+    if (i === 4) v("metal", roots[b] + 24, t, e * 2, 0.05, o);
+    if (b >= 4 && i % 4 === 0) { const nt = FOAL_AT[((b - 4) * 8 + i) % 64]; if (nt) v("flute", nt[0] - 1, t, e * 3, 0.1, o); } } },
+  duel: { bpm: 96, vol: 0.55, play(n, t, o, e) { const i = n % 8, b = bar(n, 4);
+    if (n % 32 === 0) v("pad", 38, t, e * 32, 0.35, o);
+    if (i === 0) v("drum", 0, t, e, 0.5, o); if (i === 5) v("drum", 0, t, e, 0.22, o);
+    if (i === 0 || i === 3) v("bass", [38, 38, 36, 34][b] - 12, t, e * 2.5, 0.28, o);
+    if (i === 2 || i === 6) v("metal", 74 + (b % 2 ? 1 : 0), t, e, 0.04, o);
+    if (b === 3 && i === 0) v("flute", 69, t, e * 6, 0.09, o); } },
+  war: { bpm: 104, vol: 0.6, play(n, t, o, e) { const i = n % 8, b = bar(n, 8), c = [CH[0], CH[0], CH[5], CH[6], CH[0], CH[2], CH[5], CH[6]][b];
+    if (i === 0 || i === 2 || i === 4 || i === 5 || i === 6) v("drum", 0, t, e, i === 0 ? 0.55 : i === 4 ? 0.45 : 0.22, o);
+    if (i === 0) { v("bass", c[0] - 12, t, e * 4, 0.3, o); v("pad", c[0], t, e * 8, 0.3, o); v("pad", c[2], t, e * 8, 0.22, o); }
+    if (b >= 4) { const nt = FOAL_AT[(b - 4) * 8 + i]; if (nt) v("flute", nt[0], t, nt[1] * e * 0.9, 0.12, o); }
+    else if (i === 4) v("bell", c[3] + 12, t, e * 2, 0.05, o); } },
   ash: { bpm: 50, vol: 0.55, play(n, t, o, e) { const b = bar(n, 8), i = n % 8;
     if (n % 64 === 0) { v("pad", 38, t, e * 64, 0.55, o); v("pad", 45, t, e * 64, 0.35, o); }
     if (i === 0) v("crackle", 0, t, e * 8, 0.06, o);

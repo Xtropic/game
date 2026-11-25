@@ -1,0 +1,78 @@
+{
+ "id": "side-osk-marines",
+ "name": "The harbour steps",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "Lorne marines in blue, with cutlasses and a boarding net, coming up Osk's harbour steps.",
+  "Behind you, the town is climbing the mountain."
+ ],
+ "won": "The marines go back to their boats",
+ "lost": "The marines take the steps",
+ "units": [
+  {
+   "id": "om1",
+   "name": "Lorne marine",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "om2",
+   "name": "Lorne marine",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    198,
+    118
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "om3",
+   "name": "Marine sergeant",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "level": 22,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    222,
+    104
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "om4",
+   "name": "Marine sharpshooter",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "level": 20,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    236,
+    124
+   ],
+   "cast": "archer"
+  }
+ ]
+}

@@ -68,6 +68,8 @@ export interface Unit extends UnitDef {
   gone: boolean; // left the field (fled, calmed, bolted)
   steady: boolean;
   intent: Intent | null;
+  /** The move this foe used last, so it doesn't repeat a trick every round. */
+  lastSkill?: string;
 }
 
 export type Phase = "ally" | "foe" | "won" | "lost";
@@ -91,6 +93,8 @@ export interface BattleState {
   /** Foes quick enough to strike before the party this round, and whether they are doing so now. */
   early: string[];
   firstStrike: boolean;
+  /** How much further the foal song reaches (the Spire Folk's old verses: 1.35). */
+  songBoost?: number;
   /** Ended without a win: the party got away, or let much weaker foes go. */
   escaped?: "fled" | "released";
 }
@@ -139,10 +143,32 @@ export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: 
     const hp = Math.max(1, Math.round(max * left));
     return { ...u, species: u.species ?? owned?.species, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, calmed: false, soothe: 0, gone: false, steady: false, intent: null };
   });
+  foeKits(units, book);
   const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, focus: {}, pack: Object.fromEntries(Object.entries(pack).filter(([k, n]) => n > 0 && book[k]?.kind === "craft")), used: {}, early: [], firstStrike: false };
   planIntents(s, book, rng);
   startRound(s);
   return s;
+}
+
+/** Seasoned foes know more than one trick. A foe written with a single basic move picks up others by level: soldiers
+ *  learn to guard and throw smoke, the best of them to rally the rest; cats learn to maul, bucks to leap. Early
+ *  fights stay simple. Foes written with their own list of moves keep it. */
+const KITS: Record<string, [number, string][]> = {
+  wstrike: [[6, "guard"], [12, "smoke"]],
+  bow: [[14, "smoke"]],
+  pounce: [[6, "maul"]],
+  horns: [[9, "pounce"]],
+  sling: [[10, "smoke"]],
+};
+function foeKits(units: Unit[], book: SkillBook): void {
+  const foes = units.filter((u) => u.side === "foe");
+  const lead = foes.filter((u) => !u.kith && u.skills[0] === "wstrike" && u.level >= 10).sort((a, b) => b.level - a.level)[0];
+  for (const u of foes) {
+    if (u.skills.length !== 1) continue;
+    const add = (KITS[u.skills[0]] ?? []).filter(([lv, k]) => u.level >= lv && book[k] && !(u.kith && book[k].kind !== "melee" && book[k].kind !== "pounce")).map(([, k]) => k);
+    if (u === lead && book.rally && foes.length > 1) add.push("rally");
+    if (add.length) u.skills = [...u.skills, ...add];
+  }
 }
 
 export const statsOf = (u: Unit): Attrs => u.stats ?? NEUTRAL;
@@ -225,12 +251,36 @@ export function pressesFor(book: SkillBook, k: string): number {
 export function planIntents(s: BattleState, book: SkillBook, rng: Rng): void {
   for (const f of sideOf(s, "foe")) {
     f.intent = null;
-    if (!alive(f) || !f.skills.length || !book[f.skills[0]]) continue;
-    const k = f.skills[0], pool = targetsFor(s, book, f, k);
-    if (!pool.length) continue;
-    const t = book[k].kind === "pounce" ? pool[0] : pool[Math.floor(rng() * pool.length)];
-    f.intent = { skill: k, target: t.id };
+    if (alive(f)) f.intent = foeChoice(s, book, f, rng);
   }
+}
+
+/** What a foe means to do this round, from everything it knows: it patches up a badly hurt friend, stands over
+ *  one, smokes whoever is about to unleash a finisher, or hits, the heavier blows more often. It seldom does the
+ *  same trick twice running. With one move it simply uses it. */
+export function foeChoice(s: BattleState, book: SkillBook, f: Unit, rng: Rng): Intent | null {
+  const usable = f.skills.filter((k) => book[k] && book[k].kind !== "song" && targetsFor(s, book, f, k).length);
+  if (!usable.length) return null;
+  const pick = (k: string): Unit => { const pool = targetsFor(s, book, f, k); return book[k].kind === "pounce" ? pool[0] : pool[Math.floor(rng() * pool.length)]; };
+  if (usable.length === 1 && !book[usable[0]].ally && book[usable[0]].kind !== "stun") { const k = usable[0]; return { skill: k, target: pick(k).id }; }
+  const hurt = sideOf(s, "foe").filter((x) => alive(x) && x.hp / x.maxHp < 0.5).sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+  const again = (k: string): number => (f.lastSkill === k ? 0.4 : 1);
+  const opts: { k: string; t: Unit; w: number }[] = [];
+  for (const k of usable) {
+    const sk = book[k], pool = targetsFor(s, book, f, k);
+    if (sk.kind === "heal") { if (hurt && pool.includes(hurt)) opts.push({ k, t: hurt, w: 2.5 * again(k) }); continue; }
+    if (sk.kind === "guard") { if (hurt && pool.includes(hurt)) opts.push({ k, t: hurt, w: 1.2 * again(k) }); continue; }
+    if (sk.kind === "stun") {
+      const t = pool.slice().sort((a, b) => (s.focus[b.id] ?? 0) - (s.focus[a.id] ?? 0))[0];
+      opts.push({ k, t, w: ((s.focus[t.id] ?? 0) >= FOCUS_FULL * 0.7 ? 1.6 : 0.5) * again(k) }); continue;
+    }
+    const avg = sk.dmg ? (sk.dmg[0] + sk.dmg[1]) / 2 : 6;
+    opts.push({ k, t: pick(k), w: (avg / 7) * (usable.length > 1 ? again(k) : 1) });
+  }
+  if (!opts.length) return null;
+  let r = rng() * opts.reduce((n, o) => n + o.w, 0);
+  for (const o of opts) { r -= o.w; if (r <= 0) return { skill: o.k, target: o.t.id }; }
+  const o = opts[opts.length - 1]; return { skill: o.k, target: o.t.id };
 }
 
 function addBond(s: BattleState, n: number, ev: BattleEvent[]): void {
@@ -296,8 +346,18 @@ export function act(s: BattleState, book: SkillBook, actorId: string, k: string,
   if (!checkEnd(s, ev)) {
     s.turn++;
     if (s.turn >= fighters(s, "ally").length) { s.phase = "foe"; s.turn = 0; }
+    skipBlinded(s);
   }
   return ev;
+}
+
+/** An ally blinded by a foe's smoke loses their turn (and the smoke clears). */
+function skipBlinded(s: BattleState): void {
+  for (let u = acting(s); u?.stunned; u = acting(s)) {
+    u.stunned = false; s.log.push(`${u.name} is blinded by smoke and loses the turn.`);
+    s.turn++;
+    if (s.turn >= fighters(s, "ally").length) { s.phase = "foe"; s.turn = 0; }
+  }
 }
 
 function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, grades: Grade[], rng: Rng, ev: BattleEvent[]): void {
@@ -326,12 +386,12 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
       const hits = grades.filter(isGood).length, perfects = grades.filter((x) => x === "perfect").length;
       addFocus(s, u, 8 * hits);
       if (t.side === u.side) {
-        t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
+        t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u)) * (s.songBoost ?? 1)), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
         ev.push({ t: "steady", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} sings. ${t.name} steadies.`);
       } else {
         const reach = songReach(t.temperament, t.hp / t.maxHp);
         if (reach === 0) { ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left: false }); s.log.push(`The ${t.name.toLowerCase()} tosses its head. It won't listen while it thinks it's winning.`); break; }
-        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)) * reach)); t.soothe += perfects; addBond(s, perfects * 8, ev);
+        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)) * reach * (s.songBoost ?? 1))); t.soothe += perfects; addBond(s, perfects * 8, ev);
         const left = t.calm >= 100;
         if (left) { t.intent = null; t.gone = true; t.calmed = true; s.resolve = Math.max(0, s.resolve - 15); }
         ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left });
@@ -387,7 +447,7 @@ export function foeAct(s: BattleState, book: SkillBook, foeId: string, grade: Gr
   if (mv === "stunned") { f.stunned = false; ev.push({ t: "stumble", id: f.id }); s.log.push(`${f.name} stumbles in the smoke.`); return ev; }
   if (!mv) return ev;
   perform(s, book, f, mv.skill, unit(s, mv.target), [grade], rng, ev);
-  f.intent = null;
+  f.lastSkill = mv.skill; f.intent = null;
   checkEnd(s, ev);
   return ev;
 }
@@ -398,11 +458,12 @@ export function foeAct(s: BattleState, book: SkillBook, foeId: string, grade: Gr
  */
 export function endRound(s: BattleState, book: SkillBook, rng: Rng): void {
   if (s.phase === "won" || s.phase === "lost") return;
-  if (s.firstStrike) { s.firstStrike = false; s.phase = "ally"; s.turn = 0; return; }
+  if (s.firstStrike) { s.firstStrike = false; s.phase = "ally"; s.turn = 0; skipBlinded(s); return; }
   for (const u of s.units) { u.guardedBy = null; u.covered = false; }
   s.round++; s.turn = 0; s.phase = "ally"; s.log.push(`Round ${s.round}.`);
   planIntents(s, book, rng);
   startRound(s);
+  if (s.phase === "ally") skipBlinded(s);
 }
 
 export function checkEnd(s: BattleState, ev: BattleEvent[]): boolean {

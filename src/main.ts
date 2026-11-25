@@ -37,7 +37,7 @@ async function boot(): Promise<void> {
   audio.onChange((on) => { game.voices.muted = !on; if (!on) game.voices.stop(); scene.toast(on ? "Sound on (N)" : "Sound off (N)"); });
   setInterval(() => {
     const top = [...game.scenes.all].reverse().find((s) => s.id !== "guide"); // the Guide keeps the music of whatever it's over
-    audio.track(top instanceof BattleScene || top instanceof DuelScene || top instanceof ArmyScene ? "battle" : (top as { music?: string } | undefined)?.music ?? scene.musicNow());
+    audio.track(top instanceof DuelScene ? "duel" : top instanceof ArmyScene ? "war" : (top as { music?: string } | undefined)?.music ?? scene.musicNow());
   }, 300);
   // Test and debugging hook; read-only views plus the input object so automated tests can play.
   (window as unknown as { __lull: unknown }).__lull = { game, input: game.input, explore: () => scene.debug(), scene: () => scene, saves: () => game.saves.list(),

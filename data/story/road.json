@@ -9862,6 +9862,26 @@
     ]
    },
    {
+    "if": {
+     "flag": "oskDone"
+    },
+    "then": [
+     {
+      "set": {
+       "hero": "corran"
+      }
+     },
+     {
+      "run": "side.corranOsk"
+     },
+     {
+      "set": {
+       "hero": "rhea"
+      }
+     }
+    ]
+   },
+   {
     "run": "backToRoad3"
    }
   ],

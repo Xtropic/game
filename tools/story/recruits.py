@@ -57,7 +57,7 @@ def _occupied(mid):
     if mid not in _taken:
         t = set()
         for f in os.listdir(os.path.join(ROOT, "data/story")):
-            if f == "recruits.json" or not f.endswith(".json"): continue
+            if f in ("recruits.json", "side.json") or not f.endswith(".json"): continue  # side.py places its own after these
             d = json.load(open(os.path.join(ROOT, "data/story", f)))
             t |= {(a["x"], a["y"]) for a in d["actors"] if a["map"] == mid}
             t |= {tuple(s["at"]) for s in d["steps"] if s["map"] == mid}
