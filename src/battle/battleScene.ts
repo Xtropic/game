@@ -4,6 +4,7 @@
 import { keyFor, padState } from "../core/input";
 import type { Loadout } from "../gear/weapons";
 import { sfx } from "../audio/music";
+import { openGuide, teach } from "../guide/guideScene";
 import { settings } from "../core/settings";
 import { buildOf, type Build } from "../art/build";
 import { kithBaseline, type Kith } from "../kith/kith";
@@ -12,7 +13,7 @@ import { Container, Graphics, Sprite, Text, Texture, type FederatedPointerEvent 
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import {
-  FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
+  ART_COST, FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
   autoChoice, canRelease, fleeChance, release, tryFlee } from "./rules";
 import { paintedHeight, paintedLook } from "./painted";
@@ -435,6 +436,25 @@ export class BattleScene implements Scene {
     q.grade = gradePress(q.t - q.lead, presser ? timingOf(presser) : 1); this.pressesSeen++;
   }
 
+  /** "How it works" cards: the basics before the first blow, the rest the first time each one is there to use,
+   *  always between moves (never while a ring is closing). */
+  private taughtStart = false;
+  private teachNow(): boolean {
+    const s = this.s, ids: string[] = [];
+    if (!this.taughtStart) {
+      this.taughtStart = true; ids.push("battles");
+      if (this.opts.escape) ids.push("leaving");
+      const sings = s.units.some((u) => u.side === "ally" && u.skills.some((k) => this.book[k]?.kind === "song"));
+      if (sings && s.units.some((u) => u.side === "foe" && u.species)) ids.push("wild");
+      if (Object.values(s.pack).some((n) => n > 0)) ids.push("thrown");
+    } else if (this.mode === "menu") {
+      const u = acting(s);
+      if (u && (s.focus[u.id] ?? 0) >= FOCUS_FULL) ids.push("focus");
+      if (u && kithOf(s, u) && s.bond >= ART_COST) ids.push("kithcall");
+    }
+    return ids.length > 0 && teach(this.game, ...ids);
+  }
+
   private toggleAuto(): void {
     this.autoTiming = !this.autoTiming;
     settings.set("autoTiming", this.autoTiming);
@@ -469,6 +489,8 @@ export class BattleScene implements Scene {
 
   update(dt: number): void {
     const inp = this.game.input;
+    if (!this.qte && this.teachNow()) return;
+    if (inp.wasPressed("guide") && !this.qte) { openGuide(this.game, "battles"); return; }
     this.dt = dt; this.time += dt;
     if (inp.wasPressed("timing")) this.toggleAuto();
     if (inp.wasPressed("auto")) this.toggleAutoBattle();
@@ -632,7 +654,7 @@ export class BattleScene implements Scene {
     });
     const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
     p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
-    this.hint.text = `${this.narrow && !padState.used ? "Tap" : keyFor("timing")}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow && !padState.used ? "" : `${keyFor("auto")}: `}auto battle ${this.autoBattle ? "on" : "off"}`;
+    this.hint.text = `${this.narrow && !padState.used ? "Tap" : keyFor("timing")}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow && !padState.used ? "" : `${keyFor("auto")}: `}auto battle ${this.autoBattle ? "on" : "off"}${this.narrow && !padState.used ? "" : `   ·   ${keyFor("guide")}: guide`}`;
   }
 
   /** Read-only view for tests and debugging. */

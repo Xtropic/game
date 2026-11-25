@@ -1,5 +1,5 @@
 // Input: maps keys and touch buttons to game actions, so scenes never read raw keys.
-export type Action = "up" | "down" | "left" | "right" | "confirm" | "cancel" | "run" | "menu" | "timing" | "auto" | "sing" | "company" | "notes" | "ledger";
+export type Action = "up" | "down" | "left" | "right" | "confirm" | "cancel" | "run" | "menu" | "timing" | "auto" | "sing" | "company" | "notes" | "ledger" | "guide";
 
 export const DEFAULT_KEYS: Record<string, Action> = {
   ArrowUp: "up", KeyW: "up",
@@ -16,13 +16,14 @@ export const DEFAULT_KEYS: Record<string, Action> = {
   KeyR: "company",
   KeyJ: "notes",
   KeyL: "ledger",
+  KeyG: "guide", F1: "guide",
 };
 
 /** Set once a game pad has been used, so on-screen prompts name pad buttons instead of keys. */
 export const padState = { used: false };
 const NAMES: Record<string, [string, string]> = {
   confirm: ["Enter", "A"], space: ["Space", "A"], cancel: ["Esc", "B"], timing: ["T", "LT"], auto: ["B", "View"], company: ["R", "Y"],
-  notes: ["J", "LB"], ledger: ["L", "RB"], menu: ["Tab", "Menu"], sing: ["Q", "X"], hold: ["H", "Y"], run: ["Shift", "RT"],
+  notes: ["J", "LB"], ledger: ["L", "RB"], menu: ["Tab", "Menu"], sing: ["Q", "X"], hold: ["H", "Y"], run: ["Shift", "RT"], guide: ["G", "Menu > Guide"],
 };
 /** The key or pad button to name in a prompt for an action. */
 export const keyFor = (a: keyof typeof NAMES | string): string => (NAMES[a] ?? [a, a])[padState.used ? 1 : 0];

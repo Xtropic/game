@@ -15,6 +15,7 @@ import { keyFor, padState, type Input } from "../core/input";
 import { attrsAt, jobSkill, type Attrs, type Job } from "../cast/attributes";
 import { KEEPSAKES, TIERS, canReforge, keepsake, reforge, weaponName, type Loadout } from "../gear/weapons";
 import { ITEMS } from "../gear/items";
+import { teach } from "../guide/guideScene";
 import { SPECIES, breedLitter, canBreed, foalToKith, type Kith } from "../kith/kith";
 import { SOURCES, readKith } from "../kith/upbringing";
 import { sfx } from "../audio/music";
@@ -300,6 +301,9 @@ export class BasePanel {
   }
 
   private draw(): void {
+    // the first look at a page that runs on its own rules gets its "How it works" card (over the ledger)
+    const teachTab: Partial<Record<(typeof TABS)[number], string>> = { Forge: "gear", Pens: "pens", Train: "training", Roads: "roads" };
+    const lesson = teachTab[TABS[this.tab]]; if (lesson) teach(this.host.game, lesson);
     this.view.removeChildren().forEach((c) => c.destroy({ children: true }));
     const w = this.w, h = this.h, W = Math.min(940, w - 16), H = Math.min(620, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
     const small = W < 620, fs = small ? 13 : 15, g = this.host.game;
@@ -315,7 +319,7 @@ export class BasePanel {
       this.hit(tx, ty, tw - 6, 34, () => { this.tab = i; this.i = 0; this.sub = "list"; });
       const label = new Text({ text: TAB_NAMES[t], style: serif(small ? 13 : 16, on ? "#fff4dc" : "#c8b898", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = ty + 17; this.view.addChild(label);
     });
-    const help = this.text(TAB_HELP[TABS[this.tab]], x0 + 16, y0 + 44 + rowsH + 8, fs, "#fff4dc", false, W - 32);
+    const help = this.text(`${TAB_HELP[TABS[this.tab]]}  (${keyFor("guide")}: how it all works)`, x0 + 16, y0 + 44 + rowsH + 8, fs, "#fff4dc", false, W - 32);
     // what Thornwick holds
     const building = this.f["base.build"];
     const status = `Coin ${g.coin}   ·   Supplies ${supplies(this.f)}   ·   Day ${Number(this.f["base.day"] ?? 0)}${building ? `   ·   Building: ${BUILDINGS[String(building)].name} (${Number(this.f["base.work"] ?? 0)} / ${BUILDINGS[String(building)].levels[levelOf(this.f, String(building)) + 1]?.work ?? 0})` : ""}`;

@@ -28,6 +28,9 @@ function aroundOf(id: string): Around | undefined {
 }
 import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
+import { openGuide, teach, unreadCount } from "../guide/guideScene";
+import { ITEMS } from "../gear/items";
+import { atLeast } from "../command/ranks";
 import { LOOKS, beastSheet, bodyOf, isBeast, glintTexture, noteTexture, personSheet, toneOf, type Facing } from "../art/people";
 import { RECRUITS, recruit } from "../cast/recruits";
 
@@ -59,7 +62,6 @@ import { settings } from "../core/settings";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
-import { ITEMS } from "../gear/items";
 import type { Slot } from "../core/save";
 import { StoryRunner, holds, partyOf, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
 
@@ -125,6 +127,12 @@ export class ExploreScene implements Scene, StoryHost {
   private shop = new ShopPanel();
   private ring = new TourneyPanel();
   private baseStage = "";
+  /** The Guide: always on screen, glowing with a count while there's a page the player hasn't read. */
+  private guideButton = new Container();
+  private guideButtonBg = new Graphics();
+  private guideButtonLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fontWeight: "bold", fill: "#2a1a08" } });
+  private guideShown = "";
+  private teachAt = 0;
   private menuButton = new Text({ text: "☰ Menu", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private map!: WorldMap;
   private game!: Game;
@@ -196,9 +204,12 @@ export class ExploreScene implements Scene, StoryHost {
     this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.ledgerMark, this.ledgerSign, this.ledgerButton, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.ledgerMark, this.ledgerSign, this.ledgerButton, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.guideButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
+    this.guideButton.addChild(this.guideButtonBg, this.guideButtonLabel); this.guideButtonLabel.x = 12; this.guideButtonLabel.y = 6;
+    this.guideButton.eventMode = "static"; this.guideButton.cursor = "pointer";
+    this.guideButton.on("pointertap", () => { if (this.game.scenes.top === this && !this.joins.showing) openGuide(this.game, this.base.open ? "thornwick" : undefined); });
     this.ledgerButtonLabel.x = 14; this.ledgerButtonLabel.y = 9;
     this.ledgerButton.addChild(this.ledgerButtonBg, this.ledgerButtonLabel, this.ledgerNew);
     this.ledgerButtonBg.roundRect(0, 0, this.ledgerButtonLabel.width + 28, 40, 10).fill(0xf0c060).stroke({ color: 0x6a4410, width: 3 });
@@ -399,6 +410,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
+    this.guideShown = ""; // re-place the Guide button
     this.ledgerButton.x = w - this.ledgerButtonBg.width - 16; this.ledgerButton.y = h - 84;
     this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h); this.ring.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
@@ -516,6 +528,7 @@ export class ExploreScene implements Scene, StoryHost {
       hero: () => this.hero(),
       march: (id) => this.march(id),
       ledger: () => this.openLedger(),
+      guide: (at) => openGuide(this.game, at),
       game: this.game, names: this.story.cast,
       travelling: () => [this.hero(), ...this.followers.map((f) => f.id)],
       inParty: () => partyOf(this.flags),
@@ -734,6 +747,8 @@ export class ExploreScene implements Scene, StoryHost {
   openPage(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void {
     setTimeout(() => {
       if (!this.free()) return;
+      if (page.startsWith("tourney:")) teach(this.game, "tourney");
+      else if (page.startsWith("shop:")) teach(this.game, "items");
       if (page.startsWith("tourney:")) this.ring.show(this.game, page.slice(8), this.screen.w, this.screen.h, (id) => !!awayOn(this.flags, id), (t, team) => this.runTourney(t, team));
       else if (page.startsWith("shop:")) this.shop.show(this.game, page.slice(5), this.screen.w, this.screen.h);
       else if (page === "base") this.openBase(); else this.openMenu();
@@ -820,6 +835,19 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Where the ledger lies (the crates at Thornwick), when Rhea can open it here; else undefined. */
+  /** While the player is free to walk: any system they've just come to gets its "How it works" card. */
+  private teachNow(dt: number): boolean {
+    this.teachAt -= dt; if (this.teachAt > 0) return false; this.teachAt = 0.5;
+    const f = this.flags, ids = ["basics"];
+    if (Object.keys(f).some((k) => k.startsWith("won.")) || Object.keys(this.game.party).length) ids.push("wounds", "levels");
+    if (this.joinedIds().some((id) => id !== "ash" && !this.game.kith[id])) ids.push("company");
+    if (Object.keys(ITEMS).some((id) => Number(f[`have.${id}`] ?? 0) > 0 && !ITEMS[id].battle)) ids.push("items");
+    if (baseOpen(f)) ids.push("thornwick", "gear");
+    if (f.rank) ids.push("ranks");
+    if (f.rank && atLeast(f, "Lieutenant")) ids.push("nations");
+    return teach(this.game, ...ids);
+  }
+
   private ledgerCell(): { x: number; y: number } | undefined {
     if (this.map.file.id !== "thornwick" || !baseOpen(this.flags) || this.hero() !== "rhea") return undefined;
     for (let y = 0; y < this.map.height; y++) for (let x = 0; x < this.map.width; x++) if (this.map.kindAt(x, y) === "crate") return { x, y };
@@ -930,6 +958,7 @@ export class ExploreScene implements Scene, StoryHost {
     }
     this.joins.update(dt);
     if (this.joins.showing) { if (this.joins.canClose && (inp.wasPressed("confirm") || inp.wasPressed("cancel"))) this.joins.close(); return; }
+    if (inp.wasPressed("guide")) { openGuide(this.game, this.base.open ? "thornwick" : this.shop.open ? "items" : this.ring.open ? "tourney" : undefined); return; }
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
     if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
     if (this.menu.open) { if (!this.menu.update(inp)) this.settle = true; return; }
@@ -951,6 +980,7 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.runner.busy) return;
     this.hazard(dt);
     if (this.runner.busy) return;
+    if (this.teachNow(dt)) return;
     if (inp.wasPressed("confirm")) { this.interact(); return; }
     if (inp.wasPressed("sing")) { this.sing(); return; }
     if (inp.wasPressed("company")) { this.toggleCompany(); return; }
@@ -1027,6 +1057,17 @@ export class ExploreScene implements Scene, StoryHost {
       this.ledgerButton.scale.set(1 + pulse * 0.06);
       this.ledgerButtonBg.tint = fresh ? (pulse > 0.5 ? 0xffffff : 0xffe8b0) : 0xffffff;
     }
+    // the Guide button, by the menu: a gold badge with the count of pages not read yet
+    const unread = unreadCount(this.flags), gl = unread ? `\u{1F4DC} Guide [${keyFor("guide")}]  ${unread} new` : `\u{1F4DC} Guide [${keyFor("guide")}]`;
+    if (gl !== this.guideShown) {
+      this.guideShown = gl; this.guideButtonLabel.text = gl;
+      this.guideButtonLabel.style.fill = unread ? "#2a1a08" : "#f2e3c4";
+      this.guideButtonBg.clear().roundRect(0, 0, this.guideButtonLabel.width + 24, this.guideButtonLabel.height + 12, 8).fill(unread ? 0xf0c060 : 0x1a140e).stroke({ color: unread ? 0x6a4410 : 0xe0c070, width: 2 });
+      this.guideButton.x = this.menuButton.x - this.guideButtonBg.width - 14; this.guideButton.y = this.screen.h - this.guideButtonBg.height - 10;
+    }
+    this.guideButton.visible = this.game.scenes.top === this && !this.menu.open && !this.ended;
+    const gp = unread ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 4) : 0;
+    this.guideButtonBg.tint = unread ? (gp > 0.5 ? 0xffffff : 0xffe0a0) : 0xffffff; this.guideButton.alpha = unread ? 1 : 0.85;
     const lc = this.ledgerCell();
     if (lc) {
       const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;

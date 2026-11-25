@@ -6,6 +6,7 @@ import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { sfx } from "../audio/music";
+import { openGuide, teach } from "../guide/guideScene";
 import { CH, CW, HUD_FONT, backdrop, barFX, drawLook, ringFX, setScale, slashFX, sparkFX, textFX, withFlash } from "./art";
 import { paintedLook } from "./painted";
 import { createDuel, exchange, nextMove, pauseNow, readTime, seeFeint, speak, wordsLeft, type Answer, type DuelDef, type DuelState, type Move, type Rng } from "./duel";
@@ -130,7 +131,10 @@ export class DuelScene implements Scene {
     }
   }
 
+  private taught = false;
   update(dt: number): void {
+    if (!this.taught) { this.taught = true; if (teach(this.game, "duels")) return; }
+    if (this.phase !== "read" && this.game.input.wasPressed("guide")) { openGuide(this.game, "duels"); return; }
     this.time += dt; this.t += dt;
     for (const f of this.fx) f.t += dt; this.fx = this.fx.filter((f) => f.t < 0.8);
     for (const k of ["hero", "foe"] as const) { this.flash[k] = Math.max(0, this.flash[k] - dt * 3); this.lunge[k] = Math.max(0, this.lunge[k] - dt * 2.5); }
@@ -175,7 +179,7 @@ export class DuelScene implements Scene {
       textFX(g, TELL[tell], fx + wob, cy, col, 9);
       if (this.spotted && this.t < this.lead * 0.55) textFX(g, "his weight's wrong", fx, cy + 8, "#e8d8ff", 5);
       ringFX(g, 130, 60, 5, "#ffe39a", true); ringFX(g, 130, 60, 5 + (rem / this.lead) * 24, "#ffe39a");
-      if (s.round < 2) textFX(g, "Answer before the ring closes: ↑ high · ↓ low · ← aside from a thrust · → strike", CW / 2, CH - 7, "#f2e3c4", 5);
+      if (s.round < 2) textFX(g, "Answer before the ring closes: ↑ high · ↓ low · ← aside from a thrust · → strike   ·   G: guide", CW / 2, CH - 7, "#f2e3c4", 5);
     }
     for (const f of this.fx) {
       const p = f.t / 0.8;

@@ -6,6 +6,7 @@ import { Container, Graphics, Text, type FederatedPointerEvent } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { sfx } from "../audio/music";
+import { openGuide, teach } from "../guide/guideScene";
 import { PEOPLE, type Attrs } from "../cast/attributes";
 import { KINDS, attackLimit, createArmy, give, live, orderDelay, planAhead, suggestOfficers, terrainAt, tick, type ArmyDef, type ArmyState, type Company, type Terrain } from "./army";
 
@@ -35,7 +36,7 @@ export class ArmyScene implements Scene {
   private speed = 1;
   private logShown = "";
   private hudDirty = true;
-  private keys = (e: KeyboardEvent) => { if (this.phase !== "field") return; if (e.key === "+" || e.key === "=") this.setSpeed(Math.min(3, this.speed + 1)); else if (e.key === "-") this.setSpeed(Math.max(1, this.speed - 1)); else if (e.key === "h" || e.key === "H") this.hold(); };
+  private keys = (e: KeyboardEvent) => { if (this.phase !== "field" || this.game.scenes.top !== this) return; if (e.key === "+" || e.key === "=") this.setSpeed(Math.min(3, this.speed + 1)); else if (e.key === "-") this.setSpeed(Math.max(1, this.speed - 1)); else if (e.key === "h" || e.key === "H") this.hold(); };
 
   /** How many stratagems the council may pick (by rank). */
   private picks: number;
@@ -118,8 +119,11 @@ export class ArmyScene implements Scene {
   }
   private say(t: string): void { this.logShown = t; this.hudDirty = true; }
 
+  private taught = false;
   update(dt: number): void {
     const inp = this.game.input;
+    if (!this.taught) { this.taught = true; if (teach(this.game, "army")) return; }
+    if (inp.wasPressed("guide")) { openGuide(this.game, "army"); return; }
     if (this.phase === "intro") { if (inp.wasPressed("confirm")) this.next(); return; }
     if (this.phase === "council") { if (inp.wasPressed("confirm")) this.toField(); return; }
     if (this.phase === "over") { if (inp.wasPressed("confirm")) this.finish(); return; }
@@ -279,7 +283,7 @@ export class ArmyScene implements Scene {
     const bw = wide ? (pw - 8) / 2 : Math.min(140, (pw - 18) / 4), bh = 34;
     const row = (items: [string, () => void, boolean?][]) => { items.forEach(([l, f, lit], i) => btn(l, px + (wide ? (i % 2) * (bw + 8) : i * (bw + 6)), y + (wide ? Math.floor(i / 2) * (bh + 6) : 0), bw, bh, f, lit)); y += (wide ? Math.ceil(items.length / 2) : 1) * (bh + 6); };
     row([[this.paused ? "Resume" : "Pause", () => { this.paused = !this.paused; }, this.paused], [`Speed x${this.speed}`, () => this.setSpeed(this.speed % 3 + 1)], ["Hold", () => this.hold()], ["Next company", () => { const o = live(s, "ours"); const i = o.findIndex((c) => c.id === this.sel); this.sel = o[(i + 1) % o.length]?.id ?? null; }]]);
-    if (wide && y < h - 120) txt(padState.used ? "Right stick points, A on ground to move, on a red company to attack. A (no pointer) pauses, Menu next, LT speed, Y hold." : "Click ground to move, a red company to attack. Space pauses, Tab next, T speed, H hold. The faint red arrows are what you know of their plan.", px, y + 6, fs - 3, "#8a7e68");
+    if (wide && y < h - 120) txt(padState.used ? "Right stick points, A on ground to move, on a red company to attack. A (no pointer) pauses, Menu next, LT speed, Y hold." : "Click ground to move, a red company to attack. Space pauses, Tab next, T speed, H hold, G guide. The faint red arrows are what you know of their plan.", px, y + 6, fs - 3, "#8a7e68");
     if (this.phase === "over") {
       const bw2 = Math.min(520, w - 32), bx = (this.ox + (this.def.terrain[0].length * this.cell) / 2) - bw2 / 2, by2 = h / 2 - 70;
       panel(Math.max(8, bx), by2, bw2, 140);

@@ -9,7 +9,7 @@ import { extname, join } from "node:path";
 const root = new URL("../../dist/", import.meta.url).pathname;
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json" };
 const server = createServer(async (req, res) => {
-  try { const p = join(root, decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/\/$/, "/index.html")); res.writeHead(200, { "content-type": types[extname(p)] ?? "application/octet-stream" }); res.end(await readFile(p)); }
+  try { const p = join(root, decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/\/$/, "/index.html")); const body = await readFile(p); res.writeHead(200, { "content-type": types[extname(p)] ?? "application/octet-stream" }); res.end(body); }
   catch { res.writeHead(404); res.end(); }
 }).listen(0);
 const url = `http://127.0.0.1:${server.address().port}/`;
@@ -57,7 +57,7 @@ const after = await page.evaluate(() => ({ h: window.__lull.game.flags["health.r
 if (after.h !== 0.7 || after.n !== 1) fail(`bandage not used on Rhea: ${JSON.stringify(after)}`);
 await shot("items-used");
 // Settings: battle speed up one step
-await key("ArrowRight"); if ((await menu()).tab !== 3) fail("Right did not go to Settings");
+await key("ArrowRight", 4); if ((await menu()).tab !== 6) fail("Right did not go to Settings (past Thornwick, Command and Guide)");
 await key("ArrowDown", 5); await key("ArrowRight");
 const speed = await page.evaluate(() => window.__lull.settings.get("battleSpeed"));
 if (speed !== 1.5) fail(`battle speed ${speed}`);

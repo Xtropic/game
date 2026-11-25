@@ -10,6 +10,8 @@
 // Everything can also be tapped.
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
+import { TOPICS, type GuideTopic } from "../guide/topics";
+import { keys, met, teach } from "../guide/guideScene";
 import { keyFor, padState, type Input } from "../core/input";
 import { ATTRS, PEOPLE, attrsAt, party as battle, xpToNext, MAX_LEVEL, type Attr, type Attrs } from "../cast/attributes";
 import { FITTINGS, KEEPSAKES, TIERS, equip, fittingSummary, fittingsFor, keepsake, spare, techniques, weaponName, weaponPower, withGear, type Loadout } from "../gear/weapons";
@@ -48,11 +50,13 @@ export interface MenuHost {
   march(nation: string): void;
   /** Opens Thornwick's ledger (closes the menu); says why not when it can't. */
   ledger(): string | undefined;
+  /** Opens the Guide (over the menu), at a topic if given. */
+  guide(at?: string): void;
 }
 
 interface Member { id: string; name: string; kith: boolean; unit: string; travelling: boolean; /** In the party the player picked (may be waiting at camp while a scene has Rhea alone). */ party: boolean; }
 
-const TABS = ["Party", "Gear", "Items", "Thornwick", "Command", "Settings", "Save"] as const;
+const TABS = ["Party", "Gear", "Items", "Thornwick", "Command", "Guide", "Settings", "Save"] as const;
 const ACTIONS = ["Send an envoy", "Send a gift", "Make demands", "Seal the pact", "March on them"] as const;
 type Focus = "tabs" | "list" | "slots" | "pick" | "target" | "confirm";
 
@@ -149,7 +153,7 @@ export class GameMenu {
     return this.open;
   }
 
-  private goTab(t: number): void { this.tab = (t + TABS.length) % TABS.length; this.i = 0; this.focus = this.focus === "tabs" ? "tabs" : "list"; sfx.bump(); }
+  private goTab(t: number): void { this.tab = (t + TABS.length) % TABS.length; if (TABS[this.tab] === "Gear") teach(this.host.game, "gear"); this.i = 0; this.focus = this.focus === "tabs" ? "tabs" : "list"; sfx.bump(); }
 
   // ---- who and what ----
 
@@ -181,6 +185,7 @@ export class GameMenu {
       case "Items": return itemsOwned(this.host.game.flags).length;
       case "Thornwick": return 1;
       case "Command": return 1 + knownNations(this.host.game.flags).length;
+      case "Guide": return this.guideTopics().length;
       case "Settings": return this.settingRows().length;
       default: return this.saveRows().length;
     }
@@ -204,7 +209,8 @@ export class GameMenu {
       const id = itemsOwned(this.host.game.flags)[this.i]; if (!id) return;
       if (ITEMS[id].battle) { this.msg = "That one is for fights: choose it on someone's turn."; return; }
       if (ITEMS[id].who === "all") this.useOn(-1); else { this.focus = "target"; this.pick = 0; }
-    } else if (tab === "Thornwick") { const why = this.host.ledger(); if (why) this.msg = why; }
+    } else if (tab === "Guide") { const t = this.guideTopics()[this.i]; this.host.guide(t?.id); }
+    else if (tab === "Thornwick") { const why = this.host.ledger(); if (why) this.msg = why; }
     else if (tab === "Command") {
       if (this.i === 0) return;
       if (this.host.hero() !== "rhea") { this.msg = "Only Rhea deals with the nations."; return; }
@@ -278,6 +284,27 @@ export class GameMenu {
     if (this.focus !== "tabs" && !this.msg) this.msg = "Enter opens Thornwick's ledger.";
   }
 
+  private guideTopics(): GuideTopic[] { return TOPICS.filter((t) => met(this.host.game.flags, t.id)); }
+
+  private drawGuide(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
+    const f = this.host.game.flags, ts = this.guideTopics();
+    this.list(ts.map((t) => ({ label: t.title, sub: f[`guide.read.${t.id}`] ? t.group : `${t.group}  ·  NEW` })), b, listW, fs, "Nothing yet.");
+    const x = b.x + listW + 18, w = b.w - listW - 18;
+    let y = b.y;
+    const line = (t: string, size: number, fill: string, bold = false, gap = 6) => { y += this.text(t, x, y, size, fill, bold, w).height + gap; };
+    const t = ts[this.i];
+    if (!t || this.focus === "tabs") {
+      line("The Guide", fs + 6, "#fff4dc", true, 8);
+      line(`How every part of the game works: battles, wounds, levels, your company, Thornwick, kith, ranks, duels and armies. A page opens the first time you meet something new, and stays here. ${keyFor("guide")} opens the Guide from anywhere, even in the middle of a fight.`, fs - 1, "#d8ccb4");
+      return;
+    }
+    line(t.title, fs + 6, "#fff4dc", true, 8);
+    line(t.pages[0].head, fs, "#ffe39a", true, 4);
+    line(keys(t.pages[0].text), fs - 1, "#d8ccb4", false, 10);
+    if (t.pages.length > 1) line(`${t.pages.length - 1} more: ${t.pages.slice(1).map((p) => p.head).join(", ")}.`, fs - 2, "#9a8e78");
+    if (!this.msg) this.msg = `${keyFor("confirm")} reads the whole page.`;
+  }
+
   private drawCommand(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
     const g = this.host.game, f = g.flags, ns = knownNations(f), r = rankOf(f);
     const tag = (n: Nation): string => n.enemy ? "At war" : fate(f, n) === "pact" ? "Ally" : fate(f, n) === "held" ? "Held by force" : `${mood(standing(f, n))} (${standing(f, n)})`;
@@ -344,6 +371,7 @@ export class GameMenu {
       { label: "Battle speed", value: () => `x${settings.get("battleSpeed")}`, change: (d) => settings.set("battleSpeed", cycle(BATTLE_SPEEDS, settings.get("battleSpeed"), d)) },
       { label: "Auto timing", value: () => (settings.get("autoTiming") ? "On" : "Off"), change: () => settings.set("autoTiming", !settings.get("autoTiming")) },
       { label: "Auto battle", value: () => (settings.get("autoBattle") ? "On" : "Off"), change: () => settings.set("autoBattle", !settings.get("autoBattle")) },
+      { label: "How-it-works cards", value: () => (settings.get("tutorials") ? "On" : "Off"), change: () => settings.set("tutorials", !settings.get("tutorials")) },
       { label: "Always run", value: () => (settings.get("alwaysRun") ? "On" : "Off"), change: () => settings.set("alwaysRun", !settings.get("alwaysRun")) },
       { label: "3D world", value: () => (settings.get("world3d") ? "On" : "Off"), change: () => settings.set("world3d", !settings.get("world3d")) },
       { label: "Tilt to walk", value: () => (settings.get("tilt") ? "On" : "Off"), change: () => settings.set("tilt", !settings.get("tilt")) },
@@ -356,6 +384,7 @@ export class GameMenu {
     Effects: "Footsteps, blows, doors and the rest.",
     Voices: "Spoken lines. Off shows the words only.",
     "Text speed": "How fast words appear when a line isn't spoken.",
+    "How-it-works cards": "A card explaining each new system the first time you meet it. The Guide (G) keeps every page either way.",
     "Battle speed": "Hurries fights along. Timing rings keep their pace.",
     "Auto timing": "Hits and braces land well without pressing. T in a fight.",
     "Always run": "Run without holding Shift (RT on a controller).",
@@ -412,6 +441,7 @@ export class GameMenu {
       case "Items": this.drawItems(body, listW, fs); break;
       case "Thornwick": this.drawThornwick(body, listW, fs); break;
       case "Command": this.drawCommand(body, listW, fs); break;
+      case "Guide": this.drawGuide(body, listW, fs); break;
       case "Settings": this.drawSettings(body, fs); break;
       default: this.drawSave(body, fs);
     }

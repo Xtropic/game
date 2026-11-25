@@ -23,9 +23,11 @@ export interface Settings {
   world3d: boolean;
   /** Phones and tablets: tilt the screen to walk (off: drag the on-screen stick). */
   tilt: boolean;
+  /** Show a "How it works" card the first time each system turns up (the Guide keeps them either way). */
+  tutorials: boolean;
 }
 
-export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false, world3d: true, tilt: true };
+export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false, world3d: true, tilt: true, tutorials: true };
 export const TEXT_SPEEDS = [0.6, 1, 1.6, 3];
 export const BATTLE_SPEEDS = [1, 1.5, 2];
 
@@ -50,6 +52,7 @@ export function parseSettings(raw: string | null, oldAuto: string | null = null)
     alwaysRun: typeof o.alwaysRun === "boolean" ? o.alwaysRun : DEFAULTS.alwaysRun,
     world3d: typeof o.world3d === "boolean" ? o.world3d : DEFAULTS.world3d,
     tilt: typeof o.tilt === "boolean" ? o.tilt : DEFAULTS.tilt,
+    tutorials: typeof o.tutorials === "boolean" ? o.tutorials : DEFAULTS.tutorials,
   };
 }
 
