@@ -141,4 +141,31 @@ describe("the Long Road: the West", () => {
     r.run([{ run: "tarsisGate" }, { run: "vela" }, { run: "infirmary" }, { run: "vela" }]);
     expect(f["road.tarsis"]).toBe("lulls"); expect(f.lullTrade).toBe(true); expect(f["recruited.kesh"]).toBeUndefined(); expect(f.stage).toBe("ah31");
   });
+  it("Ember and the Crown: water shared, Rashid's coup, the queen mother exposed, and Rhea speaks for Finch in the yard", () => {
+    // picks: share water, Rashid, Corran shows his rings, read in court, speak for him
+    const t = start({ stage: "ah31" }, [0, 0, 1, 0, 0]);
+    const { f, r, log } = t;
+    r.run([{ run: "imari" }]); expect(log).toContain("battle road-dunes"); expect(f["recruited.imari"]).toBe(true);
+    expect(f["open.east-ember"]).toBe(true); expect(wayOpen("east-ember", f)).toBe(true); expect(t.map()).toBe("town-ember"); expect(f.stage).toBe("ah32");
+    r.run([{ run: "palaceIn" }]); expect(f.stage).toBe("ah33");
+    r.run([{ run: "rashidGarden" }, { run: "nadraFather" }]); expect(f.stage).toBe("ah35");
+    r.run([{ run: "palaceIn" }, { run: "palaceGuards" }, { run: "sanctuary" }]); expect(log).toContain("battle road-palace"); expect(f.stage).toBe("ah36");
+    r.run([{ run: "twoPrinces" }]);
+    expect(f["road.ember"]).toBe("rashid"); expect(f["recruited.nadra"]).toBe(true); expect(f.corranPlay).toBe("rings");
+    expect(wayOpen("east-heartland", f)).toBe(true); expect(f.stage).toBe("ah37"); expect(f.hero).toBe("rhea");
+    r.run([{ run: "kingsmereArrive" }, { run: "aldousLodge" }, { run: "odileHerd" }]); expect(f["recruited.odile"]).toBe(true); expect(f.stage).toBe("ah40");
+    r.run([{ run: "queenDinner" }]); expect(t.map()).toBe("kingsmere-palace"); expect(f.stage).toBe("ah41");
+    r.run([{ run: "galleryGuards" }, { run: "theAnswer" }]);
+    expect(f["road.crown"]).toBe("exposed"); expect(f.aldousFree).toBe(true); expect(f.finchYard).toBe("spoke"); expect(f.finchStripped).toBe(true);
+    expect(f.stage).toBe("af1"); expect(f.act4).toBe(true); expect(t.map()).toBe("thornwick"); expect(r.busy).toBe(false);
+  });
+
+  it("Ember and the Crown, the other way: water kept, walk away from both princes, the letters burned", () => {
+    const t = start({ stage: "ah31", corranFate: "millbridge" }, [1, 2, 0, 1, 1]);
+    const { f, r } = t;
+    r.run([{ run: "imari" }, { run: "palaceIn" }, { run: "rashidGarden" }, { run: "nadraFather" }, { run: "palaceIn" }, { run: "palaceGuards" }, { run: "sanctuary" }, { run: "twoPrinces" }]);
+    expect(f["recruited.imari"]).toBeUndefined(); expect(f["road.ember"]).toBe("away"); expect(f["recruited.nadra"]).toBeUndefined(); expect(f.raceSaved).toBe(true);
+    r.run([{ run: "kingsmereArrive" }, { run: "aldousLodge" }, { run: "odileHerd" }, { run: "queenDinner" }, { run: "galleryGuards" }, { run: "theAnswer" }]);
+    expect(f["road.crown"]).toBe("buried"); expect(f.aldousFree).toBeUndefined(); expect(f.finchYard).toBe("silent"); expect(f.stage).toBe("af1");
+  });
 });

@@ -37,7 +37,7 @@
   "fffffffhhhhhhhhhhhhhhhhhssssssssssssssss#sssssssssssssshhhh,,,,,",
   "fffffffhhhhhhhhhhhhhhsssssssssssssssssss#sssssssssssssshhhh,,,,,",
   "...fff....hhhhhhhhhhssssssssssssssssssss#ssssssssssssssshhhh,,,,",
-  "..........hhhhhhhhhsssssssssssssssssssss#ssssssssssssssssshhhh,,",
+  "..........hhhhhhhhhsssssssssssssssssssss########################",
   "..........hhhhhhhhhsssssssssssssssssssss#sssssssssssssssshhhhhss",
   "...........hhhhhhhfsssssssssssssssssssss#sssssssssssssshhhhhhhhs",
   "...........hhhffffffssssssssssssssssssss#sssssssssssssshhhhhhhhs",
@@ -109,7 +109,8 @@
  ],
  "ways": [
   {"id": "vale-east", "x": 0, "y": 22, "side": "west", "to": "vale"},
-  {"id": "east-ember", "x": 40, "y": 43, "side": "south", "to": "ember"}
+  {"id": "east-ember", "x": 40, "y": 43, "side": "south", "to": "ember"},
+  {"id": "east-heartland", "x": 63, "y": 32, "side": "east", "to": "heartland"}
  ],
  "entities": [{"id": "start", "kind": "spawn", "x": 13, "y": 24}]
 }

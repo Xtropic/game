@@ -1,0 +1,78 @@
+{
+ "id": "road-gallery",
+ "name": "The queen mother's household",
+ "backdrop": "cistern",
+ "party": true,
+ "intro": [
+  "The queen mother's household guards in the long gallery, between you and the King's door.",
+  "Esme's letters are in your coat."
+ ],
+ "won": "The gallery is clear",
+ "lost": "Driven back to the dining hall",
+ "units": [
+  {
+   "id": "qg1",
+   "name": "Household guard",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 26,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "qg2",
+   "name": "Household guard",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 26,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "qg3",
+   "name": "Household guard",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 26,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    162,
+    132
+   ]
+  },
+  {
+   "id": "qg4",
+   "name": "Household crossbow",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 26,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

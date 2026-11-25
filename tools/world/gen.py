@@ -85,8 +85,8 @@ LANDS = [
          places=[("corvane", "Corvane", 13, 23, "town"), ("tallyhill", "Tallyhill", 20, 10, "town"), ("tarsis", "Tarsis", 38, 28, "fort"),
                  ("dry-hollow", "Dry Hollow", 33, 15, "village"), ("summer-fold", "Summer Fold", 54, 9, "village"), ("stone-rings", "Stone Rings", 57, 22, "village")],
          roads=[("w:vale-east", "corvane"), ("corvane", "tallyhill"), ("corvane", "tarsis"), ("tarsis", "dry-hollow"), ("tarsis", "w:east-ember"),
-                ("summer-fold", "stone-rings")],
-         ways=[("vale-east", "west", 22, "vale"), ("east-ember", "south", 40, "ember")]),
+                ("summer-fold", "stone-rings"), ("tarsis", "w:east-heartland")],
+         ways=[("vale-east", "west", 22, "vale"), ("east-ember", "south", 40, "ember"), ("east-heartland", "east", 32, "heartland")]),
     dict(id="coast", name="The Salt Coast", w=64, h=40,
          regions=[("ashby", 26, 14, "coast", 1.1), ("salt-house", 48, 24, "saltmarsh", 0.9), ("osk", 8, 31, "volcanic", 0.5)],
          sea=["west", "south"], island=(9, 31, 4.2),
@@ -115,8 +115,9 @@ LANDS = [
          sea=["south"],
          places=[("vantry", "Vantry", 41, 19, "city"), ("coldhatch", "Coldhatch", 52, 30, "village"), ("kingsmere", "Kingsmere", 18, 24, "castle"),
                  ("queensford", "Queensford", 25, 35, "town")],
-         roads=[("w:millcities-heartland", "vantry"), ("vantry", "coldhatch"), ("vantry", "kingsmere"), ("kingsmere", "queensford")],
-         ways=[("millcities-heartland", "north", 30, "millcities")]),
+         roads=[("w:millcities-heartland", "vantry"), ("vantry", "coldhatch"), ("vantry", "kingsmere"), ("kingsmere", "queensford"),
+                ("w:east-heartland", "kingsmere")],
+         ways=[("millcities-heartland", "north", 30, "millcities"), ("east-heartland", "west", 24, "east")]),
 ]
 # hidden regions: no roads in from outside; found by walking in
 HIDDEN = {"vael", "low-water", "osk", "salt-house", "wandering-herd"}

@@ -1,0 +1,46 @@
+{
+ "id": "town-ember",
+ "name": "Ember",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "x": "crate",
+  "e": "exit",
+  "T": "tree",
+  "a": "sand"
+ },
+ "rows": [
+  "##############################",
+  "#aaaaaaarrrrrrrrrrrrrraaaaaaa#",
+  "#aaaaaaarrrrrrrrrrrrrraaaaaaa#",
+  "#aaaTaaarrrrrrrrrrrrrraaTaaaa#",
+  "#aaaaaaarrrrrrrrrrrrrraaaaaaa#",
+  "#aaaaaaahhhhhhddhhhhhhaaaaaaa#",
+  "#aaaaaaaaaaaaaaaaaaaaaaaaaaaa#",
+  "#rrrrrrraaaaaaaaaaaaaaaaaaaaa#",
+  "#rrrrrrraaaaaaaaaaaaaaaaaaaae#",
+  "#rrrrrrraaaaaawwaaaaaaaaaaaae#",
+  "#hhhdhhhaaaaaawwaaaaaaaaaaaaa#",
+  "#aaaaaaaaaaaaaaaaaaaaaaaaaaaa#",
+  "#aaaaaaaaaaaaaaaaaaaaaSSaaaaa#",
+  "#aaaaTaaaaSSaaaaaaSSaaaaaaaaa#",
+  "#aaaaaaaaaaaaaaaaaaaaaaaxxaaa#",
+  "#aaaaaaaaaaaaaaaaaaaaaaaaaaaa#",
+  "#aaaaaaaaaaaaaaaaaaaaaaaaaaaa#",
+  "##############ee##############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 16
+  }
+ ]
+}

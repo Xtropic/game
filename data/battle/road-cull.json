@@ -1,0 +1,81 @@
+{
+ "id": "road-cull",
+ "name": "The queen mother's cull-men",
+ "backdrop": "meadow",
+ "party": true,
+ "intro": [
+  "Huntsmen with nets and long knives, and a Guild man in grey with a tally board.",
+  "Behind you, forty crownhorns, and a knight."
+ ],
+ "won": "The cull-men scatter into the trees",
+ "lost": "Driven back against the paddock",
+ "units": [
+  {
+   "id": "cu1",
+   "name": "Royal huntsman",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 25,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "cu2",
+   "name": "Royal huntsman",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 25,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "cu3",
+   "name": "Huntsman's bow",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 25,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  },
+  {
+   "id": "cu4",
+   "name": "Hunting reedcat",
+   "look": "reedcat:#6a5a3a",
+   "side": "foe",
+   "row": "front",
+   "hp": 64,
+   "kith": true,
+   "level": 25,
+   "skills": [
+    "maul",
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    162,
+    132
+   ]
+  }
+ ]
+}

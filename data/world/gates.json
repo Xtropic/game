@@ -156,6 +156,18 @@
     "ah29",
     "ah30",
     "ah31",
+    "ah32",
+    "ah33",
+    "ah34",
+    "ah35",
+    "ah36",
+    "ai3",
+    "ah37",
+    "ah38",
+    "ah39",
+    "ah40",
+    "ah41",
+    "ah42",
     "af1",
     "af2",
     "af3",
@@ -214,6 +226,10 @@
     "millcities-heartland": {
       "blocker": "walls",
       "why": "Vantry's outer wall, and the Guild's own Wardens on the gate. Not yet."
+    },
+    "east-heartland": {
+      "blocker": "checkpoint",
+      "why": "The royal road east of the steppe. Crown wardens turn back anyone without the King's pass."
     }
   },
   "finds": [

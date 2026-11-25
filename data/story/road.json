@@ -19,7 +19,11 @@
   "trial4",
   "ledgers",
   "settling",
-  "lastContract"
+  "lastContract",
+  "sanctuary",
+  "twoPrinces",
+  "theAnswer",
+  "ninety"
  ],
  "moods": {
   "scenes": {
@@ -103,7 +107,29 @@
    "tarsisGate": "camp",
    "vela": "camp",
    "infirmary": "camp",
-   "lastContract": "camp"
+   "lastContract": "camp",
+   "imari": "camp",
+   "audience": "camp",
+   "rashidGarden": "camp",
+   "nadraFather": "camp",
+   "palaceIn": "camp",
+   "palaceGuards": "camp",
+   "sanctuary": "camp",
+   "twoPrinces": "camp",
+   "royalMessenger": "camp",
+   "corranSummerRoad": "camp",
+   "corranPlay": "camp",
+   "corranDrain": "camp",
+   "corranRace": "camp",
+   "backToRoad3": "camp",
+   "kingsmereArrive": "camp",
+   "aldousLodge": "camp",
+   "odileHerd": "camp",
+   "queenDinner": "camp",
+   "galleryGuards": "camp",
+   "theAnswer": "camp",
+   "ninety": "camp",
+   "roadHome": "camp"
   },
   "stages": {
    "ah5": "night"
@@ -146,13 +172,24 @@
   "brannoc": "Brannoc",
   "king": "The King of Lorne",
   "woman": "A mother of the eleven",
+  "mirechild": "A girl in the sick room",
   "tollman": "League toll-man",
   "factor": "Guild factor",
   "councillor": "First Councillor of the League",
   "ilse": "Ilse Varn",
   "ottilie": "Ottilie",
   "vela": "Vela Orme",
-  "kesh": "Kesh"
+  "kesh": "Kesh",
+  "imari": "Imari",
+  "khalis": "Prince Khalis",
+  "rashid": "Prince Rashid",
+  "nadra": "Nadra",
+  "aldous": "King Aldous",
+  "odile": "Odile",
+  "esme": "Esme",
+  "queen": "The queen mother",
+  "halloran": "Halloran",
+  "crownguard": "Crown warden"
  },
  "objectives": {
   "ah0": "The council in Thornwick chapel.",
@@ -187,9 +224,21 @@
   "ah28": "South-east over the steppe to Tarsis. Vela Orme's contract ends at the new moon.",
   "ah29": "Vela wants to see the Commons fight. Go to her hall.",
   "ah30": "Tarsis' infirmary, then Vela's answer.",
-  "ah31": "South, across the desert, to the Ember Courts.",
+  "ah31": "South, across the desert, to the Ember Courts. A caravan guide is waiting in Tarsis.",
+  "ah32": "Ember. Present yourself at Prince Khalis' palace.",
+  "ah33": "Prince Rashid has asked to meet you in his garden, east of the square.",
+  "ah34": "Nadra's father is in the old guards' house at the end of the Prince's Garden.",
+  "ah35": "Into Khalis' palace at night. Find out what the Houses' coin is buying.",
+  "ah36": "Both princes want an answer. Go back to the square.",
+  "ah37": "To Kingsmere, by the royal road east of the steppe. Show the King's pass.",
+  "ah38": "The King's hunting lodge, in the royal parks west of Kingsmere.",
+  "ah39": "The park knight, Odile, is at the crownhorn paddock.",
+  "ah40": "The queen mother's dinner, at the palace.",
+  "ah41": "Get Esme's letters to the King's rooms tonight.",
+  "ah42": "The court, in the morning.",
   "ai1": "Autumn, while Rhea is away.",
-  "ai2": "Midwinter, while Rhea is away."
+  "ai2": "Midwinter, while Rhea is away.",
+  "ai3": "Midsummer, while Rhea is away."
  },
  "actors": [
   {
@@ -1248,6 +1297,289 @@
      "text": "A young sellsword, watching the practice yard. \"Captain says we fight for whoever pays. Nobody's paid since the thaw.\""
     }
    ]
+  },
+  {
+   "id": "imari",
+   "map": "town-tarsis",
+   "x": 17,
+   "y": 14,
+   "look": "imari",
+   "when": {
+    "stage": [
+     "ah31"
+    ]
+   },
+   "talk": [
+    {
+     "run": "imari"
+    }
+   ]
+  },
+  {
+   "id": "emb-water",
+   "map": "town-ember",
+   "x": 12,
+   "y": 12,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A water seller with a brass cup on a chain. \"Water's free in Ember. The cup's a copper. That's how the princes like it.\""
+    }
+   ]
+  },
+  {
+   "id": "emb-guard",
+   "map": "town-ember",
+   "x": 13,
+   "y": 6,
+   "look": "warden2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A palace guard in crimson, at the door. He doesn't look at you. He doesn't look at anything. There are rings up to his ear."
+    }
+   ]
+  },
+  {
+   "id": "emb-trader",
+   "map": "town-ember",
+   "x": 19,
+   "y": 14,
+   "look": "smuggler",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A spice trader. \"The Guild's men came through with an iron chest last month. Two camels to carry it. Two camels!\""
+    }
+   ]
+  },
+  {
+   "id": "emb-host",
+   "map": "town-ember",
+   "x": 4,
+   "y": 11,
+   "look": "innkeeper",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The caravanserai keeper. \"Northerners. Sleep in the day, travel at night, and drink before you're thirsty.\""
+    }
+   ]
+  },
+  {
+   "id": "rashid",
+   "map": "ember-garden",
+   "x": 10,
+   "y": 8,
+   "look": "rashid",
+   "when": {
+    "stage": [
+     "ah33",
+     "ah34",
+     "ah35"
+    ]
+   },
+   "talk": [
+    {
+     "run": "rashidGarden"
+    }
+   ]
+  },
+  {
+   "id": "nadra",
+   "map": "ember-garden",
+   "x": 20,
+   "y": 4,
+   "look": "nadra",
+   "when": {
+    "stage": [
+     "ah34",
+     "ah35"
+    ]
+   },
+   "talk": [
+    {
+     "run": "nadraFather"
+    }
+   ]
+  },
+  {
+   "id": "khalis-sq",
+   "map": "town-ember",
+   "x": 17,
+   "y": 7,
+   "look": "khalis",
+   "when": {
+    "stage": [
+     "ah36"
+    ]
+   },
+   "talk": [
+    {
+     "run": "twoPrinces"
+    }
+   ]
+  },
+  {
+   "id": "rashid-sq",
+   "map": "town-ember",
+   "x": 11,
+   "y": 7,
+   "look": "rashid",
+   "when": {
+    "stage": [
+     "ah36"
+    ]
+   },
+   "talk": [
+    {
+     "run": "twoPrinces"
+    }
+   ]
+  },
+  {
+   "id": "crownguard",
+   "map": "town-kingsmere",
+   "x": 13,
+   "y": 15,
+   "look": "warden2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "crownguard",
+     "text": "\"Mind the lawns. The lawns are the King's.\""
+    }
+   ]
+  },
+  {
+   "id": "kmr-agent",
+   "map": "town-kingsmere",
+   "x": 20,
+   "y": 7,
+   "look": "factor",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A House agent in grey, writing in a little book. He writes down your face."
+    }
+   ]
+  },
+  {
+   "id": "kmr-baker",
+   "map": "town-kingsmere",
+   "x": 9,
+   "y": 15,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A baker's woman. \"The old King used to walk through the market of a morning. Bought a bun. Paid for it, too. This one never comes out.\""
+    }
+   ]
+  },
+  {
+   "id": "kmr-priest",
+   "map": "town-kingsmere",
+   "x": 25,
+   "y": 12,
+   "look": "elder2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The chapel priest, sweeping the step. \"The queen mother hears prayers here every evening. She's never once asked for her husband to be remembered in them.\""
+    }
+   ]
+  },
+  {
+   "id": "aldous",
+   "map": "royal-parks",
+   "x": 12,
+   "y": 11,
+   "look": "aldous",
+   "when": {
+    "stage": [
+     "ah38",
+     "ah39"
+    ]
+   },
+   "talk": [
+    {
+     "run": "aldousLodge"
+    }
+   ]
+  },
+  {
+   "id": "odile",
+   "map": "royal-parks",
+   "x": 17,
+   "y": 10,
+   "look": "odile",
+   "when": {
+    "stage": [
+     "ah39"
+    ]
+   },
+   "talk": [
+    {
+     "run": "odileHerd"
+    }
+   ]
+  },
+  {
+   "id": "park-keeper",
+   "map": "royal-parks",
+   "x": 4,
+   "y": 16,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old parkkeeper with a pitchfork. \"Three hundred years, them crownhorns. The old King knew every one by name. Every one.\""
+    }
+   ]
+  },
+  {
+   "id": "park-boy",
+   "map": "royal-parks",
+   "x": 7,
+   "y": 11,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy with a bucket of oats, staring at the paddock. \"They let you touch them if you stand still long enough. I stood still all of Tuesday.\""
+    }
+   ]
   }
  ],
  "steps": [
@@ -2040,6 +2372,114 @@
       "map": "land-east",
       "x": 38,
       "y": 29,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-ember",
+   "at": [
+    21,
+    19
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ember",
+      "x": 14,
+      "y": 16,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    14,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-ember",
+      "x": 21,
+      "y": 20,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-ember",
+      "x": 21,
+      "y": 20,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-heartland",
+   "at": [
+    18,
+    24
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-kingsmere",
+      "x": 14,
+      "y": 16,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    14,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-heartland",
+      "x": 18,
+      "y": 25,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-heartland",
+      "x": 18,
+      "y": 25,
       "facing": "down"
      }
     }
@@ -2917,6 +3357,320 @@
      "text": "The barracks. Bunks, kit, and the sweetish smell of the raw."
     }
    ]
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    14,
+    5
+   ],
+   "do": [
+    {
+     "run": "palaceIn"
+    }
+   ]
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    15,
+    5
+   ],
+   "do": [
+    {
+     "run": "palaceIn"
+    }
+   ]
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    28,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "ember-garden",
+      "x": 1,
+      "y": 6,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    28,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "ember-garden",
+      "x": 1,
+      "y": 6,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "ember-garden",
+   "at": [
+    0,
+    6
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ember",
+      "x": 27,
+      "y": 8,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "ember-garden",
+   "at": [
+    21,
+    3
+   ],
+   "do": [
+    {
+     "run": "nadraFather"
+    }
+   ]
+  },
+  {
+   "map": "town-ember",
+   "at": [
+    4,
+    10
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The caravanserai. Cool rooms around a courtyard, and a fountain nobody's allowed to drink from."
+    }
+   ]
+  },
+  {
+   "map": "ember-palace",
+   "at": [
+    12,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ember",
+      "x": 14,
+      "y": 6,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "ember-palace",
+   "at": [
+    18,
+    4
+   ],
+   "do": [
+    {
+     "run": "sanctuary"
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    0,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "royal-parks",
+      "x": 28,
+      "y": 8,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    0,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "royal-parks",
+      "x": 28,
+      "y": 8,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "royal-parks",
+   "at": [
+    29,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-kingsmere",
+      "x": 1,
+      "y": 7,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "royal-parks",
+   "at": [
+    29,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-kingsmere",
+      "x": 1,
+      "y": 7,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "royal-parks",
+   "at": [
+    12,
+    9
+   ],
+   "do": [
+    {
+     "run": "aldousLodge"
+    }
+   ]
+  },
+  {
+   "map": "royal-parks",
+   "at": [
+    3,
+    15
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The keepers' cottage. Muddy boots and a kettle."
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    14,
+    5
+   ],
+   "do": [
+    {
+     "run": "queenDinner"
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    15,
+    5
+   ],
+   "do": [
+    {
+     "run": "queenDinner"
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    25,
+    11
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The royal chapel. Cool, and smelling of wax."
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "at": [
+    4,
+    14
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The guardhouse."
+    }
+   ]
+  },
+  {
+   "map": "kingsmere-palace",
+   "at": [
+    13,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-kingsmere",
+      "x": 14,
+      "y": 6,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "kingsmere-palace",
+   "at": [
+    20,
+    5
+   ],
+   "do": [
+    {
+     "run": "theAnswer"
+    }
+   ]
+  },
+  {
+   "map": "kingsmere-palace",
+   "at": [
+    9,
+    4
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The dining hall. The candles are out, and the silver's been locked away."
+    }
+   ]
   }
  ],
  "zones": [
@@ -3128,6 +3882,76 @@
    "do": [
     {
      "run": "tarsisGate"
+    }
+   ]
+  },
+  {
+   "map": "town-ember",
+   "area": [
+    12,
+    11,
+    17,
+    15
+   ],
+   "when": {
+    "stage": "ah36"
+   },
+   "do": [
+    {
+     "run": "twoPrinces"
+    }
+   ]
+  },
+  {
+   "map": "ember-palace",
+   "area": [
+    2,
+    5,
+    21,
+    9
+   ],
+   "when": {
+    "stage": "ah35",
+    "not": "palaceFought"
+   },
+   "do": [
+    {
+     "run": "palaceGuards"
+    }
+   ]
+  },
+  {
+   "map": "town-kingsmere",
+   "area": [
+    12,
+    13,
+    17,
+    16
+   ],
+   "when": {
+    "stage": "ah37"
+   },
+   "do": [
+    {
+     "run": "kingsmereArrive"
+    }
+   ]
+  },
+  {
+   "map": "kingsmere-palace",
+   "area": [
+    11,
+    6,
+    22,
+    9
+   ],
+   "when": {
+    "stage": "ah41",
+    "not": "galleryFought"
+   },
+   "do": [
+    {
+     "run": "galleryGuards"
     }
    ]
   }
@@ -8379,6 +9203,1424 @@
    },
    {
     "toast": "South, across the desert, to the Ember Courts."
+   }
+  ],
+  "imari": [
+   {
+    "if": {
+     "stage": "ah31"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A caravan is loading at Tarsis' gate: long-legged sand kith with water skins slung on both sides, and a woman in a deep blue veil checking every knot herself."
+     },
+     {
+      "say": "imari",
+      "text": "\"Imari. I take the caravan to Ember every spring, when the wells are full. They're not full this year. The Guild's men came through a month ago with three wagons of water and drank two wells dry on the way.\""
+     },
+     {
+      "say": "imari",
+      "text": "\"You can come. You carry your own water. Everyone in the desert carries their own water. That's the only law out there.\""
+     },
+     {
+      "fade": "The deep desert. Six days out."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "say": "",
+      "text": "Six days of sand the colour of bread crust, and a sun that never seems to move. The fourth well is dry. The fifth well is dry. The sand kith walk slower every hour, and on the sixth day the smallest one lies down and won't get up."
+     },
+     {
+      "say": "imari",
+      "text": "\"They'll die before the next well. Then we'll be carrying the water ourselves, and we'll die after them. That's the arithmetic.\""
+     },
+     {
+      "say": "",
+      "text": "The Commons' water carts are a third full. Enough for the company to the next well, if nobody shares."
+     },
+     {
+      "choose": "Imari doesn't ask. She's watching the kith.",
+      "options": [
+       {
+        "label": "Share the water with the caravan's kith",
+        "hint": "Two hard days. The kith live.",
+        "do": [
+         {
+          "set": {
+           "waterShared": true,
+           "recruited.imari": true
+          }
+         },
+         {
+          "join": "imari"
+         },
+         {
+          "say": "",
+          "text": "Rhea's people go on half water for two days. Their lips split and their heads ache, and the smallest sand kith gets up on the second morning and walks."
+         },
+         {
+          "say": "imari",
+          "text": "\"Nobody shares water. Not out here. I'll remember it. I'm a guide; I remember everything.\""
+         }
+        ]
+       },
+       {
+        "label": "Keep the water for the company",
+        "hint": "The company comes through whole.",
+        "do": [
+         {
+          "set": {
+           "waterShared": false
+          }
+         },
+         {
+          "say": "",
+          "text": "Two of the sand kith die before the next well. Imari cuts their packs free herself, and leaves them on the sand, and doesn't speak to anyone from the Commons for the rest of the crossing."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "At the last well, there are men already waiting. Desert raiders, with spears and the Guild's empty water barrels stacked behind them. They've been selling the last well's water to anyone who can pay."
+     },
+     {
+      "battle": "road-dunes",
+      "win": [
+       {
+        "say": "",
+        "text": "The raiders run for the dunes. Everybody drinks."
+       },
+       {
+        "set": {
+         "open.east-ember": true
+        }
+       },
+       {
+        "fade": "Ember."
+       },
+       {
+        "goto": {
+         "map": "town-ember",
+         "x": 14,
+         "y": 16,
+         "facing": "up"
+        }
+       },
+       {
+        "stage": "ah32"
+       },
+       {
+        "say": "",
+        "text": "Ember rises out of the sand in red stone and green gardens, with water running in channels along every street. After the desert it looks like a lie."
+       },
+       {
+        "toast": "Present yourself at Prince Khalis' palace."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "imari",
+      "text": "\"The desert doesn't care who you are. That's why I like it.\""
+     }
+    ]
+   }
+  ],
+  "audience": [
+   {
+    "if": {
+     "stage": "ah32"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Prince Khalis' audience hall: cool, dim, smelling of oranges. The guards along the walls are big men in crimson, very still. Too still. Their eyes follow nothing."
+     },
+     {
+      "say": "",
+      "text": "Rhea is close enough to see their collars. Every one of them wears a lull. Old rings climb up to their ears."
+     },
+     {
+      "say": "khalis",
+      "text": "\"The Commons' captain. The Guild's envoy told me about you. He said you'd come. He said you were stubborn. He didn't say you were thirsty. Bring her water.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Is he here?\""
+     },
+     {
+      "say": "khalis",
+      "text": "\"He was my guest for a week. He left the morning your caravan was sighted. He didn't say where he was going, and I didn't ask. In Ember we don't ask guests their business. We ask what they've brought.\""
+     },
+     {
+      "say": "khalis",
+      "text": "\"And you've brought nothing, Captain. The Guild brings me crates. You may stay, of course. Ember is hospitable. My brother will want to meet you. My brother wants to meet everyone who might be useful to him.\""
+     },
+     {
+      "say": "",
+      "text": "As Rhea leaves, one of the guards at the door turns his head, slowly, and looks at her. Just for a moment. Then he looks at nothing again."
+     },
+     {
+      "stage": "ah33"
+     },
+     {
+      "toast": "Prince Rashid's garden is through the east gate of the square."
+     }
+    ],
+    "else": [
+     {
+      "say": "khalis",
+      "text": "\"Captain.\""
+     }
+    ]
+   }
+  ],
+  "rashidGarden": [
+   {
+    "if": {
+     "stage": "ah33"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Prince's Garden: orange trees on terraces, a long pool, and a man in sand-coloured robes sitting on the edge of it with his feet in the water."
+     },
+     {
+      "say": "rashid",
+      "text": "\"Rashid. The younger brother, the one who's going to be trouble, as everyone says. Sit down. Take your boots off. The water is the only free thing in Ember.\""
+     },
+     {
+      "say": "rashid",
+      "text": "\"You saw my brother's guards. Our father's guards, before. My brother started buying lulls for them twelve years ago. A guard who wears the Guild doesn't ask for pay. He doesn't ask for leave. He doesn't ask anything. He's perfect.\""
+     },
+     {
+      "say": "rashid",
+      "text": "\"At the end of the garden is the old guards' house. Where they go when they're too old to stand at a door. Go and look. Then come and tell me what a doctor from the mountains thinks of Ember.\""
+     },
+     {
+      "stage": "ah34"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": [
+        "ah34",
+        "ah35"
+       ]
+      },
+      "then": [
+       {
+        "say": "rashid",
+        "text": "\"Have you seen them yet? Go and see them.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "rashid",
+        "text": "\"The water's still free. For now.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "nadraFather": [
+   {
+    "if": {
+     "stage": "ah34"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The old guards' house: one long room, cool and clean, with forty cots. Forty old men lying on them, or sitting, with their hands on their knees. A few of them are humming. None of them are talking."
+     },
+     {
+      "say": "",
+      "text": "A young woman with a falconer's glove and a mistwing on her shoulder is spooning soup into one of them. She looks up."
+     },
+     {
+      "say": "nadra",
+      "text": "\"You're the doctor. The northern one. My father. Twenty-two years on the Prince's lulls. He used to sing. He used to fly my mother's mistwings. Look at him and tell me if there's anything left in there.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea kneels by the cot. The old man's neck is solid ring scar, ear to collarbone. His pulse is slow and even. His eyes follow her hand, a long way behind it."
+     },
+     {
+      "say": "",
+      "text": "She takes the greenling tin out of her coat. Oda's last batch, kept for the road."
+     },
+     {
+      "say": "rhea",
+      "text": "\"I don't know. Nobody's come off after twenty years. I'd need a season, and a quiet room, and someone sitting with him every night.\""
+     },
+     {
+      "say": "nadra",
+      "text": "\"I've been sitting with him every night for six years. A season's nothing.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea gives Nadra the tin, and shows her how to start, and the old man watches the mistwing on his daughter's shoulder the whole time."
+     },
+     {
+      "set": {
+       "nadraTin": true
+      }
+     },
+     {
+      "say": "nadra",
+      "text": "\"Prince Rashid says the Houses send my brother-prince more than crates. Gold, every season, south across the desert. Nobody knows what for. The treasury is in the palace. The guards at night are the old guards' sons.\""
+     },
+     {
+      "stage": "ah35"
+     },
+     {
+      "toast": "Into the palace tonight."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "nadraTin"
+      },
+      "then": [
+       {
+        "say": "nadra",
+        "text": "\"He hummed a bit of a song this morning. A real one. Don't tell anyone. It might not be true.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The old guards' house."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "palaceIn": [
+   {
+    "if": {
+     "stage": "ah35"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "say": "",
+      "text": "Night. Rashid's man knows a door in the palace wall the kitchens use. The guards on it look at the Commons coming in and do nothing at all. Nobody told them to."
+     },
+     {
+      "goto": {
+       "map": "ember-palace",
+       "x": 12,
+       "y": 9,
+       "facing": "up"
+      }
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ah32"
+      },
+      "then": [
+       {
+        "run": "audience"
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The palace doors. The crimson guards look at nothing."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "palaceGuards": [
+   {
+    "say": "",
+    "text": "The colonnade. A crimson guard sergeant is standing in the middle of it, and this one isn't looking at nothing. He's younger, and his collar's high, and he's looking right at Rhea."
+   },
+   {
+    "say": "guard",
+    "text": "\"The old guards don't stop anyone at night. That's why the Prince keeps us. Turn round.\""
+   },
+   {
+    "battle": "road-palace",
+    "win": [
+     {
+      "say": "",
+      "text": "The guard sergeant goes down and stays down, and so do his men. Not dead. Rhea checks. Behind them, the study door."
+     },
+     {
+      "set": {
+       "palaceFought": true
+      }
+     }
+    ]
+   }
+  ],
+  "sanctuary": [
+   {
+    "if": {
+     "flag": "palaceFought",
+     "not": "sanctuaryRead"
+    },
+    "then": [
+     {
+      "set": {
+       "sanctuaryRead": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Khalis' study. A desk, a lamp still lit, and on the desk a long paper sealed with two seals: a sun, and a loftbuck."
+     },
+     {
+      "say": "",
+      "text": "It's an agreement. Rhea reads it with Nadra holding the lamp."
+     },
+     {
+      "say": "",
+      "text": "If Vantry falls, the Prince will receive the masters of the Guild and their households in the south, with their mother lines: the breeding stock the Guild's lulls are made from. He will give them land beyond the city, and water, and his protection, and his silence. In return, the Houses' gold every season until then, and lulls for his guard for as long as he lives."
+     },
+     {
+      "say": "nadra",
+      "text": "\"They're not going to lose. They're going to leave. And start again here, in the sand, with us.\""
+     },
+     {
+      "say": "",
+      "text": "At the bottom, under the seals, in a hand Rhea knows: \"Witnessed, for the Guild. F.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Put the lamp down, Nadra. Just for a moment.\""
+     },
+     {
+      "fade": "Dawn."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "goto": {
+       "map": "town-ember",
+       "x": 14,
+       "y": 12,
+       "facing": "up"
+      }
+     },
+     {
+      "stage": "ah36"
+     },
+     {
+      "toast": "Both princes want an answer."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "sanctuaryRead"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "The desk is bare."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "A guard sergeant stands in front of the study door."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "twoPrinces": [
+   {
+    "if": {
+     "stage": "ah36"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "By morning everybody in the palace knows someone was in the study. By noon both princes have sent for the Commons' captain. Their men stand at opposite ends of the square, waiting, and don't look at each other."
+     },
+     {
+      "say": "rashid",
+      "text": "\"I have friends among the guards' sons. With greenlings for the old guards and their fathers, the guard is mine in a month, and my brother is a guest in his own palace. There'll be fighting. Not much, if we're quick. Then the sanctuary is ash and the courts' gold goes north to the Commons.\""
+     },
+     {
+      "say": "khalis",
+      "text": "\"I know what you took. I'm not a fool, Captain. Here is my offer. Tear up the agreement, and I tear up mine: no sanctuary, no Guild masters in my sand. Ember stays out of your war. And my guard stays as it is. Lulls are cheaper than loyalty, and my brother is not as gentle as he looks.\""
+     },
+     {
+      "choose": "Nadra is beside you. Her father is in the old guards' house.",
+      "options": [
+       {
+        "label": "\"Rashid. Greenlings for the guard, and the sanctuary burned.\"",
+        "hint": "A civil war in the south. The courts' gold and riders for the Commons.",
+        "do": [
+         {
+          "set": {
+           "road.ember": "rashid",
+           "recruited.rashid": true,
+           "recruited.nadra": true,
+           "nation.ember": "pact",
+           "deed.ember": true
+          }
+         },
+         {
+          "join": "nadra"
+         },
+         {
+          "say": "",
+          "text": "It takes nine days. The guards' sons come over first. Then the old guards' house empties, cot by cot, as the greenlings start. There's fighting in the palace on the eighth night, on the stairs, and men die there, crimson on both sides."
+         },
+         {
+          "say": "",
+          "text": "On the ninth morning Khalis rides out of the south gate into the desert with thirty men, and Rashid sits in his brother's chair with his feet bare, and burns the agreement in the lamp in front of the whole court."
+         },
+         {
+          "say": "rashid",
+          "text": "\"The courts' gold goes north with you, Captain, and my riders after it. Ember has a war of its own now. You gave it to us. I'll thank you for it when it's over.\""
+         },
+         {
+          "toast": "Rashid takes the courts. The sanctuary is burned. Ember's gold for the Commons."
+         }
+        ]
+       },
+       {
+        "label": "\"Khalis. Tear up the sanctuary, and Ember stays out of the war.\"",
+        "hint": "Peace. No sanctuary. The old guards stay on lulls.",
+        "do": [
+         {
+          "set": {
+           "road.ember": "khalis",
+           "recruited.khalis": true,
+           "recruited.nadra": true,
+           "nation.ember": "peace",
+           "deed.ember": true
+          }
+         },
+         {
+          "join": "nadra"
+         },
+         {
+          "say": "",
+          "text": "Khalis tears the agreement in half himself, in front of his court and the Guild's empty chair, and hands Rhea the half with the loftbuck seal."
+         },
+         {
+          "say": "",
+          "text": "The guards along the walls of the audience hall watch it happen with eyes that follow nothing. They'll be standing there in ten years. Rhea knows it, and so does Nadra."
+         },
+         {
+          "say": "nadra",
+          "text": "\"My father keeps the tin. Rashid will see he gets more. I'll ride with you, Captain. I can't stand in that hall again.\""
+         },
+         {
+          "say": "khalis",
+          "text": "\"Peace in the south, Captain. And when your war is done, come back and tell me how much it cost you to be right.\""
+         },
+         {
+          "toast": "Khalis refuses the Guild its sanctuary. Ember keeps the peace."
+         }
+        ]
+       },
+       {
+        "label": "Neither. Walk away.",
+        "hint": "No war of your making. The Guild keeps its way out.",
+        "do": [
+         {
+          "set": {
+           "road.ember": "away"
+          }
+         },
+         {
+          "say": "",
+          "text": "Rhea gives the agreement back to Khalis' chamberlain, and Rashid's man nothing, and goes to the caravanserai to pack."
+         },
+         {
+          "say": "",
+          "text": "Nadra follows her to the gate, and then doesn't follow her any further."
+         },
+         {
+          "say": "nadra",
+          "text": "\"I thought a doctor would know which one was the medicine.\""
+         },
+         {
+          "toast": "Ember keeps its sanctuary for the Guild."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "run": "royalMessenger"
+     }
+    ]
+   }
+  ],
+  "royalMessenger": [
+   {
+    "say": "",
+    "text": "At the caravanserai that evening, a rider in the Crown's green, dusty to the eyebrows, who has crossed the desert in four days on a change of strider. He has a letter for the Commons' captain, sealed with the King's own ring."
+   },
+   {
+    "say": "",
+    "text": "The King of Ostrel asks the captain to come to him, in secret, at his hunting lodge in the royal parks. The rider has a royal pass for the road east of the steppe."
+   },
+   {
+    "say": "imari",
+    "text": "\"And the Guild's envoy? He was on that road a week ago, the well-keepers say. Going the same way.\""
+   },
+   {
+    "set": {
+     "open.east-heartland": true,
+     "kingLetter": true
+    }
+   },
+   {
+    "run": "corranSummerRoad"
+   }
+  ],
+  "corranSummerRoad": [
+   {
+    "if": {
+     "eq": {
+      "corranFate": "thornwick"
+     }
+    },
+    "then": [
+     {
+      "run": "corranPlay"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "corranFate": "left"
+       }
+      },
+      "then": [
+       {
+        "run": "corranDrain"
+       }
+      ],
+      "else": [
+       {
+        "run": "corranRace"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "run": "backToRoad3"
+   }
+  ],
+  "corranPlay": [
+   {
+    "fade": "Thornwick. Midsummer, while she is away."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "evening"
+    }
+   },
+   {
+    "stage": "ai3"
+   },
+   {
+    "say": "",
+    "text": "The children put on a play for the terraces: Haldane's trial at the College, as they've heard it told. They need a Warden. Nobody else will do it."
+   },
+   {
+    "say": "",
+    "text": "He stands on the bathhouse step in a borrowed grey coat, and the children boo him, and he has to say the Warden's lines: that weaning is a lie, that a ringed man is a ringed man for ever."
+   },
+   {
+    "choose": "Wren is the judge. She's waiting for his last line.",
+    "options": [
+     {
+      "label": "Play it straight, and let them boo",
+      "hint": "Give them a villain.",
+      "do": [
+       {
+        "set": {
+         "corranPlay": "straight"
+        }
+       },
+       {
+        "add": {
+         "hold": 2
+        }
+       },
+       {
+        "say": "",
+        "text": "He says it the way the Wardens said it to him once, flat and certain. The children boo so hard that Ume's terrace dogs start barking. Afterwards Wren tells him he was very good, and very horrible."
+       }
+      ]
+     },
+     {
+      "label": "Break off and show them his neck",
+      "hint": "Not in the script.",
+      "do": [
+       {
+        "set": {
+         "corranPlay": "rings"
+        }
+       },
+       {
+        "add": {
+         "hold": 4
+        }
+       },
+       {
+        "say": "",
+        "text": "He stops halfway through the Warden's speech and pulls his collar down, and stands there, and says nothing. The booing stops. One of the small ones starts clapping, uncertainly. Then all of them."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranDrain": [
+   {
+    "fade": "House Mire. Midsummer."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "night"
+    }
+   },
+   {
+    "stage": "ai3"
+   },
+   {
+    "say": "",
+    "text": "A girl in the sick room, eight or nine, with a fever that's breaking. She has heard the other children whisper about the girl who walked out. She wants to know which way."
+   },
+   {
+    "say": "mirechild",
+    "text": "\"You know. Everybody says you know. Show me Wren's drain.\""
+   },
+   {
+    "choose": "The night steward's lamp is at the far end of the corridor.",
+    "options": [
+     {
+      "label": "Show her",
+      "hint": "It's her life.",
+      "do": [
+       {
+        "set": {
+         "mireDrain": "shown"
+        }
+       },
+       {
+        "add": {
+         "hold": 2
+        }
+       },
+       {
+        "say": "",
+        "text": "He takes her down to the brood room grate in the dark and shows her the iron bars and the black water under them, and tells her what Wren told him. He doesn't tell her to go. He doesn't tell her not to."
+       },
+       {
+        "say": "",
+        "text": "In the morning she's in her cot. She looks at him all day, and he doesn't know if he's given her a door or a nightmare."
+       }
+      ]
+     },
+     {
+      "label": "Tell her to wait",
+      "hint": "She's eight.",
+      "do": [
+       {
+        "set": {
+         "mireDrain": "wait"
+        }
+       },
+       {
+        "add": {
+         "hold": 1
+        }
+       },
+       {
+        "say": "",
+        "text": "He tells her she's too ill, and the water's too high in summer, and both are true. She turns her face to the wall. She doesn't ask him anything again."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranRace": [
+   {
+    "fade": "Millbridge. Midsummer."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ai3"
+   },
+   {
+    "say": "",
+    "text": "Day release. They chain him at the ankle and set him to clearing weed from the mill race, waist deep, with the families of the eleven watching from the bridge. Some days they throw things. Today they just watch."
+   },
+   {
+    "say": "",
+    "text": "A child on the bridge leans too far, and goes in, upstream of the wheel."
+   },
+   {
+    "choose": "The chain is long enough to reach the middle of the race. Just.",
+    "options": [
+     {
+      "label": "Go in after the child",
+      "hint": "Chained.",
+      "do": [
+       {
+        "set": {
+         "raceSaved": true
+        }
+       },
+       {
+        "add": {
+         "hold": 3
+        }
+       },
+       {
+        "say": "",
+        "text": "He goes under twice, and the chain catches on the wheel housing, and he gets the child up onto the sluice board with his last breath. It's the woman's grandson. The woman who asked him why he should live."
+       },
+       {
+        "say": "",
+        "text": "She doesn't thank him. She takes the boy and goes. The next day there's bread in his cell that he didn't get from the gaoler."
+       }
+      ]
+     },
+     {
+      "label": "Shout for the miller to stop the wheel",
+      "hint": "The wheel will kill you both.",
+      "do": [
+       {
+        "set": {
+         "raceSaved": false
+        }
+       },
+       {
+        "add": {
+         "hold": 1
+        }
+       },
+       {
+        "say": "",
+        "text": "The miller drops the sluice. The wheel stops. Someone else's son pulls the child out, coughing. Nobody looks at the man in the race, and he doesn't know if that's better."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "backToRoad3": [
+   {
+    "fade": "Late summer. The royal road east, out of the steppe."
+   },
+   {
+    "set": {
+     "hero": "rhea",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ah37"
+   },
+   {
+    "goto": {
+     "map": "town-tarsis",
+     "x": 14,
+     "y": 15,
+     "facing": "down"
+    }
+   },
+   {
+    "toast": "To the King's hunting lodge in the royal parks. The royal road leaves the steppe to the north-east."
+   }
+  ],
+  "kingsmereArrive": [
+   {
+    "if": {
+     "stage": "ah37"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Kingsmere: the King's town, white stone and green lawns, with the palace on its hill and every second building a House's town house, with a House's crest over the door."
+     },
+     {
+      "say": "crownguard",
+      "text": "\"A royal pass. In the King's own hand.\""
+     },
+     {
+      "say": "",
+      "text": "The warden holds it up to the light, twice, and looks at Rhea's company with the face of a man working out which House to tell first."
+     },
+     {
+      "say": "crownguard",
+      "text": "\"His Majesty is hunting in the parks. The lodge is through the west gate. He said nobody was to be shown to him. He said that the pass would show itself.\""
+     },
+     {
+      "stage": "ah38"
+     }
+    ]
+   }
+  ],
+  "aldousLodge": [
+   {
+    "if": {
+     "stage": "ah38"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "evening"
+      }
+     },
+     {
+      "say": "",
+      "text": "The hunting lodge: one room, a fire, antlers on every wall, and a pale young man of nineteen in a plain dark coat, sitting on the floor in front of the fire because he has sent away everyone who'd tell him to sit in a chair."
+     },
+     {
+      "say": "aldous",
+      "text": "\"Captain. Thank you for coming. I'd stand, but then I'd have to stop warming my hands, and it's the only thing I've done for myself all week.\""
+     },
+     {
+      "say": "aldous",
+      "text": "\"I owe the Guild more than the Crown earns in ten years. My father borrowed it. I've been borrowing it since. Every man at my court is paid by a House. My mother's household is paid by three.\""
+     },
+     {
+      "say": "aldous",
+      "text": "\"The Guild's envoy is coming here next week with an offer. Sign the charter they've written, outlaw your Commons and every greenling clinic in the country, and the debt is forgiven. I'll sign it. I'll have to. Unless.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Unless what?\""
+     },
+     {
+      "say": "aldous",
+      "text": "\"My father died two years ago. A cough, they said. He'd never coughed in his life. The physician who treated him was the Guild's. And my mother hasn't spoken his name since the funeral.\""
+     },
+     {
+      "say": "aldous",
+      "text": "\"Find out who killed my father, Captain. If it was the Guild, I can void their charter, and they know it. That's why I asked a stranger. Nobody in Kingsmere is a stranger to the Guild.\""
+     },
+     {
+      "say": "aldous",
+      "text": "\"Start with Odile, at the paddock. She was the only one at court who loved him. My mother's just ordered his herd culled.\""
+     },
+     {
+      "stage": "ah39"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stagePrefix": "ah"
+      },
+      "then": [
+       {
+        "say": "aldous",
+        "text": "\"The fire's still warm, Captain. That's something.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "odileHerd": [
+   {
+    "if": {
+     "stage": "ah39"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The paddock: forty crownhorns, tall and white, with antlers like crowns and the patience of very old trees. A knight in gleaming plate, with a lance against the fence, is brushing one of them down."
+     },
+     {
+      "say": "odile",
+      "text": "\"Odile. Knight of the parks, for whatever that's worth tonight. The queen mother's cull-men come at dawn. Forty beasts. Three hundred years of breeding. Because they were his.\""
+     },
+     {
+      "say": "odile",
+      "text": "\"I've hidden the breeding books. If they want them, they'll have to cut me open for them. But the herd won't fit in a book.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Where would you take them?\""
+     },
+     {
+      "say": "odile",
+      "text": "\"The far gate, and the old forest road, and Queensford. My sister keeps an inn there with a big yard. But not alone. Not past the cull-men.\""
+     },
+     {
+      "fade": "Dawn."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "say": "",
+      "text": "They come out of the trees with nets and long knives: the queen mother's huntsmen, and a Guild man in grey to count the carcasses."
+     },
+     {
+      "battle": "road-cull",
+      "win": [
+       {
+        "say": "",
+        "text": "The cull-men scatter into the trees. Odile throws the far gate open, and forty crownhorns walk out of the royal parks in a long white line, as calm as a procession, with Odile riding at their head."
+       },
+       {
+        "set": {
+         "recruited.odile": true,
+         "herdSaved": true
+        }
+       },
+       {
+        "join": "odile"
+       },
+       {
+        "say": "odile",
+        "text": "\"Here. You'll want this. It's why I hid the books.\""
+       },
+       {
+        "say": "",
+        "text": "The breeding book, the last page in the old King's own hand: notes on a foal, and on himself. \"Dr Sallis brought the new draught for my chest. It tastes of copper. Y. says it will do me good.\""
+       },
+       {
+        "say": "odile",
+        "text": "\"Y. is Queen Ysolde. The queen mother. He started coughing the week he started the draught. He was dead in a month.\""
+       },
+       {
+        "say": "odile",
+        "text": "\"It's not proof. It's a sick man's diary. The proof, if there is any, is in the queen mother's letters. Esme carries her letters. Esme plays at her dinners. Esme hates her.\""
+       },
+       {
+        "stage": "ah40"
+       },
+       {
+        "toast": "The queen mother's dinner, tonight, at the palace."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "herdSaved"
+      },
+      "then": [
+       {
+        "say": "odile",
+        "text": "\"They'll be at Queensford by now, eating my sister's roses.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The crownhorns lift their heads and watch you, all together, like a court."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "queenDinner": [
+   {
+    "if": {
+     "stage": "ah40"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "evening"
+      }
+     },
+     {
+      "say": "",
+      "text": "The queen mother's dinner: a long hall, candles, silver, twenty guests who are each paid by a House, and at the head of the table a handsome grey woman in black who has been in mourning for two years and is very good at it."
+     },
+     {
+      "say": "queen",
+      "text": "\"The Commons' captain. My son collects strays. I'm told you saved his father's cattle this morning. How kind of you to take an interest in our family.\""
+     },
+     {
+      "say": "",
+      "text": "A young woman with copper hair plays the lute at the end of the hall. She plays very well and looks at nobody. When the plates are cleared, she passes behind Rhea's chair, and something drops into her lap: a packet of letters, tied with a lute string."
+     },
+     {
+      "say": "esme",
+      "text": "\"The King's rooms. Tonight. I can't take them: they search me. They won't search you. They don't think you're clever.\""
+     },
+     {
+      "fade": "Night. The palace."
+     },
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "goto": {
+       "map": "kingsmere-palace",
+       "x": 10,
+       "y": 4,
+       "facing": "right"
+      }
+     },
+     {
+      "stage": "ah41"
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The palace doors. The wardens look at you, and at the town house crests, and decide not to see you."
+     }
+    ]
+   }
+  ],
+  "galleryGuards": [
+   {
+    "say": "",
+    "text": "The long gallery, dark. The queen mother's household guards are standing between the dining hall and the King's door, and they are waiting for someone. They've been told who."
+   },
+   {
+    "say": "crownguard",
+    "text": "\"The queen mother asks that the captain return to her rooms. With whatever she was given at dinner.\""
+   },
+   {
+    "battle": "road-gallery",
+    "win": [
+     {
+      "set": {
+       "galleryFought": true
+      }
+     },
+     {
+      "say": "",
+      "text": "The last guard goes down in a crash of silver plate. Somewhere a door slams. The King's door is ahead."
+     }
+    ]
+   }
+  ],
+  "theAnswer": [
+   {
+    "if": {
+     "flag": "galleryFought",
+     "not": "lettersRead"
+    },
+    "then": [
+     {
+      "set": {
+       "lettersRead": true
+      }
+     },
+     {
+      "say": "",
+      "text": "The King's rooms. Aldous reads the letters by one candle, all of them, twice. Esme kneels by the door, listening for feet."
+     },
+     {
+      "say": "",
+      "text": "They're from Dr Sallis, the Guild physician, to the queen mother. The first is about the King's chest. The fourth is about a draught. The seventh says \"as we agreed\" and is dated a week before the funeral. The last thanks her for the regency council, and the House seats on it, and asks after her son's health."
+     },
+     {
+      "say": "aldous",
+      "text": "\"My mother.\""
+     },
+     {
+      "say": "",
+      "text": "He sits for a long time with the last letter on his knee."
+     },
+     {
+      "say": "aldous",
+      "text": "\"If I read these in court tomorrow, the Guild's charter is void. Its physician murdered a king. My mother goes to a cell for the rest of her life, and I have no family left. If I burn them, she stays, and the Guild keeps its hand on my shoulder, and nobody ever knows.\""
+     },
+     {
+      "say": "aldous",
+      "text": "\"You found them, Captain. You choose. I'm too close to it. I'll do what you say. I mean it.\""
+     },
+     {
+      "choose": "Aldous is holding the letters over the candle, not quite touching it.",
+      "options": [
+       {
+        "label": "\"Read them in court.\"",
+        "hint": "A free king. He loses the last of his family.",
+        "do": [
+         {
+          "set": {
+           "road.crown": "exposed",
+           "aldousFree": true,
+           "nation.crown": "pact",
+           "deed.crown": true
+          }
+         },
+         {
+          "add": {
+           "standing.crown": 40
+          }
+         },
+         {
+          "say": "",
+          "text": "He puts the letters down, very carefully, away from the candle."
+         },
+         {
+          "say": "aldous",
+          "text": "\"Then I'll read them. Myself. In my father's chair.\""
+         }
+        ]
+       },
+       {
+        "label": "\"Burn them.\"",
+        "hint": "He keeps his mother. The Guild keeps its leash.",
+        "do": [
+         {
+          "set": {
+           "road.crown": "buried",
+           "nation.crown": "leashed"
+          }
+         },
+         {
+          "add": {
+           "standing.crown": 10
+          }
+         },
+         {
+          "say": "",
+          "text": "The letters catch, one by one. Aldous holds each until it burns his fingers, and then drops it in the grate."
+         },
+         {
+          "say": "aldous",
+          "text": "\"Thank you. I think. Ask me again in ten years.\""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "set": {
+       "recruited.esme": true
+      }
+     },
+     {
+      "say": "esme",
+      "text": "\"I'll stay at court and play. Somebody has to keep reading the letters. Send for me when you need a tune.\""
+     },
+     {
+      "fade": "Morning. The court."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "goto": {
+       "map": "town-kingsmere",
+       "x": 14,
+       "y": 7,
+       "facing": "up"
+      }
+     },
+     {
+      "stage": "ah42"
+     },
+     {
+      "run": "ninety"
+     }
+    ]
+   }
+  ],
+  "ninety": [
+   {
+    "say": "",
+    "text": "The Crown's court, in the great hall. The King on his throne. The House agents in grey along the walls. And before the throne, in his good grey coat with the loftbuck on the clasp, Finch, with the Guild's charter in a red case."
+   },
+   {
+    "say": "finch",
+    "text": "\"Your Majesty. The Houses forgive the Crown's debt in full, from today. In return, the Crown signs this charter. The Commons outlawed. The clinics closed. The war ended by law, before more people die in it.\""
+   },
+   {
+    "if": {
+     "eq": {
+      "road.crown": "exposed"
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Aldous stands up, and takes the letters out of his coat, and reads them out. All of them. Twice, for the clerks."
+     },
+     {
+      "say": "",
+      "text": "The queen mother is not in the hall. By noon she is in the chapel tower under guard, and by evening every House agent in Kingsmere is packing."
+     },
+     {
+      "say": "aldous",
+      "text": "\"The Guild's physician murdered my father, envoy. The Crown signs nothing for the Guild. The Crown's charter to the Guild is void as of this hour. Its Wardens may go home, or answer to me.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Aldous looks at the charter for a long time. Then at his mother, in her chair beside the throne. Then at Rhea."
+     },
+     {
+      "say": "aldous",
+      "text": "\"The Crown will sign nothing this year. Not for the Guild. Not for anyone. Tell the Houses that.\""
+     },
+     {
+      "say": "",
+      "text": "It's not a refusal. But it isn't a signature either, and the House agents along the walls know what a year without one means for the Guild's war."
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Finch puts the charter back in its case, very neatly. His hands don't shake. He bows, and walks out of the hall into the yard."
+   },
+   {
+    "say": "",
+    "text": "Halloran is waiting for him there, with six Wardens and a horse with no saddle."
+   },
+   {
+    "say": "halloran",
+    "text": "\"The College. Ashby's sea. The clans. The League's coin. Tarsis. And now the Crown, Ninety. The Houses lent you their name for a year, and you lost more with it than you won.\""
+   },
+   {
+    "say": "halloran",
+    "text": "\"Your coat.\""
+   },
+   {
+    "say": "",
+    "text": "Finch takes off the grey coat and folds it, and holds it out. Halloran takes the clasp off it, and drops the coat in the dust."
+   },
+   {
+    "say": "halloran",
+    "text": "\"Ninety. That's your name. You can have your number back. The Houses need hands on the trays.\""
+   },
+   {
+    "say": "",
+    "text": "Finch looks at Rhea once, across the yard. Just once."
+   },
+   {
+    "choose": "The Wardens are tying Finch's hands.",
+    "options": [
+     {
+      "label": "\"He's my brother, Halloran. He did what you sent him to do. Take me instead, if you want someone.\"",
+      "hint": "It changes nothing, now.",
+      "do": [
+       {
+        "add": {
+         "finchTrust": 12
+        }
+       },
+       {
+        "set": {
+         "finchYard": "spoke",
+         "finchStripped": true
+        }
+       },
+       {
+        "say": "halloran",
+        "text": "\"I don't want you, Captain. I want you to watch.\""
+       },
+       {
+        "say": "",
+        "text": "But Finch heard it. Everyone in the yard heard it. On the horse, with his hands tied, he turns his head and keeps it turned until the gate."
+       }
+      ]
+     },
+     {
+      "label": "Say nothing",
+      "hint": "He chose his side.",
+      "do": [
+       {
+        "set": {
+         "finchYard": "silent",
+         "finchStripped": true
+        }
+       },
+       {
+        "say": "",
+        "text": "Rhea says nothing. Finch looks away first. He was always better at silence. He doesn't look back at the gate."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "The Wardens take him south, towards Vantry, at a walk, so the whole town can watch."
+   },
+   {
+    "run": "roadHome"
+   }
+  ],
+  "roadHome": [
+   {
+    "fade": "Home, the long way. Through the vale, and up the mountain, as the summer ends."
+   },
+   {
+    "say": "",
+    "text": "A year on the road. Nine nations, and the Commons' name in every one of them, for good or ill."
+   },
+   {
+    "run": "act4Start"
    }
   ]
  }

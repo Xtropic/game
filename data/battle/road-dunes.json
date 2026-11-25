@@ -1,0 +1,81 @@
+{
+ "id": "road-dunes",
+ "name": "The raiders at the last well",
+ "backdrop": "scree",
+ "party": true,
+ "intro": [
+  "Desert raiders with spears and slings, and a dusk strider trained to bite, between you and the last well.",
+  "Everyone is thirsty. Be quick."
+ ],
+ "won": "The raiders run for the dunes",
+ "lost": "Driven back into the sand",
+ "units": [
+  {
+   "id": "dr1",
+   "name": "Desert raider",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 23,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "dr2",
+   "name": "Desert raider",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 23,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "drk",
+   "name": "Raiders' strider",
+   "look": "strider:#9a6a3a",
+   "side": "foe",
+   "row": "front",
+   "hp": 64,
+   "kith": true,
+   "level": 23,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "species": "dusk-strider",
+   "at": [
+    160,
+    132
+   ]
+  },
+  {
+   "id": "dr3",
+   "name": "Raider slinger",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 23,
+   "skills": [
+    "sling"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

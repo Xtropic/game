@@ -1,0 +1,36 @@
+{
+ "id": "ember-palace",
+ "name": "Prince Khalis' palace, at night",
+ "music": "night",
+ "legend": {
+  "d": "door",
+  "e": "exit",
+  "p": "plank",
+  "b": "table",
+  "R": "rock",
+  "I": "iwall",
+  "k": "shelf"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRR",
+  "RIIIIIIIIIIIIIIIIIIIIIIR",
+  "RIpppppppppppppIpbpkkkIR",
+  "RIpppppppppppppIppppppIR",
+  "RIpppIpppIpppIpIIIdIIIIR",
+  "RIppppppppppppppppppppIR",
+  "RIppppppppppppppppppppIR",
+  "RIpppIpppIpppIpppIppppIR",
+  "RIppppppppppppppppppppIR",
+  "RIppppppppppppppppppppIR",
+  "RIIIIIIIIIIIeIIIIIIIIIIR",
+  "RRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 9
+  }
+ ]
+}

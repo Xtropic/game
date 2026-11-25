@@ -266,6 +266,77 @@ U.put(4, 14, "F"); U.rect(22, 14, 23, 14, "x"); U.rect(25, 13, 26, 13, "C")
 U.rect(14, 16, 15, 16, ":"); U.rect(14, 17, 15, 17, "e")
 TARSIS = town("town-tarsis", "Tarsis", "camp", U, (14, 15))
 
+# ================================================================ leg 6: the Ember Courts
+# ---------------- Ember: the city of the courts ----------------
+# 30 x 18. Sand streets, the palace of Prince Khalis (north), the gate to the Prince's Garden (east),
+# the caravanserai (west), the market, the city gate (bottom middle).
+E = G(30, 18, "a")
+E.rect(0, 0, 29, 0, "#"); E.rect(0, 17, 29, 17, "#"); E.rect(0, 0, 0, 17, "#"); E.rect(29, 0, 29, 17, "#")
+house(E, 8, 1, 21, 5, (14, 15))                                                        # the palace
+house(E, 1, 7, 7, 10, (4,))                                                            # the caravanserai
+E.rect(28, 8, 28, 9, "e")                                                              # to the Prince's Garden
+E.rect(14, 9, 15, 10, "w"); E.rect(10, 13, 11, 13, "S"); E.rect(18, 13, 19, 13, "S"); E.rect(22, 12, 23, 12, "S")
+E.put(5, 13, "T"); E.put(24, 3, "T"); E.put(4, 3, "T"); E.rect(24, 14, 25, 14, "x")
+E.rect(14, 17, 15, 17, "e")
+EMBER = town("town-ember", "Ember", "town", E, (14, 16))
+
+# ---------------- The Prince's Garden ----------------
+# 26 x 14. Terraced orange trees, a long pool, and the old guards' house at the far end.
+D = G(26, 14, ",")
+D.box(0, 0, 25, 13, "#")
+D.rect(6, 5, 19, 7, "~"); D.rect(12, 8, 13, 12, ":"); D.rect(1, 6, 5, 6, ":")
+for x in (3, 8, 17, 22): D.put(x, 2, "T"); D.put(x, 10, "T")
+D.rect(4, 3, 5, 3, "*"); D.rect(20, 11, 21, 11, "*")
+house(D, 19, 1, 24, 3, (21,))                                                          # the old guards' house
+D.put(0, 6, "e")
+GARDEN = town("ember-garden", "The Prince's Garden", "dusk", D, (1, 6))
+
+# ---------------- Khalis' palace, at night ----------------
+# 24 x 12. The colonnade, the treasury, the Prince's study with the sealed agreements.
+P = G(24, 12, "R")
+P.rect(1, 1, 22, 10, "p"); P.box(1, 1, 22, 10, "I")
+for x in (5, 9, 13, 17): P.put(x, 4, "I"); P.put(x, 7, "I")
+P.box(15, 1, 22, 4, "I"); P.rect(16, 2, 21, 3, "p"); P.put(18, 4, "d"); P.rect(19, 2, 21, 2, "k"); P.put(17, 2, "b")
+P.put(12, 10, "e")
+PALACE = town("ember-palace", "Prince Khalis' palace, at night", "night", P, (12, 9), rest=False)
+
+# ================================================================ leg 7: the Crown at Kingsmere
+# ---------------- Kingsmere: the royal town ----------------
+# 30 x 18. The palace (north), the palace yard gate, the chapel (east), the parks gate (west edge), the town gate (bottom).
+K7 = G(30, 18, ".")
+K7.rect(0, 0, 29, 0, "#"); K7.rect(0, 17, 29, 17, "#"); K7.rect(0, 0, 0, 17, "#"); K7.rect(29, 0, 29, 17, "#")
+house(K7, 7, 1, 22, 5, (14, 15))                                                       # the palace
+house(K7, 23, 8, 28, 11, (25,))                                                        # the chapel
+house(K7, 2, 12, 7, 14, (4,))                                                          # the guardhouse
+K7.rect(11, 8, 18, 11, ","); K7.rect(14, 9, 15, 10, "w"); K7.put(11, 8, "T"); K7.put(18, 11, "T")   # the palace green
+K7.rect(19, 14, 20, 14, "S"); K7.rect(9, 14, 10, 14, "S")
+K7.rect(0, 7, 0, 8, "e")                                                               # to the royal parks
+K7.rect(14, 17, 15, 17, "e")
+KMERE = town("town-kingsmere", "Kingsmere", "town", K7, (14, 16))
+
+# ---------------- The royal parks and the hunting lodge ----------------
+# 30 x 18. Old oaks, the crownhorn herd's paddock, the hunting lodge, the keepers' cottage, the gate back to town.
+L7 = G(30, 18, ",")
+L7.rect(0, 0, 29, 0, "T"); L7.rect(0, 17, 29, 17, "T"); L7.rect(0, 0, 0, 17, "T"); L7.rect(29, 0, 29, 17, "T")
+for (x, y) in ((4, 3), (9, 2), (3, 9), (7, 13), (13, 15), (20, 2), (16, 5), (5, 6)): L7.put(x, y, "T")
+house(L7, 9, 6, 15, 9, (12,))                                                          # the hunting lodge
+house(L7, 2, 14, 5, 15, (3,))                                                          # the keepers' cottage
+L7.box(18, 6, 27, 14, "f"); L7.rect(19, 7, 26, 13, "*"); L7.put(18, 10, ",")           # the paddock
+L7.rect(22, 14, 23, 14, "g")                                                           # the paddock's far gate
+L7.rect(12, 10, 12, 16, ":"); L7.rect(13, 10, 28, 10, ":"); L7.put(18, 10, ":")
+L7.rect(29, 7, 29, 8, "e")
+PARKS = town("royal-parks", "The royal parks", "hope", L7, (28, 8))
+
+# ---------------- The palace at night ----------------
+# 26 x 12. The long gallery, the dining hall (west), the King's door (north-east), the queen mother's rooms.
+Q7 = G(26, 12, "R")
+Q7.rect(1, 1, 24, 10, "p"); Q7.box(1, 1, 24, 10, "I")
+Q7.box(1, 1, 9, 6, "I"); Q7.rect(2, 2, 8, 5, "p"); Q7.rect(3, 3, 7, 4, "b"); Q7.put(9, 4, "d")     # the dining hall
+Q7.box(17, 1, 24, 5, "I"); Q7.rect(18, 2, 23, 4, "p"); Q7.put(20, 5, "d"); Q7.put(22, 2, "B")     # the King's rooms
+Q7.rect(11, 3, 14, 3, "k")
+Q7.put(13, 10, "e")
+NIGHT = town("kingsmere-palace", "Kingsmere palace, at night", "night", Q7, (13, 9), rest=False)
+
 if __name__ == "__main__":
     for m in MAPS:
         print(m["id"]); print("\n".join(m["rows"]))

@@ -45,7 +45,11 @@ S["runaway4"] = [
         say("rhea", R("How many?")),
         say("tam", R("Nobody counts out loud in there. More than three hundred. Less than five.")),
         n("He takes his feet out of the water and looks at them, as if they belong to somebody else."),
-        say("tam", R("And the rider. The one they called Ninety. He came in on the trays last week, same as us. They took his coat and gave him his number back.")),
+        iff({"flag": "finchStripped"}, [
+            say("tam", R("And the rider. Ninety. The Wardens brought him in at harvest with his hands tied and no coat. He's on the trays now, same as us.")),
+        ], [
+            say("tam", R("And the rider. The one they called Ninety. He came in on the trays last week, same as us. They took his coat and gave him his number back.")),
+        ]),
         say("tam", R("He doesn't talk. He just works. The little ones go and stand next to him, and nobody touches them while they do.")),
         iff({"eq": {"corranFate": "thornwick"}}, [
             n("Behind the bathhouse wall, something is put down very carefully, the way a man puts something down when his hands won't stop shaking."),
@@ -62,6 +66,10 @@ S["council4"] = [
     say("hallet", R("It's built a wall of children. Clever. Filthy, but clever.")),
     iff({"eq": {"lockHeld": False}}, [say("varro", R("And it's taken Corvel's back. They'll say the Commons can't hold a hatchery. They'll say it at every town gate this winter."))],
         [say("varro", R("They saw what happened at Lockside. They know we can hold what we take. That's why they've pulled everything back inside the wall."))]),
+    iff({"flag": "road"}, [
+        say("varro", R("The League stopped paying their swords at the spring settling. Tarsis never marched for them. They've lost every court the Captain rode through, one way or another. A House without credit pulls in what it owns. That's what the Broodhouse is.")),
+        say("kane", R("Nine nations, Captain. Some of them for us, some of them only not against us. It'll do. It'll have to.")),
+    ]),
     say("kane", R("The council wants Vantry before the spring. I want the Broodhouse. One column, and one officer to take it.")),
     say("kane", R("Captain Caddow. You've walked children out of two hatcheries. You'll be Commander of the Vantry column, from today. Varro is your second.")),
     say("hallet", R("And the hardliners? My companies?")),

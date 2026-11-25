@@ -15,6 +15,8 @@ WEST = "land-west"
 REED, ASH, TAV, BRIG = "town-reedhythe", "town-ashby", "ashby-tavern", "ashby-brig"
 GRAZE, KEST, SNOW, HOLM, GAOL, FROST = "town-grazehold", "town-kestrel-fort", "town-snowgate", "town-holm", "holm-gaol", "town-frostmere"
 TALLY, CORV, VAULT, TARS = "town-tallyhill", "town-corvane", "corvane-vault", "town-tarsis"
+EMB, GARD, PAL = "town-ember", "ember-garden", "ember-palace"
+KMR, PARK, NPAL = "town-kingsmere", "royal-parks", "kingsmere-palace"
 
 cast = {"gateward": "Hollin's gate-ward", "speaker": "The Speaker of the square", "ansel": "Ansel", "orla": "Orla", "davy": "Davy",
         "netmaker": "Bryn", "provost": "Provost Amory", "weaver": "Hanne", "kit": "Kit", "gil": "Gil", "perrine": "Perrine",
@@ -22,9 +24,11 @@ cast = {"gateward": "Hollin's gate-ward", "speaker": "The Speaker of the square"
         "saul": "Mother Saul", "clerk": "Harbour clerk", "pike": "Old Pike", "meg": "Sister Meg", "annet": "Annet", "gully": "Gully Sorne",
         "fairweather": "Fairweather", "posy": "Posy", "dorrit": "Dorrit", "oren": "Oren Tull",
         "abel": "Abel", "rider": "Clan rider", "gerd": "Gerd", "arvo": "Arvo", "brede": "Brede", "guard": "Guard captain", "aurel": "Aurel Hask",
-        "finch": "Finch", "fisher": "Frostmere fisher", "sigrun": "Sigrun", "brannoc": "Brannoc", "king": "The King of Lorne", "woman": "A mother of the eleven",
+        "finch": "Finch", "fisher": "Frostmere fisher", "sigrun": "Sigrun", "brannoc": "Brannoc", "king": "The King of Lorne", "woman": "A mother of the eleven", "mirechild": "A girl in the sick room",
         "tollman": "League toll-man", "factor": "Guild factor", "councillor": "First Councillor of the League", "ilse": "Ilse Varn",
-        "ottilie": "Ottilie", "vela": "Vela Orme", "kesh": "Kesh"}
+        "ottilie": "Ottilie", "vela": "Vela Orme", "kesh": "Kesh",
+        "imari": "Imari", "khalis": "Prince Khalis", "rashid": "Prince Rashid", "nadra": "Nadra",
+        "aldous": "King Aldous", "odile": "Odile", "esme": "Esme", "queen": "The queen mother", "halloran": "Halloran", "crownguard": "Crown warden"}
 
 objectives = {
     "ah0": "The council in Thornwick chapel.",
@@ -59,9 +63,21 @@ objectives = {
     "ah28": "South-east over the steppe to Tarsis. Vela Orme's contract ends at the new moon.",
     "ah29": "Vela wants to see the Commons fight. Go to her hall.",
     "ah30": "Tarsis' infirmary, then Vela's answer.",
-    "ah31": "South, across the desert, to the Ember Courts.",
+    "ah31": "South, across the desert, to the Ember Courts. A caravan guide is waiting in Tarsis.",
+    "ah32": "Ember. Present yourself at Prince Khalis' palace.",
+    "ah33": "Prince Rashid has asked to meet you in his garden, east of the square.",
+    "ah34": "Nadra's father is in the old guards' house at the end of the Prince's Garden.",
+    "ah35": "Into Khalis' palace at night. Find out what the Houses' coin is buying.",
+    "ah36": "Both princes want an answer. Go back to the square.",
+    "ah37": "To Kingsmere, by the royal road east of the steppe. Show the King's pass.",
+    "ah38": "The King's hunting lodge, in the royal parks west of Kingsmere.",
+    "ah39": "The park knight, Odile, is at the crownhorn paddock.",
+    "ah40": "The queen mother's dinner, at the palace.",
+    "ah41": "Get Esme's letters to the King's rooms tonight.",
+    "ah42": "The court, in the morning.",
     "ai1": "Autumn, while Rhea is away.",
     "ai2": "Midwinter, while Rhea is away.",
+    "ai3": "Midsummer, while Rhea is away.",
 }
 
 S = {}
@@ -1204,6 +1220,316 @@ S["lastContract"] = [
     toast("South, across the desert, to the Ember Courts."),
 ]
 
+# ================================================================== leg 6: the Ember Courts
+S["imari"] = [
+    iff({"stage": "ah31"}, [
+        n("A caravan is loading at Tarsis' gate: long-legged sand kith with water skins slung on both sides, and a woman in a deep blue veil checking every knot herself."),
+        say("imari", R("Imari. I take the caravan to Ember every spring, when the wells are full. They're not full this year. The Guild's men came through a month ago with three wagons of water and drank two wells dry on the way.")),
+        say("imari", R("You can come. You carry your own water. Everyone in the desert carries their own water. That's the only law out there.")),
+        fade("The deep desert. Six days out."), setf({"light": "day"}),
+        n("Six days of sand the colour of bread crust, and a sun that never seems to move. The fourth well is dry. The fifth well is dry. The sand kith walk slower every hour, and on the sixth day the smallest one lies down and won't get up."),
+        say("imari", R("They'll die before the next well. Then we'll be carrying the water ourselves, and we'll die after them. That's the arithmetic.")),
+        n("The Commons' water carts are a third full. Enough for the company to the next well, if nobody shares."),
+        choose("Imari doesn't ask. She's watching the kith.",
+               opt("Share the water with the caravan's kith", [
+                   setf({"waterShared": True, "recruited.imari": True}), {"join": "imari"},
+                   n("Rhea's people go on half water for two days. Their lips split and their heads ache, and the smallest sand kith gets up on the second morning and walks."),
+                   say("imari", R("Nobody shares water. Not out here. I'll remember it. I'm a guide; I remember everything.")),
+               ], hint="Two hard days. The kith live."),
+               opt("Keep the water for the company", [
+                   setf({"waterShared": False}),
+                   n("Two of the sand kith die before the next well. Imari cuts their packs free herself, and leaves them on the sand, and doesn't speak to anyone from the Commons for the rest of the crossing."),
+               ], hint="The company comes through whole.")),
+        n("At the last well, there are men already waiting. Desert raiders, with spears and the Guild's empty water barrels stacked behind them. They've been selling the last well's water to anyone who can pay."),
+        {"battle": "road-dunes", "win": [
+            n("The raiders run for the dunes. Everybody drinks."),
+            setf({"open.east-ember": True}),
+            fade("Ember."), goto(EMB, 14, 16, "up"), stage("ah32"),
+            n("Ember rises out of the sand in red stone and green gardens, with water running in channels along every street. After the desert it looks like a lie."),
+            toast("Present yourself at Prince Khalis' palace."),
+        ]},
+    ], [say("imari", R("The desert doesn't care who you are. That's why I like it."))]),
+]
+S["audience"] = [
+    iff({"stage": "ah32"}, [
+        n("Prince Khalis' audience hall: cool, dim, smelling of oranges. The guards along the walls are big men in crimson, very still. Too still. Their eyes follow nothing."),
+        n("Rhea is close enough to see their collars. Every one of them wears a lull. Old rings climb up to their ears."),
+        say("khalis", R("The Commons' captain. The Guild's envoy told me about you. He said you'd come. He said you were stubborn. He didn't say you were thirsty. Bring her water.")),
+        say("rhea", R("Is he here?")),
+        say("khalis", R("He was my guest for a week. He left the morning your caravan was sighted. He didn't say where he was going, and I didn't ask. In Ember we don't ask guests their business. We ask what they've brought.")),
+        say("khalis", R("And you've brought nothing, Captain. The Guild brings me crates. You may stay, of course. Ember is hospitable. My brother will want to meet you. My brother wants to meet everyone who might be useful to him.")),
+        n("As Rhea leaves, one of the guards at the door turns his head, slowly, and looks at her. Just for a moment. Then he looks at nothing again."),
+        stage("ah33"),
+        toast("Prince Rashid's garden is through the east gate of the square."),
+    ], [say("khalis", R("Captain."))]),
+]
+S["rashidGarden"] = [
+    iff({"stage": "ah33"}, [
+        n("The Prince's Garden: orange trees on terraces, a long pool, and a man in sand-coloured robes sitting on the edge of it with his feet in the water."),
+        say("rashid", R("Rashid. The younger brother, the one who's going to be trouble, as everyone says. Sit down. Take your boots off. The water is the only free thing in Ember.")),
+        say("rashid", R("You saw my brother's guards. Our father's guards, before. My brother started buying lulls for them twelve years ago. A guard who wears the Guild doesn't ask for pay. He doesn't ask for leave. He doesn't ask anything. He's perfect.")),
+        say("rashid", R("At the end of the garden is the old guards' house. Where they go when they're too old to stand at a door. Go and look. Then come and tell me what a doctor from the mountains thinks of Ember.")),
+        stage("ah34"),
+    ], [iff({"stage": ["ah34", "ah35"]}, [say("rashid", R("Have you seen them yet? Go and see them."))], [say("rashid", R("The water's still free. For now."))])]),
+]
+S["nadraFather"] = [
+    iff({"stage": "ah34"}, [
+        n("The old guards' house: one long room, cool and clean, with forty cots. Forty old men lying on them, or sitting, with their hands on their knees. A few of them are humming. None of them are talking."),
+        n("A young woman with a falconer's glove and a mistwing on her shoulder is spooning soup into one of them. She looks up."),
+        say("nadra", R("You're the doctor. The northern one. My father. Twenty-two years on the Prince's lulls. He used to sing. He used to fly my mother's mistwings. Look at him and tell me if there's anything left in there.")),
+        n("Rhea kneels by the cot. The old man's neck is solid ring scar, ear to collarbone. His pulse is slow and even. His eyes follow her hand, a long way behind it."),
+        n("She takes the greenling tin out of her coat. Oda's last batch, kept for the road."),
+        say("rhea", R("I don't know. Nobody's come off after twenty years. I'd need a season, and a quiet room, and someone sitting with him every night.")),
+        say("nadra", R("I've been sitting with him every night for six years. A season's nothing.")),
+        n("Rhea gives Nadra the tin, and shows her how to start, and the old man watches the mistwing on his daughter's shoulder the whole time."),
+        setf({"nadraTin": True}),
+        say("nadra", R("Prince Rashid says the Houses send my brother-prince more than crates. Gold, every season, south across the desert. Nobody knows what for. The treasury is in the palace. The guards at night are the old guards' sons.")),
+        stage("ah35"),
+        toast("Into the palace tonight."),
+    ], [iff({"flag": "nadraTin"}, [say("nadra", R("He hummed a bit of a song this morning. A real one. Don't tell anyone. It might not be true."))], [n("The old guards' house.")])]),
+]
+S["palaceIn"] = [
+    iff({"stage": "ah35"}, [
+        setf({"light": "night"}),
+        n("Night. Rashid's man knows a door in the palace wall the kitchens use. The guards on it look at the Commons coming in and do nothing at all. Nobody told them to."),
+        goto(PAL, 12, 9, "up"),
+    ], [iff({"stage": "ah32"}, [run("audience")], [n("The palace doors. The crimson guards look at nothing.")])]),
+]
+S["palaceGuards"] = [
+    n("The colonnade. A crimson guard sergeant is standing in the middle of it, and this one isn't looking at nothing. He's younger, and his collar's high, and he's looking right at Rhea."),
+    say("guard", R("The old guards don't stop anyone at night. That's why the Prince keeps us. Turn round.")),
+    {"battle": "road-palace", "win": [
+        n("The guard sergeant goes down and stays down, and so do his men. Not dead. Rhea checks. Behind them, the study door."),
+        setf({"palaceFought": True}),
+    ]},
+]
+S["sanctuary"] = [
+    iff({"flag": "palaceFought", "not": "sanctuaryRead"}, [
+        setf({"sanctuaryRead": True}),
+        n("Khalis' study. A desk, a lamp still lit, and on the desk a long paper sealed with two seals: a sun, and a loftbuck."),
+        n("It's an agreement. Rhea reads it with Nadra holding the lamp."),
+        n("If Vantry falls, the Prince will receive the masters of the Guild and their households in the south, with their mother lines: the breeding stock the Guild's lulls are made from. He will give them land beyond the city, and water, and his protection, and his silence. In return, the Houses' gold every season until then, and lulls for his guard for as long as he lives."),
+        say("nadra", R("They're not going to lose. They're going to leave. And start again here, in the sand, with us.")),
+        n("At the bottom, under the seals, in a hand Rhea knows: \"Witnessed, for the Guild. F.\""),
+        say("rhea", R("Put the lamp down, Nadra. Just for a moment.")),
+        fade("Dawn."), setf({"light": "day"}), goto(EMB, 14, 12, "up"), stage("ah36"),
+        toast("Both princes want an answer."),
+    ], [iff({"flag": "sanctuaryRead"}, [n("The desk is bare.")], [n("A guard sergeant stands in front of the study door.")])]),
+]
+S["twoPrinces"] = [
+    iff({"stage": "ah36"}, [
+        n("By morning everybody in the palace knows someone was in the study. By noon both princes have sent for the Commons' captain. Their men stand at opposite ends of the square, waiting, and don't look at each other."),
+        say("rashid", R("I have friends among the guards' sons. With greenlings for the old guards and their fathers, the guard is mine in a month, and my brother is a guest in his own palace. There'll be fighting. Not much, if we're quick. Then the sanctuary is ash and the courts' gold goes north to the Commons.")),
+        say("khalis", R("I know what you took. I'm not a fool, Captain. Here is my offer. Tear up the agreement, and I tear up mine: no sanctuary, no Guild masters in my sand. Ember stays out of your war. And my guard stays as it is. Lulls are cheaper than loyalty, and my brother is not as gentle as he looks.")),
+        choose("Nadra is beside you. Her father is in the old guards' house.",
+               opt(R("Rashid. Greenlings for the guard, and the sanctuary burned."), [
+                   setf({"road.ember": "rashid", "recruited.rashid": True, "recruited.nadra": True, "nation.ember": "pact", "deed.ember": True}), {"join": "nadra"},
+                   n("It takes nine days. The guards' sons come over first. Then the old guards' house empties, cot by cot, as the greenlings start. There's fighting in the palace on the eighth night, on the stairs, and men die there, crimson on both sides."),
+                   n("On the ninth morning Khalis rides out of the south gate into the desert with thirty men, and Rashid sits in his brother's chair with his feet bare, and burns the agreement in the lamp in front of the whole court."),
+                   say("rashid", R("The courts' gold goes north with you, Captain, and my riders after it. Ember has a war of its own now. You gave it to us. I'll thank you for it when it's over.")),
+                   toast("Rashid takes the courts. The sanctuary is burned. Ember's gold for the Commons."),
+               ], hint="A civil war in the south. The courts' gold and riders for the Commons."),
+               opt(R("Khalis. Tear up the sanctuary, and Ember stays out of the war."), [
+                   setf({"road.ember": "khalis", "recruited.khalis": True, "recruited.nadra": True, "nation.ember": "peace", "deed.ember": True}), {"join": "nadra"},
+                   n("Khalis tears the agreement in half himself, in front of his court and the Guild's empty chair, and hands Rhea the half with the loftbuck seal."),
+                   n("The guards along the walls of the audience hall watch it happen with eyes that follow nothing. They'll be standing there in ten years. Rhea knows it, and so does Nadra."),
+                   say("nadra", R("My father keeps the tin. Rashid will see he gets more. I'll ride with you, Captain. I can't stand in that hall again.")),
+                   say("khalis", R("Peace in the south, Captain. And when your war is done, come back and tell me how much it cost you to be right.")),
+                   toast("Khalis refuses the Guild its sanctuary. Ember keeps the peace."),
+               ], hint="Peace. No sanctuary. The old guards stay on lulls."),
+               opt("Neither. Walk away.", [
+                   setf({"road.ember": "away"}),
+                   n("Rhea gives the agreement back to Khalis' chamberlain, and Rashid's man nothing, and goes to the caravanserai to pack."),
+                   n("Nadra follows her to the gate, and then doesn't follow her any further."),
+                   say("nadra", R("I thought a doctor would know which one was the medicine.")),
+                   toast("Ember keeps its sanctuary for the Guild."),
+               ], hint="No war of your making. The Guild keeps its way out.")),
+        run("royalMessenger"),
+    ]),
+]
+S["royalMessenger"] = [
+    n("At the caravanserai that evening, a rider in the Crown's green, dusty to the eyebrows, who has crossed the desert in four days on a change of strider. He has a letter for the Commons' captain, sealed with the King's own ring."),
+    n("The King of Ostrel asks the captain to come to him, in secret, at his hunting lodge in the royal parks. The rider has a royal pass for the road east of the steppe."),
+    say("imari", R("And the Guild's envoy? He was on that road a week ago, the well-keepers say. Going the same way.")),
+    setf({"open.east-heartland": True, "kingLetter": True}),
+    run("corranSummerRoad"),
+]
+
+# ================================================================== Corran's summer (the third interlude)
+S["corranSummerRoad"] = [
+    iff({"eq": {"corranFate": "thornwick"}}, [run("corranPlay")], [
+        iff({"eq": {"corranFate": "left"}}, [run("corranDrain")], [run("corranRace")])]),
+    run("backToRoad3"),
+]
+S["corranPlay"] = [
+    fade("Thornwick. Midsummer, while she is away."),
+    setf({"hero": "corran", "light": "evening"}), stage("ai3"),
+    n("The children put on a play for the terraces: Haldane's trial at the College, as they've heard it told. They need a Warden. Nobody else will do it."),
+    n("He stands on the bathhouse step in a borrowed grey coat, and the children boo him, and he has to say the Warden's lines: that weaning is a lie, that a ringed man is a ringed man for ever."),
+    choose("Wren is the judge. She's waiting for his last line.",
+           opt("Play it straight, and let them boo", [setf({"corranPlay": "straight"}), add({"hold": 2}),
+               n("He says it the way the Wardens said it to him once, flat and certain. The children boo so hard that Ume's terrace dogs start barking. Afterwards Wren tells him he was very good, and very horrible.")], hint="Give them a villain."),
+           opt("Break off and show them his neck", [setf({"corranPlay": "rings"}), add({"hold": 4}),
+               n("He stops halfway through the Warden's speech and pulls his collar down, and stands there, and says nothing. The booing stops. One of the small ones starts clapping, uncertainly. Then all of them.")], hint="Not in the script.")),
+    setf({"hero": "rhea"}),
+]
+S["corranDrain"] = [
+    fade("House Mire. Midsummer."),
+    setf({"hero": "corran", "light": "night"}), stage("ai3"),
+    n("A girl in the sick room, eight or nine, with a fever that's breaking. She has heard the other children whisper about the girl who walked out. She wants to know which way."),
+    say("mirechild", R("You know. Everybody says you know. Show me Wren's drain.")),
+    choose("The night steward's lamp is at the far end of the corridor.",
+           opt("Show her", [setf({"mireDrain": "shown"}), add({"hold": 2}),
+               n("He takes her down to the brood room grate in the dark and shows her the iron bars and the black water under them, and tells her what Wren told him. He doesn't tell her to go. He doesn't tell her not to."),
+               n("In the morning she's in her cot. She looks at him all day, and he doesn't know if he's given her a door or a nightmare.")], hint="It's her life."),
+           opt("Tell her to wait", [setf({"mireDrain": "wait"}), add({"hold": 1}),
+               n("He tells her she's too ill, and the water's too high in summer, and both are true. She turns her face to the wall. She doesn't ask him anything again.")], hint="She's eight.")),
+    setf({"hero": "rhea"}),
+]
+S["corranRace"] = [
+    fade("Millbridge. Midsummer."),
+    setf({"hero": "corran", "light": "day"}), stage("ai3"),
+    n("Day release. They chain him at the ankle and set him to clearing weed from the mill race, waist deep, with the families of the eleven watching from the bridge. Some days they throw things. Today they just watch."),
+    n("A child on the bridge leans too far, and goes in, upstream of the wheel."),
+    choose("The chain is long enough to reach the middle of the race. Just.",
+           opt("Go in after the child", [setf({"raceSaved": True}), add({"hold": 3}),
+               n("He goes under twice, and the chain catches on the wheel housing, and he gets the child up onto the sluice board with his last breath. It's the woman's grandson. The woman who asked him why he should live."),
+               n("She doesn't thank him. She takes the boy and goes. The next day there's bread in his cell that he didn't get from the gaoler.")], hint="Chained."),
+           opt("Shout for the miller to stop the wheel", [setf({"raceSaved": False}), add({"hold": 1}),
+               n("The miller drops the sluice. The wheel stops. Someone else's son pulls the child out, coughing. Nobody looks at the man in the race, and he doesn't know if that's better.")], hint="The wheel will kill you both.")),
+    setf({"hero": "rhea"}),
+]
+S["backToRoad3"] = [
+    fade("Late summer. The royal road east, out of the steppe."),
+    setf({"hero": "rhea", "light": "day"}), stage("ah37"), goto(TARS, 14, 15, "down"),
+    toast("To the King's hunting lodge in the royal parks. The royal road leaves the steppe to the north-east."),
+]
+
+# ================================================================== leg 7: the Crown at Kingsmere
+S["kingsmereArrive"] = [
+    iff({"stage": "ah37"}, [
+        n("Kingsmere: the King's town, white stone and green lawns, with the palace on its hill and every second building a House's town house, with a House's crest over the door."),
+        say("crownguard", R("A royal pass. In the King's own hand.")),
+        n("The warden holds it up to the light, twice, and looks at Rhea's company with the face of a man working out which House to tell first."),
+        say("crownguard", R("His Majesty is hunting in the parks. The lodge is through the west gate. He said nobody was to be shown to him. He said that the pass would show itself.")),
+        stage("ah38"),
+    ]),
+]
+S["aldousLodge"] = [
+    iff({"stage": "ah38"}, [
+        setf({"light": "evening"}),
+        n("The hunting lodge: one room, a fire, antlers on every wall, and a pale young man of nineteen in a plain dark coat, sitting on the floor in front of the fire because he has sent away everyone who'd tell him to sit in a chair."),
+        say("aldous", R("Captain. Thank you for coming. I'd stand, but then I'd have to stop warming my hands, and it's the only thing I've done for myself all week.")),
+        say("aldous", R("I owe the Guild more than the Crown earns in ten years. My father borrowed it. I've been borrowing it since. Every man at my court is paid by a House. My mother's household is paid by three.")),
+        say("aldous", R("The Guild's envoy is coming here next week with an offer. Sign the charter they've written, outlaw your Commons and every greenling clinic in the country, and the debt is forgiven. I'll sign it. I'll have to. Unless.")),
+        say("rhea", R("Unless what?")),
+        say("aldous", R("My father died two years ago. A cough, they said. He'd never coughed in his life. The physician who treated him was the Guild's. And my mother hasn't spoken his name since the funeral.")),
+        say("aldous", R("Find out who killed my father, Captain. If it was the Guild, I can void their charter, and they know it. That's why I asked a stranger. Nobody in Kingsmere is a stranger to the Guild.")),
+        say("aldous", R("Start with Odile, at the paddock. She was the only one at court who loved him. My mother's just ordered his herd culled.")),
+        stage("ah39"),
+    ], [iff({"stagePrefix": "ah"}, [say("aldous", R("The fire's still warm, Captain. That's something."))])]),
+]
+S["odileHerd"] = [
+    iff({"stage": "ah39"}, [
+        n("The paddock: forty crownhorns, tall and white, with antlers like crowns and the patience of very old trees. A knight in gleaming plate, with a lance against the fence, is brushing one of them down."),
+        say("odile", R("Odile. Knight of the parks, for whatever that's worth tonight. The queen mother's cull-men come at dawn. Forty beasts. Three hundred years of breeding. Because they were his.")),
+        say("odile", R("I've hidden the breeding books. If they want them, they'll have to cut me open for them. But the herd won't fit in a book.")),
+        say("rhea", R("Where would you take them?")),
+        say("odile", R("The far gate, and the old forest road, and Queensford. My sister keeps an inn there with a big yard. But not alone. Not past the cull-men.")),
+        fade("Dawn."), setf({"light": "day"}),
+        n("They come out of the trees with nets and long knives: the queen mother's huntsmen, and a Guild man in grey to count the carcasses."),
+        {"battle": "road-cull", "win": [
+            n("The cull-men scatter into the trees. Odile throws the far gate open, and forty crownhorns walk out of the royal parks in a long white line, as calm as a procession, with Odile riding at their head."),
+            setf({"recruited.odile": True, "herdSaved": True}), {"join": "odile"},
+            say("odile", R("Here. You'll want this. It's why I hid the books.")),
+            n("The breeding book, the last page in the old King's own hand: notes on a foal, and on himself. \"Dr Sallis brought the new draught for my chest. It tastes of copper. Y. says it will do me good.\""),
+            say("odile", R("Y. is Queen Ysolde. The queen mother. He started coughing the week he started the draught. He was dead in a month.")),
+            say("odile", R("It's not proof. It's a sick man's diary. The proof, if there is any, is in the queen mother's letters. Esme carries her letters. Esme plays at her dinners. Esme hates her.")),
+            stage("ah40"),
+            toast("The queen mother's dinner, tonight, at the palace."),
+        ]},
+    ], [iff({"flag": "herdSaved"}, [say("odile", R("They'll be at Queensford by now, eating my sister's roses."))], [n("The crownhorns lift their heads and watch you, all together, like a court.")])]),
+]
+S["queenDinner"] = [
+    iff({"stage": "ah40"}, [
+        setf({"light": "evening"}),
+        n("The queen mother's dinner: a long hall, candles, silver, twenty guests who are each paid by a House, and at the head of the table a handsome grey woman in black who has been in mourning for two years and is very good at it."),
+        say("queen", R("The Commons' captain. My son collects strays. I'm told you saved his father's cattle this morning. How kind of you to take an interest in our family.")),
+        n("A young woman with copper hair plays the lute at the end of the hall. She plays very well and looks at nobody. When the plates are cleared, she passes behind Rhea's chair, and something drops into her lap: a packet of letters, tied with a lute string."),
+        say("esme", R("The King's rooms. Tonight. I can't take them: they search me. They won't search you. They don't think you're clever.")),
+        fade("Night. The palace."), setf({"light": "night"}), goto(NPAL, 10, 4, "right"), stage("ah41"),
+    ], [n("The palace doors. The wardens look at you, and at the town house crests, and decide not to see you.")]),
+]
+S["galleryGuards"] = [
+    n("The long gallery, dark. The queen mother's household guards are standing between the dining hall and the King's door, and they are waiting for someone. They've been told who."),
+    say("crownguard", R("The queen mother asks that the captain return to her rooms. With whatever she was given at dinner.")),
+    {"battle": "road-gallery", "win": [setf({"galleryFought": True}),
+        n("The last guard goes down in a crash of silver plate. Somewhere a door slams. The King's door is ahead.")]},
+]
+S["theAnswer"] = [
+    iff({"flag": "galleryFought", "not": "lettersRead"}, [
+        setf({"lettersRead": True}),
+        n("The King's rooms. Aldous reads the letters by one candle, all of them, twice. Esme kneels by the door, listening for feet."),
+        n("They're from Dr Sallis, the Guild physician, to the queen mother. The first is about the King's chest. The fourth is about a draught. The seventh says \"as we agreed\" and is dated a week before the funeral. The last thanks her for the regency council, and the House seats on it, and asks after her son's health."),
+        say("aldous", R("My mother.")),
+        n("He sits for a long time with the last letter on his knee."),
+        say("aldous", R("If I read these in court tomorrow, the Guild's charter is void. Its physician murdered a king. My mother goes to a cell for the rest of her life, and I have no family left. If I burn them, she stays, and the Guild keeps its hand on my shoulder, and nobody ever knows.")),
+        say("aldous", R("You found them, Captain. You choose. I'm too close to it. I'll do what you say. I mean it.")),
+        choose("Aldous is holding the letters over the candle, not quite touching it.",
+               opt(R("Read them in court."), [
+                   setf({"road.crown": "exposed", "aldousFree": True, "nation.crown": "pact", "deed.crown": True}), add({"standing.crown": 40}),
+                   n("He puts the letters down, very carefully, away from the candle."),
+                   say("aldous", R("Then I'll read them. Myself. In my father's chair.")),
+               ], hint="A free king. He loses the last of his family."),
+               opt(R("Burn them."), [
+                   setf({"road.crown": "buried", "nation.crown": "leashed"}), add({"standing.crown": 10}),
+                   n("The letters catch, one by one. Aldous holds each until it burns his fingers, and then drops it in the grate."),
+                   say("aldous", R("Thank you. I think. Ask me again in ten years.")),
+               ], hint="He keeps his mother. The Guild keeps its leash.")),
+        setf({"recruited.esme": True}),
+        say("esme", R("I'll stay at court and play. Somebody has to keep reading the letters. Send for me when you need a tune.")),
+        fade("Morning. The court."), setf({"light": "day"}), goto(KMR, 14, 7, "up"), stage("ah42"),
+        run("ninety"),
+    ]),
+]
+S["ninety"] = [
+    n("The Crown's court, in the great hall. The King on his throne. The House agents in grey along the walls. And before the throne, in his good grey coat with the loftbuck on the clasp, Finch, with the Guild's charter in a red case."),
+    say("finch", R("Your Majesty. The Houses forgive the Crown's debt in full, from today. In return, the Crown signs this charter. The Commons outlawed. The clinics closed. The war ended by law, before more people die in it.")),
+    iff({"eq": {"road.crown": "exposed"}}, [
+        n("Aldous stands up, and takes the letters out of his coat, and reads them out. All of them. Twice, for the clerks."),
+        n("The queen mother is not in the hall. By noon she is in the chapel tower under guard, and by evening every House agent in Kingsmere is packing."),
+        say("aldous", R("The Guild's physician murdered my father, envoy. The Crown signs nothing for the Guild. The Crown's charter to the Guild is void as of this hour. Its Wardens may go home, or answer to me.")),
+    ], [
+        n("Aldous looks at the charter for a long time. Then at his mother, in her chair beside the throne. Then at Rhea."),
+        say("aldous", R("The Crown will sign nothing this year. Not for the Guild. Not for anyone. Tell the Houses that.")),
+        n("It's not a refusal. But it isn't a signature either, and the House agents along the walls know what a year without one means for the Guild's war."),
+    ]),
+    n("Finch puts the charter back in its case, very neatly. His hands don't shake. He bows, and walks out of the hall into the yard."),
+    n("Halloran is waiting for him there, with six Wardens and a horse with no saddle."),
+    say("halloran", R("The College. Ashby's sea. The clans. The League's coin. Tarsis. And now the Crown, Ninety. The Houses lent you their name for a year, and you lost more with it than you won.")),
+    say("halloran", R("Your coat.")),
+    n("Finch takes off the grey coat and folds it, and holds it out. Halloran takes the clasp off it, and drops the coat in the dust."),
+    say("halloran", R("Ninety. That's your name. You can have your number back. The Houses need hands on the trays.")),
+    n("Finch looks at Rhea once, across the yard. Just once."),
+    choose("The Wardens are tying Finch's hands.",
+           opt(R("He's my brother, Halloran. He did what you sent him to do. Take me instead, if you want someone."), [
+               add({"finchTrust": 12}), setf({"finchYard": "spoke", "finchStripped": True}),
+               say("halloran", R("I don't want you, Captain. I want you to watch.")),
+               n("But Finch heard it. Everyone in the yard heard it. On the horse, with his hands tied, he turns his head and keeps it turned until the gate."),
+           ], hint="It changes nothing, now."),
+           opt("Say nothing", [
+               setf({"finchYard": "silent", "finchStripped": True}),
+               n("Rhea says nothing. Finch looks away first. He was always better at silence. He doesn't look back at the gate."),
+           ], hint="He chose his side.")),
+    n("The Wardens take him south, towards Vantry, at a walk, so the whole town can watch."),
+    run("roadHome"),
+]
+S["roadHome"] = [
+    fade("Home, the long way. Through the vale, and up the mountain, as the summer ends."),
+    n("A year on the road. Nine nations, and the Commons' name in every one of them, for good or ill."),
+    run("act4Start"),
+]
+
 # ================================================================== actors, steps, looks
 def actor(id, map, x, y, look, talk, when=None, **kw):
     a = {"id": id, "map": map, "x": x, "y": y, "look": look}
@@ -1284,6 +1610,25 @@ actors = [
     actor("tars-sword", TARS, 5, 13, "smuggler", [n("A sellsword sharpening a blade that's already sharp. His collar is turned up to his ears.")], {"stagePrefix": "ah"}),
     actor("tars-cook", TARS, 6, 14, "vil5", [n("The company cook, stirring a pot. \"Twenty years I've cooked for Tarsis. Never seen the strongbox empty. Never.\"")], {"stagePrefix": "ah"}),
     actor("tars-recruit", TARS, 20, 13, "vil3", [n("A young sellsword, watching the practice yard. \"Captain says we fight for whoever pays. Nobody's paid since the thaw.\"")], {"stagePrefix": "ah"}),
+    # Ember
+    actor("imari", TARS, 17, 14, "imari", [run("imari")], {"stage": ["ah31"]}),
+    actor("emb-water", EMB, 12, 12, "vil5", [n("A water seller with a brass cup on a chain. \"Water's free in Ember. The cup's a copper. That's how the princes like it.\"")], {"stagePrefix": "ah"}),
+    actor("emb-guard", EMB, 13, 6, "warden2", [n("A palace guard in crimson, at the door. He doesn't look at you. He doesn't look at anything. There are rings up to his ear.")], {"stagePrefix": "ah"}),
+    actor("emb-trader", EMB, 19, 14, "smuggler", [n("A spice trader. \"The Guild's men came through with an iron chest last month. Two camels to carry it. Two camels!\"")], {"stagePrefix": "ah"}),
+    actor("emb-host", EMB, 4, 11, "innkeeper", [n("The caravanserai keeper. \"Northerners. Sleep in the day, travel at night, and drink before you're thirsty.\"")], {"stagePrefix": "ah"}),
+    actor("rashid", GARD, 10, 8, "rashid", [run("rashidGarden")], {"stage": ["ah33", "ah34", "ah35"]}),
+    actor("nadra", GARD, 20, 4, "nadra", [run("nadraFather")], {"stage": ["ah34", "ah35"]}),
+    actor("khalis-sq", EMB, 17, 7, "khalis", [run("twoPrinces")], {"stage": ["ah36"]}),
+    actor("rashid-sq", EMB, 11, 7, "rashid", [run("twoPrinces")], {"stage": ["ah36"]}),
+    # Kingsmere
+    actor("crownguard", KMR, 13, 15, "warden2", [say("crownguard", R("Mind the lawns. The lawns are the King's."))], {"stagePrefix": "ah"}),
+    actor("kmr-agent", KMR, 20, 7, "factor", [n("A House agent in grey, writing in a little book. He writes down your face.")], {"stagePrefix": "ah"}),
+    actor("kmr-baker", KMR, 9, 15, "vil2", [n("A baker's woman. \"The old King used to walk through the market of a morning. Bought a bun. Paid for it, too. This one never comes out.\"")], {"stagePrefix": "ah"}),
+    actor("kmr-priest", KMR, 25, 12, "elder2", [n("The chapel priest, sweeping the step. \"The queen mother hears prayers here every evening. She's never once asked for her husband to be remembered in them.\"")], {"stagePrefix": "ah"}),
+    actor("aldous", PARK, 12, 11, "aldous", [run("aldousLodge")], {"stage": ["ah38", "ah39"]}),
+    actor("odile", PARK, 17, 10, "odile", [run("odileHerd")], {"stage": ["ah39"]}),
+    actor("park-keeper", PARK, 4, 16, "vil4", [n("An old parkkeeper with a pitchfork. \"Three hundred years, them crownhorns. The old King knew every one by name. Every one.\"")], {"stagePrefix": "ah"}),
+    actor("park-boy", PARK, 7, 11, "kid3", [n("A boy with a bucket of oats, staring at the paddock. \"They let you touch them if you stand still long enough. I stood still all of Tuesday.\"")], {"stagePrefix": "ah"}),
 ]
 
 def step(map, at, do, when=None):
@@ -1296,7 +1641,8 @@ PLACES = {("west", "hollin"): (FAIR, (13, 12)), ("west", "college"): (COL, (13, 
           ("west", "reedhythe"): (REED, (12, 12)), ("coast", "ashby"): (ASH, (15, 16)),
           ("north", "grazehold"): (GRAZE, (12, 12)), ("north", "kestrel-fort"): (KEST, (14, 16)), ("north", "snowgate"): (SNOW, (13, 12)),
           ("north", "holm"): (HOLM, (15, 16)), ("north", "frostmere"): (FROST, (12, 12)),
-          ("east", "tallyhill"): (TALLY, (12, 12)), ("east", "corvane"): (CORV, (14, 16)), ("east", "tarsis"): (TARS, (14, 15))}
+          ("east", "tallyhill"): (TALLY, (12, 12)), ("east", "corvane"): (CORV, (14, 16)), ("east", "tarsis"): (TARS, (14, 15)),
+          ("ember", "ember"): (EMB, (14, 16)), ("heartland", "kingsmere"): (KMR, (14, 16))}
 LANDS = {l: {p["id"]: (p["x"], p["y"]) for p in json.load(open(os.path.join(ROOT, f"data/maps/land-{l}.json")))["places"]} for l in {k[0] for k in PLACES}}
 LAND = LANDS["west"]
 HOLM_SHUT = {"stage": ["ah15", "ah16", "ah17", "ah18"]}
@@ -1353,6 +1699,25 @@ steps += [
     *[step(TARS, (x, 6), [run("vela")]) for x in (14, 15)],
     step(TARS, (24, 11), [run("infirmary")]),
     step(TARS, (5, 11), [n("The barracks. Bunks, kit, and the sweetish smell of the raw.")]),
+    # Ember
+    *[step(EMB, (x, 5), [run("palaceIn")]) for x in (14, 15)],
+    *[step(EMB, (28, y), [goto(GARD, 1, 6, "right")]) for y in (8, 9)],
+    step(GARD, (0, 6), [goto(EMB, 27, 8, "left")]),
+    step(GARD, (21, 3), [run("nadraFather")]),
+    step(EMB, (4, 10), [n("The caravanserai. Cool rooms around a courtyard, and a fountain nobody's allowed to drink from.")]),
+    step(PAL, (12, 10), [goto(EMB, 14, 6, "down")]),
+    step(PAL, (18, 4), [run("sanctuary")]),
+    # Kingsmere
+    *[step(KMR, (0, y), [goto(PARK, 28, 8, "left")]) for y in (7, 8)],
+    *[step(PARK, (29, y), [goto(KMR, 1, 7, "right")]) for y in (7, 8)],
+    step(PARK, (12, 9), [run("aldousLodge")]),
+    step(PARK, (3, 15), [n("The keepers' cottage. Muddy boots and a kettle.")]),
+    *[step(KMR, (x, 5), [run("queenDinner")]) for x in (14, 15)],
+    step(KMR, (25, 11), [n("The royal chapel. Cool, and smelling of wax.")]),
+    step(KMR, (4, 14), [n("The guardhouse.")]),
+    step(NPAL, (13, 10), [goto(KMR, 14, 6, "down")]),
+    step(NPAL, (20, 5), [run("theAnswer")]),
+    step(NPAL, (9, 4), [n("The dining hall. The candles are out, and the silver's been locked away.")]),
 ]
 zones = [
     {"map": FAIR, "area": [11, 9, 16, 11], "when": {"stage": "ah1"}, "do": [run("fairArrive")]},
@@ -1367,6 +1732,10 @@ zones = [
     {"map": CORV, "area": [12, 11, 17, 15], "when": {"stage": "ah24"}, "do": [run("ottilie")]},
     {"map": VAULT, "area": [3, 2, 13, 8], "when": {"stage": "ah26", "not": "vaultFought"}, "do": [run("vaultGuards")]},
     {"map": TARS, "area": [12, 13, 17, 15], "when": {"stage": "ah28"}, "do": [run("tarsisGate")]},
+    {"map": EMB, "area": [12, 11, 17, 15], "when": {"stage": "ah36"}, "do": [run("twoPrinces")]},
+    {"map": PAL, "area": [2, 5, 21, 9], "when": {"stage": "ah35", "not": "palaceFought"}, "do": [run("palaceGuards")]},
+    {"map": KMR, "area": [12, 13, 17, 16], "when": {"stage": "ah37"}, "do": [run("kingsmereArrive")]},
+    {"map": NPAL, "area": [11, 6, 22, 9], "when": {"stage": "ah41", "not": "galleryFought"}, "do": [run("galleryGuards")]},
 ]
 looks = [
     {"map": FAIR, "tile": "hay", "do": [n("Straw targets, stuck so full of knife holes that they're held together with string.")]},
@@ -1451,6 +1820,38 @@ BATTLES = {
                   unit("cv2", "League porter", "warden2", "front", [196, 118], cast="warden", level=21, skills=["wstrike"]),
                   unit("cvk", "Vault ironback", "ironback:#5a5a62", "front", [158, 132], hp=110, kith=True, level=22, skills=["maul", "horns"], species="vault-ironback"),
                   unit("cv3", "Factor's bodyguard", "smuggler", "back", [230, 100], cast="archer", level=22, skills=["bow"])]},
+    "road-dunes": {
+        "id": "road-dunes", "name": "The raiders at the last well", "backdrop": "scree", "party": True,
+        "intro": ["Desert raiders with spears and slings, and a dusk strider trained to bite, between you and the last well.", "Everyone is thirsty. Be quick."],
+        "won": "The raiders run for the dunes", "lost": "Driven back into the sand",
+        "units": [unit("dr1", "Desert raider", "smuggler", "front", [170, 94], cast="warden", level=23, skills=["wstrike"]),
+                  unit("dr2", "Desert raider", "smuggler", "front", [196, 116], cast="warden", level=23, skills=["wstrike"]),
+                  unit("drk", "Raiders' strider", "strider:#9a6a3a", "front", [160, 132], hp=64, kith=True, level=23, skills=["pounce", "maul"], species="dusk-strider"),
+                  unit("dr3", "Raider slinger", "smuggler", "back", [230, 100], cast="archer", level=23, skills=["sling"])]},
+    "road-palace": {
+        "id": "road-palace", "name": "The guards' sons", "backdrop": "cistern", "party": True,
+        "intro": ["Young palace guards in crimson, with their collars high and their eyes clear. They're the ones who stop people at night.", "Not dead. Nadra's watching."],
+        "won": "The colonnade is clear", "lost": "Thrown back to the kitchen door",
+        "units": [unit("pg1", "Palace guard", "warden", "front", [170, 94], cast="warden", level=24, skills=["wstrike"]),
+                  unit("pg2", "Palace guard", "warden", "front", [196, 116], cast="warden", level=24, skills=["wstrike"]),
+                  unit("pg3", "Palace guard", "warden", "front", [162, 132], cast="warden", level=24, skills=["wstrike"]),
+                  unit("pg4", "Guard sergeant", "cartwarden", "back", [230, 100], cast="warden", level=25, skills=["wstrike"])]},
+    "road-cull": {
+        "id": "road-cull", "name": "The queen mother's cull-men", "backdrop": "meadow", "party": True,
+        "intro": ["Huntsmen with nets and long knives, and a Guild man in grey with a tally board.", "Behind you, forty crownhorns, and a knight."],
+        "won": "The cull-men scatter into the trees", "lost": "Driven back against the paddock",
+        "units": [unit("cu1", "Royal huntsman", "cartwarden", "front", [170, 94], cast="warden", level=25, skills=["wstrike"]),
+                  unit("cu2", "Royal huntsman", "cartwarden", "front", [196, 116], cast="warden", level=25, skills=["wstrike"]),
+                  unit("cu3", "Huntsman's bow", "archer", "back", [230, 100], cast="archer", level=25, skills=["bow"]),
+                  unit("cu4", "Hunting reedcat", "reedcat:#6a5a3a", "front", [162, 132], hp=64, kith=True, level=25, skills=["maul", "pounce"], species="market-reedcat")]},
+    "road-gallery": {
+        "id": "road-gallery", "name": "The queen mother's household", "backdrop": "cistern", "party": True,
+        "intro": ["The queen mother's household guards in the long gallery, between you and the King's door.", "Esme's letters are in your coat."],
+        "won": "The gallery is clear", "lost": "Driven back to the dining hall",
+        "units": [unit("qg1", "Household guard", "warden2", "front", [170, 94], cast="warden", level=26, skills=["wstrike"]),
+                  unit("qg2", "Household guard", "warden2", "front", [196, 116], cast="warden", level=26, skills=["wstrike"]),
+                  unit("qg3", "Household guard", "warden2", "front", [162, 132], cast="warden", level=26, skills=["wstrike"]),
+                  unit("qg4", "Household crossbow", "archer", "back", [230, 100], cast="archer", level=26, skills=["bow"])]},
     "road-ringhunters": {
         "id": "road-ringhunters", "name": "The King's ring-hunters", "backdrop": "snow", "party": True,
         "intro": ["Four ring-hunters in Lorne blue, and their hounds, coming over the ice in a line.", "The old man is on his step behind you, with his collar open."],
@@ -1506,7 +1907,7 @@ DUELS = {
 }
 
 # ================================================================== voices and music
-voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell", "arvoStable", "gerdBeaten", "kingsDinner", "trial4", "ledgers", "settling", "lastContract"]
+voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell", "arvoStable", "gerdBeaten", "kingsDinner", "trial4", "ledgers", "settling", "lastContract", "sanctuary", "twoPrinces", "theAnswer", "ninety"]
 moods = {
     "scenes": {"roadStart": "camp", "fairArrive": "hope", "kit": "hope", "kitBeaten": "hope", "speaker": "tension", "ansel": "camp",
                "reedHide": "night", "gilCaught": "tender", "orla": "dread", "cellar": "night", "cellarWon": "hope", "bryn": "camp", "barge": "tension",

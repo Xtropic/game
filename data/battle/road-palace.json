@@ -1,0 +1,78 @@
+{
+ "id": "road-palace",
+ "name": "The guards' sons",
+ "backdrop": "cistern",
+ "party": true,
+ "intro": [
+  "Young palace guards in crimson, with their collars high and their eyes clear. They're the ones who stop people at night.",
+  "Not dead. Nadra's watching."
+ ],
+ "won": "The colonnade is clear",
+ "lost": "Thrown back to the kitchen door",
+ "units": [
+  {
+   "id": "pg1",
+   "name": "Palace guard",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 24,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "pg2",
+   "name": "Palace guard",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 24,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "pg3",
+   "name": "Palace guard",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 24,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    162,
+    132
+   ]
+  },
+  {
+   "id": "pg4",
+   "name": "Guard sergeant",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "back",
+   "cast": "warden",
+   "level": 25,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

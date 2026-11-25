@@ -192,7 +192,7 @@ describe("the towns of the open lands", () => {
   });
   it("the new towns have people, a way in and a way back out onto open ground", () => {
     const towns = Object.keys(MAPS).filter((k) => k.startsWith("town-") && !k.includes("--"));
-    expect(towns.length).toBe(25);
+    expect(towns.length).toBe(27);
     for (const t of towns) {
       expect(STORY.actors.filter((a) => a.map === t).length, t).toBeGreaterThanOrEqual(3);
       const out = STORY.steps.filter((s) => s.map === t).flatMap((s) => s.do).find((d) => "goto" in d) as { goto: { map: string; x: number; y: number } };

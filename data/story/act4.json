@@ -775,8 +775,21 @@
       "text": "He takes his feet out of the water and looks at them, as if they belong to somebody else."
      },
      {
-      "say": "tam",
-      "text": "\"And the rider. The one they called Ninety. He came in on the trays last week, same as us. They took his coat and gave him his number back.\""
+      "if": {
+       "flag": "finchStripped"
+      },
+      "then": [
+       {
+        "say": "tam",
+        "text": "\"And the rider. Ninety. The Wardens brought him in at harvest with his hands tied and no coat. He's on the trays now, same as us.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "tam",
+        "text": "\"And the rider. The one they called Ninety. He came in on the trays last week, same as us. They took his coat and gave him his number back.\""
+       }
+      ]
      },
      {
       "say": "tam",
@@ -849,6 +862,21 @@
      {
       "say": "varro",
       "text": "\"They saw what happened at Lockside. They know we can hold what we take. That's why they've pulled everything back inside the wall.\""
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "road"
+    },
+    "then": [
+     {
+      "say": "varro",
+      "text": "\"The League stopped paying their swords at the spring settling. Tarsis never marched for them. They've lost every court the Captain rode through, one way or another. A House without credit pulls in what it owns. That's what the Broodhouse is.\""
+     },
+     {
+      "say": "kane",
+      "text": "\"Nine nations, Captain. Some of them for us, some of them only not against us. It'll do. It'll have to.\""
      }
     ]
    },

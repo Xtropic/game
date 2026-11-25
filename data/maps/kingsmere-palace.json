@@ -1,0 +1,37 @@
+{
+ "id": "kingsmere-palace",
+ "name": "Kingsmere palace, at night",
+ "music": "night",
+ "legend": {
+  "d": "door",
+  "e": "exit",
+  "p": "plank",
+  "b": "table",
+  "R": "rock",
+  "I": "iwall",
+  "k": "shelf",
+  "B": "bed"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRRRR",
+  "RIIIIIIIIIIIIIIIIIIIIIIIIR",
+  "RIpppppppIpppppppIppppBpIR",
+  "RIpbbbbbpIpkkkkppIppppppIR",
+  "RIpbbbbbpdpppppppIppppppIR",
+  "RIpppppppIpppppppIIIdIIIIR",
+  "RIIIIIIIIIppppppppppppppIR",
+  "RIppppppppppppppppppppppIR",
+  "RIppppppppppppppppppppppIR",
+  "RIppppppppppppppppppppppIR",
+  "RIIIIIIIIIIIIeIIIIIIIIIIIR",
+  "RRRRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 9
+  }
+ ]
+}
