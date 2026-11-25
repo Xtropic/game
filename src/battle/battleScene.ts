@@ -22,6 +22,9 @@ import {
   slashFX, smokeFX, sparkFX, textFX, withFlash,
 } from "./art";
 
+/** The story's hardest fights: the Old Mother, the Broodhouse yard, the palace guards, the gallery. */
+const BOSS_FIGHTS = new Set(["thornwick-cistern", "broodhouse-yard", "road-palace", "road-gallery", "mire-guards", "lockside-guards-back", "road-vault"]);
+
 /** After a loss and a retry, each ally starts no lower than this share of their health. */
 const RETRY_FLOOR = 0.5;
 
@@ -38,6 +41,8 @@ const readAuto = (): boolean => settings.get("autoTiming");
 
 export class BattleScene implements Scene {
   readonly id = "battle";
+  /** The fight's music: chance meetings on the road are lighter, the story's hardest fights get their own. */
+  get music(): string { return BOSS_FIGHTS.has(this.def.id) ? "boss" : this.opts.escape ? "skirmish" : "battle"; }
   readonly view = new Container();
   private builds: Record<string, Build> = {};
   private game!: Game;
