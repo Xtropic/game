@@ -56,6 +56,7 @@ import { ArmyScene } from "../army/armyScene";
 import { ARMY_BATTLES, terrainAt, withoutAbsent, type ArmyDef } from "../army/army";
 import { rankOf, rankTick } from "../command/ranks";
 import { allies, marched, nation, tribute } from "../command/diplomacy";
+import { withWorks, worksKey } from "../base/look";
 import { baseDay, baseOpen, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
@@ -256,7 +257,7 @@ export class ExploreScene implements Scene, StoryHost {
     const file = this.maps[id]; if (!file) throw new Error(`no map ${id}`);
     if (this.map && this.map.file.id !== id) sfx.door();
     if (file.rest && this.map && this.map.file.id !== id) queueMicrotask(() => this.rest(file.name));
-    this.map = new WorldMap(file);
+    this.map = new WorldMap(withWorks(file, this.flags)); this.works = worksKey(this.flags);
     this.atmos.setMap(this.map);
     if (id === "thornwick" && raidDue(this.flags)) setTimeout(() => this.raidNow(), 1500);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
@@ -475,6 +476,12 @@ export class ExploreScene implements Scene, StoryHost {
     this.baseStage = st;
     const lines = this.baseWork(); if (lines) this.toast(`Thornwick: ${lines}`);
   }
+  private works = "";
+  /** Redraws Thornwick in place when a building has gone up while Rhea is standing in it. */
+  private rebuildWorks(): void {
+    if (this.map?.file.id !== "thornwick" || worksKey(this.flags) === this.works) return;
+    const p = this.player; this.load("thornwick", p.x, p.y, p.facing);
+  }
   /** A day of work at Thornwick; returns the first lines of its report. */
   private baseWork(): string {
     const f = this.flags;
@@ -484,7 +491,7 @@ export class ExploreScene implements Scene, StoryHost {
     for (const [id, xp] of Object.entries(out.drill)) this.game.giveXp(id, xp, this.story.cast[id] ?? id);
     const raid = raidCheck(f, String(f.stage ?? ""), this.rng);
     if (raid && this.map.file.id === "thornwick") setTimeout(() => this.raidNow(), 1200);
-    this.save("auto");
+    this.save("auto"); setTimeout(() => this.rebuildWorks(), 0);
     if (raid) return [...back, raid].join(" ");
     return [...back, out.lines.length ? out.lines.slice(0, 3).join(" ") : back.length ? "" : "A quiet day: nobody is set to work."].join(" ").trim();
   }
