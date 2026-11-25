@@ -133,7 +133,7 @@ S["finchTruth"] = [
                   say("finch", R("You don't know that. You can't know that.")),
                   say("rhea", R("I know you. I know who taught you to measure moss. I did.")),
                   n("He puts his face in his hands. When he takes them away he's sixteen again, and also twelve.")], by="rhea", hint="Take it off him."),
-           opt(R("Forty people died in Millbridge, Finch. You don't get to carry that alone, and you don't get to put it down either."),
+           opt(R("Eleven people died in Millbridge, Finch. You don't get to carry that alone, and you don't get to put it down either."),
                [add({"finchTrust": 2}), setf({"mossAnswer": "shared"}),
                 n("He nods. He nods for a long time, as if somebody has finally said the thing he was waiting to hear."),
                 say("finch", R("Yes. That's right. That's fair."))], by="rhea", hint="Don't lie to him."),
