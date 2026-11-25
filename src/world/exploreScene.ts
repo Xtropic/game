@@ -528,8 +528,12 @@ export class ExploreScene implements Scene, StoryHost {
       ...Object.keys(f).filter((k) => (k.startsWith("recruited.") || k.startsWith("party.")) && f[k] === true).map((k) => k.split(".")[1]),
       ...Object.keys(game.kith),
     ];
-    const have = this.joinedIds();
+    // someone who served with the Commons and has left it for good (Kane, arrested): out of the company and the party
+    const gone = (id: string): boolean => (recruit(id)?.leaves ?? []).some((k) => !!f[k]);
+    const have = this.joinedIds().filter((id) => !gone(id));
+    if (partyOf(f).some(gone)) { f.party = partyOf(f).filter((id) => !gone(id)).join(","); this.follow(partyOf(f)); }
     for (const id of now) {
+      if (gone(id)) continue;
       if (have.includes(id) || id === "rhea" || id === "corran" && f.hero === "corran") continue;
       have.push(id);
       if (!quiet && id !== "ash") this.joins.push(joinerFor(id, game.kith, this.story.cast));
@@ -791,6 +795,12 @@ export class ExploreScene implements Scene, StoryHost {
     round(0);
   }
 
+  /** Pays coin out of the purse for the story (a debt, a bribe, a fee); false if there isn't enough. */
+  pay(coin: number): boolean {
+    if (coin < 0) { this.game.coin -= coin; this.toast(`${-coin} coin into the purse.`); return true; }
+    if (this.game.coin < coin) { this.toast(`Not enough coin: ${coin} needed, ${this.game.coin} in the purse.`); return false; }
+    this.game.coin -= coin; this.toast(`Paid ${coin} coin.`); return true;
+  }
   loseKith(id: string): void {
     if (!this.game.kith[id]) return;
     delete this.game.kith[id];

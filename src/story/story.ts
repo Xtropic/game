@@ -55,7 +55,9 @@ export type Step =
   /** A one-on-one duel (data/battle/duels.json); win runs on a win or a yield, lose on a loss the story allows. */
   | { duel: string; win?: Step[]; lose?: Step[] }
   /** An army battle (data/army/battles.json): the war council, then the field. */
-  | { army: string; win?: Step[]; lose?: Step[] };
+  | { army: string; win?: Step[]; lose?: Step[] }
+  /** Spends coin from the purse: then runs if there was enough (and it's spent), else runs if there wasn't. A negative amount is coin paid to the company. */
+  | { pay: number; then: Step[]; else?: Step[] };
 
 export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
@@ -129,6 +131,8 @@ export interface StoryHost {
   openPage?(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void;
   duel?(id: string, done: (won: boolean) => void): void;
   army?(id: string, done: (won: boolean) => void): void;
+  /** Takes coin from the purse if there's enough; true if it was paid. */
+  pay?(coin: number): boolean;
 }
 
 export class StoryRunner {
@@ -171,6 +175,7 @@ export class StoryRunner {
       return;
     }
     if ("if" in st) { this.front(holds(st.if, this.host.where()) ? st.then : st.else ?? []); return; }
+    if ("pay" in st) { this.front((this.host.pay ? this.host.pay(st.pay) : true) ? st.then : st.else ?? []); return; }
     if ("stage" in st) { f.stage = st.stage; this.host.changed(); return; }
     if ("follow" in st) { this.host.follow(st.follow); return; }
     if ("join" in st || "leave" in st) {
@@ -230,7 +235,7 @@ export function storyLines(s: Story): { who: string; text: string }[] {
     for (const st of steps ?? []) {
       if ("say" in st) out.push({ who: st.say || "narrator", text: st.text });
       if ("choose" in st) { out.push({ who: "narrator", text: st.choose }); for (const o of st.options) { if (o.by) out.push({ who: o.by, text: o.label }); walk(o.do); } }
-      if ("if" in st) { walk(st.then); walk(st.else); }
+      if ("if" in st || "pay" in st) { walk(st.then); walk(st.else); }
       if ("battle" in st) walk(st.win);
       if ("duel" in st || "army" in st) { walk(st.win); walk(st.lose); }
     }
@@ -251,7 +256,7 @@ export function voicedLines(s: Story): { who: string; text: string }[] {
     for (const st of steps ?? []) {
       if ("say" in st && st.say && st.say !== "narrator") out.push({ who: st.say, text: st.text });
       if ("choose" in st) for (const o of st.options) walk(o.do);
-      if ("if" in st) { walk(st.then); walk(st.else); }
+      if ("if" in st || "pay" in st) { walk(st.then); walk(st.else); }
       if ("battle" in st) walk(st.win);
       if ("duel" in st || "army" in st) { walk(st.win); walk(st.lose); }
     }
@@ -272,7 +277,7 @@ export function checkStory(s: Story, maps: Set<string>, battles: Set<string>): s
       if ("say" in st && st.say && !s.cast[st.say]) errs.push(`${where}: ${st.say} is not in the cast`);
       if ("stage" in st && !s.objectives[st.stage]) errs.push(`${where}: stage ${st.stage} has no objective`);
       if ("choose" in st) for (const o of st.options) walk(o.do, where);
-      if ("if" in st) { walk(st.then, where); walk(st.else, where); }
+      if ("if" in st || "pay" in st) { walk(st.then, where); walk(st.else, where); }
       if ("battle" in st) walk(st.win, where);
       if ("duel" in st || "army" in st) { walk(st.win, where); walk(st.lose, where); }
     }

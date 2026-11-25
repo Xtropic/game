@@ -1,0 +1,57 @@
+{
+ "id": "town-salt-house",
+ "name": "The Salt House",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "d": "door",
+  "x": "crate",
+  "~": "water",
+  "e": "exit"
+ },
+ "rows": [
+  "~~~~~~~~~~~~~~~~~~~~~~~~",
+  "~,,,,,,,,,,,,,,,,,,,,,,~",
+  "~,hhhhhhhhh,,,~~~~~~~,,~",
+  "~,hhhhhhhhh,,,~~~~~~~,,~",
+  "~,hhhhdhhhh,,,~~~~~~~,,~",
+  "~,,,,,:,,,,,,,,,,,,,,,,~",
+  "~,,,,,::::::::::::::,,,~",
+  "~,xx,,,,,,,:,,,,,,,:,,,~",
+  "~,xx,,~~~~,:,~~~~~,:,xx~",
+  "~,,,,,~~~~,:,~~~~~,:,,,~",
+  "~,,,,,,,,,,:,,,,,,,:,,,~",
+  "~,,,,,,,,,,:::::::::,,,~",
+  "~~~~~~~~~~~:~~~~~~~~~~~~",
+  "~~~~~~~~~~~e~~~~~~~~~~~~"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "salt-house-sign0",
+   "kind": "sign",
+   "x": 3,
+   "y": 7,
+   "props": {
+    "text": "Salt, stacked in blocks the size of a child and wrapped in reed matting. Each block has a year scratched into it."
+   }
+  },
+  {
+   "id": "salt-house-sign1",
+   "kind": "sign",
+   "x": 12,
+   "y": 8,
+   "props": {
+    "text": "A salt pan, white at the edges, pink in the middle where the brine is deepest."
+   }
+  }
+ ]
+}

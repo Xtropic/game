@@ -10,11 +10,12 @@ import road from "../../data/story/road.json";
 import towns from "../../data/story/towns.json";
 import wild from "../../data/story/wild.json";
 import muster from "../../data/story/muster.json";
+import recruits from "../../data/story/recruits.json";
 
 const files = import.meta.glob<MapFile>("../../data/maps/*.json", { eager: true, import: "default" });
 export const MAPS: Record<string, MapFile> = Object.fromEntries(Object.values(files).map((m) => [m.id, m]));
 /** The whole story so far, prologue first. */
-export const STORY = mergeStories([prologue as unknown as Story, act1 as unknown as Story, act2 as unknown as Story, towns as unknown as Story, act3 as unknown as Story, road as unknown as Story, act4 as unknown as Story, wild as unknown as Story, muster as unknown as Story]);
+export const STORY = mergeStories([prologue as unknown as Story, act1 as unknown as Story, act2 as unknown as Story, towns as unknown as Story, act3 as unknown as Story, road as unknown as Story, act4 as unknown as Story, wild as unknown as Story, muster as unknown as Story, recruits as unknown as Story]);
 
 import regionData from "../../data/kith/regions.json";
 export interface RegionInfo { name: string; kind: "nation" | "hidden" | "wild"; biome: string; }

@@ -1,0 +1,62 @@
+{
+ "id": "recruit-strikebreakers",
+ "name": "The mill gates",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "Guild strike-breakers with clubs, come down the Vantry road in the night.",
+  "The millgirls are singing behind you."
+ ],
+ "won": "The strike-breakers go back up the Vantry road",
+ "lost": "The mill gates are forced",
+ "units": [
+  {
+   "id": "st1",
+   "name": "Strike-breaker",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 10,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "st2",
+   "name": "Strike-breaker",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 10,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    118
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "st3",
+   "name": "Guild foreman",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "level": 11,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    220,
+    104
+   ],
+   "cast": "warden"
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "id": "town-summer-fold",
+ "name": "Summer Fold",
+ "music": "road",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "H": "hay",
+  "f": "fence",
+  "e": "exit",
+  "F": "campfire",
+  "t": "tent"
+ },
+ "rows": [
+  "hhhhhhhhhhhhhhhhhhhhhhhh",
+  "h,,,,,,,,,,,,,,,,,,,,,,h",
+  "h,ffffffff,,,,,tt,,tt,,h",
+  "h,f,,,,,,f,,,,,,,,,,,,,h",
+  "h,f,,HH,,f,,,,,,,F,,,,,h",
+  "h,f,,,,,,f,,,,,,,,,,,,,h",
+  "h,ffff,fff,,,tt,,,,,tt,h",
+  "h,,,,,:,,,,,,,,,,,,,,,,h",
+  "h,,,,,:::::::::::::,,,,h",
+  "h,,tt,,,,,,:,,,,,,:,,,,h",
+  "h,,,,,,,,,,:,,,,,,:,,,,h",
+  "h,,,,,,,,,,::::::::,,,,h",
+  "hhhhhhhhhhh:hhhhhhhhhhhh",
+  "hhhhhhhhhhheehhhhhhhhhhh"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "summer-fold-sign0",
+   "kind": "sign",
+   "x": 17,
+   "y": 4,
+   "props": {
+    "text": "A dung fire under an iron pot. Herd tea: butter, salt, and something bitter that grows on the plateau."
+   }
+  },
+  {
+   "id": "summer-fold-sign1",
+   "kind": "sign",
+   "x": 5,
+   "y": 4,
+   "props": {
+    "text": "Fodder, cut and stacked. The herd will move on before it's eaten."
+   }
+  }
+ ]
+}

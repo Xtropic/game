@@ -1,0 +1,67 @@
+{
+ "id": "recruit-kennels",
+ "name": "The kennel post",
+ "backdrop": "yard",
+ "party": true,
+ "intro": [
+  "Kennel-men in Warden grey, and the hounds they've let off the chain.",
+  "The hounds are only doing what they were taught."
+ ],
+ "won": "The kennel-men run for the road",
+ "lost": "Driven out of the kennel yard",
+ "units": [
+  {
+   "id": "kb1",
+   "name": "Kennel-man",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "level": 8,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "kb2",
+   "name": "Warden hound",
+   "look": "reedcat:#8a8a90",
+   "side": "foe",
+   "row": "front",
+   "level": 8,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "at": [
+    160,
+    124
+   ],
+   "kith": true,
+   "hp": 40,
+   "species": "warden-reedcat"
+  },
+  {
+   "id": "kb3",
+   "name": "Warden hound",
+   "look": "reedcat:#9a9aa0",
+   "side": "foe",
+   "row": "front",
+   "level": 7,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    198,
+    120
+   ],
+   "kith": true,
+   "hp": 34,
+   "species": "warden-reedcat"
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "id": "town-highspire",
+ "name": "Highspire",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "=": "bridge",
+  "e": "exit",
+  "F": "campfire",
+  "R": "rock",
+  "*": "flowers",
+  "K": "cloud"
+ },
+ "rows": [
+  "KKKKKKKKKKKKKKKKKKKKKKKK",
+  "KKKRRRRRKKKKKKKKRRRRRKKK",
+  "KKR,,,,,RKKKKKKR,,,,,RKK",
+  "KKR,rrr,RKKKKKKR,rrr,RKK",
+  "KKR,hdh,========,hdh,RKK",
+  "KKR,,:,,RKKKKKKR,,:,,RKK",
+  "KKKR,:,RKKKKKKKKR,:,RKKK",
+  "KKKKR:RKKKKKKKKKKR:RKKKK",
+  "KKKKR:RRRRRRRRRRRR:RKKKK",
+  "KKKKR::::::::::::::RKKKK",
+  "KKKKR,,,*,,F,,,*,,,RKKKK",
+  "KKKKR,,,,,,,,,,,,,,RKKKK",
+  "KKKKRRRRRRR::RRRRRRRKKKK",
+  "KKKKKKKKKKKeeKKKKKKKKKKK"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "highspire-sign0",
+   "kind": "sign",
+   "x": 11,
+   "y": 10,
+   "props": {
+    "text": "A fire in a ring of white stones, kept in. The smoke goes straight up and vanishes into the cloud."
+   }
+  }
+ ]
+}

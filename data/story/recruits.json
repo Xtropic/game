@@ -1,0 +1,8166 @@
+{
+ "id": "recruits",
+ "title": "Recruits",
+ "voiced": [],
+ "moods": {
+  "scenes": {
+   "rec.lanto": "night",
+   "rec.rafeFence": "dusk",
+   "rec.rafeBack": "hope",
+   "rec.junoInquiry": "camp",
+   "rec.junoThornwick": "hope",
+   "rec.wick": "tension",
+   "rec.yewBundle": "camp",
+   "rec.yewHut": "tender",
+   "rec.grue": "hope",
+   "rec.eddaStampede": "tension",
+   "rec.eddaJoins": "hope",
+   "rec.bee": "tender",
+   "rec.linnet": "tension",
+   "rec.fairweather": "tension",
+   "rec.mags": "camp",
+   "rec.severin": "dread",
+   "rec.umeDebts": "tension",
+   "rec.eddaLate": "camp",
+   "rec.teo": "tension",
+   "rec.hobb": "hope",
+   "rec.mirela": "night",
+   "rec.pollard": "tension",
+   "rec.greet": "sombre",
+   "rec.pell": "tender",
+   "rec.lyle": "hope",
+   "rec.merelOffer": "dread",
+   "rec.merelAfter": "grief",
+   "rec.wystan": "tension",
+   "rec.wystanPen": "sombre",
+   "rec.tully": "tender",
+   "rec.joss": "tension",
+   "rec.deep": "dread",
+   "rec.strikeVote": "tension",
+   "rec.jossAfter": "camp",
+   "rec.cass": "night",
+   "rec.galleries": "sombre",
+   "rec.cassAfter": "tension",
+   "rec.dellan": "dusk",
+   "rec.dellanTruth": "tender",
+   "rec.isel": "hope",
+   "rec.elders": "tender",
+   "rec.teodric": "hope",
+   "rec.lisle": "sombre",
+   "rec.osk": "fire",
+   "rec.saltHouse": "dusk",
+   "rec.herd": "tension",
+   "rec.senne": "hope",
+   "rec.thal": "tension",
+   "rec.pim": "hope",
+   "rec.aldous": "hope",
+   "rec.hallet": "sombre",
+   "rec.corranJoins": "tender",
+   "rec.finchJoins": "tension"
+  },
+  "stages": {}
+ },
+ "cast": {
+  "tamsin": "Tamsin",
+  "sela": "Sela",
+  "ketti": "Ketti",
+  "pell": "Pell",
+  "oda": "Oda",
+  "posy": "Posy",
+  "brannoc": "Brannoc",
+  "kane": "Marshal Idris Kane",
+  "dorrit": "Dorrit Sayle",
+  "ferris": "Ferris Lom",
+  "mags": "Mags Orrel",
+  "hallet": "Captain Bryn Hallet",
+  "merel": "Merel Asca",
+  "fennick": "Fennick",
+  "aldous": "King Aldous",
+  "tess": "Tess",
+  "joss": "Joss Kettering",
+  "oren": "Oren Tull",
+  "ume": "Grandmother Ume",
+  "teo": "Teo",
+  "ilse": "Ilse Varn",
+  "perrine": "Perrine",
+  "haldane": "Professor Haldane",
+  "gerd": "Gerd",
+  "arvo": "Arvo",
+  "rashid": "Prince Rashid",
+  "khalis": "Prince Khalis",
+  "nadra": "Nadra",
+  "vela": "Vela Orme",
+  "kesh": "Kesh",
+  "gully": "Gully Sorne",
+  "rue": "Captain Rue Halsey",
+  "aurel": "Magistrate Aurel Penn",
+  "isel": "Isel",
+  "dellan": "Dellan",
+  "agathe": "Sister Agathe",
+  "harl": "Harl",
+  "ysolde": "Ysolde Salter",
+  "tavi": "Tavi",
+  "hesk": "Hesk Marrow",
+  "pim": "Pim Calloway",
+  "oakes": "Sergeant Oakes",
+  "lyle": "Lyle",
+  "grue": "Old Grue",
+  "mirela": "Mirela Quell",
+  "fairweather": "Lom Fairweather",
+  "teodric": "Teodric Vane",
+  "bee": "Bee",
+  "annet": "Sly Annet",
+  "hobb": "Widow Hobb",
+  "lisle": "Dr Lisle",
+  "finch": "Finch",
+  "corran": "Corran",
+  "wick": "Wick",
+  "lanto": "Lanto",
+  "rafe": "Rafe",
+  "linnet": "Linnet",
+  "juno": "Juno",
+  "yew": "Yew",
+  "edda": "Edda",
+  "tully": "Tully",
+  "greet": "Greet",
+  "severin": "Severin",
+  "ottilie": "Ottilie",
+  "dunstan": "Dunstan",
+  "kit": "Kit",
+  "pollard": "Pollard",
+  "abel": "Abel",
+  "gil": "Gil",
+  "brede": "Brede",
+  "sigrun": "Sigrun",
+  "odile": "Odile",
+  "esme": "Esme",
+  "wystan": "Wystan",
+  "cass": "Cass",
+  "kel": "Kel",
+  "jessamy": "Jessamy",
+  "senne": "Senne",
+  "imari": "Imari",
+  "thal": "Thal"
+ },
+ "objectives": {},
+ "actors": [
+  {
+   "id": "lanto-picket",
+   "map": "camp",
+   "x": 21,
+   "y": 6,
+   "look": "lanto",
+   "when": {
+    "stage": [
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "hero": "rhea",
+    "not": "lantoCovered"
+   },
+   "talk": [
+    {
+     "run": "rec.lanto"
+    }
+   ]
+  },
+  {
+   "id": "rafe-fence",
+   "map": "camp",
+   "x": 2,
+   "y": 8,
+   "look": "rafe",
+   "when": {
+    "stage": [
+     "a5b"
+    ],
+    "hero": "rhea",
+    "not": "rafeLet"
+   },
+   "talk": [
+    {
+     "run": "rec.rafeFence"
+    }
+   ]
+  },
+  {
+   "id": "rafe-back",
+   "map": "camp",
+   "x": 3,
+   "y": 9,
+   "look": "rafe",
+   "when": {
+    "stage": [
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20"
+    ],
+    "hero": "rhea",
+    "flag": "rafeLet",
+    "not": "recruited.rafe",
+    "eq": {
+     "rafeLet": true
+    }
+   },
+   "talk": [
+    {
+     "run": "rec.rafeBack"
+    }
+   ]
+  },
+  {
+   "id": "juno-anvil",
+   "map": "camp",
+   "x": 18,
+   "y": 11,
+   "look": "juno",
+   "when": {
+    "stage": [
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "run": "rec.junoInquiry"
+    }
+   ]
+  },
+  {
+   "id": "juno-tw",
+   "map": "thornwick",
+   "x": 14,
+   "y": 12,
+   "look": "juno",
+   "when": {
+    "stage": [
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20"
+    ],
+    "hero": "rhea",
+    "flag": "junoSpoke",
+    "not": "recruited.juno"
+   },
+   "talk": [
+    {
+     "run": "rec.junoThornwick"
+    }
+   ]
+  },
+  {
+   "id": "wick-punt",
+   "map": "millbridge--wharf",
+   "x": 12,
+   "y": 6,
+   "look": "wick",
+   "when": {
+    "stage": [
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20"
+    ],
+    "hero": "rhea",
+    "not": "recruited.wick"
+   },
+   "talk": [
+    {
+     "run": "rec.wick"
+    }
+   ]
+  },
+  {
+   "id": "yew-bundle",
+   "map": "camp",
+   "x": 6,
+   "y": 11,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "hero": "rhea",
+    "not": "yewMet"
+   },
+   "talk": [
+    {
+     "run": "rec.yewBundle"
+    }
+   ]
+  },
+  {
+   "id": "yew-hut",
+   "map": "town-mistfold",
+   "x": 20,
+   "y": 5,
+   "look": "yew",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20"
+    ],
+    "hero": "rhea",
+    "flag": "yewBundle",
+    "not": "yewGone"
+   },
+   "talk": [
+    {
+     "run": "rec.yewHut"
+    }
+   ]
+  },
+  {
+   "id": "grue-toll",
+   "map": "town-kerrow",
+   "x": 13,
+   "y": 4,
+   "look": "grue",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "grueDone"
+   },
+   "talk": [
+    {
+     "run": "rec.grue"
+    }
+   ]
+  },
+  {
+   "id": "edda-terrace",
+   "map": "town-highmoss",
+   "x": 12,
+   "y": 4,
+   "look": "edda",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "run": "rec.eddaStampede"
+    }
+   ]
+  },
+  {
+   "id": "bee-weir",
+   "map": "town-weirbank",
+   "x": 12,
+   "y": 6,
+   "look": "bee",
+   "when": {
+    "stage": [
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42"
+    ],
+    "hero": "rhea",
+    "not": "recruited.bee"
+   },
+   "talk": [
+    {
+     "run": "rec.bee"
+    }
+   ]
+  },
+  {
+   "id": "linnet-tent",
+   "map": "camp",
+   "x": 8,
+   "y": 10,
+   "look": "linnet",
+   "when": {
+    "stage": [
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c"
+    ],
+    "hero": "rhea",
+    "not": "linnetDone"
+   },
+   "talk": [
+    {
+     "run": "rec.linnet"
+    }
+   ]
+  },
+  {
+   "id": "fairweather-barge",
+   "map": "millbridge--wharf",
+   "x": 18,
+   "y": 4,
+   "look": "fairweather",
+   "when": {
+    "stage": [
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42"
+    ],
+    "hero": "rhea",
+    "not": "fairweatherDone"
+   },
+   "talk": [
+    {
+     "run": "rec.fairweather"
+    }
+   ]
+  },
+  {
+   "id": "mags-fire",
+   "map": "thornwick",
+   "x": 15,
+   "y": 11,
+   "look": "mags",
+   "when": {
+    "stage": [
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26"
+    ],
+    "hero": "rhea"
+   },
+   "talk": [
+    {
+     "run": "rec.mags"
+    }
+   ]
+  },
+  {
+   "id": "severin-tent",
+   "map": "camp",
+   "x": 18,
+   "y": 3,
+   "look": "severin",
+   "when": {
+    "stage": [
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20"
+    ],
+    "hero": "rhea",
+    "flag": "sawCrates",
+    "not": "recruited.severin"
+   },
+   "talk": [
+    {
+     "run": "rec.severin"
+    }
+   ]
+  },
+  {
+   "id": "ume-debts",
+   "map": "umes",
+   "x": 13,
+   "y": 9,
+   "look": "ume",
+   "when": {
+    "stage": [
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "umeMet",
+    "not": "recruited.ume"
+   },
+   "talk": [
+    {
+     "run": "rec.umeDebts"
+    }
+   ]
+  },
+  {
+   "id": "edda-umes",
+   "map": "umes",
+   "x": 6,
+   "y": 10,
+   "look": "edda",
+   "when": {
+    "stage": [
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "clanDebtsBroken",
+    "not": "recruited.edda"
+   },
+   "talk": [
+    {
+     "run": "rec.eddaLate"
+    }
+   ]
+  },
+  {
+   "id": "teo-shed",
+   "map": "umes",
+   "x": 20,
+   "y": 6,
+   "look": "teo",
+   "when": {
+    "stage": [
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "umeMet",
+    "not": "teoDone"
+   },
+   "talk": [
+    {
+     "run": "rec.teo"
+    }
+   ]
+  },
+  {
+   "id": "hobb-train",
+   "map": "umes",
+   "x": 8,
+   "y": 6,
+   "look": "hobb",
+   "when": {
+    "stage": [
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "umeMet",
+    "not": "hobbDone"
+   },
+   "talk": [
+    {
+     "run": "rec.hobb"
+    }
+   ]
+  },
+  {
+   "id": "mirela-top",
+   "map": "umes",
+   "x": 12,
+   "y": 2,
+   "look": "mirela",
+   "when": {
+    "stage": [
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "umeMet",
+    "not": "mirelaDone"
+   },
+   "talk": [
+    {
+     "run": "rec.mirela"
+    }
+   ]
+  },
+  {
+   "id": "pollard-ring",
+   "map": "town-drovers-halt",
+   "x": 18,
+   "y": 5,
+   "look": "pollard",
+   "when": {
+    "stage": [
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20"
+    ],
+    "hero": "rhea",
+    "not": "pollardDone"
+   },
+   "talk": [
+    {
+     "run": "rec.pollard"
+    }
+   ]
+  },
+  {
+   "id": "greet-house",
+   "map": "millbridge",
+   "x": 4,
+   "y": 4,
+   "look": "greet",
+   "when": {
+    "stage": [
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "greetDone"
+   },
+   "talk": [
+    {
+     "run": "rec.greet"
+    }
+   ]
+  },
+  {
+   "id": "pell-pool",
+   "map": "thornwick",
+   "x": 10,
+   "y": 9,
+   "look": "pell",
+   "when": {
+    "stage": [
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "recruited.pell"
+   },
+   "talk": [
+    {
+     "run": "rec.pell"
+    }
+   ]
+  },
+  {
+   "id": "lyle-gate",
+   "map": "thornwick",
+   "x": 14,
+   "y": 14,
+   "look": "lyle",
+   "when": {
+    "stage": [
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "finchSeen",
+    "not": "recruited.lyle",
+    "eq": {
+     "wardens": "spared"
+    }
+   },
+   "talk": [
+    {
+     "run": "rec.lyle"
+    }
+   ]
+  },
+  {
+   "id": "merel-offer",
+   "map": "thornwick",
+   "x": 16,
+   "y": 14,
+   "look": "merel",
+   "when": {
+    "stage": [
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15"
+    ],
+    "hero": "rhea",
+    "not": [
+     "ascaRefused",
+     "ascaSupply"
+    ]
+   },
+   "talk": [
+    {
+     "run": "rec.merelOffer"
+    }
+   ]
+  },
+  {
+   "id": "merel-after",
+   "map": "thornwick",
+   "x": 11,
+   "y": 14,
+   "look": "merel",
+   "when": {
+    "stage": [
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": [
+     "ascaRefused",
+     "mireFreed"
+    ],
+    "not": "recruited.merel"
+   },
+   "talk": [
+    {
+     "run": "rec.merelAfter"
+    }
+   ]
+  },
+  {
+   "id": "wystan-pen",
+   "map": "town-longbarrow",
+   "x": 14,
+   "y": 5,
+   "look": "wystan",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "wystanDone"
+   },
+   "talk": [
+    {
+     "run": "rec.wystan"
+    }
+   ]
+  },
+  {
+   "id": "tully-forge",
+   "map": "town-cinderwick--foundry",
+   "x": 8,
+   "y": 6,
+   "look": "tully",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "tullyDone"
+   },
+   "talk": [
+    {
+     "run": "rec.tully"
+    }
+   ]
+  },
+  {
+   "id": "joss-barrel",
+   "map": "town-cinderwick--rows",
+   "x": 12,
+   "y": 5,
+   "look": "joss",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42"
+    ],
+    "hero": "rhea",
+    "not": "recruited.joss"
+   },
+   "talk": [
+    {
+     "run": "rec.joss"
+    }
+   ]
+  },
+  {
+   "id": "deep-head",
+   "map": "town-lockkeepers-deep",
+   "x": 11,
+   "y": 5,
+   "look": "glint",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "strikeMet",
+    "not": "deepDone"
+   },
+   "talk": [
+    {
+     "run": "rec.deep"
+    }
+   ]
+  },
+  {
+   "id": "cass-lamp",
+   "map": "town-candle-galleries",
+   "x": 11,
+   "y": 4,
+   "look": "cass",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "cassDone"
+   },
+   "talk": [
+    {
+     "run": "rec.cass"
+    }
+   ]
+  },
+  {
+   "id": "dellan-quay",
+   "map": "town-lockside--quay",
+   "x": 12,
+   "y": 4,
+   "look": "dellan",
+   "when": {
+    "stage": [
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "dellanDone"
+   },
+   "talk": [
+    {
+     "run": "rec.dellan"
+    }
+   ]
+  },
+  {
+   "id": "isel-cliff",
+   "map": "town-mistfold",
+   "x": 4,
+   "y": 4,
+   "look": "isel",
+   "when": {
+    "stage": [
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "recruited.isel"
+   },
+   "talk": [
+    {
+     "run": "rec.isel"
+    }
+   ]
+  },
+  {
+   "id": "elders-fire",
+   "map": "town-highspire",
+   "x": 12,
+   "y": 10,
+   "look": "isel",
+   "when": {
+    "stage": [
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "iselMet",
+    "not": "vaelAsked"
+   },
+   "talk": [
+    {
+     "run": "rec.elders"
+    }
+   ]
+  },
+  {
+   "id": "teodric-stage",
+   "map": "hollin-fair",
+   "x": 8,
+   "y": 6,
+   "look": "teodric",
+   "when": {
+    "stage": [
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "teodricDone"
+   },
+   "talk": [
+    {
+     "run": "rec.teodric"
+    }
+   ]
+  },
+  {
+   "id": "lisle-steps",
+   "map": "town-college",
+   "x": 14,
+   "y": 12,
+   "look": "lisle",
+   "when": {
+    "stage": [
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "lisleDone",
+    "eq": {
+     "road.college": "refused"
+    }
+   },
+   "talk": [
+    {
+     "run": "rec.lisle"
+    }
+   ]
+  },
+  {
+   "id": "harl-steps",
+   "map": "town-cinder-landing",
+   "x": 11,
+   "y": 9,
+   "look": "harl",
+   "when": {
+    "stage": [
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "oskDone"
+   },
+   "talk": [
+    {
+     "run": "rec.osk"
+    }
+   ]
+  },
+  {
+   "id": "ysolde-house",
+   "map": "town-salt-house",
+   "x": 6,
+   "y": 5,
+   "look": "ysolde",
+   "when": {
+    "stage": [
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "saltDone"
+   },
+   "talk": [
+    {
+     "run": "rec.saltHouse"
+    }
+   ]
+  },
+  {
+   "id": "jessamy-pans",
+   "map": "town-salt-house",
+   "x": 8,
+   "y": 6,
+   "look": "jessamy",
+   "when": {
+    "stage": [
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "saltDone"
+   },
+   "talk": [
+    {
+     "run": "rec.saltHouse"
+    }
+   ]
+  },
+  {
+   "id": "tavi-pens",
+   "map": "town-summer-fold",
+   "x": 7,
+   "y": 8,
+   "look": "tavi",
+   "when": {
+    "stage": [
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "herdDone"
+   },
+   "talk": [
+    {
+     "run": "rec.herd"
+    }
+   ]
+  },
+  {
+   "id": "senne-camp",
+   "map": "town-summer-fold",
+   "x": 16,
+   "y": 9,
+   "look": "senne",
+   "when": {
+    "stage": [
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "recruited.tavi",
+    "not": "senneDone"
+   },
+   "talk": [
+    {
+     "run": "rec.senne"
+    }
+   ]
+  },
+  {
+   "id": "thal-hut",
+   "map": "town-roost-foot",
+   "x": 6,
+   "y": 8,
+   "look": "thal",
+   "when": {
+    "stage": [
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "thalDone"
+   },
+   "talk": [
+    {
+     "run": "rec.thal"
+    }
+   ]
+  },
+  {
+   "id": "pim-halt",
+   "map": "town-drovers-halt",
+   "x": 9,
+   "y": 8,
+   "look": "pim",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "pimDone"
+   },
+   "talk": [
+    {
+     "run": "rec.pim"
+    }
+   ]
+  },
+  {
+   "id": "aldous-court",
+   "map": "town-kingsmere",
+   "x": 15,
+   "y": 8,
+   "look": "aldous",
+   "when": {
+    "stage": [
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "aldousFree",
+    "not": "recruited.aldous"
+   },
+   "talk": [
+    {
+     "run": "rec.aldous"
+    }
+   ]
+  },
+  {
+   "id": "hallet-stockade",
+   "map": "camp",
+   "x": 20,
+   "y": 3,
+   "look": "hallet",
+   "when": {
+    "stage": [
+     "af7",
+     "af8",
+     "af9"
+    ],
+    "hero": "rhea",
+    "flag": "kaneArrested",
+    "not": "recruited.hallet",
+    "eq": {
+     "road.tarsis": "greenlings"
+    }
+   },
+   "talk": [
+    {
+     "run": "rec.hallet"
+    }
+   ]
+  },
+  {
+   "id": "corran-gate4",
+   "map": "thornwick",
+   "x": 14,
+   "y": 11,
+   "look": "corran",
+   "when": {
+    "stage": [
+     "af9"
+    ],
+    "hero": "rhea",
+    "not": [
+     "recruited.corran",
+     "corranWearing",
+     "corranDead"
+    ],
+    "eq": {
+     "corranFate": "thornwick"
+    }
+   },
+   "talk": [
+    {
+     "run": "rec.corranJoins"
+    }
+   ]
+  },
+  {
+   "id": "finch-yard",
+   "map": "broodhouse",
+   "x": 20,
+   "y": 16,
+   "look": "finch",
+   "when": {
+    "stage": [
+     "af10"
+    ],
+    "hero": "rhea",
+    "flag": [
+     "finchInBroodhouse",
+     "yardFought"
+    ],
+    "not": [
+     "recruited.finch",
+     "halloranBeaten"
+    ],
+    "atLeast": {
+     "finchTrust": 60
+    }
+   },
+   "talk": [
+    {
+     "run": "rec.finchJoins"
+    }
+   ]
+  },
+  {
+   "id": "hs-weaver",
+   "map": "town-highspire",
+   "x": 6,
+   "y": 10,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old man is weaving mistwing feathers into a cloak, one at a time, humming. He stops when he sees a lowlander, then starts again."
+    }
+   ]
+  },
+  {
+   "id": "hs-child",
+   "map": "town-highspire",
+   "x": 16,
+   "y": 11,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A child is lying on her front at the edge of the spire, looking down into the cloud. \"There's a whole country under there,\" she says. \"I've never been.\""
+    }
+   ]
+  },
+  {
+   "id": "hs-keeper",
+   "map": "town-highspire",
+   "x": 4,
+   "y": 5,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman is feeding a mistwing chick from her own mouth, like a bird. She doesn't stop to talk."
+    }
+   ]
+  },
+  {
+   "id": "sh-raker",
+   "map": "town-salt-house",
+   "x": 16,
+   "y": 10,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A salt raker leans on his rake. \"Rain's the enemy. Rain and the Guild. The Guild's further off.\""
+    }
+   ]
+  },
+  {
+   "id": "sh-girl",
+   "map": "town-salt-house",
+   "x": 20,
+   "y": 5,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A girl is licking a salt block, very seriously, while her mother isn't looking."
+    }
+   ]
+  },
+  {
+   "id": "cl-sweeper",
+   "map": "town-cinder-landing",
+   "x": 4,
+   "y": 6,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old woman is sweeping ash off her step. Her neck is ringed with old pale scars. \"Every morning,\" she says. \"The mountain doesn't care. Neither do I.\""
+    }
+   ]
+  },
+  {
+   "id": "cl-fisher",
+   "map": "town-cinder-landing",
+   "x": 17,
+   "y": 9,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A fisherman is mending a net with his collar open. Nobody on Osk buttons a collar."
+    }
+   ]
+  },
+  {
+   "id": "sf-herder",
+   "map": "town-summer-fold",
+   "x": 13,
+   "y": 9,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A herder is watching the plateau. \"The matriarch decides where we go. We follow. It's restful, not deciding.\""
+    }
+   ]
+  },
+  {
+   "id": "sf-child",
+   "map": "town-summer-fold",
+   "x": 20,
+   "y": 4,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A small child is riding an ironback calf round the pen, bareback, and falling off, and getting back on."
+    }
+   ]
+  },
+  {
+   "id": "rf-carter",
+   "map": "town-roost-foot",
+   "x": 15,
+   "y": 8,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A carter is unloading copper wire. \"Thal buys it by the mile. Says it keeps the lightning off. I don't ask.\""
+    }
+   ]
+  },
+  {
+   "id": "rf-shepherd",
+   "map": "town-roost-foot",
+   "x": 4,
+   "y": 10,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A shepherd is counting sheep that won't stay still. \"Storm's coming,\" he says. \"It's always coming. That's the Roost.\""
+    }
+   ]
+  }
+ ],
+ "steps": [
+  {
+   "map": "land-vael",
+   "at": [
+    11,
+    9
+   ],
+   "when": {
+    "stagePrefix": "a"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "town-highspire",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-highspire",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vael",
+      "x": 11,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-highspire",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-vael",
+      "x": 11,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-coast",
+   "at": [
+    47,
+    22
+   ],
+   "when": {
+    "stagePrefix": "a"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "town-salt-house",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-salt-house",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-coast",
+      "x": 47,
+      "y": 23,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-coast",
+   "at": [
+    9,
+    29
+   ],
+   "when": {
+    "stagePrefix": "a"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinder-landing",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinder-landing",
+   "at": [
+    10,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-coast",
+      "x": 9,
+      "y": 30,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinder-landing",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-coast",
+      "x": 9,
+      "y": 30,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinder-landing",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-coast",
+      "x": 9,
+      "y": 30,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-east",
+   "at": [
+    54,
+    9
+   ],
+   "when": {
+    "stagePrefix": "a"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "town-summer-fold",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-summer-fold",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 54,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-summer-fold",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 54,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-north",
+   "at": [
+    59,
+    12
+   ],
+   "when": {
+    "stagePrefix": "a"
+   },
+   "do": [
+    {
+     "goto": {
+      "map": "town-roost-foot",
+      "x": 11,
+      "y": 11,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-roost-foot",
+   "at": [
+    11,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 59,
+      "y": 13,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-roost-foot",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 59,
+      "y": 13,
+      "facing": "down"
+     }
+    }
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "map": "camp",
+   "area": [
+    0,
+    0,
+    27,
+    14
+   ],
+   "when": {
+    "stage": [
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": [
+     "recruited.kane",
+     "kaneArrested",
+     "kaneTaken"
+    ]
+   },
+   "do": [
+    {
+     "set": {
+      "recruited.kane": true
+     }
+    }
+   ]
+  },
+  {
+   "map": "broodhouse",
+   "area": [
+    0,
+    0,
+    31,
+    21
+   ],
+   "when": {
+    "stage": [
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "party.finch"
+   },
+   "do": [
+    {
+     "leave": "finch"
+    },
+    {
+     "say": "",
+     "text": "Finch goes ahead of her into the smoke, toward the halls, where the children are."
+    }
+   ]
+  },
+  {
+   "map": "broodhouse",
+   "area": [
+    0,
+    0,
+    31,
+    21
+   ],
+   "when": {
+    "stage": [
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "party.corran"
+   },
+   "do": [
+    {
+     "leave": "corran"
+    },
+    {
+     "say": "",
+     "text": "Corran goes ahead of her to the inner gate."
+    }
+   ]
+  }
+ ],
+ "looks": [],
+ "songs": [],
+ "hazards": [],
+ "scripts": {
+  "rec.lanto": [
+   {
+    "if": {
+     "not": "lantoCovered"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Lanto is on the kith-line picket, leaning on his bow. He's asleep on his feet, the way soldiers learn to be, with his chin on his chest."
+     },
+     {
+      "say": "",
+      "text": "Across the lines, a lantern is coming. Kane's sergeant of the watch, doing his round. Sleeping on a picket is a flogging in the Commons. Two, if a kith gets loose."
+     },
+     {
+      "choose": "The lantern is fifty paces off.",
+      "options": [
+       {
+        "label": "Take his post",
+        "hint": "Lie for him.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea takes the bow out of his hands, stands where he stood, and nudges him into the dark behind the lines with her boot."
+         },
+         {
+          "say": "",
+          "text": "The lantern comes level. The sergeant looks at her, and at the bow, and at the picket roster in his hand."
+         },
+         {
+          "say": "rhea",
+          "text": "\"Lanto's gone to the latrine. I said I'd hold it.\""
+         },
+         {
+          "say": "",
+          "text": "The sergeant grunts and goes on. When the lantern is gone, Lanto comes back out of the dark. He doesn't say anything for a long time."
+         },
+         {
+          "say": "lanto",
+          "text": "\"I haven't slept in four nights. My sister's in an indenture house in Spindlegate. I keep thinking about what time it is there.\""
+         },
+         {
+          "say": "lanto",
+          "text": "\"I owe you a flogging. I'll pay it back. You'll see.\""
+         },
+         {
+          "set": {
+           "lantoCovered": true
+          }
+         },
+         {
+          "set": {
+           "recruited.lanto": true
+          }
+         },
+         {
+          "join": "lanto"
+         },
+         {
+          "toast": "Lanto joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Wake him",
+        "hint": "He's not your problem.",
+        "do": [
+         {
+          "say": "",
+          "text": "She kicks his ankle. He comes awake all at once, with an arrow half drawn, and sees the lantern, and goes white."
+         },
+         {
+          "say": "",
+          "text": "He's standing straight when the sergeant gets there. It's enough. Nobody is flogged. Nobody is grateful, either."
+         },
+         {
+          "say": "lanto",
+          "text": "\"Thanks, Caddow.\""
+         },
+         {
+          "set": {
+           "lantoCovered": "woke"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Let the sergeant find him",
+        "hint": "Rules are rules.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea goes back to her own post. Behind her, after a while, she hears the sergeant's voice, and then Lanto's, and then nothing."
+         },
+         {
+          "say": "",
+          "text": "He's flogged in the morning, in front of the section. He doesn't look at her once."
+         },
+         {
+          "set": {
+           "lantoCovered": "reported"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "lanto",
+      "text": "\"Four nights' sleep last week. I'm a new man. A tired new man.\""
+     }
+    ]
+   }
+  ],
+  "rec.rafeFence": [
+   {
+    "say": "",
+    "text": "A big man is going over the west fence at dusk with a pack on his back. He gets one leg over and sees Rhea, and stops."
+   },
+   {
+    "say": "rafe",
+    "text": "\"Don't. Caddow, isn't it? Don't shout.\""
+   },
+   {
+    "say": "rafe",
+    "text": "\"My father died. Word came this morning. There's nobody else to put him in the ground, and the Commons won't give leave to a private for a dead farmer.\""
+   },
+   {
+    "say": "rafe",
+    "text": "\"Four days there, four back. Then I'll come back and they can hang me for going, if they want. I'll come back. On my mother.\""
+   },
+   {
+    "choose": "Rafe sits on the fence and waits to hear what she'll do.",
+    "options": [
+     {
+      "label": "Let him go",
+      "hint": "Trust him.",
+      "do": [
+       {
+        "say": "rhea",
+        "text": "\"Four days. If anyone asks, I never saw you.\""
+       },
+       {
+        "say": "",
+        "text": "He looks at her as if she's done something he doesn't understand. Then he drops down the far side of the fence and is gone into the dusk."
+       },
+       {
+        "set": {
+         "rafeLet": true
+        }
+       }
+      ]
+     },
+     {
+      "label": "Call the guard",
+      "hint": "Desertion is desertion.",
+      "do": [
+       {
+        "say": "",
+        "text": "She calls. He doesn't run. He climbs back down off the fence and stands there with his hands open while the guard comes."
+       },
+       {
+        "say": "rafe",
+        "text": "\"That's fair. That's the army.\""
+       },
+       {
+        "say": "",
+        "text": "He spends nine days in the stockade. His father is buried by the neighbours. He deserts properly the week after, and nobody sees him again."
+       },
+       {
+        "set": {
+         "rafeLet": "called"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.rafeBack": [
+   {
+    "say": "",
+    "text": "Rafe is sitting by the west fence with his pack between his feet, on the inside this time. His boots are white with road dust."
+   },
+   {
+    "say": "rafe",
+    "text": "\"Buried him under his apple tree. Ten days, not eight. I'm sorry about the two.\""
+   },
+   {
+    "say": "rafe",
+    "text": "\"Nobody's said a word to me. I think nobody noticed. I think you made sure nobody noticed.\""
+   },
+   {
+    "say": "rafe",
+    "text": "\"I'll fight anywhere you say, Caddow. Just tell me where.\""
+   },
+   {
+    "set": {
+     "recruited.rafe": true
+    }
+   },
+   {
+    "join": "rafe"
+   },
+   {
+    "toast": "Rafe joins Rhea's company."
+   }
+  ],
+  "rec.junoInquiry": [
+   {
+    "if": {
+     "not": "junoAsked"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A cart-loftbuck stands on three legs by the farrier's anvil, with a shoe hanging off the fourth. A quartermaster's clerk is writing in a book. The farrier, a big woman in a burnt apron, is standing with her arms folded."
+     },
+     {
+      "say": "juno",
+      "text": "\"The cart came off the road at Hob's Bend and lamed him. The clerk says I shod him badly. I say the axle was cracked before it left camp, and I told them so.\""
+     },
+     {
+      "say": "juno",
+      "text": "\"They'll take it out of my pay. Three months. I've a boy at the nurses' tent with the cough, and three months is his medicine.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea was at Hob's Bend. She remembers the axle: split along the grain, and old, with tar in the crack where someone had tried to hide it."
+     },
+     {
+      "set": {
+       "junoAsked": true
+      }
+     },
+     {
+      "choose": "The clerk looks up from his book.",
+      "options": [
+       {
+        "label": "\"I saw that axle. It was cracked before the shoe ever came off. There's tar in the split.\"",
+        "hint": "Speak up.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "The clerk sighs, and crosses something out, and writes something else. The farrier doesn't thank her. She just nods, once, the way you'd nod to someone across a fight."
+         },
+         {
+          "say": "juno",
+          "text": "\"Juno. I'll remember it.\""
+         },
+         {
+          "set": {
+           "junoSpoke": true
+          }
+         }
+        ]
+       },
+       {
+        "label": "Say nothing",
+        "hint": "Not your business.",
+        "do": [
+         {
+          "say": "",
+          "text": "It isn't Rhea's business. The clerk writes three months in the book, and the farrier goes back to her anvil without a word."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "junoSpoke"
+      },
+      "then": [
+       {
+        "say": "juno",
+        "text": "\"Boy's cough is better. Medicine came this week.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The farrier is shoeing a loftbuck and doesn't look up."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.junoThornwick": [
+   {
+    "say": "",
+    "text": "Juno climbs down off Dorrit's cart with an anvil wrapped in sacking, which she carries as if it were a loaf."
+   },
+   {
+    "say": "juno",
+    "text": "\"Thornwick has loftbucks and a road like a goat track. You'll want a farrier. Dorrit says you've none.\""
+   },
+   {
+    "say": "juno",
+    "text": "\"I asked to come. Someone spoke up for me once. I'd sooner shoe for her than for the clerk.\""
+   },
+   {
+    "set": {
+     "recruited.juno": true
+    }
+   },
+   {
+    "toast": "Juno joins the Commons at Thornwick."
+   }
+  ],
+  "rec.wick": [
+   {
+    "if": {
+     "not": "wickDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A huge ferryman is sitting on the gunwale of his punt with his head in his hands. A Guild agent with a ledger stands on the wharf above him, and two Commons soldiers with him, looking embarrassed."
+     },
+     {
+      "say": "wick",
+      "text": "\"Wick. You took my ferry across with your section last spring, sergeant. I ferried you for nothing.\""
+     },
+     {
+      "say": "wick",
+      "text": "\"My brother drowned at the weir in the winter. He owed the Guild for his boat. Now the Guild says I owe it, and the Commons says if the Guild's taking the ferry, the Commons will take it first. Requisition.\""
+     },
+     {
+      "say": "",
+      "text": "The agent turns a page so Rhea can see it. Twenty-five coin, and the brother's mark at the bottom, a wobbly cross."
+     },
+     {
+      "set": {
+       "wickAsked": true
+      }
+     },
+     {
+      "choose": "The soldiers wait for a sergeant to tell them what to do.",
+      "options": [
+       {
+        "label": "Pay the debt (25 coin)",
+        "hint": "Not cheap.",
+        "do": [
+         {
+          "pay": 25,
+          "then": [
+           {
+            "say": "",
+            "text": "Rhea counts it out onto the agent's ledger. He blows on the coins, as if they might be dirty, and writes PAID across the brother's cross."
+           },
+           {
+            "say": "wick",
+            "text": "\"That was a lot of coin for a punt.\""
+           },
+           {
+            "say": "rhea",
+            "text": "\"It's not for the punt.\""
+           },
+           {
+            "say": "",
+            "text": "Wick stands up. The punt rocks. He's even bigger standing."
+           },
+           {
+            "say": "wick",
+            "text": "\"The Commons can have the ferry. It can have me with it. Where do you want me?\""
+           },
+           {
+            "set": {
+             "wickDone": "paid"
+            }
+           },
+           {
+            "set": {
+             "recruited.wick": true
+            }
+           },
+           {
+            "join": "wick"
+           },
+           {
+            "toast": "Wick joins Rhea's company."
+           }
+          ],
+          "else": [
+           {
+            "say": "wick",
+            "text": "\"You haven't got it either. Nobody has. Go on, sergeant. I'll think of something.\""
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "Let the section take the ferry",
+        "hint": "The Commons needs boats.",
+        "do": [
+         {
+          "say": "",
+          "text": "The soldiers take the punt pole out of Wick's hands, quite gently. He lets them. The agent shuts his ledger, because there is nothing left on the river for him to take."
+         },
+         {
+          "say": "wick",
+          "text": "\"Mind she pulls left in the current.\""
+         },
+         {
+          "set": {
+           "wickDone": "seized"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "wickDone": "paid"
+       }
+      },
+      "then": [
+       {
+        "say": "wick",
+        "text": "\"Best punt on the river, and the Commons got her for twenty-five coin and a ferryman. Bargain.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "A Commons soldier is poling Wick's punt across, badly. Wick is nowhere to be seen."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.yewBundle": [
+   {
+    "if": {
+     "not": "yewBundle"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A bundle of herbs, tied with a twist of grass, lying on the fence post by the nurses' tent. Moss for wounds, fever bark, a root Rhea's mother used for sleep."
+     },
+     {
+      "say": "",
+      "text": "The nurses say one turns up every few days. Nobody's seen who leaves them. The grass ties all point the same way: north, to the mountain road."
+     },
+     {
+      "set": {
+       "yewBundle": true
+      }
+     },
+     {
+      "toast": "The bundles point north, up the mountain road toward Mistfold."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Another bundle on the post. Fresh. The grass ties still point north."
+     }
+    ]
+   }
+  ],
+  "rec.yewHut": [
+   {
+    "if": {
+     "not": "yewMet"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A hut at the edge of the cloud forest, low and green, with moss on the roof. A small woman is sitting outside it, sorting roots into a basket. She doesn't get up."
+     },
+     {
+      "say": "yew",
+      "text": "\"You followed the ties. Nobody's done that in nine years. I tie them to point the wrong way, most of the time. I must be getting old.\""
+     },
+     {
+      "say": "yew",
+      "text": "\"Yew. I grow what your nurses need, and I leave it where they'll find it. That's all. I don't want thanks and I don't want visitors.\""
+     },
+     {
+      "say": "yew",
+      "text": "\"The Guild burned my sister's garden at Highmoss for growing the wrong weeds. If they knew where this one was, they'd burn it too. So.\""
+     },
+     {
+      "set": {
+       "yewMet": true
+      }
+     },
+     {
+      "choose": "Yew is waiting to hear what kind of person found her.",
+      "options": [
+       {
+        "label": "\"Nobody will hear about this hut from me. Not the nurses, not Kane.\"",
+        "hint": "Keep her secret.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Yew looks at her for a long time, then goes back to her roots."
+         },
+         {
+          "say": "yew",
+          "text": "\"Your camp burns through fever bark faster than I can grow it. I'll come down and show your nurses what else works. Once. Then I'll see.\""
+         },
+         {
+          "set": {
+           "yewKept": true
+          }
+         },
+         {
+          "set": {
+           "recruited.yew": true
+          }
+         },
+         {
+          "toast": "Yew joins the Commons."
+         }
+        ]
+       },
+       {
+        "label": "\"The Commons would pay for what you grow. Kane's quartermaster could send a cart up.\"",
+        "hint": "The camp needs more than a few bundles.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Yew puts the root she's holding back in the basket, very carefully."
+         },
+         {
+          "say": "yew",
+          "text": "\"Then I'll be gone by the time it gets here. Thank you for coming, captain.\""
+         },
+         {
+          "say": "",
+          "text": "The next time Rhea passes, the hut is empty and the garden is pulled up by the roots."
+         },
+         {
+          "set": {
+           "yewKept": false,
+           "yewGone": true
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "yewKept"
+      },
+      "then": [
+       {
+        "say": "yew",
+        "text": "\"Still nobody's come. Good.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "An empty hut, and a garden pulled up by the roots."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.grue": [
+   {
+    "if": {
+     "not": "grueDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "An old man in a moth-eaten toll keeper's coat sits in a box at the end of the Kerrow bridge, with a chain of keys round his neck. The toll board says: ONE RIDDLE. NO COIN."
+     },
+     {
+      "say": "grue",
+      "text": "\"Grue. Eighty years on this bridge, and my father before me. I've heard every riddle in Ostrel. Tell me one I don't know, and I'll owe you.\""
+     },
+     {
+      "choose": "Which riddle does Rhea tell?",
+      "options": [
+       {
+        "label": "What has a neck and no head, and wears a ring and no finger?",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "grue",
+          "text": "\"Heard it. My grandmother's. She had it from hers.\""
+         },
+         {
+          "say": "grue",
+          "text": "\"Try again. I'm not going anywhere.\""
+         }
+        ]
+       },
+       {
+        "label": "The more you take, the more you leave behind. What are they?",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "grue",
+          "text": "\"Heard it. Every child on the drove road knows that one.\""
+         },
+         {
+          "say": "grue",
+          "text": "\"Try again. I'm not going anywhere.\""
+         }
+        ]
+       },
+       {
+        "label": "Three lines to the song, and only the third one's hard. Sing the first two wrong and it still comes. Sing the third wrong and nothing does. What is it?",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Grue opens his mouth to answer. Then he shuts it. Then he opens it again, and nothing comes out."
+         },
+         {
+          "say": "grue",
+          "text": "\"A song. A song with a wrong line in it, and only one line can be wrong. That's not a riddle. That's a lock.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"It's how we call the loftbucks in Larkfold. My mother's mother made it.\""
+         },
+         {
+          "say": "grue",
+          "text": "\"Eighty years. Eighty years, and a girl from Larkfold.\""
+         },
+         {
+          "say": "",
+          "text": "He takes the chain of keys off his neck and hangs it on the toll board, and climbs out of his box for what looks like the first time in a decade."
+         },
+         {
+          "say": "grue",
+          "text": "\"I owe you. I've a head full of every old story in this country and nobody to tell them to. Your Commons could use somebody who remembers things.\""
+         },
+         {
+          "set": {
+           "grueDone": true
+          }
+         },
+         {
+          "set": {
+           "recruited.grue": true
+          }
+         },
+         {
+          "toast": "Grue joins the Commons."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "grue",
+      "text": "\"What has eighty years and no bridge? Me. Ha.\""
+     }
+    ]
+   }
+  ],
+  "rec.eddaStampede": [
+   {
+    "if": {
+     "not": "eddaStampede"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A shout from the lowest terrace, and then the ground starts to shake. Wild loftbucks, a whole herd of them, coming down off the ridge in the fog, straight for the moss."
+     },
+     {
+      "say": "",
+      "text": "A clanswoman with wrapped fists and two auburn braids has planted herself in the gap in the terrace wall, alone, waving her arms at a thousand weight of frightened kith."
+     },
+     {
+      "say": "edda",
+      "text": "\"Don't just stand there, lowlander! If they get through the gap they'll have the whole terrace down the hill!\""
+     },
+     {
+      "set": {
+       "eddaStampede": true
+      }
+     },
+     {
+      "choose": "The herd is coming.",
+      "options": [
+       {
+        "label": "Hold the gap with her",
+        "hint": "A fight.",
+        "do": [
+         {
+          "battle": "recruit-stampede",
+          "win": [
+           {
+            "say": "",
+            "text": "The herd breaks round the wall like water round a stone, and pours away down the ridge into the fog, and the terrace holds."
+           },
+           {
+            "say": "edda",
+            "text": "\"Edda. Of the lowest terrace, which is still here. I owe you a terrace.\""
+           },
+           {
+            "say": "edda",
+            "text": "\"I'd follow you down the mountain, but the clan owes the Guild everything down to its boots, and the Guild would call it running off with its property. One day.\""
+           },
+           {
+            "set": {
+             "eddaHelped": true
+            }
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "Get out of the way",
+        "hint": "It isn't your terrace.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea gets behind a drying shed. The herd goes through the gap. When the fog clears, the lowest terrace is gone, scraped down to the rock, and the clanswoman is sitting in the ruin of it with her fists in her lap."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "eddaHelped"
+      },
+      "then": [
+       {
+        "say": "edda",
+        "text": "\"Still here. The terrace too.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The lowest terrace is being rebuilt, stone by stone, by one woman with wrapped fists."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.eddaJoins": [
+   {
+    "say": "edda",
+    "text": "\"The factor's book is ash, and I'm my own woman again. I said I owed you a terrace. I can't carry one. I can carry a sling.\""
+   },
+   {
+    "set": {
+     "recruited.edda": true
+    }
+   },
+   {
+    "join": "edda"
+   },
+   {
+    "toast": "Edda joins Rhea's company."
+   }
+  ],
+  "rec.bee": [
+   {
+    "if": {
+     "not": "beeDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A girl of ten in a pair of flight goggles far too big for her is folding a letter into a paper boat on the weir wall. There are a dozen more in a satchel at her feet."
+     },
+     {
+      "say": "bee",
+      "text": "\"They go over the weir and down the river and out to sea, and the sea goes up to the sky at the edge, and the moon picks them up. Everybody knows that.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea unfolds the next boat before it goes in. It's addressed to MA, AT THE MOON. It says the goat had twins and Bee is being good and please come home from the hatchery soon."
+     },
+     {
+      "say": "bee",
+      "text": "\"They took Ma for the indenture. Nan says she's at the moon now. I write every week.\""
+     },
+     {
+      "choose": "Bee is waiting for her boat back.",
+      "options": [
+       {
+        "label": "\"Thornwick has a mistwing that carries letters. It goes a lot further than the river. We need someone to run the post.\"",
+        "hint": "Give her a better way to write.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Bee looks at her for a long time, through the enormous goggles."
+         },
+         {
+          "say": "bee",
+          "text": "\"Does it go to the moon?\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"No. But it goes to the hatcheries. If your ma is in one, we can ask.\""
+         },
+         {
+          "say": "bee",
+          "text": "\"Then I'll have to ask Nan. Nan says yes to everything if you ask her while she's milking.\""
+         },
+         {
+          "say": "",
+          "text": "Nan says yes. Bee comes up the mountain the next week with her satchel and her goggles and a list of every hatchery in Ostrel, written in her own hand, spelled wrong."
+         },
+         {
+          "set": {
+           "beeDone": true
+          }
+         },
+         {
+          "set": {
+           "recruited.bee": true
+          }
+         },
+         {
+          "toast": "Bee joins Thornwick as the post runner."
+         }
+        ]
+       },
+       {
+        "label": "Give her the boat back",
+        "hint": "Leave her be.",
+        "do": [
+         {
+          "say": "",
+          "text": "Bee puts it on the water. It goes over the weir, and down the river, toward the sea, and the moon."
+         },
+         {
+          "say": "bee",
+          "text": "\"Next week I'm going to tell her about you.\""
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "bee",
+      "text": "\"No letters from the moon yet. I'm keeping count.\""
+     }
+    ]
+   }
+  ],
+  "rec.linnet": [
+   {
+    "if": {
+     "not": "linnetAsked"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A freckled woman with her sleeves rolled to the shoulder is splinting a soldier's leg on a nurses' table, fast and neat, without looking up."
+     },
+     {
+      "say": "linnet",
+      "text": "\"Linnet. Midwife, from the Vale. I came when I saw the smoke from Sallow. Your nurses are good. There aren't enough of them.\""
+     },
+     {
+      "say": "linnet",
+      "text": "\"There are eleven more burned at Hob's Bend, lying in a barn. The quartermaster's sent every cart back to Sallow for the Guild's grain before somebody else takes it. The wounded can wait, he says. They can't.\""
+     },
+     {
+      "set": {
+       "linnetAsked": true
+      }
+     },
+     {
+      "choose": "The quartermaster's carts are lined up at the gate, empty, about to go.",
+      "options": [
+       {
+        "label": "Take the carts for the wounded",
+        "hint": "The grain will be gone.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea stands in front of the first cart until the carter stops. Then she sends all of them to Hob's Bend, and the quartermaster's shouting follows her all the way down the line."
+         },
+         {
+          "say": "",
+          "text": "The eleven are in the nurses' tent by dark. Ten of them live. The Guild's grain at Sallow is gone by morning, taken by the villagers, which the quartermaster takes very personally."
+         },
+         {
+          "say": "linnet",
+          "text": "\"You'll be in trouble for that.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"Probably.\""
+         },
+         {
+          "say": "linnet",
+          "text": "\"Then you'll want someone who can set a bone in a ditch. I'll come with your section, sergeant, if you'll have a midwife.\""
+         },
+         {
+          "set": {
+           "linnetDone": true
+          }
+         },
+         {
+          "set": {
+           "recruited.linnet": true
+          }
+         },
+         {
+          "join": "linnet"
+         },
+         {
+          "toast": "Linnet joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Let the grain come first",
+        "hint": "The camp has to eat.",
+        "do": [
+         {
+          "say": "",
+          "text": "The carts go to Sallow for the grain. They go to Hob's Bend the next day. Seven of the eleven are still alive when they get there."
+         },
+         {
+          "say": "linnet",
+          "text": "\"Seven. Well. That's an army, I suppose.\""
+         },
+         {
+          "set": {
+           "linnetDone": "grain"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "linnetDone": true
+       }
+      },
+      "then": [
+       {
+        "say": "linnet",
+        "text": "\"Hold still. This won't hurt. It will, actually. Hold still anyway.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The midwife from the Vale has gone home."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.fairweather": [
+   {
+    "if": {
+     "not": "fairweatherDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A plump old man in a battered felt hat and a waistcoat with too many pockets is sitting on a bollard, watching the Commons search a canal barge. His barge."
+     },
+     {
+      "say": "fairweather",
+      "text": "\"Lom Fairweather. Trader. Honest, mostly. Your lieutenant's lads have had my ledger off me, and given it to you, I'm told, because you're the officer present and nobody else wants to be responsible for it.\""
+     },
+     {
+      "say": "",
+      "text": "It's in Rhea's pack: a fat book in oilcloth, tied shut with a knot she doesn't know."
+     },
+     {
+      "say": "fairweather",
+      "text": "\"Every name I ever moved up or down a canal is in there. Some of them would hang. Some of them would hang other people. I'd like it back. Shut, if it's all the same to you.\""
+     },
+     {
+      "choose": "Fairweather holds out his hand for the book.",
+      "options": [
+       {
+        "label": "Give it back unread",
+        "hint": "Whatever's in it stays in it.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea gives it back, still tied. He looks at the knot, carefully, and then at her."
+         },
+         {
+          "say": "fairweather",
+          "text": "\"You didn't even look. Your lieutenant would've read it to the whole wharf.\""
+         },
+         {
+          "say": "fairweather",
+          "text": "\"Your Thornwick's a long way from a canal, and has no market, and won't eat well this winter. I know people who sell things. Honestly, mostly. Shall I come and set up a stall?\""
+         },
+         {
+          "set": {
+           "fairweatherDone": "unread"
+          }
+         },
+         {
+          "set": {
+           "recruited.fairweather": true
+          }
+         },
+         {
+          "toast": "Lom Fairweather joins Thornwick, to run its market."
+         }
+        ]
+       },
+       {
+        "label": "Read it first",
+        "hint": "Know who you're dealing with.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea cuts the knot. Fairweather doesn't move. The book is names, dates, prices: people moved off hatchery carts, a family out of an indenture house, a crate of something marked only with a moss leaf."
+         },
+         {
+          "say": "fairweather",
+          "text": "\"Well. Now you know who I am. I don't know who you are, though. Keep it. I'll start another.\""
+         },
+         {
+          "say": "",
+          "text": "He walks off down the towpath, and is not seen on the river again that year."
+         },
+         {
+          "set": {
+           "fairweatherDone": "read"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "fairweather",
+      "text": "\"Fresh eggs, and nobody asks where from. That's the Thornwick market.\""
+     }
+    ]
+   }
+  ],
+  "rec.mags": [
+   {
+    "if": {
+     "not": "magsDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A stout woman with flour on her cheek and a wooden spoon as long as her arm has taken over the cook fire. Brannoc is standing beside it with his arms folded, which is the angriest Rhea has ever seen him."
+     },
+     {
+      "say": "mags",
+      "text": "\"Mags. Cook to the south companies, twenty years. Came up on Dorrit's cart to see what this mountain eats. I've had his stew. I've had better stew off a boot.\""
+     },
+     {
+      "say": "brannoc",
+      "text": "\"I've fed this section for a year on turnips and goat.\""
+     },
+     {
+      "say": "mags",
+      "text": "\"Then they've suffered enough. One pot each, tonight. The sergeant judges. Loser washes the other's pot for a month.\""
+     },
+     {
+      "fade": "That evening. Two pots on the fire."
+     },
+     {
+      "say": "",
+      "text": "Brannoc's: goat, turnip, mountain thyme, the same stew as every night, and good, the way bread is good. Mags's: something red and thick with dried fish from the canal and a spice Rhea has never tasted, and the whole section is trying not to look as if they want more."
+     },
+     {
+      "choose": "The section is watching Rhea, with their bowls.",
+      "options": [
+       {
+        "label": "Brannoc's stew wins",
+        "hint": "Loyalty.",
+        "do": [
+         {
+          "say": "brannoc",
+          "text": "\"Ha.\""
+         },
+         {
+          "say": "mags",
+          "text": "\"Loyal. Wrong, but loyal. I'll wash the pot.\""
+         },
+         {
+          "set": {
+           "magsDone": "brannoc"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Mags's stew wins",
+        "hint": "Honesty.",
+        "do": [
+         {
+          "say": "mags",
+          "text": "\"Of course it does.\""
+         },
+         {
+          "say": "",
+          "text": "Brannoc washes Mags's pot that night with great dignity, and asks her for the name of the spice."
+         },
+         {
+          "set": {
+           "magsDone": "mags"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Call it a draw",
+        "hint": "Keep the peace.",
+        "do": [
+         {
+          "say": "mags",
+          "text": "\"Coward.\""
+         },
+         {
+          "say": "brannoc",
+          "text": "\"Coward.\""
+         },
+         {
+          "say": "",
+          "text": "They wash each other's pots together, arguing about salt."
+         },
+         {
+          "set": {
+           "magsDone": "draw"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "mags",
+      "text": "\"I'm staying. Somebody has to teach this mountain to cook. He can help.\""
+     },
+     {
+      "set": {
+       "recruited.mags": true
+      }
+     },
+     {
+      "toast": "Mags joins the Commons at Thornwick."
+     }
+    ],
+    "else": [
+     {
+      "say": "mags",
+      "text": "\"Brannoc and I have agreed on salt. We'll never agree on anything else, and I'm glad of it.\""
+     }
+    ]
+   }
+  ],
+  "rec.severin": [
+   {
+    "if": {
+     "not": "severinDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A pale man in a high-collared black coat is coming out of an officer's tent with a slim leather case under his arm. He has fine gloves on. He doesn't take them off to shake hands, and doesn't offer to."
+     },
+     {
+      "say": "severin",
+      "text": "\"Severin. I fit for the Guild. Kane's officers have needs, and the Guild meets them. Discreetly. You've seen the crates, I hear. So we needn't pretend.\""
+     },
+     {
+      "say": "",
+      "text": "He opens his book to make a note. It falls open at a page of names: officers, with a tally of rings beside each, month after month. Hundreds of marks. Rhea reads the page upside down."
+     },
+     {
+      "choose": "Severin is waiting for her to step aside.",
+      "options": [
+       {
+        "label": "\"How many rings have you put on people, Severin? Count them. It's all in your book.\"",
+        "hint": "Make him count.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "He laughs, and then he looks down at his own book, at the columns and columns of tally marks in his own neat hand, and stops laughing."
+         },
+         {
+          "say": "severin",
+          "text": "\"Four thousand, one hundred. Give or take. I've never added them up before. Why would I?\""
+         },
+         {
+          "say": "",
+          "text": "He takes off one glove. There are pale rings on the back of his wrist, under the cuff, where nobody would see. Six, seven. A new one."
+         },
+         {
+          "say": "severin",
+          "text": "\"We fit ourselves first, to know the strength. Every fitter does. Nobody's ever stopped.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"Thornwick weans people. Oda weans people. Nobody there will ask you to stop all at once.\""
+         },
+         {
+          "say": "",
+          "text": "He puts the glove back on, very carefully, finger by finger."
+         },
+         {
+          "say": "severin",
+          "text": "\"And the officers will need a man who knows every one of them by his neck. I'll come. Before I change my mind.\""
+         },
+         {
+          "set": {
+           "severinDone": true
+          }
+         },
+         {
+          "set": {
+           "recruited.severin": true
+          }
+         },
+         {
+          "toast": "Severin joins the Commons at Thornwick, to be weaned."
+         }
+        ]
+       },
+       {
+        "label": "Let him pass",
+        "hint": "Not now.",
+        "do": [
+         {
+          "say": "",
+          "text": "Severin tips his hat and goes on to the next tent. Rhea hears the case click open inside."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "severin",
+      "text": "\"Third strength. My hands are shaking, look. Oda says that's good. Oda is a hard woman.\""
+     }
+    ]
+   }
+  ],
+  "rec.umeDebts": [
+   {
+    "if": {
+     "not": "clanDebtsBroken"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Guild's factor is at the weighing stall with his book, as always. Ume is on her step, as always. Today the whole clan is standing round the stall, not working, and the factor is pretending not to notice."
+     },
+     {
+      "say": "ume",
+      "text": "\"My son came home clean. Thornwick did that, and the clan's moss, and a lot of nights nobody slept. And the Guild's book says that moss was the Guild's.\""
+     },
+     {
+      "say": "ume",
+      "text": "\"Clan law says a debt dies with the book it's written in. The Guild never thought anybody would read clan law. Well. We've been reading it all winter.\""
+     },
+     {
+      "say": "factor",
+      "text": "\"That book is Guild property, grandmother. Touch it and the Guild will send men up this hill.\""
+     },
+     {
+      "choose": "The clan is looking at Rhea. So is the factor.",
+      "options": [
+       {
+        "label": "Burn the book",
+        "hint": "The Guild will hear of it.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea takes the book off the stall. The factor grabs for it and finds himself looking at Edda's wrapped fists, and at a great many clanspeople behind them."
+         },
+         {
+          "say": "",
+          "text": "The book goes on the drying fire. Seed debt, tool debt, flour debt, three generations of it, going up the chimney in ten minutes. The clan watches it burn in total silence."
+         },
+         {
+          "say": "factor",
+          "text": "\"The Guild will hear of this, Commons.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"I hope so. Tell them it was the Commons.\""
+         },
+         {
+          "set": {
+           "clanDebtsBroken": "burned"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Buy the debt out (60 coin)",
+        "hint": "Costly, and lawful.",
+        "do": [
+         {
+          "pay": 60,
+          "then": [
+           {
+            "say": "",
+            "text": "Rhea counts out the coin on the stall. The factor counts it twice, and writes PAID across every page, and hands her the book, because there's nothing in it for the Guild any more."
+           },
+           {
+            "say": "",
+            "text": "The clan burns it anyway, on the drying fire. Ume says it's the principle."
+           },
+           {
+            "set": {
+             "clanDebtsBroken": "paid"
+            }
+           }
+          ],
+          "else": [
+           {
+            "say": "ume",
+            "text": "\"Not that way, then. Come back with more coin, or with matches.\""
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "Leave it for now",
+        "do": [
+         {
+          "say": "ume",
+          "text": "\"Then we'll wait. We've waited sixty years. We're good at it.\""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "if": {
+       "flag": "clanDebtsBroken"
+      },
+      "then": [
+       {
+        "say": "ume",
+        "text": "\"Seventy years I've sat on this step. I'd like to see the war before I'm too old to be rude to anybody in it. I'm coming down the mountain, girl. Don't argue.\""
+       },
+       {
+        "set": {
+         "recruited.ume": true
+        }
+       },
+       {
+        "join": "ume"
+       },
+       {
+        "toast": "Grandmother Ume joins Rhea's company."
+       },
+       {
+        "if": {
+         "flag": "eddaHelped"
+        },
+        "then": [
+         {
+          "run": "rec.eddaJoins"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "ume",
+      "text": "\"Free terraces. Free moss. Free to starve if the harvest fails. It's wonderful.\""
+     }
+    ]
+   }
+  ],
+  "rec.eddaLate": [
+   {
+    "if": {
+     "flag": "eddaHelped"
+    },
+    "then": [
+     {
+      "run": "rec.eddaJoins"
+     }
+    ],
+    "else": [
+     {
+      "say": "edda",
+      "text": "\"The lowest terrace is mine again. Rebuilt it myself.\""
+     }
+    ]
+   }
+  ],
+  "rec.teo": [
+   {
+    "if": {
+     "not": "teoDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A young man is hiding behind the moss bales in the drying shed, with a coil of climbing rope over his shoulder and moss stains to the elbows. He puts a finger to his lips."
+     },
+     {
+      "say": "teo",
+      "text": "\"Teo. The factor's hoist. The one that lowers the Guild's baskets down the cliff to his carts. I cut the rope last night with forty baskets on it.\""
+     },
+     {
+      "say": "teo",
+      "text": "\"I didn't think. I just went up and did it. Now the factor's saying a Guild saboteur hangs at Vantry, and he's asking every house on the hill for the climber.\""
+     },
+     {
+      "say": "teo",
+      "text": "\"The clan would give me to the elders for clan law. A year's labour, no rope. The factor would give me to a rope. Either way I'm somebody's.\""
+     },
+     {
+      "choose": "Teo is watching the shed door.",
+      "options": [
+       {
+        "label": "Hide him",
+        "hint": "Clan law can wait.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea throws a moss bale over him and sits on it. The factor's man looks into the shed, sees a Commons officer resting on a bale, and goes away."
+         },
+         {
+          "say": "",
+          "text": "That night Teo walks down to Thornwick between two of the section, in a borrowed Commons coat."
+         },
+         {
+          "say": "teo",
+          "text": "\"I'll climb anything you point at. Walls, cliffs. Hatchery chimneys.\""
+         },
+         {
+          "set": {
+           "teoDone": "hidden"
+          }
+         },
+         {
+          "set": {
+           "recruited.teo": true
+          }
+         },
+         {
+          "join": "teo"
+         },
+         {
+          "toast": "Teo joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Take him to the elders",
+        "hint": "Clan law, not the Guild's.",
+        "do": [
+         {
+          "say": "",
+          "text": "The elders hear it on Ume's step. A year's labour. They give the year to Thornwick, because Thornwick has walls that need climbing, and nobody from the Guild will look for him there."
+         },
+         {
+          "say": "teo",
+          "text": "\"A year carrying stones up your monastery. Fine. Fair.\""
+         },
+         {
+          "set": {
+           "teoDone": "elders"
+          }
+         },
+         {
+          "set": {
+           "recruited.teo": true
+          }
+         },
+         {
+          "toast": "Teo serves his year at Thornwick."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "teo",
+      "text": "\"They're still looking for the climber. Nobody looks at a man carrying stones.\""
+     }
+    ]
+   }
+  ],
+  "rec.hobb": [
+   {
+    "if": {
+     "not": "hobbDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "An old woman with a pipe in her teeth is trying to get a pack train of loftbucks moving up the terraces. The lead buck has planted his hooves and won't go. The whole train is stopped behind him."
+     },
+     {
+      "say": "hobb",
+      "text": "\"Hobb. This is Bramble. He was my husband's, and my husband drove him forty years with words I won't say in front of a Commons officer.\""
+     },
+     {
+      "say": "hobb",
+      "text": "\"Husband's dead since the spring. Bramble only goes for the words, and I never learned them proper. I just know the shape. It starts rude and gets worse.\""
+     },
+     {
+      "say": "hobb",
+      "text": "\"Help me. Which comes first?\""
+     },
+     {
+      "choose": "Bramble looks at Rhea with deep contempt.",
+      "options": [
+       {
+        "label": "\"Get up the hill, you moss-eating disgrace.\"",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Bramble's ears twitch. He takes one step. Then stops again."
+         },
+         {
+          "say": "hobb",
+          "text": "\"Closer. You've the start. Now what?\""
+         },
+         {
+          "choose": "Bramble waits, insultingly.",
+          "options": [
+           {
+            "label": "\"Your mother was a ditch-goat and your father was a wet sock.\"",
+            "by": "rhea",
+            "do": [
+             {
+              "say": "",
+              "text": "Bramble snorts, lowers his head, and walks off up the terrace at a smart pace, and the whole train goes after him with their bells going."
+             },
+             {
+              "say": "hobb",
+              "text": "\"That's it. That's him exactly. I'd forgotten the sock.\""
+             },
+             {
+              "say": "",
+              "text": "She cries a bit, round the pipe stem. Then she wipes her face with her hat."
+             },
+             {
+              "say": "hobb",
+              "text": "\"Your Thornwick has a goat track for a road and nobody to drive it. Bramble and I'll take the job. We're both too rude for the terraces now.\""
+             },
+             {
+              "set": {
+               "hobbDone": true
+              }
+             },
+             {
+              "set": {
+               "recruited.hobb": true
+              }
+             },
+             {
+              "kith": {
+               "species": "drove-loftbuck",
+               "level": 8,
+               "id": "bramble",
+               "name": "Bramble"
+              }
+             },
+             {
+              "toast": "Hobb and Bramble join the Commons."
+             }
+            ]
+           },
+           {
+            "label": "\"Please.\"",
+            "by": "rhea",
+            "do": [
+             {
+              "say": "hobb",
+              "text": "\"Please! Forty years and he never heard please. Try again, girl, and mean it less.\""
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "\"Come on, Bramble. Good boy.\"",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "hobb",
+          "text": "\"Good boy. Ha. He'll die of shame. Ruder.\""
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "hobb",
+      "text": "\"Bramble's learned a new word off the section. I'm very proud.\""
+     }
+    ]
+   }
+  ],
+  "rec.mirela": [
+   {
+    "if": {
+     "not": "mirelaDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "At the very top of the terraces, an old woman in a shawl sewn with stars has set up a brass sighting tube on a tripod, pointing at the empty daytime sky."
+     },
+     {
+      "say": "mirela",
+      "text": "\"Mirela. I read weather in the stars. Nobody believes me, but the clan plants by my calendar anyway, and the harvest comes in dry.\""
+     },
+     {
+      "say": "mirela",
+      "text": "\"Come back tonight. The cloud sea goes flat on clear nights, and you can see the whole sky twice: once up there, once in the cloud.\""
+     },
+     {
+      "fade": "Night. The highest terrace."
+     },
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "say": "",
+      "text": "The cloud sea lies below them like a sheet of milk, and the stars are in it, upside down. Mirela points out the Plough, the Drover, the Kith. She has names for all of them that no book uses."
+     },
+     {
+      "say": "mirela",
+      "text": "\"The Drover's low, and his lantern's red. That's rain in four days, from the south, and a long one.\""
+     },
+     {
+      "choose": "Mirela waits to see if she's believed.",
+      "options": [
+       {
+        "label": "\"Four days. I'll tell Kane's quartermaster to get the carts under cover.\"",
+        "hint": "Believe her.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "It rains in four days, from the south, for a week. The Commons' carts are under cover. The Guild's on the Vantry road are not."
+         },
+         {
+          "set": {
+           "mirelaDone": "believed"
+          }
+         }
+        ]
+       },
+       {
+        "label": "\"It's a nice story.\"",
+        "hint": "Weather is weather.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Mirela laughs. It rains in four days anyway, from the south, for a week."
+         },
+         {
+          "set": {
+           "mirelaDone": "doubted"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "mirela",
+      "text": "\"An army needs to know the weather before the other army does. I'm old, but I'm not that old. Take me down the mountain, captain. I'll bring the tube.\""
+     },
+     {
+      "set": {
+       "recruited.mirela": true
+      }
+     },
+     {
+      "toast": "Mirela joins the Commons."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "mirela",
+      "text": "\"The Kith is high tonight. Good night for a march.\""
+     }
+    ]
+   }
+  ],
+  "rec.pollard": [
+   {
+    "if": {
+     "not": "pollardDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A tournament yard behind the inn: hurdles, a sand ring, a crowd. A gruff man in a teal waistcoat is arguing with a Guild buyer in a good coat, who is leading away a magnificent ironback on a silver chain."
+     },
+     {
+      "say": "pollard",
+      "text": "\"Pollard. I trained that beast from a calf. Thistle. He lost the last round by a hair, and the stake was the kith, and the Guild buyer had been waiting all week for him to lose.\""
+     },
+     {
+      "say": "pollard",
+      "text": "\"There's one round left before the ring closes. Anyone can challenge. Winner takes the stake back. I've nothing left to challenge with.\""
+     },
+     {
+      "choose": "The buyer's handlers are already loading Thistle onto a cart.",
+      "options": [
+       {
+        "label": "Challenge the buyer",
+        "hint": "A fight in the ring.",
+        "do": [
+         {
+          "battle": "recruit-pollard",
+          "win": [
+           {
+            "say": "",
+            "text": "The buyer's kith go down in the sand, and the crowd roars, and the ring-keeper hands Rhea the silver chain."
+           },
+           {
+            "say": "",
+            "text": "She gives it to Pollard. Thistle puts his huge head against Pollard's chest and pushes, and Pollard sits down in the sand and doesn't get up for a while."
+           },
+           {
+            "say": "pollard",
+            "text": "\"You could've kept him. He was yours by the rules.\""
+           },
+           {
+            "say": "pollard",
+            "text": "\"The Commons has kith that need a yard and a man who knows what he's doing. I'll bring Thistle. He doesn't fight for anyone else.\""
+           },
+           {
+            "set": {
+             "pollardDone": true
+            }
+           },
+           {
+            "set": {
+             "recruited.pollard": true
+            }
+           },
+           {
+            "toast": "Pollard joins the Commons, and runs Thornwick's kith yard."
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "Walk away",
+        "do": [
+         {
+          "say": "",
+          "text": "The cart goes off down the road to Vantry with Thistle on it, bellowing. Pollard watches it the whole way."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "pollard",
+      "text": "\"Thistle's eating everything at Thornwick that isn't nailed down. He's happy.\""
+     }
+    ]
+   }
+  ],
+  "rec.greet": [
+   {
+    "if": {
+     "not": "greetDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A back street off the market, and a house with its shutters open and its door propped with a chair. Inside, on mattresses on the floor, a dozen people are shaking under blankets. A tired woman with a pocket full of spoons is going from one to the next."
+     },
+     {
+      "say": "greet",
+      "text": "\"Greet. This is a weaning house, captain. I've no greenlings. I've broth, and blankets, and I sit with them. Some of them come through it. Some of them go back to the lull the first night they can walk.\""
+     },
+     {
+      "say": "greet",
+      "text": "\"They say Thornwick has greenlings now. They say the first trays are going to the army's officers, because the officers are the ones who can't be seen to go through the raw.\""
+     },
+     {
+      "say": "",
+      "text": "She's right. Kane has asked for the next tray for his officers. The tray after that will be months away."
+     },
+     {
+      "choose": "Greet doesn't ask. She just waits.",
+      "options": [
+       {
+        "label": "Send her Thornwick's next tray",
+        "hint": "Kane will notice.",
+        "do": [
+         {
+          "say": "",
+          "text": "The tray comes down from Thornwick on Dorrit's cart a week later, wrapped in wet moss. Kane's officers wait. Kane says nothing about it to Rhea, which is worse than saying something."
+         },
+         {
+          "say": "greet",
+          "text": "\"Twelve. Twelve of them, on greenlings, tonight. Do you know what you've done, captain? You've made me useless. Thank you.\""
+         },
+         {
+          "say": "greet",
+          "text": "\"Take me to Thornwick. I know how to sit up with people. I'll teach your nurses.\""
+         },
+         {
+          "set": {
+           "greetDone": "sent",
+           "greenlingsToStreets": true
+          }
+         },
+         {
+          "add": {
+           "kaneTrust": -5
+          }
+         },
+         {
+          "set": {
+           "recruited.greet": true
+          }
+         },
+         {
+          "toast": "Greet joins the Commons at Thornwick."
+         }
+        ]
+       },
+       {
+        "label": "Keep it for the officers",
+        "hint": "An army needs its officers.",
+        "do": [
+         {
+          "say": "",
+          "text": "The tray goes to the officers. Greet's house goes on with broth and blankets."
+         },
+         {
+          "say": "greet",
+          "text": "\"I understand. An army's an army. Come and see us when the next tray's ready. If we're still here.\""
+         },
+         {
+          "set": {
+           "greetDone": "officers"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "greetDone": "sent"
+       }
+      },
+      "then": [
+       {
+        "say": "greet",
+        "text": "\"Your nurses are good. They were never taught to sit still. I'm teaching them.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "greet",
+        "text": "\"Still broth and blankets. We manage.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.pell": [
+   {
+    "say": "",
+    "text": "One of the Lockside children is sitting by the warm pool with his sleeves rolled down over his arms, the way the hatchery children all do. He's gangly and freckled, with sandy hair cropped short. He's watching Rhea."
+   },
+   {
+    "say": "pell",
+    "text": "\"You're Rhea Caddow. You used to sing the loftbucks down off the high pasture. You gave me a plum once, for carrying the bucket.\""
+   },
+   {
+    "say": "",
+    "text": "Rhea knows the face then, seven years younger, at the bottom of the Larkfold terraces. A boy of eight in a too-big shirt."
+   },
+   {
+    "say": "rhea",
+    "text": "\"Pell. Pell Ashdown. They took you in the raid.\""
+   },
+   {
+    "say": "pell",
+    "text": "\"I was in Corvel's caves. Seven years. I kept the trays. I'm good at trays. I know when a brood's going wrong before the keeper does.\""
+   },
+   {
+    "say": "pell",
+    "text": "\"I don't want to go anywhere else. I want to keep trays where nobody wears what comes out of them.\""
+   },
+   {
+    "set": {
+     "recruited.pell": true
+    }
+   },
+   {
+    "toast": "Pell joins Thornwick, in Oda's greenling caves."
+   }
+  ],
+  "rec.lyle": [
+   {
+    "say": "",
+    "text": "A young man in a Guild mill-worker's coat is standing at Thornwick's gate with his cap in his hands. It takes a moment to place him: the frightened prisoner from the chapel, the one who crossed Kell's Bridge alone."
+   },
+   {
+    "say": "lyle",
+    "text": "\"Lyle. You let me go home, sergeant. Captain. I went back to the mill. Then the Wardens came round the mills for men again.\""
+   },
+   {
+    "say": "lyle",
+    "text": "\"In the barracks they were saying a Larkfold boy rides with the Wardens now. On a grey loftbuck. Finch. Your brother. He's alive.\""
+   },
+   {
+    "say": "lyle",
+    "text": "\"I thought you should hear it from somebody who'd tell you straight. And I thought, if a boy from Larkfold can stand it in there, I can stand it out here. If you'll have me.\""
+   },
+   {
+    "set": {
+     "recruited.lyle": true
+    }
+   },
+   {
+    "join": "lyle"
+   },
+   {
+    "toast": "Lyle joins Rhea's company."
+   }
+  ],
+  "rec.merelOffer": [
+   {
+    "say": "",
+    "text": "A young woman in a high-collared black breeder's coat, with House Mire's silver on the cuffs, is waiting at the gate with a sealed case. She's very composed. Her eyes are red-rimmed."
+   },
+   {
+    "say": "merel",
+    "text": "\"Merel, of House Mire. My grandmother, Mother Asca, sends her compliments to the captain of Thornwick, and a gift.\""
+   },
+   {
+    "say": "",
+    "text": "She opens the case. Clean Guild lulls, two dozen, packed in wet moss, the best strength the Houses make."
+   },
+   {
+    "say": "merel",
+    "text": "\"For your officers, or yourself, or whoever you choose. Every month, privately. Grandmother asks nothing for them. Only that Thornwick's greenlings stay in the highlands, and don't go down to the cities.\""
+   },
+   {
+    "choose": "Merel holds the case open.",
+    "options": [
+     {
+      "label": "Refuse it",
+      "hint": "The greenlings go to the cities.",
+      "do": [
+       {
+        "say": "rhea",
+        "text": "\"Tell your grandmother Thornwick's greenlings go wherever there are people who need them.\""
+       },
+       {
+        "say": "",
+        "text": "Merel shuts the case. For a moment something moves in her face that isn't composure."
+       },
+       {
+        "say": "merel",
+        "text": "\"I'll tell her. She won't be surprised. She says you're your mother's daughter.\""
+       },
+       {
+        "set": {
+         "ascaRefused": true
+        }
+       }
+      ]
+     },
+     {
+      "label": "Take it",
+      "hint": "Two dozen lulls, every month.",
+      "do": [
+       {
+        "say": "",
+        "text": "Rhea takes the case. Merel bows, very correctly, and goes back down the road."
+       },
+       {
+        "set": {
+         "ascaSupply": true
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.merelAfter": [
+   {
+    "say": "",
+    "text": "Merel is at the gate again. No case this time, and no silver on her cuffs: she's cut it off. Her coat is muddy to the knee."
+   },
+   {
+    "say": "merel",
+    "text": "\"House Mire is finished. The Commons opened its brood rooms. Grandmother sat in the records room until they came for her, and then she sat in it after.\""
+   },
+   {
+    "say": "merel",
+    "text": "\"She said you'd refuse the case. She said it was why she sent me. She wanted me to see what somebody looks like when they say no to her.\""
+   },
+   {
+    "say": "merel",
+    "text": "\"I know the second line. The one the Houses keep for the officers' lulls. Every pairing, every strength, back forty years. I can breed it down, the way your Oda does. If you want it.\""
+   },
+   {
+    "set": {
+     "recruited.merel": true
+    }
+   },
+   {
+    "toast": "Merel joins Thornwick, with House Mire's second line."
+   }
+  ],
+  "rec.wystan": [
+   {
+    "if": {
+     "not": "kennelFought"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The old barn at the end of the barrow road is a Warden kennel post: a dozen hound kith in pens, and four kennel-men in grey, and a man in dented Warden plate in the end pen, chained to the post like one of the hounds."
+     },
+     {
+      "say": "",
+      "text": "The kennel-men see the Commons coats and let the hounds off their chains."
+     },
+     {
+      "battle": "recruit-kennels",
+      "win": [
+       {
+        "set": {
+         "kennelFought": true
+        }
+       },
+       {
+        "run": "rec.wystanPen"
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "run": "rec.wystanPen"
+     }
+    ]
+   }
+  ],
+  "rec.wystanPen": [
+   {
+    "if": {
+     "not": "wystanDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The man in the end pen has chiselled the badge off his own breastplate. The marks are still bright."
+     },
+     {
+      "say": "wystan",
+      "text": "\"Wystan. Knight of the Wardens, once. I was given a hound kith at fourteen and swore on her collar I'd hunt whatever I was told to hunt.\""
+     },
+     {
+      "say": "wystan",
+      "text": "\"They told me to hunt children off a cart at Sallow. I let the hound off her lead and told her to go home. They chained me in her pen to wait for the Marshal.\""
+     },
+     {
+      "say": "",
+      "text": "The hounds in the other pens are watching Rhea. Big, grey, kennel-bred, trained to the Warden whistle since they were whelps. The Commons has nothing like them."
+     },
+     {
+      "say": "wystan",
+      "text": "\"They'll be put down when the Marshal comes, or sent to another post. Whatever you do with them, captain, don't make them hunt people.\""
+     },
+     {
+      "choose": "The hounds are watching. So is Wystan.",
+      "options": [
+       {
+        "label": "Open the pens and let them go wild",
+        "hint": "Nobody hunts with them again.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea opens the pens one by one. The hounds don't believe it. Then one goes, and then all of them, out through the barn door and away over the barrows, grey shapes in the long grass."
+         },
+         {
+          "say": "",
+          "text": "Wystan watches them go with his chain round his ankle and his face wet."
+         },
+         {
+          "say": "wystan",
+          "text": "\"Strike this off. I'll carry your shield, or the Commons' baggage, or anything you like. I've nothing to swear on now but you.\""
+         },
+         {
+          "set": {
+           "wystanDone": "freed"
+          }
+         },
+         {
+          "set": {
+           "recruited.wystan": true
+          }
+         },
+         {
+          "join": "wystan"
+         },
+         {
+          "toast": "Wystan joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Keep the best hound for the Commons",
+        "hint": "A trained hound kith.",
+        "do": [
+         {
+          "say": "",
+          "text": "The Commons takes the hounds. One of them, a big grey bitch who won't leave the barn door, comes to Rhea's hand when she whistles."
+         },
+         {
+          "say": "wystan",
+          "text": "\"Then you're the Wardens with a different coat. Leave me the chain, captain. I'll wait for the Marshal.\""
+         },
+         {
+          "say": "",
+          "text": "He won't be argued with. The Commons leaves him there, unchained, with the barn door open, and he's still sitting in the end pen when they ride away."
+         },
+         {
+          "set": {
+           "wystanDone": "kept"
+          }
+         },
+         {
+          "kith": {
+           "species": "warden-reedcat",
+           "level": 10,
+           "id": "kennel-grey",
+           "name": "Greylock"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "wystanDone": "freed"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "An empty kennel, every pen open."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Wystan is still in the end pen, waiting for the Marshal."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.tully": [
+   {
+    "if": {
+     "not": "tullyDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A forge in the Foundry Ward. A young smith with a shaved head and a flame-red beard is quenching a blade, and the steam goes up past a rack of finished knives, Guild issue, for the hatchery guards."
+     },
+     {
+      "say": "",
+      "text": "Rhea picks one up. On the ricasso, very small, under the Guild's stamp, there's another mark: a hammer, and over it three curved lines. A cloud over the anvil."
+     },
+     {
+      "say": "rhea",
+      "text": "\"That's old Ashwin's mark. The Larkfold forge. My father bought his scythes from Ashwin.\""
+     },
+     {
+      "say": "",
+      "text": "The smith goes completely still with the tongs in his hand."
+     },
+     {
+      "say": "tully",
+      "text": "\"Ashwin was my grandfather. I put the mark on every one. Under the Guild's, where nobody looks. So that somebody from home would see it one day and know I was still alive.\""
+     },
+     {
+      "say": "tully",
+      "text": "\"Tully. I was twelve. I ran the wrong way in the raid, down the mountain instead of up it, and a Guild carter took me to Cinderwick and sold my indenture to a forge. Nobody came looking. I thought nobody was left to look.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Thornwick needs a smith. There are keepsakes from Larkfold up there that nobody knows how to mend.\""
+     },
+     {
+      "say": "",
+      "text": "Tully puts the tongs down. He takes his apron off, folds it, and lays it over the anvil."
+     },
+     {
+      "say": "tully",
+      "text": "\"Then they've waited long enough.\""
+     },
+     {
+      "set": {
+       "tullyDone": true
+      }
+     },
+     {
+      "set": {
+       "recruited.tully": true
+      }
+     },
+     {
+      "toast": "Tully joins Thornwick as its smith."
+     }
+    ],
+    "else": [
+     {
+      "say": "tully",
+      "text": "\"Every keepsake at Thornwick is getting a cloud over the anvil. I'm making up for seven years.\""
+     }
+    ]
+   }
+  ],
+  "rec.joss": [
+   {
+    "if": {
+     "not": "strikeMet"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Spinning Rows are full of people who aren't spinning. A rangy man with a fierce copper moustache is standing on a barrel, with a red armband, shouting at the mill gate."
+     },
+     {
+      "say": "joss",
+      "text": "\"Joss. The Coldharrow pits are out, and the mills with them. Tobin of the terraces sent word down the pits that there's a place up the mountain where they take the rings off you. Eight hundred men have walked off a Guild shift since.\""
+     },
+     {
+      "say": "joss",
+      "text": "\"Now the Guild's flooded the Deep to break us. They opened the lock on the old workings with a shift still down there, and said it was an accident. Thirty men. Dunstan's with them.\""
+     },
+     {
+      "set": {
+       "strikeMet": true
+      }
+     },
+     {
+      "toast": "The flooded pit is at Lockkeeper's Deep, south-east of Cinderwick."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "not": "strikeEnd"
+      },
+      "then": [
+       {
+        "if": {
+         "flag": "deepDone"
+        },
+        "then": [
+         {
+          "run": "rec.strikeVote"
+         }
+        ],
+        "else": [
+         {
+          "say": "joss",
+          "text": "\"The Deep, captain. Thirty men in the dark. Talk to me after.\""
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "run": "rec.jossAfter"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.deep": [
+   {
+    "if": {
+     "not": "deepDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The pit head at Lockkeeper's Deep. Water is coming up out of the shaft in a slow black welling. Women with lanterns stand round the head of it. Nobody is going down."
+     },
+     {
+      "say": "",
+      "text": "A tap on the pipe, from below. Then another. Somebody is alive down there, and knocking."
+     },
+     {
+      "choose": "The shaft ladder goes down into the black water.",
+      "options": [
+       {
+        "label": "Go down yourself",
+        "hint": "Someone has to.",
+        "do": [
+         {
+          "fade": "Down the ladder. The water is to her chest at the third landing, and cold enough to stop a heart."
+         },
+         {
+          "say": "",
+          "text": "Thirty men on a ledge above the flood, in the dark, with one lamp between them. A huge grey-bearded foreman is holding the lamp up, and holding up the man next to him with his other arm."
+         },
+         {
+          "say": "dunstan",
+          "text": "\"Dunstan. Foreman. You're the first thing that's come down that ladder in two days that wasn't water.\""
+         },
+         {
+          "say": "",
+          "text": "They come up one by one on the rope, with Rhea at the bottom and Dunstan at the top of each lift. He's the last off the ledge. He carries the lamp up in his teeth."
+         },
+         {
+          "say": "dunstan",
+          "text": "\"A Commons officer, down my pit, in that water. I'll follow anybody who does that. I'll follow them into Vantry.\""
+         },
+         {
+          "set": {
+           "deepDone": "went",
+           "dunstanSaved": true
+          }
+         },
+         {
+          "set": {
+           "recruited.dunstan": true
+          }
+         },
+         {
+          "toast": "Dunstan joins the Commons."
+         }
+        ]
+       },
+       {
+        "label": "Send the section down",
+        "hint": "You're needed alive.",
+        "do": [
+         {
+          "say": "",
+          "text": "The section goes down on ropes. It takes all night. They bring up twenty-six men out of thirty."
+         },
+         {
+          "say": "",
+          "text": "The foreman comes up last, carrying the twenty-seventh, who is dead. He puts him down by the shaft head and looks round for whoever was giving the orders, and finds Rhea standing dry at the top."
+         },
+         {
+          "set": {
+           "deepDone": "sent"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The water at the Deep is going down. Somebody is pumping, by hand, all day and all night."
+     }
+    ]
+   }
+  ],
+  "rec.strikeVote": [
+   {
+    "say": "",
+    "text": "The strike meets in the Rows at dusk. Joss on his barrel. A young millgirl with a bandaged hand and three missing fingers beside him, leading the singing."
+   },
+   {
+    "say": "",
+    "text": "A Guild broker has come too, in a good coat, with a paper: a raise of a penny a day, the lock gates mended, no one punished. If the strike ends tonight."
+   },
+   {
+    "say": "joss",
+    "text": "\"Captain. The Commons is the only army in Ostrel these men trust. Say what you'd do.\""
+   },
+   {
+    "choose": "The Rows go quiet.",
+    "options": [
+     {
+      "label": "\"Don't take the penny. Hold out. The Commons will stand at the mill gates with you.\"",
+      "hint": "A fight at the mill gates.",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "",
+        "text": "The Guild sends its strike-breakers in the night, with clubs, to the mill gates."
+       },
+       {
+        "battle": "recruit-strikebreakers",
+        "win": [
+         {
+          "say": "",
+          "text": "The strike-breakers go back up the Vantry road carrying each other. In the morning, the Guild's broker comes back with a different paper: the lock gates, the pits made safe, a shilling a day, and the lull fitters out of the pits for good."
+         },
+         {
+          "say": "tess",
+          "text": "\"We won. We won, didn't we? Somebody say it.\""
+         },
+         {
+          "say": "joss",
+          "text": "\"We won.\""
+         },
+         {
+          "say": "tess",
+          "text": "\"Tess. I sing in the Rows. Everybody says I'm too loud. Your Commons sings like a funeral, captain. I've heard you. Let me come.\""
+         },
+         {
+          "set": {
+           "strikeEnd": "won"
+          }
+         },
+         {
+          "set": {
+           "recruited.tess": true
+          }
+         },
+         {
+          "join": "tess"
+         },
+         {
+          "set": {
+           "recruited.joss": true
+          }
+         },
+         {
+          "toast": "Tess and Joss join the Commons."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "label": "\"Take the penny. Take the lock gates. Get your people home alive.\"",
+      "hint": "Safer. Smaller.",
+      "by": "rhea",
+      "do": [
+       {
+        "say": "",
+        "text": "The strike takes the penny. The broker shakes Joss's hand, and Joss lets him."
+       },
+       {
+        "say": "joss",
+        "text": "\"It's a penny and a lock gate. It's not nothing. It's not much either.\""
+       },
+       {
+        "say": "joss",
+        "text": "\"I'll come, captain. The pits'll need someone who knows the Commons when the next thing happens. And it will.\""
+       },
+       {
+        "set": {
+         "strikeEnd": "broker"
+        }
+       },
+       {
+        "set": {
+         "recruited.joss": true
+        }
+       },
+       {
+        "toast": "Joss joins the Commons."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.jossAfter": [
+   {
+    "if": {
+     "eq": {
+      "strikeEnd": "won"
+     }
+    },
+    "then": [
+     {
+      "say": "joss",
+      "text": "\"A shilling a day. The Rows have never seen a shilling.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "joss",
+      "text": "\"A penny and a lock gate.\""
+     }
+    ]
+   }
+  ],
+  "rec.cass": [
+   {
+    "if": {
+     "not": "cassMet"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A slight young woman in a grey novice's cap is trimming the lamp at the gallery mouth, where the canal water goes down into the dark under the street."
+     },
+     {
+      "say": "cass",
+      "text": "\"Cass. Novice of the Low Water. The Sisters nurse people in the raw down there, in the old galleries under the canals. Nobody above knows the galleries go all the way under Vantry. Nobody's supposed to.\""
+     },
+     {
+      "say": "cass",
+      "text": "\"I'll take you down, if you're who they say you are. You don't tell anyone where the way in is. Not even your own army.\""
+     },
+     {
+      "set": {
+       "cassMet": true
+      }
+     },
+     {
+      "fade": "Down. A long way down, by lamplight, along a ledge above black water."
+     },
+     {
+      "run": "rec.galleries"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "not": "galleriesDone"
+      },
+      "then": [
+       {
+        "run": "rec.galleries"
+       }
+      ],
+      "else": [
+       {
+        "run": "rec.cassAfter"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.galleries": [
+   {
+    "say": "",
+    "text": "A gallery as long as a street, lit with a thousand candles. People on pallets in rows, sweating, shaking, being sung to. Sisters in grey moving between them."
+   },
+   {
+    "say": "",
+    "text": "At the end, a tall woman with a shaved head and a water-drop pendant is holding a man down by his shoulders while the raw takes him. When it lets go of him, she looks up."
+   },
+   {
+    "say": "agathe",
+    "text": "\"Agathe. You're the greenling woman. The Abbess says we may not take your greenlings. She says the raw is a cleansing. She says the ones who die of it were called.\""
+   },
+   {
+    "say": "agathe",
+    "text": "\"I've buried forty since the spring. I don't think any of them were called.\""
+   },
+   {
+    "if": {
+     "flag": "greenlings"
+    },
+    "then": [
+     {
+      "choose": "Agathe looks at the man on the pallet.",
+      "options": [
+       {
+        "label": "Give her greenlings from Thornwick",
+        "hint": "She'll have to break with her Abbess.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea puts the wet-moss parcel in her hands. Agathe holds it a long time. Then she walks the length of the gallery with it, past the Abbess's chair, without stopping, and sets the first greenling on the man's neck herself."
+         },
+         {
+          "say": "",
+          "text": "The Abbess stands up. Agathe doesn't turn round."
+         },
+         {
+          "say": "agathe",
+          "text": "\"I'll be gone by morning, Mother. Thornwick needs someone to run its sick room who's sat with the raw as long as I have.\""
+         },
+         {
+          "set": {
+           "galleriesDone": true,
+           "agatheBroke": true
+          }
+         },
+         {
+          "set": {
+           "recruited.agathe": true
+          }
+         },
+         {
+          "toast": "Agathe leaves the Sisters, and joins Thornwick's infirmary."
+         }
+        ]
+       },
+       {
+        "label": "Leave it to the Sisters",
+        "do": [
+         {
+          "say": "agathe",
+          "text": "\"Then go with God, greenling woman. Pray for the forty.\""
+         },
+         {
+          "set": {
+           "galleriesDone": true
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "agathe",
+      "text": "\"Come back when your greenlings are a real thing and not a story. We'll still be here. Most of us.\""
+     },
+     {
+      "set": {
+       "galleriesDone": true
+      }
+     }
+    ]
+   },
+   {
+    "run": "rec.cassAfter"
+   }
+  ],
+  "rec.cassAfter": [
+   {
+    "if": {
+     "not": "cassDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Back at the gallery mouth, a Commons runner is waiting for Rhea, from Varro, out of breath."
+     },
+     {
+      "say": "",
+      "text": "He looks at the dark mouth by the canal, and at Cass, and back at Rhea. A way under Vantry's walls. Varro would give a year's pay for it."
+     },
+     {
+      "choose": "The runner is waiting for an order. Cass is watching.",
+      "options": [
+       {
+        "label": "Keep the Sisters' secret",
+        "hint": "A way under Vantry, given up.",
+        "do": [
+         {
+          "say": "rhea",
+          "text": "\"A culvert. Nothing down there but rats. Tell Varro I'll come.\""
+         },
+         {
+          "say": "",
+          "text": "The runner goes. Cass lets out her breath."
+         },
+         {
+          "say": "cass",
+          "text": "\"You could have had Vantry. I'd have told you that myself. You didn't even ask.\""
+         },
+         {
+          "say": "cass",
+          "text": "\"I'm done with the galleries. I want to see daylight with someone who keeps their word. Take me with you.\""
+         },
+         {
+          "set": {
+           "cassDone": "kept"
+          }
+         },
+         {
+          "set": {
+           "recruited.cass": true
+          }
+         },
+         {
+          "join": "cass"
+         },
+         {
+          "toast": "Cass joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Tell Varro about the galleries",
+        "hint": "The Commons needs a way in.",
+        "do": [
+         {
+          "say": "rhea",
+          "text": "\"Tell Varro there's a way under Vantry's walls, by the canal. I'll show him.\""
+         },
+         {
+          "say": "",
+          "text": "Cass turns round and goes back down into the dark without a word. The next time Rhea comes, the gallery mouth is bricked up from inside."
+         },
+         {
+          "set": {
+           "cassDone": "told",
+           "galleryWay": true
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "cassDone": "kept"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "The gallery mouth. Candlelight, a long way down."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The gallery mouth is bricked up from inside."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.dellan": [
+   {
+    "if": {
+     "not": "dellanMet"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A woman in a Guild breeder's apron is sitting on a bollard on the quay with her hands in her lap. Corvel's hatchery is empty behind her: the Commons took its children. She's out of work, and doesn't seem to mind."
+     },
+     {
+      "say": "",
+      "text": "She has three faint tattoo dots under one eye. While she sits, she's humming. It's very nearly the foal song. The third line is wrong in a way Rhea has never heard it wrong before."
+     },
+     {
+      "say": "dellan",
+      "text": "\"Dellan. Breeder, Corvel's. Was. I've no idea where that tune's from. I've always had it. The Guild found me in a basket when I was little, they said, and raised me to the trays.\""
+     },
+     {
+      "set": {
+       "dellanMet": true
+      }
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "vaelAsked"
+      },
+      "then": [
+       {
+        "run": "rec.dellanTruth"
+       }
+      ],
+      "else": [
+       {
+        "say": "dellan",
+        "text": "\"Still here. Nobody hires a breeder from the House the Commons emptied.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.dellanTruth": [
+   {
+    "if": {
+     "not": "dellanDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Dellan is on her bollard. The tune again."
+     },
+     {
+      "choose": "What does Rhea tell her?",
+      "options": [
+       {
+        "label": "\"You weren't found in a basket. You were taken off a spire in Vael when you were four, by Guild trappers. Your people still sing the third line the way you do. Your mother's alive.\"",
+        "hint": "All of it.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Dellan doesn't say anything for a long time. Then she touches the dots under her eye, as if she'd never noticed them."
+         },
+         {
+          "say": "dellan",
+          "text": "\"Twenty-three years. They told me the dots were a breeder's mark from the House.\""
+         },
+         {
+          "say": "dellan",
+          "text": "\"I've a husband, and a girl of six. Can they come? To Thornwick first. I'd like to know who I am before I go and meet her.\""
+         },
+         {
+          "set": {
+           "dellanDone": "truth"
+          }
+         },
+         {
+          "set": {
+           "recruited.dellan": true
+          }
+         },
+         {
+          "toast": "Dellan joins Thornwick, with her family."
+         },
+         {
+          "say": "",
+          "text": "At Thornwick, in the evening, she sits on the terrace wall while Rhea sings. When the third line comes, Dellan sings it with her, the Spire way, without knowing she knows it."
+         }
+        ]
+       },
+       {
+        "label": "Tell her nothing",
+        "hint": "Some truths are too heavy.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea says nothing. Dellan goes on humming. Somewhere a long way off, on a spire, an old woman is still waiting."
+         },
+         {
+          "set": {
+           "dellanDone": "silent"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "dellanDone": "truth"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Dellan's bollard is empty."
+       }
+      ],
+      "else": [
+       {
+        "say": "dellan",
+        "text": "\"Hello again, captain.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.isel": [
+   {
+    "if": {
+     "not": "iselMet"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A woman is standing on the cliff edge at the end of the village, with her white hair blowing loose, and a mistwing on her arm the size of a gate. The villagers stay well back from her."
+     },
+     {
+      "say": "isel",
+      "text": "\"Isel, of Highspire. The Spire Folk heard you sing the foal song from the terraces, all the way across the cloud. Nobody's sung the third line of it right this side of the cloud in a hundred years.\""
+     },
+     {
+      "say": "isel",
+      "text": "\"The elders want to see the singer. The ridge path is cloud all the way. Follow the bird, not your feet, and you won't walk off the edge.\""
+     },
+     {
+      "set": {
+       "iselMet": true,
+       "open.cloudline-vael": true
+      }
+     },
+     {
+      "toast": "The spire ridge west of the Cloudline is open: follow Isel's mistwing to Vael."
+     }
+    ],
+    "else": [
+     {
+      "say": "isel",
+      "text": "\"Follow the bird. Not your feet.\""
+     }
+    ]
+   }
+  ],
+  "rec.elders": [
+   {
+    "if": {
+     "not": "vaelAsked"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The elders of Highspire sit round the white-stone fire, five old women and a very old man, with their hair loose and mistwing feathers in it."
+     },
+     {
+      "say": "isel",
+      "text": "\"They say: you sing the third line our way, lowlander. Where did your mother learn it?\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"From her mother. From someone in the clans. Nobody ever said.\""
+     },
+     {
+      "say": "isel",
+      "text": "\"They say: twenty-three years ago, Guild trappers came over the ridge for mistwing eggs, and took a child from the lowest spire. Dellan, four years old. Three dots under her eye. They ask every lowlander who comes. Have you seen her?\""
+     },
+     {
+      "choose": "The elders wait. The fire cracks.",
+      "options": [
+       {
+        "label": "\"I've seen her. She's a breeder in the Millcities. She hums your song and doesn't know where it's from.\"",
+        "by": "rhea",
+        "when": {
+         "flag": "dellanMet"
+        },
+        "do": [
+         {
+          "say": "",
+          "text": "One of the old women puts her face in her hands."
+         },
+         {
+          "say": "isel",
+          "text": "\"Her mother. She says: thank you. She says: don't bring her here like a parcel. Let her choose.\""
+         },
+         {
+          "set": {
+           "vaelAsked": "told"
+          }
+         }
+        ]
+       },
+       {
+        "label": "\"I haven't seen her. I'll look.\"",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "isel",
+          "text": "\"They say: then look. They have waited twenty-three years. They can wait for a lowlander to look.\""
+         },
+         {
+          "set": {
+           "vaelAsked": "looking"
+          }
+         }
+        ]
+       },
+       {
+        "label": "\"She's gone. The Houses don't keep children that long.\"",
+        "hint": "Kinder than hope?",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "The elders bow their heads. The old woman at the end begins to sing, very quietly, the song for the dead."
+         },
+         {
+          "set": {
+           "vaelAsked": "dead"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "isel",
+      "text": "\"They have heard you. Whatever you told them, you came over the ridge to tell it. I'd like to see what the singer does next. My bird and I will come with you.\""
+     },
+     {
+      "set": {
+       "recruited.isel": true
+      }
+     },
+     {
+      "join": "isel"
+     },
+     {
+      "toast": "Isel joins Rhea's company."
+     }
+    ],
+    "else": [
+     {
+      "say": "isel",
+      "text": "\"The elders sing for you every evening now. You can't hear it. They don't mind.\""
+     }
+    ]
+   }
+  ],
+  "rec.teodric": [
+   {
+    "if": {
+     "not": "teodricDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A stage on a cart at the fair, and a crowd round it. A painted cloth says THE CAPTAIN OF THE CLOUD: A TRUE HISTORY. On the stage, an actress in a tan coat is fighting six Wardens at once with a scythe, and winning, and singing."
+     },
+     {
+      "say": "",
+      "text": "The Corran in the play has a black cloak and a moustache, and hisses. The crowd hisses back. The Finch in the play is a little boy carried off screaming by a Warden, and the crowd weeps."
+     },
+     {
+      "say": "teodric",
+      "text": "\"Teodric. My play. Do you like it? You're her, aren't you? Of course you are. Look at your coat. Is the scythe right? I guessed the scythe.\""
+     },
+     {
+      "choose": "The actress is singing a song Rhea has never sung, in a voice she's never had.",
+      "options": [
+       {
+        "label": "\"Nobody fought six Wardens with a scythe. My husband didn't hiss. My brother wasn't carried off screaming. He went.\"",
+        "hint": "Tell him the truth.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "Teodric's face goes through several things at once. Then he takes the quill from behind his ear."
+         },
+         {
+          "say": "teodric",
+          "text": "\"He went? Of his own accord? Oh, that's better. That's much worse, and much better. Tell me all of it.\""
+         },
+         {
+          "say": "teodric",
+          "text": "\"No, don't, not here. I'll come with you and watch. The Commons needs someone to tell its story to towns like this, and it ought to be the true one, more or less. More, mostly.\""
+         },
+         {
+          "set": {
+           "teodricDone": "truth"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Let the play run",
+        "hint": "It's doing the Commons good.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea watches to the end. The crowd stands and cheers the captain of the cloud. Three young men in the front row ask where the Commons recruits."
+         },
+         {
+          "say": "teodric",
+          "text": "\"You let it run! You know what it's for. I'll write you a better one on the road. With fewer scythes. Possibly.\""
+         },
+         {
+          "set": {
+           "teodricDone": "ran"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "set": {
+       "recruited.teodric": true
+      }
+     },
+     {
+      "toast": "Teodric joins the Commons."
+     }
+    ],
+    "else": [
+     {
+      "say": "teodric",
+      "text": "\"Act Two needs a villain who's sorry. I've never written one of those. It's very difficult.\""
+     }
+    ]
+   }
+  ],
+  "rec.lisle": [
+   {
+    "if": {
+     "not": "lisleDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A thin man with his hair in a knot is sitting on the College steps with a doctor's bag between his feet. His gown has the College's band on it, and under it, a Warden surgeon's grey."
+     },
+     {
+      "say": "lisle",
+      "text": "\"Dr Lisle. Warden surgeon, at the Vantry barracks. College man, once. They've called me back to give evidence at the College's own trial, because the Guild's certificate had my name among the physicians who'd signed it.\""
+     },
+     {
+      "say": "lisle",
+      "text": "\"I signed it. I fit tins to officers who couldn't sleep. I told myself it was medicine. The Guild will want me to say so again, at the trial. The College will want me to say I was wrong. Either way, I'm finished in Vantry.\""
+     },
+     {
+      "say": "lisle",
+      "text": "\"I know who you are, captain. I've treated people you know. I'd rather not say who.\""
+     },
+     {
+      "choose": "Lisle turns his bag round and round between his feet.",
+      "options": [
+       {
+        "label": "\"Tell the College the truth. Then come to Thornwick. There's a lot of weaning to do, and nobody there who knows the Guild's strengths the way you do.\"",
+        "hint": "A way out.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "",
+          "text": "He laughs, once, a terrible little laugh."
+         },
+         {
+          "say": "lisle",
+          "text": "\"You'd have me. Knowing what I did.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"I'd have you doing the opposite of it.\""
+         },
+         {
+          "say": "",
+          "text": "He gives his evidence the next morning, all of it. The College hears him out in silence. Afterwards, he walks out of the hall and keeps walking, north, to the mountain road."
+         },
+         {
+          "set": {
+           "lisleDone": "thornwick"
+          }
+         },
+         {
+          "set": {
+           "recruited.lisle": true
+          }
+         },
+         {
+          "toast": "Dr Lisle joins Thornwick."
+         }
+        ]
+       },
+       {
+        "label": "Leave him to the College",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea leaves him on the steps. He's still there when she goes, turning the bag round."
+         },
+         {
+          "set": {
+           "lisleDone": "left"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "lisleDone": "thornwick"
+       }
+      },
+      "then": [
+       {
+        "say": "lisle",
+        "text": "\"Thirty-one weaned this month. Oda says I'm too gentle. I've never been called that.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The College steps are empty."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.osk": [
+   {
+    "if": {
+     "not": "oskDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A town of black stone on the side of a mountain that's breathing. The air tastes of struck matches. Ash is coming down like dirty snow."
+     },
+     {
+      "say": "",
+      "text": "A broad old man with a white beard and his collar open, his whole neck pale with old ring scars, is shouting orders on the harbour steps."
+     },
+     {
+      "say": "harl",
+      "text": "\"Harl. Mayor of Osk, God help us. Exiles, every one of us. Lull-scarred, ring-marked. Ostrel threw us out, so we came here, where nobody else would live.\""
+     },
+     {
+      "say": "harl",
+      "text": "\"The mountain's going. Ash flow on the north side, coming down the gully. It'll be here by dark. We've boats for the upper town, and the lower town's cut off below the gully. We can't do both.\""
+     },
+     {
+      "choose": "The mountain grumbles. Harl looks at the Commons officer on his harbour.",
+      "options": [
+       {
+        "label": "The lower town first",
+        "hint": "The ones who can't get out on their own.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea takes the section down through the gully with ropes, and the lower town comes out on them: old men, children, a pregnant woman carried in a net."
+         },
+         {
+          "say": "",
+          "text": "A young diver with a harpoon and salt-bleached hair goes back in three times for the people who won't leave, and comes out the third time with his hair on fire and an old woman on his back."
+         },
+         {
+          "say": "kel",
+          "text": "\"Kel. That's my grandmother. She wanted to finish her soup.\""
+         },
+         {
+          "say": "",
+          "text": "The ash comes down the gully at dusk, onto empty streets. The upper town gets out by boat. Some of the boats are slow. Everyone lives."
+         },
+         {
+          "set": {
+           "oskDone": "lower"
+          }
+         },
+         {
+          "set": {
+           "recruited.kel": true
+          }
+         },
+         {
+          "join": "kel"
+         },
+         {
+          "toast": "Kel joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "The boats and the upper town",
+        "hint": "The most people, the fastest.",
+        "do": [
+         {
+          "say": "",
+          "text": "The upper town goes down to the harbour in good order, with Harl counting heads. The boats get out past the reef as the ash comes down the gully."
+         },
+         {
+          "say": "",
+          "text": "The lower town gets itself out, mostly, over the rocks. Mostly."
+         },
+         {
+          "set": {
+           "oskDone": "upper"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "harl",
+      "text": "\"Osk's still here. Ash on everything, but here. You came across the sea for exiles, captain. The exiles will come across it for you. I'll raise what militia we have.\""
+     },
+     {
+      "set": {
+       "recruited.harl": true
+      }
+     },
+     {
+      "toast": "Harl joins the Commons, with the militia of Osk."
+     }
+    ],
+    "else": [
+     {
+      "say": "harl",
+      "text": "\"We're sweeping the ash off the steps. We'll be sweeping it for a year. We're good at that.\""
+     }
+    ]
+   }
+  ],
+  "rec.saltHouse": [
+   {
+    "if": {
+     "not": "saltDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A long low house of salt-crusted stone on the edge of the pans, with its doors open to the wind. Inside, from floor to roof, shelves of ledgers, wrapped in oilcloth against the damp."
+     },
+     {
+      "say": "ysolde",
+      "text": "\"Ysolde. I keep the Salt House records. The Guild started here, captain, before Vantry. Breeding brine kith for salt-hauling, two hundred years ago. Every pairing they ever made is written down on these shelves.\""
+     },
+     {
+      "say": "ysolde",
+      "text": "\"They moved to Vantry and forgot this place. I didn't. I've read every book. There are things in them the Houses would burn the country to keep quiet.\""
+     },
+     {
+      "say": "",
+      "text": "She hands Rhea one book, open. Notes on brine kith that would not breed tame, and were let go into the marsh, a hundred and thirty years ago, and bred wild there ever since."
+     },
+     {
+      "say": "ysolde",
+      "text": "\"That herd is still out there. My tracker's been following it all summer.\""
+     },
+     {
+      "say": "jessamy",
+      "text": "\"Jessamy. Two hundred head on the far pans, wild since before your grandmother. The Guild's trappers are a day behind me. They'd like them back. Brine kith haul like nothing else alive.\""
+     },
+     {
+      "choose": "Jessamy is watching Rhea. So is Ysolde.",
+      "options": [
+       {
+        "label": "Leave the herd wild",
+        "hint": "Two hundred years free.",
+        "do": [
+         {
+          "say": "",
+          "text": "The Commons fires the reed beds between the trappers and the pans, carefully, with the wind right. The trappers go round. It takes them a week. The herd is gone into the deep marsh by then."
+         },
+         {
+          "say": "jessamy",
+          "text": "\"You could've had two hundred haulers. You'd have won a war with them, maybe.\""
+         },
+         {
+          "say": "jessamy",
+          "text": "\"I'll come. Somebody has to tell the Commons which marsh not to cross.\""
+         },
+         {
+          "set": {
+           "saltHerd": "wild"
+          }
+         },
+         {
+          "set": {
+           "recruited.jessamy": true
+          }
+         },
+         {
+          "join": "jessamy"
+         },
+         {
+          "toast": "Jessamy joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Take a few for the Commons",
+        "hint": "Haulers for the war.",
+        "do": [
+         {
+          "say": "",
+          "text": "Jessamy shows the Commons where the herd waters, and turns her back while they rope three young ones. She leaves that night without saying goodbye."
+         },
+         {
+          "set": {
+           "saltHerd": "taken"
+          }
+         },
+         {
+          "kith": {
+           "species": "brineback",
+           "level": 14,
+           "id": "salt-brine",
+           "name": "Saltlick"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "choose": "Ysolde is closing the book.",
+      "options": [
+       {
+        "label": "\"Publish them. All of it. Let the country read where the Guild came from.\"",
+        "hint": "Ask her.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "ysolde",
+          "text": "\"Then I'll need a press and a safe place to run it. Thornwick, I'm told, has both, or will.\""
+         },
+         {
+          "set": {
+           "saltRecords": "published"
+          }
+         }
+        ]
+       },
+       {
+        "label": "\"Keep them safe. They're yours.\"",
+        "hint": "Leave it to her.",
+        "by": "rhea",
+        "do": [
+         {
+          "say": "ysolde",
+          "text": "\"Safe. Yes. They'll be safer at Thornwick than in a salt marsh with the Guild a day off. I'll come. The books come with me, and stay shut.\""
+         },
+         {
+          "set": {
+           "saltRecords": "kept"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "set": {
+       "saltDone": true
+      }
+     },
+     {
+      "set": {
+       "recruited.ysolde": true
+      }
+     },
+     {
+      "toast": "Ysolde joins Thornwick, with the Salt House records."
+     }
+    ],
+    "else": [
+     {
+      "say": "ysolde",
+      "text": "\"Two hundred years of salt, and the ink still holds.\""
+     }
+    ]
+   }
+  ],
+  "rec.herd": [
+   {
+    "if": {
+     "not": "herdDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Wandering Herd's summer camp: felt tents, pens of woven hurdle, and out on the plateau, as far as Rhea can see, ironbacks. Thousands of them, moving slowly into the wind."
+     },
+     {
+      "say": "",
+      "text": "Three Commons foragers are by the pens, with an ironback calf roped. A young nomad with bone-beaded braids is standing between them and the calf, unarmed."
+     },
+     {
+      "say": "tavi",
+      "text": "\"Tavi. The matriarch's rider. Your soldiers have taken nine calves this month, captain. They call it foraging. We call it what it is. The herd doesn't belong to anybody.\""
+     },
+     {
+      "say": "",
+      "text": "The foragers look at Rhea. It's her column they're feeding."
+     },
+     {
+      "choose": "The calf is bawling for its mother.",
+      "options": [
+       {
+        "label": "Stop them",
+        "hint": "Your column eats less.",
+        "do": [
+         {
+          "say": "rhea",
+          "text": "\"Untie it. Pay for the nine you've taken, out of the column's purse. And nobody forages on the plateau again.\""
+         },
+         {
+          "say": "",
+          "text": "The foragers untie the calf. It goes off to the herd at a lopsided gallop. Tavi watches it all the way in."
+         },
+         {
+          "say": "tavi",
+          "text": "\"Nobody's ever stopped their own side for us. The matriarch will want to see that.\""
+         },
+         {
+          "say": "",
+          "text": "The matriarch, it turns out, is an ironback the size of a house, who looks at Rhea for a long time and then goes back to grazing. Tavi seems to think this is a great honour."
+         },
+         {
+          "set": {
+           "herdDone": "stopped"
+          }
+         },
+         {
+          "set": {
+           "recruited.tavi": true
+          }
+         },
+         {
+          "join": "tavi"
+         },
+         {
+          "toast": "Tavi joins Rhea's company."
+         }
+        ]
+       },
+       {
+        "label": "Let them forage",
+        "hint": "An army has to eat.",
+        "do": [
+         {
+          "say": "",
+          "text": "The foragers take the calf. Tavi doesn't fight. She just turns and walks out onto the plateau, toward the herd, and doesn't look back."
+         },
+         {
+          "say": "",
+          "text": "By morning, the whole herd has moved forty miles east, and the summer camp is gone with it."
+         },
+         {
+          "set": {
+           "herdDone": "foraged"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "herdDone": "stopped"
+       }
+      },
+      "then": [
+       {
+        "run": "rec.senne"
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Hurdle pens, empty, and trampled grass going east."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.senne": [
+   {
+    "if": {
+     "not": "senneDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A gentle old man in a saffron coat, with blue herd marks tattooed on his shaven head, is going along the Commons' own ironbacks, feeling their legs."
+     },
+     {
+      "say": "senne",
+      "text": "\"Senne. Herd healer. Tavi said you'd want your beasts looked at. Two of them are lame, and one's been fed wrong all the way from Corvane.\""
+     },
+     {
+      "say": "senne",
+      "text": "\"Tavi vouches for you. Tavi doesn't vouch for her own cousins. I've healed the herd for forty years, and the herd can spare me. Your ironbacks can't.\""
+     },
+     {
+      "set": {
+       "senneDone": true
+      }
+     },
+     {
+      "set": {
+       "recruited.senne": true
+      }
+     },
+     {
+      "toast": "Senne joins the Commons, to tend its ironbacks."
+     }
+    ],
+    "else": [
+     {
+      "say": "senne",
+      "text": "\"Feed them salt. They'll walk to the sea for you.\""
+     }
+    ]
+   }
+  ],
+  "rec.thal": [
+   {
+    "if": {
+     "not": "thalDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A hut at the foot of the steps up into the storm. A young woman with storm-grey hair that stands straight up is coiling copper wire, fast, with her teeth set."
+     },
+     {
+      "say": "thal",
+      "text": "\"Thal. There's a storm kith nest at the top of the Roost: a stormcrest and her clutch. I've watched them nine years. The Guild's trappers are coming up the north side tonight for the eggs.\""
+     },
+     {
+      "say": "thal",
+      "text": "\"I'm moving the nest. Up the steps, over the top, to the old roost on the south face where they can't climb. On my own it's a night's work and I won't finish. Help me, or get out of my light.\""
+     },
+     {
+      "choose": "Thal goes on coiling wire.",
+      "options": [
+       {
+        "label": "Help her move the nest",
+        "hint": "A long night, and a fight at dawn.",
+        "do": [
+         {
+          "fade": "Up the steps, into the storm."
+         },
+         {
+          "say": "",
+          "text": "The stormcrest lets them come close because Thal sings to her, a flat crackling hum like a kettle. The eggs are as heavy as stones, and hot. They carry them over the top one at a time, in the dark, in the rain, with lightning walking on the ridge."
+         },
+         {
+          "say": "",
+          "text": "The trappers come up the north side at dawn to an empty nest, and find Rhea and her party waiting at the top of their ropes."
+         },
+         {
+          "battle": "recruit-trappers",
+          "win": [
+           {
+            "say": "",
+            "text": "The trappers go back down their ropes with nothing. On the south face, the stormcrest settles on her eggs in the old roost, and puts her head under her wing."
+           },
+           {
+            "say": "thal",
+            "text": "\"Nine years I've done this alone. That's the first time anyone's carried an egg for me.\""
+           },
+           {
+            "say": "thal",
+            "text": "\"Your Commons fights in all weathers, I suppose. I read weather. Storm weather. I'll come down off the Roost, for once.\""
+           },
+           {
+            "set": {
+             "thalDone": "helped"
+            }
+           },
+           {
+            "set": {
+             "recruited.thal": true
+            }
+           },
+           {
+            "join": "thal"
+           },
+           {
+            "toast": "Thal joins Rhea's company."
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "Leave her to it",
+        "do": [
+         {
+          "say": "",
+          "text": "Thal doesn't look up. In the morning there's smoke on the north side of the Roost, and the trappers' carts going down the road, loaded."
+         },
+         {
+          "set": {
+           "thalDone": "left"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "thalDone": "helped"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "The hut is shut. Copper wire is coiled neatly by the door."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Thal's hut is shut, and she won't open it."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.pim": [
+   {
+    "if": {
+     "not": "pimDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Drovers' Halt is full: the great drove, once in a lifetime, every breeder in the north bringing their kith down the old road to the lowland markets at once. A dapper man with a waxed moustache and a teal coat covered in rosettes finds Rhea before she's off the road."
+     },
+     {
+      "say": "pim",
+      "text": "\"Pim! Show judge, breeder, man of taste. You're the Thornwick lines. Everyone's talking about your loftbucks. Those foal-song lines. Name a price for the breeding rights. Any price.\""
+     },
+     {
+      "choose": "Pim has a purse out already.",
+      "options": [
+       {
+        "label": "Refuse",
+        "hint": "He'll want to race.",
+        "do": [
+         {
+          "say": "rhea",
+          "text": "\"They're not for sale.\""
+         },
+         {
+          "say": "pim",
+          "text": "\"Then race me for them! The great drove, Halt to Kerrow, first herd over the bridge. If you win, I'll come and breed for you, and gladly. If I win, I name the price after all.\""
+         },
+         {
+          "fade": "The great drove. Halt to Kerrow, two days on the old road."
+         },
+         {
+          "say": "",
+          "text": "Pim's herd is faster on the flat. Rhea's is steadier. At the Kerrow gorge, where the road narrows to a ledge, Pim's lead buck balks at the drop, and the whole herd balls up behind it."
+         },
+         {
+          "say": "",
+          "text": "Rhea sings. Ash goes first, and the Thornwick loftbucks go after him in a line along the ledge like beads on a string, and over the bridge."
+         },
+         {
+          "say": "pim",
+          "text": "\"The song. You cheated with the song. Ha! Wonderful. I've been on the wrong side all my life. I always come over to the winner, captain. Ask anyone.\""
+         },
+         {
+          "set": {
+           "pimDone": "won"
+          }
+         },
+         {
+          "set": {
+           "recruited.pim": true
+          }
+         },
+         {
+          "toast": "Pim joins Thornwick, to breed its lines."
+         }
+        ]
+       },
+       {
+        "label": "Sell him the rights (150 coin)",
+        "hint": "A fortune, and the lines go to whoever he sells them to.",
+        "do": [
+         {
+          "pay": -150,
+          "then": [],
+          "else": []
+         },
+         {
+          "say": "",
+          "text": "Pim pays in good Corvane coin and shakes hands, and in a year there will be foal-song loftbucks in every Guild stud in Ostrel."
+         },
+         {
+          "set": {
+           "pimDone": "sold"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "pimDone": "won"
+       }
+      },
+      "then": [
+       {
+        "say": "pim",
+        "text": "\"Rosettes for everyone!\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Pim has gone down the road with his new breeding rights."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "rec.aldous": [
+   {
+    "say": "aldous",
+    "text": "\"Captain. The court is mine again, for whatever that's worth after my mother's done with it. Lorne has a king who stood in his own court and was told the truth. Ostrel should have one too.\""
+   },
+   {
+    "say": "aldous",
+    "text": "\"My guard has never fought for anything but a hunting party. They'd like to. So would I. When the Commons goes to Vantry, the Crown goes with it.\""
+   },
+   {
+    "set": {
+     "recruited.aldous": true
+    }
+   },
+   {
+    "toast": "King Aldous joins the Commons, with the Crown's guard."
+   }
+  ],
+  "rec.hallet": [
+   {
+    "say": "",
+    "text": "Hallet is outside the stockade where Kane is held, in full kit, alone, as if he's on guard. He isn't. He's waiting for Rhea."
+   },
+   {
+    "say": "hallet",
+    "text": "\"I followed Kane for twenty years. I'd have burned the Broodhouse for him. I nearly did.\""
+   },
+   {
+    "say": "hallet",
+    "text": "\"You shut the lull trade with your own hands at Tarsis, when Kane would have sold it on. That's the only reason I'm standing here and not in there with him. Marshal. Where do you want me?\""
+   },
+   {
+    "set": {
+     "recruited.hallet": true
+    }
+   },
+   {
+    "toast": "Hallet stays with the Commons, under Rhea."
+   }
+  ],
+  "rec.corranJoins": [
+   {
+    "say": "",
+    "text": "Corran is at the gate with a pack on his shoulder, in a plain Commons coat that doesn't fit him. His neck is bare. There's nothing on it but scars."
+   },
+   {
+    "say": "corran",
+    "text": "\"I know the Broodhouse. Every hall, every door, every guard's round. I watched it for two years from the other side.\""
+   },
+   {
+    "say": "corran",
+    "text": "\"I'm not asking for anything. Put me at the back of the column. Put me in chains if the men want it. Just let me be there.\""
+   },
+   {
+    "set": {
+     "recruited.corran": true
+    }
+   },
+   {
+    "join": "corran"
+   },
+   {
+    "toast": "Corran goes with the column to Vantry."
+   }
+  ],
+  "rec.finchJoins": [
+   {
+    "say": "",
+    "text": "A door in the inner wall opens a crack, and Finch slips out of it, with soot on his face and the number on his wrist, and Smoke's old halter rope coiled over his shoulder."
+   },
+   {
+    "say": "finch",
+    "text": "\"The little ones are in the east hall with the door shut. They'll stay there. I told them I'd be back.\""
+   },
+   {
+    "say": "finch",
+    "text": "\"Halloran's by the fire in the inner yard. I've waited four years to see someone walk up to him. I'd like it to be us.\""
+   },
+   {
+    "set": {
+     "recruited.finch": true
+    }
+   },
+   {
+    "join": "finch"
+   },
+   {
+    "toast": "Finch joins Rhea for the last of it."
+   }
+  ]
+ }
+}

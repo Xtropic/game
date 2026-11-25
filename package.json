@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build && node tools/voice/pack.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "e2e": "node tests/e2e/smoke.mjs && node tests/e2e/battle.mjs && node tests/e2e/prologue.mjs && node tests/e2e/act1.mjs && node tests/e2e/act2.mjs && node tests/e2e/act3.mjs && node tests/e2e/menu.mjs"
+    "e2e": "node tests/e2e/smoke.mjs && node tests/e2e/battle.mjs && node tests/e2e/prologue.mjs && node tests/e2e/act1.mjs && node tests/e2e/act2.mjs && node tests/e2e/act3.mjs && node tests/e2e/menu.mjs && node tests/e2e/recruits.mjs"
   },
   "dependencies": {
     "@types/three": "^0.170.0",

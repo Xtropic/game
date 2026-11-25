@@ -1,0 +1,68 @@
+{
+ "id": "recruit-stampede",
+ "name": "The stampede",
+ "backdrop": "meadow",
+ "party": true,
+ "intro": [
+  "Wild loftbucks out of the fog, mad with fright, coming for the gap in the terrace wall.",
+  "Turn the leaders and the rest will follow."
+ ],
+ "won": "The herd breaks round the wall",
+ "lost": "The herd goes through the gap",
+ "units": [
+  {
+   "id": "sb1",
+   "name": "Wild loftbuck",
+   "look": "loftbuck:#a8988a",
+   "side": "foe",
+   "row": "front",
+   "level": 5,
+   "skills": [
+    "horns"
+   ],
+   "at": [
+    168,
+    92
+   ],
+   "kith": true,
+   "hp": 36,
+   "species": "loftbuck"
+  },
+  {
+   "id": "sb2",
+   "name": "Wild loftbuck",
+   "look": "loftbuck:#9a8a7a",
+   "side": "foe",
+   "row": "front",
+   "level": 4,
+   "skills": [
+    "horns"
+   ],
+   "at": [
+    186,
+    114
+   ],
+   "kith": true,
+   "hp": 30,
+   "species": "loftbuck"
+  },
+  {
+   "id": "sb3",
+   "name": "Loftbuck yearling",
+   "look": "loftbuck:#c8b8a8",
+   "side": "foe",
+   "row": "front",
+   "level": 3,
+   "skills": [
+    "horns"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "kith": true,
+   "hp": 22,
+   "species": "loftbuck"
+  }
+ ]
+}
