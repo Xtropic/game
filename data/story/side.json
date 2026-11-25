@@ -13,7 +13,35 @@
    "side.saltBurners": "tension",
    "side.saltStory": "tender",
    "side.herdPoachers": "tension",
-   "side.matriarch": "hope"
+   "side.matriarch": "hope",
+   "side.heskFoal": "tender",
+   "side.hollinShow": "camp",
+   "side.rareStrains": "camp",
+   "side.rareStrainsBack": "camp",
+   "side.spirecrestGift": "hope",
+   "side.saltCatGift": "camp",
+   "side.nightGrazer": "night",
+   "side.flawedLine": "grief",
+   "side.droveAfter": "hope",
+   "side.cheeseRun": "hope",
+   "side.cheeseLose": "hope",
+   "side.swearBuck": "camp",
+   "side.swearWidow": "camp",
+   "side.mistPost": "tender",
+   "side.postDrop": "camp",
+   "side.postDropHigh": "camp",
+   "side.ghost": "night",
+   "side.cards": "tension",
+   "side.cardsPipe": "camp",
+   "side.cardsPipe2": "camp",
+   "side.cardsHollin": "tension",
+   "side.cardsCorvane": "tension",
+   "side.cardsCheck": "hope",
+   "side.riddler": "camp",
+   "side.stargazer": "night",
+   "side.smugglerBook": "camp",
+   "side.smuggler": "camp",
+   "side.beautyShow": "hope"
   },
   "stages": {}
  },
@@ -26,6 +54,15 @@
   "saltchild": "A Salt House child",
   "herdrider": "A Herd rider",
   "trapper": "Guild trapper",
+  "hm-boy": "A Highmoss boy",
+  "mf-herder": "A Mistfold herder",
+  "mf-old": "Gobber's widow",
+  "innkeeper": "The Millbridge postmistress",
+  "kr-smith": "The toll keeper",
+  "ds-keeper": "The stargazer",
+  "smuggler": "Gaunt",
+  "wb-child": "A mill child",
+  "gully": "Gully",
   "isel": "Isel",
   "dellan": "Dellan",
   "agathe": "Sister Agathe",
@@ -556,6 +593,2223 @@
      "run": "side.herdPoachers"
     }
    ]
+  },
+  {
+   "id": "side-foaling-pen",
+   "map": "thornwick",
+   "x": 22,
+   "y": 9,
+   "look": "hesk",
+   "when": {
+    "stage": [
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "recruited.hesk",
+    "not": "br.lineDone"
+   },
+   "talk": [
+    {
+     "run": "side.heskFoal"
+    }
+   ]
+  },
+  {
+   "id": "side-judging-ring",
+   "map": "hollin-fair",
+   "x": 14,
+   "y": 6,
+   "look": "vil5",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "br.foal",
+    "not": "br.show"
+   },
+   "talk": [
+    {
+     "run": "side.hollinShow"
+    }
+   ]
+  },
+  {
+   "id": "side-spire-ledge",
+   "map": "town-highspire",
+   "x": 16,
+   "y": 5,
+   "look": "isel",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "br.strainsAsked",
+    "not": "br.spire",
+    "atLeast": {
+     "spireTrust": 0
+    }
+   },
+   "talk": [
+    {
+     "run": "side.spirecrestGift"
+    }
+   ]
+  },
+  {
+   "id": "side-salt-dyke",
+   "map": "town-salt-house",
+   "x": 14,
+   "y": 10,
+   "look": "vil3",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "br.strainsAsked",
+    "not": "br.salt"
+   },
+   "talk": [
+    {
+     "run": "side.saltCatGift"
+    }
+   ]
+  },
+  {
+   "id": "side-gorge-beck",
+   "map": "town-kerrow",
+   "x": 22,
+   "y": 4,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "br.strainsAsked",
+    "not": "br.night"
+   },
+   "talk": [
+    {
+     "run": "side.nightGrazer"
+    }
+   ]
+  },
+  {
+   "id": "side-cheese-top",
+   "map": "town-highmoss",
+   "x": 6,
+   "y": 2,
+   "look": "hm-boy",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.cheese"
+   },
+   "talk": [
+    {
+     "run": "side.cheeseRun"
+    }
+   ]
+  },
+  {
+   "id": "side-swear-lane",
+   "map": "town-mistfold",
+   "x": 12,
+   "y": 9,
+   "look": "loftbuck",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.swear"
+   },
+   "talk": [
+    {
+     "run": "side.swearBuck"
+    }
+   ]
+  },
+  {
+   "id": "side-swear-widow",
+   "map": "town-mistfold",
+   "x": 18,
+   "y": 5,
+   "look": "mf-old",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.swearWords"
+   },
+   "talk": [
+    {
+     "run": "side.swearWidow"
+    }
+   ]
+  },
+  {
+   "id": "side-post-wharf",
+   "map": "millbridge--wharf",
+   "x": 8,
+   "y": 6,
+   "look": "innkeeper",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.post.moon"
+   },
+   "talk": [
+    {
+     "run": "side.mistPost"
+    }
+   ]
+  },
+  {
+   "id": "side-post-dripstone",
+   "map": "town-dripstone",
+   "x": 10,
+   "y": 7,
+   "look": "ds-keeper",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "nov.postTaken",
+    "not": "nov.post.drip"
+   },
+   "talk": [
+    {
+     "run": "side.postDrop"
+    }
+   ]
+  },
+  {
+   "id": "side-post-highmoss",
+   "map": "town-highmoss",
+   "x": 16,
+   "y": 8,
+   "look": "hm-widow",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "nov.postTaken",
+    "not": "nov.post.high"
+   },
+   "talk": [
+    {
+     "run": "side.postDropHigh"
+    }
+   ]
+  },
+  {
+   "id": "side-ghost-stair",
+   "map": "thornwick",
+   "x": 14,
+   "y": 4,
+   "look": "kid",
+   "when": {
+    "stage": [
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.ghost"
+   },
+   "talk": [
+    {
+     "run": "side.ghost"
+    }
+   ]
+  },
+  {
+   "id": "side-cards-lantern",
+   "map": "ashby-tavern",
+   "x": 12,
+   "y": 5,
+   "look": "gully",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.cards.done"
+   },
+   "talk": [
+    {
+     "run": "side.cards"
+    }
+   ]
+  },
+  {
+   "id": "side-cards-hollin",
+   "map": "hollin-fair",
+   "x": 18,
+   "y": 8,
+   "look": "gil",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "nov.cards.ashby",
+    "not": "nov.cards.hollin"
+   },
+   "talk": [
+    {
+     "run": "side.cardsHollin"
+    }
+   ]
+  },
+  {
+   "id": "side-cards-corvane",
+   "map": "town-corvane",
+   "x": 8,
+   "y": 10,
+   "look": "factor",
+   "when": {
+    "stage": [
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "nov.cards.ashby",
+    "not": "nov.cards.corvane"
+   },
+   "talk": [
+    {
+     "run": "side.cardsCorvane"
+    }
+   ]
+  },
+  {
+   "id": "side-riddler-bridge",
+   "map": "town-kerrow",
+   "x": 13,
+   "y": 7,
+   "look": "kr-smith",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.riddle"
+   },
+   "talk": [
+    {
+     "run": "side.riddler"
+    }
+   ]
+  },
+  {
+   "id": "side-stars-terrace",
+   "map": "town-dripstone",
+   "x": 4,
+   "y": 3,
+   "look": "ds-keeper",
+   "when": {
+    "stage": [
+     "a1b",
+     "a2",
+     "a2b",
+     "a2e",
+     "a2f",
+     "a2g",
+     "a2c",
+     "a2h",
+     "a2d",
+     "a3",
+     "a3b",
+     "a3c",
+     "a4",
+     "a4b",
+     "a5",
+     "a5b",
+     "a6",
+     "a6b",
+     "a6c",
+     "a6d",
+     "a6e",
+     "a7",
+     "a7b",
+     "a7c",
+     "ab1",
+     "ab2",
+     "ab3",
+     "ab3c",
+     "ab3e",
+     "ab4",
+     "ab5",
+     "ab6",
+     "ab7",
+     "ab8",
+     "ab9",
+     "ab10",
+     "ab11",
+     "ab12",
+     "ab13",
+     "ab14",
+     "ab15",
+     "ab16",
+     "ab17",
+     "ab18",
+     "ab19",
+     "ab20",
+     "ab21",
+     "ab22",
+     "ab23",
+     "ab24",
+     "ab25",
+     "ab26",
+     "ad1",
+     "ad2",
+     "ad3",
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.stars"
+   },
+   "talk": [
+    {
+     "run": "side.stargazer"
+    }
+   ]
+  },
+  {
+   "id": "side-ledger-reeds",
+   "map": "town-lockkeepers-deep",
+   "x": 4,
+   "y": 8,
+   "look": "folk",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.ledger"
+   },
+   "talk": [
+    {
+     "run": "side.smugglerBook"
+    }
+   ]
+  },
+  {
+   "id": "side-gaunt-weir",
+   "map": "town-weirbank",
+   "x": 16,
+   "y": 6,
+   "look": "smuggler",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "flag": "nov.ledger",
+    "not": "canalFavour"
+   },
+   "talk": [
+    {
+     "run": "side.smuggler"
+    }
+   ]
+  },
+  {
+   "id": "side-beauty-ring",
+   "map": "town-cinderwick--market",
+   "x": 12,
+   "y": 6,
+   "look": "wb-child",
+   "when": {
+    "stage": [
+     "ad4",
+     "ad5",
+     "ad6",
+     "ad6b",
+     "ad7",
+     "ad8",
+     "ad9",
+     "ad10",
+     "ad11",
+     "ad12",
+     "ad13",
+     "ad14",
+     "ad15",
+     "ad16",
+     "ad16l",
+     "ad17",
+     "ad18",
+     "ad19",
+     "ad19b",
+     "ad20",
+     "ah0",
+     "ah1",
+     "ah2",
+     "ah3",
+     "ah4",
+     "ah5",
+     "ah6",
+     "ah7",
+     "ah8",
+     "ah9",
+     "ah10",
+     "ah11",
+     "ah12a",
+     "ah12",
+     "ah13",
+     "ah14",
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27",
+     "ah28",
+     "ah29",
+     "ah30",
+     "ah31",
+     "ah32",
+     "ah33",
+     "ah34",
+     "ah35",
+     "ah36",
+     "ah37",
+     "ah38",
+     "ah39",
+     "ah40",
+     "ah41",
+     "ah42",
+     "af1",
+     "af2",
+     "af3",
+     "af4",
+     "af5",
+     "af6",
+     "af7",
+     "af8",
+     "af9",
+     "af10",
+     "af11"
+    ],
+    "hero": "rhea",
+    "not": "nov.beauty"
+   },
+   "talk": [
+    {
+     "run": "side.beautyShow"
+    }
+   ]
   }
  ],
  "steps": [],
@@ -825,11 +3079,6 @@
          {
           "set": {
            "lowWater": "greenlings"
-          }
-         },
-         {
-          "add": {
-           "thornTrust": 5
           }
          },
          {
@@ -1303,11 +3552,6 @@
           "set": {
            "saltStory": "true"
           }
-         },
-         {
-          "add": {
-           "hold": 4
-          }
          }
         ]
        },
@@ -1326,11 +3570,6 @@
          {
           "set": {
            "saltStory": "happy"
-          }
-         },
-         {
-          "add": {
-           "hold": 2
           }
          }
         ]
@@ -1353,11 +3592,6 @@
          {
           "set": {
            "saltStory": "posy"
-          }
-         },
-         {
-          "add": {
-           "hold": 5
           }
          }
         ]
@@ -1539,6 +3773,1847 @@
         "text": "The summer fold is quiet. The herd is a long way off, grazing into the wind."
        }
       ]
+     }
+    ]
+   }
+  ],
+  "side.heskFoal": [
+   {
+    "if": {
+     "not": "br.foal"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A loftbuck doe is down in the straw in the far pen, on her side, breathing hard. Hesk is kneeling at her tail with his sleeves rolled to the shoulder."
+     },
+     {
+      "say": "hesk",
+      "text": "\"Don't stand there, Caddow. Get your hands washed and get in here. She's turned it wrong, and my hands are too old to turn it back.\""
+     },
+     {
+      "say": "",
+      "text": "It takes an hour. Rhea's arms are in to the elbow and Hesk is talking her through it, low and steady, the way he'd talk to the doe: there, round, gently, now pull, now."
+     },
+     {
+      "say": "",
+      "text": "The foal comes out all legs, onto the straw, and lies there. Then it sneezes, and the doe turns round and starts to lick it, and Hesk sits back against the pen wall with his eyes shut."
+     },
+     {
+      "say": "hesk",
+      "text": "\"That's yours, then. You pulled it. I've seen you with Ash; you've the hands and the voice. You haven't the knowing. I'll teach you, if you want. Starting tonight.\""
+     },
+     {
+      "say": "hesk",
+      "text": "\"A foal that age feeds every three hours, through the night, for a month. The mother can't make enough after a turned birth. Somebody has to get up.\""
+     },
+     {
+      "choose": "Thornwick's pen boys are watching from the rail. One of them is already yawning.",
+      "options": [
+       {
+        "label": "Do the night feeds herself",
+        "hint": "It'll know her. She'll be tired.",
+        "do": [
+         {
+          "fade": "A month of nights. Up at midnight, at three, at dawn, with a skin of warm milk and a lamp."
+         },
+         {
+          "say": "",
+          "text": "By the end of it the foal follows her round the pen like a dog, and Rhea is falling asleep at Kane's briefings. Hesk tells her that's how it's meant to go."
+         },
+         {
+          "set": {
+           "br.nights": "rhea"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Put the pen boys on a rota",
+        "hint": "Thornwick shares it.",
+        "do": [
+         {
+          "fade": "A month of nights. The pen boys take turns, and fight about whose turn it is, and the foal thrives anyway."
+         },
+         {
+          "say": "",
+          "text": "It's friendly with everyone and nobody's in particular. Hesk shrugs."
+         },
+         {
+          "set": {
+           "br.nights": "rota"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "At six weeks, the first lead rope. The foal hates it: rears, bucks, sits down like a dog. Hesk leans on the rail and won't help."
+     },
+     {
+      "say": "hesk",
+      "text": "\"Not by pulling. Never by pulling. Walk away from it with the rope slack, and let it decide it wants to be where you are.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea walks away with the rope slack. The foal stands there, outraged. Then it trots after her, and the rope goes on hanging slack between them, and that's the lesson."
+     },
+     {
+      "say": "",
+      "text": "The first fall is on the steps a week later: legs everywhere, a cut knee, a great deal of noise. The foal gets up on its own before Rhea can reach it. Hesk nods, as if he'd arranged it."
+     },
+     {
+      "say": "hesk",
+      "text": "\"Name it, then. Breeders don't name them till they've fallen once and got up.\""
+     },
+     {
+      "kith": {
+       "species": "loftbuck",
+       "level": 2,
+       "id": "br-thimble",
+       "name": "Thimble",
+       "temperament": "gentle"
+      }
+     },
+     {
+      "set": {
+       "br.foal": true
+      }
+     },
+     {
+      "toast": "Thimble the loftbuck foal joins the company. Hesk will teach Rhea to breed."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "br.strainsAsked"
+      },
+      "then": [
+       {
+        "run": "side.rareStrainsBack"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "flag": "br.show"
+        },
+        "then": [
+         {
+          "run": "side.rareStrains"
+         }
+        ],
+        "else": [
+         {
+          "say": "hesk",
+          "text": "\"There's a kith fair at Hollin every harvest. Take Thimble when you're that way. Watch the judges. You'll learn more in an hour than I could teach you in a year.\""
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.hollinShow": [
+   {
+    "if": {
+     "not": "br.show"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The judging ring at the Hollin fair: a rope square on the meadow, three judges in tall hats, and fifteen yearlings walking the rope with their breeders."
+     },
+     {
+      "say": "",
+      "text": "Rhea walks Thimble round. Thimble is clean-legged and quick, and doesn't pull, and keeps looking at the crowd as if it would like to meet all of them. Twelfth of fifteen, by the judges' faces."
+     },
+     {
+      "say": "",
+      "text": "The beast they're all looking at is a Guild stud's yearling, a grey with a coat like poured silver, walked by a man in a Corvane coat with rosettes down his front. It's the most beautiful kith Rhea has ever seen."
+     },
+     {
+      "say": "",
+      "text": "It's also lame. Off fore, at the trot. It's been shod to hide it, and walked only at the walk. Hesk taught her to see that in the first week: watch the head, not the leg."
+     },
+     {
+      "choose": "The judges are reaching for the first-prize ribbon.",
+      "options": [
+       {
+        "label": "Ask the judges to see the grey trot",
+        "hint": "He'll make an enemy of the Corvane stud.",
+        "do": [
+         {
+          "say": "rhea",
+          "text": "\"I'd like to see the grey trotted out, please. Off fore.\""
+         },
+         {
+          "say": "",
+          "text": "The Corvane man looks at her as if she'd spat. But the head judge nods, and the grey trots, and bobs its head at every second step like a pigeon, and the crowd goes quiet."
+         },
+         {
+          "say": "",
+          "text": "The grey is sent out of the ring. The ribbon goes to a plain brown filly from the clans. Thimble comes fourth, which Hesk later says is a scandal, and a fair one."
+         },
+         {
+          "say": "rhea",
+          "text": "\"He'll breed from it anyway. Won't he.\""
+         },
+         {
+          "say": "hesk",
+          "text": "\"Of course he will. Lame mares, lame foals, sold to the Wardens by the hundred. Now you've seen how a Guild stud gets so big. Now you know what you're breeding against.\""
+         },
+         {
+          "set": {
+           "br.show": "spoke",
+           "br.rival": true
+          }
+         },
+         {
+          "pay": -25,
+          "then": [],
+          "else": []
+         },
+         {
+          "toast": "Thimble comes fourth at the Hollin fair. 25 coin in prize money."
+         }
+        ]
+       },
+       {
+        "label": "Say nothing",
+        "hint": "It isn't your ring.",
+        "do": [
+         {
+          "say": "",
+          "text": "The grey takes first prize. The Corvane man shakes hands all round the ring. Thimble comes twelfth."
+         },
+         {
+          "say": "hesk",
+          "text": "\"You saw it. Good. Most of them didn't. Some day it'll matter that you can see it, and you'll be glad it was only a ribbon the first time.\""
+         },
+         {
+          "set": {
+           "br.show": "quiet"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "hesk",
+      "text": "\"Watch the head, not the leg.\""
+     }
+    ]
+   }
+  ],
+  "side.rareStrains": [
+   {
+    "say": "hesk",
+    "text": "\"Fourth at Hollin. You'll do. Now listen.\""
+   },
+   {
+    "say": "hesk",
+    "text": "\"Every line at Thornwick comes from the same few dozen kith. In ten years it'll be weak in the same places the Guild's lines are weak. We need blood from where nobody breeds.\""
+   },
+   {
+    "say": "hesk",
+    "text": "\"Three strains. The crested mistwings of the Spire Folk, in Vael. The salt reedcats of the Salt House pans. And a loftbuck that grazes only at night, in the Kerrow gorge. Nobody's ever haltered one. Bring me any of them, and I'll show you what a line is.\""
+   },
+   {
+    "set": {
+     "br.strainsAsked": true
+    }
+   },
+   {
+    "toast": "Hesk wants rare blood: a spirecrest from Vael, a salt reedcat from the Salt House, the night-grazer of Kerrow."
+   }
+  ],
+  "side.rareStrainsBack": [
+   {
+    "if": {
+     "atLeast": {
+      "br.strains": 2
+     }
+    },
+    "then": [
+     {
+      "if": {
+       "not": "br.strainsDone"
+      },
+      "then": [
+       {
+        "say": "hesk",
+        "text": "\"Two new bloods in my pens, and one of them came out of a salt marsh. My old master would've thrown me out of the stud for less. Good. Good.\""
+       },
+       {
+        "set": {
+         "br.strainsDone": true
+        }
+       },
+       {
+        "if": {
+         "flag": "br.strainsDone"
+        },
+        "then": [
+         {
+          "run": "side.flawedLine"
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "run": "side.flawedLine"
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "hesk",
+      "text": "\"Two of the three, Caddow. The spire, the salt or the night. I'm not getting any younger.\""
+     }
+    ]
+   }
+  ],
+  "side.spirecrestGift": [
+   {
+    "if": {
+     "not": "br.spire"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Isel takes Rhea out along the highest bridge, to a ledge where a crested mistwing is sitting on two eggs, with a third chick already out and squawking."
+     },
+     {
+      "say": "isel",
+      "text": "\"The elders say: the third chick is always too many. The mother can't feed three. Most years it dies.\""
+     },
+     {
+      "if": {
+       "flag": "spireSongs"
+      },
+      "then": [
+       {
+        "say": "isel",
+        "text": "\"They say: you sing our verses. Take it down the ridge, and raise it the Spire way.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "isel",
+        "text": "\"They say: you came over the ridge for Dellan. Take it, and raise it well.\""
+       }
+      ]
+     },
+     {
+      "kith": {
+       "species": "spirecrest",
+       "level": 4,
+       "id": "br-spirecrest",
+       "name": "Frost",
+       "temperament": "proud"
+      }
+     },
+     {
+      "set": {
+       "br.spire": true
+      }
+     },
+     {
+      "add": {
+       "br.strains": 1
+      }
+     },
+     {
+      "toast": "A spirecrest chick joins the company, for Hesk's pens."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The crested mistwing on her ledge, with two chicks now."
+     }
+    ]
+   }
+  ],
+  "side.saltCatGift": [
+   {
+    "if": {
+     "not": "br.salt"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A salt reedcat is sitting on the dyke, white as the pans, with four kits behind her in a hole in the bank. She watches Rhea with eyes like brine."
+     },
+     {
+      "say": "",
+      "text": "A panner comes along with her rake and stops."
+     },
+     {
+      "say": "panner",
+      "text": "\"She's ours, that one. Keeps the rats off the pans. She'd go with you, if you sang. They like singing. But you'd take the smallest kit, not her, if you were decent. The smallest never gets fed.\""
+     },
+     {
+      "choose": "The salt reedcat's smallest kit is half the size of the others.",
+      "options": [
+       {
+        "label": "Take the smallest kit",
+        "hint": "Decent.",
+        "do": [
+         {
+          "say": "",
+          "text": "The kit fits in her hat. It sleeps the whole way back, and then screams the whole of the first night at Thornwick."
+         },
+         {
+          "kith": {
+           "species": "salt-reedcat",
+           "level": 3,
+           "id": "br-saltkit",
+           "name": "Pinch",
+           "temperament": "nervous"
+          }
+         },
+         {
+          "set": {
+           "br.salt": "kit"
+          }
+         },
+         {
+          "add": {
+           "br.strains": 1
+          }
+         },
+         {
+          "toast": "A salt reedcat kit joins the company, for Hesk's pens."
+         }
+        ]
+       },
+       {
+        "label": "Sing to the mother",
+        "hint": "Stronger blood.",
+        "do": [
+         {
+          "say": "",
+          "text": "She comes. Of course she comes. The panner says nothing at all, and the four kits watch from the hole in the bank as their mother walks away down the dyke behind a stranger."
+         },
+         {
+          "say": "",
+          "text": "Rhea gets as far as the causeway before she turns round and brings her back. The panner nods, and holds out the smallest kit."
+         },
+         {
+          "kith": {
+           "species": "salt-reedcat",
+           "level": 3,
+           "id": "br-saltkit",
+           "name": "Pinch",
+           "temperament": "nervous"
+          }
+         },
+         {
+          "set": {
+           "br.salt": "kit"
+          }
+         },
+         {
+          "add": {
+           "br.strains": 1
+          }
+         },
+         {
+          "toast": "A salt reedcat kit joins the company, for Hesk's pens."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The salt reedcat on the dyke, and three kits now."
+     }
+    ]
+   }
+  ],
+  "side.nightGrazer": [
+   {
+    "if": {
+     "not": "br.night"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Kerrow gorge, after dark, by the old drove road. Something is grazing on the far side of the beck, pale in the starlight, too big for a loftbuck and too quiet for anything else."
+     },
+     {
+      "say": "",
+      "text": "It lifts its head when Rhea crosses the stones. It doesn't run. It watches her the way the cloud watches the terraces."
+     },
+     {
+      "choose": "The night-grazer is three steps away, and hasn't moved.",
+      "options": [
+       {
+        "label": "Sit down in the grass and wait",
+        "hint": "It's done this before. You haven't.",
+        "do": [
+         {
+          "fade": "She sits in the wet grass until the stars turn. It goes on grazing. Near dawn it walks over and stands beside her, as if it had been her idea."
+         },
+         {
+          "say": "",
+          "text": "When she walks back across the beck, it follows. Nobody has ever haltered one, Hesk said. She hasn't. That's why."
+         },
+         {
+          "kith": {
+           "species": "night-grazer",
+           "level": 8,
+           "id": "br-nightgrazer",
+           "name": "Hush",
+           "temperament": "calm"
+          }
+         },
+         {
+          "set": {
+           "br.night": true
+          }
+         },
+         {
+          "add": {
+           "br.strains": 1
+          }
+         },
+         {
+          "toast": "The night-grazer of Kerrow follows Rhea home."
+         }
+        ]
+       },
+       {
+        "label": "Sing",
+        "hint": "It always works with Ash.",
+        "do": [
+         {
+          "say": "",
+          "text": "She sings. It listens to the whole of the first verse, very politely, and then turns and walks into the dark and isn't there."
+         },
+         {
+          "say": "",
+          "text": "Some kith don't need soothing. She'll come back another night and try something else."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Pale grass, flattened where something slept."
+     }
+    ]
+   }
+  ],
+  "side.flawedLine": [
+   {
+    "if": {
+     "not": "br.flawed"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A year's breeding, and the best pairing Thornwick has made: Thimble's line crossed onto the new blood. Two foals. One is perfect. The other stands wrong from the first hour, with its hind legs bowed and too-soft at the hocks."
+     },
+     {
+      "say": "",
+      "text": "Hesk crouches by it a long time, feeling its legs. When he stands up, he's grey."
+     },
+     {
+      "say": "hesk",
+      "text": "\"Bone sickness. Born with it. It's in the blood, and the blood's from me: I gave you my old Crown line for Thimble's dam.\""
+     },
+     {
+      "say": "hesk",
+      "text": "\"I bred war ironbacks for the Crown, Caddow. Thirty years. The best in Ostrel. When the Crown sold its studs, the Guild bought my lines, and the Wardens rode them. They rode them at Hask. My ironbacks carried the men who hanged the square at Hask, and my line carried this in it, every generation, and spread it to every Guild stable in the south.\""
+     },
+     {
+      "say": "hesk",
+      "text": "\"That's why I walk my kith where the buyers don't go. That's why I've never bred anything since but pullers and milkers. I should have told you before I let you near my lines.\""
+     },
+     {
+      "say": "",
+      "text": "The foal is trying to stand. It can't, quite. It keeps trying."
+     },
+     {
+      "say": "hesk",
+      "text": "\"It'll never work. It'll hurt every winter. Every breeder in Ostrel would put it down tonight, and they'd be right. It's your pen. Your foal.\""
+     },
+     {
+      "choose": "The foal is trying to stand again.",
+      "options": [
+       {
+        "label": "Raise it",
+        "hint": "A life that hurts, and that matters.",
+        "do": [
+         {
+          "say": "",
+          "text": "She raises it. It walks, after a fashion, by the spring. It can't carry, can't run, can't fight. It hurts in the cold and leans on whoever is nearest."
+         },
+         {
+          "say": "",
+          "text": "And every kith in the pens, from Ash to the Matriarch, will let it lean. It's the only kith at Thornwick the others never quarrel over. When the children are frightened at night, they go and sleep in its straw."
+         },
+         {
+          "kith": {
+           "species": "loftbuck",
+           "level": 1,
+           "id": "br-patience",
+           "name": "Patience",
+           "temperament": "gentle"
+          }
+         },
+         {
+          "set": {
+           "br.flawed": "raised",
+           "nofight.br-patience": true
+          }
+         },
+         {
+          "toast": "Patience will never fight. Thornwick's kith are calmer for having her."
+         }
+        ]
+       },
+       {
+        "label": "Let Hesk put it down",
+        "hint": "Every breeder would.",
+        "do": [
+         {
+          "say": "",
+          "text": "Hesk does it at dawn, with his own hands, quickly, the way he's done it a hundred times. Then he burns his stud book, the old one with the Crown line in it, in the forge, page by page."
+         },
+         {
+          "say": "hesk",
+          "text": "\"No more of my blood in anything. We'll start the Thornwick line clean, from Thimble's sire's side and your new strains. It'll take ten years. Good.\""
+         },
+         {
+          "set": {
+           "br.flawed": "ended"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "set": {
+       "br.lineDone": "flawed"
+      }
+     }
+    ],
+    "else": [
+     {
+      "run": "side.droveAfter"
+     }
+    ]
+   }
+  ],
+  "side.droveAfter": [
+   {
+    "if": {
+     "eq": {
+      "pimDone": "won"
+     }
+    },
+    "then": [
+     {
+      "if": {
+       "not": "br.motherLine"
+      },
+      "then": [
+       {
+        "say": "hesk",
+        "text": "\"You beat Pim over the Kerrow bridge with my old pupil's tricks and your mother's song. Every breeder in the north saw it. The stud book wants a name for the line, for the drove register.\""
+       },
+       {
+        "say": "hesk",
+        "text": "\"Not Thornwick. Not Caddow. The line's from her song as much as from my pens.\""
+       },
+       {
+        "say": "",
+        "text": "Rhea writes it in the register herself, in her best hand, under Thimble's name: the Larkfold Mother line."
+       },
+       {
+        "set": {
+         "br.motherLine": true
+        }
+       },
+       {
+        "kith": {
+         "species": "foal-song-buck",
+         "level": 6,
+         "id": "br-songbuck",
+         "name": "Larkfold",
+         "temperament": "gentle"
+        }
+       },
+       {
+        "toast": "The Larkfold Mother line is registered at the great drove. Its first foal, a songbuck, joins the company."
+       }
+      ],
+      "else": [
+       {
+        "say": "hesk",
+        "text": "\"The Larkfold Mother line. Three foals this spring. I'll be dead before it's anything, and I've never been so glad of anything in my life.\""
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "pimDone": "sold"
+       }
+      },
+      "then": [
+       {
+        "say": "hesk",
+        "text": "\"Your loftbucks are in every Guild stud in the south now, Caddow. Wardens riding Thornwick foals. I had thirty years of that. I'd not wish it on you.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "hesk",
+        "text": "\"The great drove comes round the drove road from Drovers' Halt. Take Thimble. Pim Calloway will be there. Watch him; he's the best I ever taught, and the worst.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.cheeseRun": [
+   {
+    "if": {
+     "not": "nov.cheese"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Highmoss's harvest: the cheese run. A wheel of terrace cheese the size of a cartwheel goes off the top terrace, and every child in the village goes after it, down eleven terraces, and whoever lays a hand on it first takes it home."
+     },
+     {
+      "say": "hm-boy",
+      "text": "\"Grown-ups can race. They never win. You're too big for the gaps.\""
+     },
+     {
+      "say": "",
+      "text": "The wheel goes off the top terrace. Twenty children go after it like a flock of starlings."
+     },
+     {
+      "choose": "The wheel bounces off the first wall and takes the stair, not the slope.",
+      "options": [
+       {
+        "label": "Take the stair after it",
+        "hint": "Follow the wheel.",
+        "do": [
+         {
+          "say": "",
+          "text": "Down the stair three at a time. The wheel takes the fourth terrace wall clean, and Rhea doesn't, quite."
+         },
+         {
+          "run": "side.cheeseLose"
+         }
+        ]
+       },
+       {
+        "label": "Cut across the moss terraces",
+        "hint": "The clans will be furious.",
+        "do": [
+         {
+          "say": "",
+          "text": "Across the wet moss, where nobody runs because the clans would kill them. The wheel comes round the end of the ninth terrace and straight at her."
+         },
+         {
+          "choose": "A small girl is two terraces behind, running her heart out.",
+          "options": [
+           {
+            "label": "Catch it",
+            "hint": "Win.",
+            "do": [
+             {
+              "say": "",
+              "text": "She catches it. It knocks her flat. The whole of Highmoss cheers, and the girl sits down on the terrace and cries."
+             },
+             {
+              "set": {
+               "nov.cheese": "won"
+              }
+             },
+             {
+              "pay": -15,
+              "then": [],
+              "else": []
+             },
+             {
+              "toast": "The cheese is Rhea's. Highmoss will be talking about it for years."
+             }
+            ]
+           },
+           {
+            "label": "Let it go past to the girl",
+            "hint": "Lose, well.",
+            "do": [
+             {
+              "say": "",
+              "text": "Rhea stumbles, very convincingly. The wheel goes past her to the girl, who gets her arms round it and is flattened, and gets up holding it over her head like a crown."
+             },
+             {
+              "say": "",
+              "text": "Her mother sends a slice of it to Thornwick that winter, wrapped in moss, with a drawing of a woman falling over."
+             },
+             {
+              "set": {
+               "nov.cheese": "gave"
+              }
+             },
+             {
+              "add": {
+               "have.salve": 1
+              }
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "hm-boy",
+      "text": "\"Next year I'll be big enough. You watch.\""
+     }
+    ]
+   }
+  ],
+  "side.cheeseLose": [
+   {
+    "say": "",
+    "text": "A boy of nine gets it, three terraces down. Rhea limps the rest of the way. Highmoss loves her for it anyway."
+   },
+   {
+    "set": {
+     "nov.cheese": "lost"
+    }
+   }
+  ],
+  "side.swearBuck": [
+   {
+    "if": {
+     "not": "nov.swearMet"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A loftbuck is standing in the middle of the lane with all four feet planted, and a cart behind it, and a clanswoman in front of it, pulling. It won't move. It hasn't moved since morning."
+     },
+     {
+      "say": "mf-herder",
+      "text": "\"Old Gobber's buck. Gobber died at midsummer. The buck only ever went for Gobber's words, and Gobber had a mouth on him like a midden. His widow knows them. She won't say them. She's chapel.\""
+     },
+     {
+      "set": {
+       "nov.swearMet": true
+      }
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "nov.swearWords"
+      },
+      "then": [
+       {
+        "if": {
+         "not": "nov.swear"
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "Rhea leans close to the loftbuck's ear and says, very quietly, the eleven words old Gobber's widow taught her."
+         },
+         {
+          "say": "",
+          "text": "The loftbuck's ears go up. It sighs, the way a person sighs when someone finally says the right thing, and walks off down the lane with the cart as if it had always meant to."
+         },
+         {
+          "say": "mf-herder",
+          "text": "\"What did you SAY to it?\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"I'm chapel. I can't possibly repeat it.\""
+         },
+         {
+          "set": {
+           "nov.swear": true
+          }
+         },
+         {
+          "pay": -10,
+          "then": [],
+          "else": []
+         },
+         {
+          "toast": "The loftbuck moves. Mistfold will never know what Rhea said."
+         }
+        ],
+        "else": [
+         {
+          "say": "",
+          "text": "The loftbuck goes by with its cart, and gives Rhea a knowing look."
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The buck. Planted. The cart behind it, the clanswoman beside it, both of them sulking."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.swearWidow": [
+   {
+    "if": {
+     "not": "nov.swearWords"
+    },
+    "then": [
+     {
+      "if": {
+       "flag": "nov.swearMet"
+      },
+      "then": [
+       {
+        "say": "mf-old",
+        "text": "\"You want his words. For the buck. Everyone wants his words for the buck.\""
+       },
+       {
+        "say": "mf-old",
+        "text": "\"Forty years I listened to that man swear at that animal every morning. I never said them once. Not once. ...Come here. Closer. I'm not saying them loud.\""
+       },
+       {
+        "say": "",
+        "text": "She says them. Rhea's ears go hot. Old Gobber's widow sits back with her hands folded, pink, and very pleased with herself."
+       },
+       {
+        "say": "mf-old",
+        "text": "\"He'd have liked you. He liked anybody who'd do a stupid thing for an animal.\""
+       },
+       {
+        "set": {
+         "nov.swearWords": true
+        }
+       }
+      ],
+      "else": [
+       {
+        "say": "mf-old",
+        "text": "\"I'm a widow. I've no time for callers. Unless it's about the buck.\""
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "mf-old",
+      "text": "\"Did it go? It went. Of course it went.\""
+     }
+    ]
+   }
+  ],
+  "side.mistPost": [
+   {
+    "if": {
+     "not": "nov.postTaken"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Millbridge postmistress keeps three mistwings in a loft over the wharf, for letters up the mountain. One of them is sick. The letters are piling up."
+     },
+     {
+      "say": "innkeeper",
+      "text": "\"Three for Dripstone, two for Highmoss, and this one. Read the front.\""
+     },
+     {
+      "say": "",
+      "text": "In a child's capitals: TO THE MOON. FROM BEN, MILLBRIDGE. PLEASE GIVE TO MY DAD, WHO IS THERE NOW."
+     },
+     {
+      "say": "innkeeper",
+      "text": "\"He brings one every week. I keep them. I can't bring myself to throw them out. You're going up the mountain. Take the bag. And that one, if you can think what to do with it.\""
+     },
+     {
+      "set": {
+       "nov.postTaken": true
+      }
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "atLeast": {
+        "nov.post": 2
+       }
+      },
+      "then": [
+       {
+        "if": {
+         "not": "nov.post.moon"
+        },
+        "then": [
+         {
+          "say": "",
+          "text": "The moon letter is still in the bottom of the bag."
+         },
+         {
+          "choose": "What does Rhea do with Ben's letter?",
+          "options": [
+           {
+            "label": "Send it up with a mistwing, at night",
+            "hint": "Answer it.",
+            "do": [
+             {
+              "say": "",
+              "text": "She takes it to the highest terrace at Thornwick, after dark, and ties it to a mistwing's leg, and lets the bird go straight up into the dark, toward the moon, until she can't see it."
+             },
+             {
+              "say": "",
+              "text": "The bird comes back in the morning without the letter. Nobody ever finds out where it went. When Rhea tells Ben, he nods as if that's the most obvious thing in the world, and goes home to write the next one."
+             },
+             {
+              "set": {
+               "nov.post.moon": "sent"
+              }
+             }
+            ]
+           },
+           {
+            "label": "Write him a reply, from the moon",
+            "hint": "Kind, and a lie.",
+            "do": [
+             {
+              "say": "",
+              "text": "She writes it by the fire: the moon is very cold and very bright, and his dad can see the whole of Millbridge from there, and the wharf, and the roof where Ben sits. She signs it with a drawing of the moon, badly."
+             },
+             {
+              "say": "",
+              "text": "Ben carries it in his shirt for a year. The postmistress says he's stopped bringing letters. She says it might be a good thing. She cries a bit, saying it."
+             },
+             {
+              "set": {
+               "nov.post.moon": "answered"
+              }
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "pay": -20,
+          "then": [],
+          "else": []
+         },
+         {
+          "toast": "The Mistwing Post is delivered. 20 coin from the postmistress."
+         }
+        ],
+        "else": [
+         {
+          "say": "innkeeper",
+          "text": "\"Ben's started writing to the sun now. I've told him it's further.\""
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "say": "innkeeper",
+        "text": "\"Dripstone and Highmoss, captain. They've been waiting since the spring.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.postDrop": [
+   {
+    "say": "",
+    "text": "Rhea hands over the letters from the Millbridge bag. The old woman at the door reads the first one standing on her step, and laughs, and then sits down on her step."
+   },
+   {
+    "add": {
+     "nov.post": 1
+    }
+   },
+   {
+    "set": {
+     "nov.post.drip": true
+    }
+   }
+  ],
+  "side.postDropHigh": [
+   {
+    "say": "",
+    "text": "Rhea hands over the letters from the Millbridge bag. The old woman at the door reads the first one standing on her step, and laughs, and then sits down on her step."
+   },
+   {
+    "add": {
+     "nov.post": 1
+    }
+   },
+   {
+    "set": {
+     "nov.post.high": true
+    }
+   }
+  ],
+  "side.ghost": [
+   {
+    "if": {
+     "not": "nov.ghost"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "For a week the bell in the broken tower has rung at night: once, twice, a long silence, once. Nobody's been up there in a hundred years. The children won't sleep. Oda says it's the wind. The wind doesn't ring bells twice."
+     },
+     {
+      "say": "",
+      "text": "Rhea goes up at midnight with a lamp. The tower stair is half gone. At the top, under the bell, in a nest of old rope and pigeon feathers, there's a reedcat kitten, thin as a stick, with its claws hooked in the bell rope."
+     },
+     {
+      "say": "",
+      "text": "It looks at her. It pulls the rope. The bell goes once. It looks at her again, as if that ought to explain everything."
+     },
+     {
+      "say": "rhea",
+      "text": "\"You've been ringing for your supper. All week.\""
+     },
+     {
+      "say": "",
+      "text": "It comes down in her coat and eats a whole fish in the kitchen, in front of every child at Thornwick, who've all got out of bed to see the ghost. They name it Bell. Obviously."
+     },
+     {
+      "kith": {
+       "species": "reedcat",
+       "level": 2,
+       "id": "nov-bell",
+       "name": "Bell",
+       "temperament": "curious"
+      }
+     },
+     {
+      "set": {
+       "nov.ghost": true
+      }
+     },
+     {
+      "toast": "The Thornwick ghost was a reedcat kitten. Bell joins the pens."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The bell rope is tied off now. Bell sleeps in the kitchen."
+     }
+    ]
+   }
+  ],
+  "side.cards": [
+   {
+    "if": {
+     "not": "nov.cards.ashby"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Lantern Cards in the back room of the Lantern: four lamps on the table, each with a coloured shade, and a pile of coin under the green one. The Ashby champion is a fat, smiling woman with a cold pipe she never lights."
+     },
+     {
+      "say": "gully",
+      "text": "\"Mother Gorse. Nine years champion. She's got one tell, and nobody's found it. You play three hands, captain; you need two.\""
+     },
+     {
+      "say": "",
+      "text": "First hand. She turns her lamp down and looks at the ceiling. She sucks on the cold pipe twice."
+     },
+     {
+      "choose": "Does she have the lamps?",
+      "options": [
+       {
+        "label": "Call her",
+        "hint": "She's bluffing.",
+        "do": [
+         {
+          "run": "side.cardsPipe"
+         }
+        ]
+       },
+       {
+        "label": "Fold",
+        "hint": "She's got them.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea folds. Mother Gorse shows a hand of nothing and laughs till she coughs."
+         },
+         {
+          "run": "side.cardsPipe2"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "not": "nov.cards.done"
+      },
+      "then": [
+       {
+        "say": "gully",
+        "text": "\"Two more champions. Hollin's, in the fair tent, and Corvane's, in the counting house cellar. Beat all three and the stake's yours.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "gully",
+        "text": "\"The Lantern champion of three ports. They'll be singing about you in the Lantern till the ice comes.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.cardsPipe": [
+   {
+    "say": "",
+    "text": "She was bluffing. Mother Gorse takes her pipe out of her mouth and looks at it, as if it had betrayed her. Two sucks on the pipe: nothing in her hand. Three: everything."
+   },
+   {
+    "say": "",
+    "text": "Next hand she sucks on it three times. Rhea folds. Next hand, twice. Rhea calls."
+   },
+   {
+    "set": {
+     "nov.cards.ashby": true
+    }
+   },
+   {
+    "add": {
+     "nov.cards": 1
+    }
+   },
+   {
+    "say": "gully",
+    "text": "\"Mother Gorse beaten, in her own back room. Hollin and Corvane next, if you want the stake.\""
+   },
+   {
+    "run": "side.cardsCheck"
+   }
+  ],
+  "side.cardsPipe2": [
+   {
+    "say": "",
+    "text": "Rhea watches. Two sucks: nothing. She has it now. Three sucks, next hand: Rhea folds and Mother Gorse shows a full set. Two sucks, the last hand: Rhea calls, and wins."
+   },
+   {
+    "set": {
+     "nov.cards.ashby": true
+    }
+   },
+   {
+    "add": {
+     "nov.cards": 1
+    }
+   },
+   {
+    "run": "side.cardsCheck"
+   }
+  ],
+  "side.cardsHollin": [
+   {
+    "if": {
+     "not": "nov.cards.hollin"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Hollin champion is a solemn boy of sixteen in a College gown, who plays Lantern Cards the way he'd do sums. He never blinks."
+     },
+     {
+      "say": "",
+      "text": "Rhea watches three hands. He never blinks, but when he has the lamps he straightens the pile of coin in front of him, square, with one finger."
+     },
+     {
+      "choose": "He's squaring his coins.",
+      "options": [
+       {
+        "label": "Fold",
+        "hint": "He has them.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea folds. He shows the lamps, and looks at her for the first time with something like respect. The next time he squares his pile, she folds; the next time he doesn't, she calls. He loses two hands in a row and goes very pink."
+         },
+         {
+          "set": {
+           "nov.cards.hollin": true
+          }
+         },
+         {
+          "add": {
+           "nov.cards": 1
+          }
+         },
+         {
+          "run": "side.cardsCheck"
+         }
+        ]
+       },
+       {
+        "label": "Call",
+        "hint": "He's bluffing.",
+        "do": [
+         {
+          "say": "",
+          "text": "He has them. He takes the hand without a flicker. Rhea loses the next one too. She'll have to come back when she's thought about it."
+         },
+         {
+          "add": {
+           "nov.cardsLost": 1
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The College boy is teaching the tent his sums."
+     }
+    ]
+   }
+  ],
+  "side.cardsCorvane": [
+   {
+    "if": {
+     "not": "nov.cards.corvane"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Corvane champion is a League clerk with ink on every finger, in the counting-house cellar, who plays for exact sums and writes each one down."
+     },
+     {
+      "say": "",
+      "text": "When he's bluffing, he writes the sum before the hand's done. When he's got the lamps, he waits."
+     },
+     {
+      "choose": "The clerk's pen is already moving.",
+      "options": [
+       {
+        "label": "Call him",
+        "hint": "He's written it already.",
+        "do": [
+         {
+          "say": "",
+          "text": "He was bluffing. He crosses out the sum, neatly, and writes a smaller one, and Rhea takes the next hand the same way. He pays out to the last copper and gives her a receipt."
+         },
+         {
+          "set": {
+           "nov.cards.corvane": true
+          }
+         },
+         {
+          "add": {
+           "nov.cards": 1
+          }
+         },
+         {
+          "run": "side.cardsCheck"
+         }
+        ]
+       },
+       {
+        "label": "Fold",
+        "hint": "He's sure of himself.",
+        "do": [
+         {
+          "say": "",
+          "text": "He shows nothing at all, and writes a large sum in his book, very small."
+         },
+         {
+          "add": {
+           "nov.cardsLost": 1
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The clerk nods at Rhea over his ledger."
+     }
+    ]
+   }
+  ],
+  "side.cardsCheck": [
+   {
+    "if": {
+     "atLeast": {
+      "nov.cards": 3
+     }
+    },
+    "then": [
+     {
+      "if": {
+       "not": "nov.cards.done"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Three champions, three ports. The stake under the green lamp at the Lantern is Rhea's: a purse, and a Guild cartographer's chart of the whole south coast, with every reef and every smugglers' landing marked."
+       },
+       {
+        "set": {
+         "nov.cards.done": true
+        }
+       },
+       {
+        "pay": -60,
+        "then": [],
+        "else": []
+       },
+       {
+        "toast": "Lantern champion of three ports: 60 coin, and a smugglers' chart of the south coast."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.riddler": [
+   {
+    "if": {
+     "not": "nov.riddle"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The old toll bridge over the Kerrow beck has a keeper in a chair in the middle of it, with a blanket on his knees and a brass bell. He's been there since before the bridge, people say."
+     },
+     {
+      "say": "kr-smith",
+      "text": "\"Toll's a riddle. One I haven't heard. I've heard most. Fifty-one years on this bridge.\""
+     },
+     {
+      "choose": "A riddle he hasn't heard.",
+      "options": [
+       {
+        "label": "What has a neck but no head?",
+        "hint": "An old one.",
+        "do": [
+         {
+          "say": "kr-smith",
+          "text": "\"A bottle. My grandmother. Next.\""
+         }
+        ]
+       },
+       {
+        "label": "What gets wetter the more it dries?",
+        "hint": "Another.",
+        "do": [
+         {
+          "say": "kr-smith",
+          "text": "\"A towel. Fifty-one years, girl. Next.\""
+         }
+        ]
+       },
+       {
+        "label": "What sings three lines in the cloud, and the third one wrong?",
+        "hint": "One of her own.",
+        "when": {
+         "flag": "iselMet"
+        },
+        "do": [
+         {
+          "say": "",
+          "text": "He thinks about it for a long time. He opens his mouth, and shuts it, and frowns, and rings his bell slowly."
+         },
+         {
+          "say": "kr-smith",
+          "text": "\"I don't know. Tell me.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"Everybody in Ostrel. Except the Spire Folk.\""
+         },
+         {
+          "say": "",
+          "text": "He laughs so hard the blanket falls off his knees. Then he wants the whole story, and gets it, and at the end he gives her his old brass lantern, because he won't be needing it, he says, with a riddle like that to think about."
+         },
+         {
+          "set": {
+           "nov.riddle": true
+          }
+         },
+         {
+          "pay": -12,
+          "then": [],
+          "else": []
+         },
+         {
+          "toast": "The riddler is stumped. He gives Rhea his old brass lantern (12 coin)."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "kr-smith",
+      "text": "\"Three lines. The third one wrong. I keep humming it.\""
+     }
+    ]
+   }
+  ],
+  "side.stargazer": [
+   {
+    "if": {
+     "not": "nov.stars"
+    },
+    "then": [
+     {
+      "if": {
+       "not": "nov.starsMet"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "On the highest terrace above the cloud, an old woman has set up a brass tube on three legs and a table of charts weighted with stones."
+       },
+       {
+        "say": "ds-keeper",
+        "text": "\"Every star you can see from above the cloud, I've charted. All but three. They only come up in the small hours, and I can't stay awake past midnight any more. Would you? Three nights. Tell me where they rise.\""
+       },
+       {
+        "set": {
+         "nov.starsMet": true
+        }
+       }
+      ]
+     },
+     {
+      "fade": "A night on the terrace, above the cloud, with the brass tube and a lamp shaded red."
+     },
+     {
+      "say": "",
+      "text": "At three in the morning a star comes up out of the cloud sea where no star should be, low and gold, and then another beside it, and then a third, close, very faint."
+     },
+     {
+      "choose": "The three stars over the cloud. Rhea writes down what she sees.",
+      "options": [
+       {
+        "label": "Three: one bright, one paler, one hardly there",
+        "hint": "Exactly as she saw them.",
+        "do": [
+         {
+          "say": "ds-keeper",
+          "text": "\"Three. I've waited thirty years to know if there were three. My mother said there were three. Larkfold folk called them something, she said, and I never found out what.\""
+         },
+         {
+          "say": "rhea",
+          "text": "\"The mother, the girl and the little one. My mother used to show me from the drying-house roof.\""
+         },
+         {
+          "say": "",
+          "text": "The old woman writes it on her chart in tiny letters, beside the three gold dots: THE MOTHER, THE GIRL AND THE LITTLE ONE. NAMED BY THE LARKFOLD FOLK. CHARTED BY THE CAPTAIN OF THE CLOUD."
+         },
+         {
+          "set": {
+           "nov.stars": true
+          }
+         },
+         {
+          "toast": "Three stars charted over the cloud sea, with their Larkfold names."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "ds-keeper",
+      "text": "\"The mother, the girl and the little one. I look for them every night now, even when I can't stay up.\""
+     }
+    ]
+   }
+  ],
+  "side.smugglerBook": [
+   {
+    "if": {
+     "not": "nov.ledger"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "In the reeds by the lock gates, wedged in the mud, an oilcloth packet. Inside, a ledger: names, sums, dates, going back twenty years. Every sum is a debt owed to a man called Gaunt. Every one of them, in the last column, is crossed out: FORGIVEN."
+     },
+     {
+      "set": {
+       "nov.ledger": "found"
+      }
+     },
+     {
+      "toast": "A smuggler's ledger, every debt in it forgiven. Someone at Weirbank will want it back."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "Reeds. Mud. Nothing else."
+     }
+    ]
+   }
+  ],
+  "side.smuggler": [
+   {
+    "if": {
+     "eq": {
+      "nov.ledger": "found"
+     }
+    },
+    "then": [
+     {
+      "say": "smuggler",
+      "text": "\"That's my book. Where'd you... the reeds. I dropped it running from the lock-keeper's men. Twenty years of it.\""
+     },
+     {
+      "say": "smuggler",
+      "text": "\"Gaunt. I run tea and lamp oil past the Guild's tolls, and lend to anyone on the canal who's short, and then I forget I lent it. My father said a book you never collect on is a book that collects for you. Half the canal owes me, and all of it would hide me in a flood.\""
+     },
+     {
+      "choose": "Gaunt is holding his hand out for the book.",
+      "options": [
+       {
+        "label": "Give it back",
+        "hint": "It's his.",
+        "do": [
+         {
+          "say": "",
+          "text": "He takes it and tucks it into his coat, and gives her a canal man's nod: two fingers to the cap."
+         },
+         {
+          "say": "smuggler",
+          "text": "\"You're in it now, captain. Under F. For favour. Don't collect on it; it's worth more if you don't.\""
+         },
+         {
+          "set": {
+           "nov.ledger": "returned",
+           "canalFavour": true
+          }
+         },
+         {
+          "add": {
+           "have.firepot": 1
+          }
+         },
+         {
+          "toast": "Gaunt owes the Commons a favour. He leaves a fire pot in Rhea's pack, \"for the toll men\"."
+         }
+        ]
+       },
+       {
+        "label": "Hand it to the Commons quartermaster",
+        "hint": "Names and places on the canal.",
+        "do": [
+         {
+          "say": "",
+          "text": "Gaunt watches her put it away. He doesn't argue. He doesn't do anything at all, which is worse."
+         },
+         {
+          "say": "",
+          "text": "The quartermaster finds no use for a book of forgiven debts, and loses it within the month. Half the canal hears what happened. The canal is quieter to the Commons after that."
+         },
+         {
+          "set": {
+           "nov.ledger": "taken"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "nov.ledger": "returned"
+       }
+      },
+      "then": [
+       {
+        "say": "smuggler",
+        "text": "\"Under F, captain. Still uncollected.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "smuggler",
+        "text": "\"Nothing to buy today.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "side.beautyShow": [
+   {
+    "if": {
+     "not": "nov.beauty"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The Canal Market has a show ring today, roped off with bunting, and the judges are eleven mill children on an upturned barge, with a box of ribbons they made themselves out of mill-ends."
+     },
+     {
+      "say": "wb-child",
+      "text": "\"Every kith wins. That's the rule. We just have to decide what it wins FOR.\""
+     },
+     {
+      "choose": "Which kith does Rhea show?",
+      "options": [
+       {
+        "label": "Ash",
+        "do": [
+         {
+          "say": "",
+          "text": "Ash walks the ring like a lord, and stops, and lets eleven children pat him at once."
+         },
+         {
+          "say": "wb-child",
+          "text": "\"Ash wins Best At Standing Still While Being Patted. It's the hardest one.\""
+         },
+         {
+          "set": {
+           "nov.beauty": "ash"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Thimble",
+        "when": {
+         "flag": "kith.br-thimble"
+        },
+        "do": [
+         {
+          "say": "",
+          "text": "Thimble walks the ring, and then walks out of it to look at the crowd, and has to be fetched back."
+         },
+         {
+          "say": "wb-child",
+          "text": "\"Thimble wins Most Interested In Everybody.\""
+         },
+         {
+          "set": {
+           "nov.beauty": "thimble"
+          }
+         }
+        ]
+       },
+       {
+        "label": "Bell",
+        "when": {
+         "flag": "kith.nov-bell"
+        },
+        "do": [
+         {
+          "say": "",
+          "text": "Bell sits in the middle of the ring and washes, and refuses to move, and is carried round."
+         },
+         {
+          "say": "wb-child",
+          "text": "\"Bell wins Best Cat. There's only one cat, so that's fair.\""
+         },
+         {
+          "set": {
+           "nov.beauty": "bell"
+          }
+         }
+        ]
+       },
+       {
+        "label": "The Matriarch",
+        "when": {
+         "flag": "kith.matriarch"
+        },
+        "do": [
+         {
+          "say": "",
+          "text": "The Matriarch comes down the canal path and the whole market stops. She stands in the ring like a hill. Eleven mill children stand on the barge with their mouths open."
+         },
+         {
+          "say": "wb-child",
+          "text": "\"She wins Biggest. And Best. And Oldest. She can have three. We made extra.\""
+         },
+         {
+          "set": {
+           "nov.beauty": "matriarch"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "The ribbon is made of mill-end calico, pink and blue, with the prize written on it in charcoal. It goes in Rhea's pack with the oddest things she owns, and stays there."
+     },
+     {
+      "toast": "A mill-end ribbon from the Kith Beauty Show."
+     }
+    ],
+    "else": [
+     {
+      "say": "wb-child",
+      "text": "\"Next year we're having a prize for Best Name. Start thinking.\""
      }
     ]
    }
