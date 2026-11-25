@@ -16,7 +16,10 @@
   "arvoStable",
   "gerdBeaten",
   "kingsDinner",
-  "trial4"
+  "trial4",
+  "ledgers",
+  "settling",
+  "lastContract"
  ],
  "moods": {
   "scenes": {
@@ -88,7 +91,19 @@
    "corranStair": "camp",
    "corranFever": "camp",
    "corranSentence": "camp",
-   "backToRoad2": "camp"
+   "backToRoad2": "camp",
+   "corvaneShut": "camp",
+   "tollHouse": "camp",
+   "ottilie": "camp",
+   "ilseHouse": "camp",
+   "vaultIn": "camp",
+   "vaultGuards": "camp",
+   "ledgers": "camp",
+   "settling": "camp",
+   "tarsisGate": "camp",
+   "vela": "camp",
+   "infirmary": "camp",
+   "lastContract": "camp"
   },
   "stages": {
    "ah5": "night"
@@ -130,7 +145,14 @@
   "sigrun": "Sigrun",
   "brannoc": "Brannoc",
   "king": "The King of Lorne",
-  "woman": "A mother of the eleven"
+  "woman": "A mother of the eleven",
+  "tollman": "League toll-man",
+  "factor": "Guild factor",
+  "councillor": "First Councillor of the League",
+  "ilse": "Ilse Varn",
+  "ottilie": "Ottilie",
+  "vela": "Vela Orme",
+  "kesh": "Kesh"
  },
  "objectives": {
   "ah0": "The council in Thornwick chapel.",
@@ -157,7 +179,15 @@
   "ah20": "Holm gaol.",
   "ah21": "The King's dinner, in the hall at the top of the square.",
   "ah22": "Find witnesses for Brannoc: Frostmere on the ice, and Sigrun in the square. Then tell Aurel you're ready.",
-  "ah23": "East to Corvane, before the League's spring settling. The hill road leaves the vale to the east.",
+  "ah23": "East to Corvane, before the League's spring settling. Strangers have their letters stamped at the toll house on Tally Hill first.",
+  "ah24": "Corvane. Find Ilse Varn.",
+  "ah25": "Ilse's house is on the west side of Corvane's square.",
+  "ah26": "Into the League's counting house, at night. Find the Houses' notes.",
+  "ah27": "The spring settling, in Corvane's council hall.",
+  "ah28": "South-east over the steppe to Tarsis. Vela Orme's contract ends at the new moon.",
+  "ah29": "Vela wants to see the Commons fight. Go to her hall.",
+  "ah30": "Tarsis' infirmary, then Vela's answer.",
+  "ah31": "South, across the desert, to the Ember Courts.",
   "ai1": "Autumn, while Rhea is away.",
   "ai2": "Midwinter, while Rhea is away."
  },
@@ -984,6 +1014,240 @@
      "text": "A child on the ice with a hand line, pulling up a fish no longer than a finger, very proud of it."
     }
    ]
+  },
+  {
+   "id": "tollman",
+   "map": "town-tallyhill",
+   "x": 6,
+   "y": 8,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "ah",
+    "flag": "tollFought"
+   },
+   "talk": [
+    {
+     "run": "tollHouse"
+    }
+   ]
+  },
+  {
+   "id": "tally-groom",
+   "map": "town-tallyhill",
+   "x": 20,
+   "y": 8,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A stable boy, sweeping out the stalls the Warden horses were in. \"They didn't pay for the hay. Wardens never pay for the hay.\""
+    }
+   ]
+  },
+  {
+   "id": "tally-drover",
+   "map": "town-tallyhill",
+   "x": 15,
+   "y": 11,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A drover with three ironbacks, waiting for the toll bar. \"Corvane counts everything. They counted my beasts' teeth last year.\""
+    }
+   ]
+  },
+  {
+   "id": "ilse",
+   "map": "town-corvane",
+   "x": 4,
+   "y": 11,
+   "look": "ilse",
+   "when": {
+    "stage": [
+     "ah25"
+    ]
+   },
+   "talk": [
+    {
+     "run": "ilseHouse"
+    }
+   ]
+  },
+  {
+   "id": "corv-clerk",
+   "map": "town-corvane",
+   "x": 18,
+   "y": 7,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A clerk in a black coat with ink on his cuffs, hurrying. \"Settling week. Nobody sleeps in settling week.\""
+    }
+   ]
+  },
+  {
+   "id": "corv-widow",
+   "map": "town-corvane",
+   "x": 10,
+   "y": 12,
+   "look": "kr-mother",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old woman in good black, at a stall. \"My husband's pension is in the growers' notes. Safe as stone, the League said. The League always says that.\""
+    }
+   ]
+  },
+  {
+   "id": "corv-porter",
+   "map": "town-corvane",
+   "x": 24,
+   "y": 12,
+   "look": "warden2",
+   "when": {
+    "stagePrefix": "ah",
+    "not": "ledgersRead"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A League porter outside the counting house, with a brass-tipped staff. \"Hours of business are by appointment. Nobody has an appointment.\""
+    }
+   ]
+  },
+  {
+   "id": "ilse-after",
+   "map": "town-corvane",
+   "x": 16,
+   "y": 8,
+   "look": "ilse",
+   "when": {
+    "stage": [
+     "ah28"
+    ]
+   },
+   "talk": [
+    {
+     "say": "ilse",
+     "text": "\"Ten thousand savers, or a generation of growers. I added it up both ways. Neither comes out even.\""
+    }
+   ]
+  },
+  {
+   "id": "kesh",
+   "map": "town-tarsis",
+   "x": 15,
+   "y": 14,
+   "look": "kesh",
+   "when": {
+    "stage": [
+     "ah29"
+    ]
+   },
+   "talk": [
+    {
+     "say": "kesh",
+     "text": "\"Captain's in the hall. Mind the dogs. Mind the captain more.\""
+    }
+   ]
+  },
+  {
+   "id": "kesh-inf",
+   "map": "town-tarsis",
+   "x": 24,
+   "y": 12,
+   "look": "kesh",
+   "when": {
+    "stage": [
+     "ah30"
+    ],
+    "not": "kesh.seen"
+   },
+   "talk": [
+    {
+     "run": "infirmary"
+    }
+   ]
+  },
+  {
+   "id": "vela",
+   "map": "town-tarsis",
+   "x": 14,
+   "y": 7,
+   "look": "vela",
+   "when": {
+    "stage": [
+     "ah29",
+     "ah30"
+    ]
+   },
+   "talk": [
+    {
+     "run": "vela"
+    }
+   ]
+  },
+  {
+   "id": "tars-sword",
+   "map": "town-tarsis",
+   "x": 5,
+   "y": 13,
+   "look": "smuggler",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A sellsword sharpening a blade that's already sharp. His collar is turned up to his ears."
+    }
+   ]
+  },
+  {
+   "id": "tars-cook",
+   "map": "town-tarsis",
+   "x": 6,
+   "y": 14,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The company cook, stirring a pot. \"Twenty years I've cooked for Tarsis. Never seen the strongbox empty. Never.\""
+    }
+   ]
+  },
+  {
+   "id": "tars-recruit",
+   "map": "town-tarsis",
+   "x": 20,
+   "y": 13,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A young sellsword, watching the practice yard. \"Captain says we fight for whoever pays. Nobody's paid since the thaw.\""
+    }
+   ]
   }
  ],
  "steps": [
@@ -1005,6 +1269,43 @@
      "ah16",
      "ah17",
      "ah18"
+    ]
+   }
+  },
+  {
+   "map": "land-east",
+   "at": [
+    13,
+    23
+   ],
+   "do": [
+    {
+     "run": "corvaneShut"
+    }
+   ],
+   "when": {
+    "stage": "ah23"
+   }
+  },
+  {
+   "map": "land-east",
+   "at": [
+    38,
+    28
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "Tarsis' gate is barred. A sellsword on the wall calls down that the company takes no visitors while the captain's contract stands."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ah23",
+     "ah24",
+     "ah25",
+     "ah26",
+     "ah27"
     ]
    }
   },
@@ -1577,6 +1878,168 @@
       "map": "land-north",
       "x": 36,
       "y": 12,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-east",
+   "at": [
+    20,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-tallyhill",
+      "x": 12,
+      "y": 12,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-tallyhill",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 20,
+      "y": 11,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-tallyhill",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 20,
+      "y": 11,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-east",
+   "at": [
+    13,
+    23
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-corvane",
+      "x": 14,
+      "y": 16,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    14,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 13,
+      "y": 24,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 13,
+      "y": 24,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-east",
+   "at": [
+    38,
+    28
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-tarsis",
+      "x": 14,
+      "y": 15,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-tarsis",
+   "at": [
+    14,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 38,
+      "y": 29,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-tarsis",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 38,
+      "y": 29,
       "facing": "down"
      }
     }
@@ -2255,6 +2718,205 @@
      "text": "A fisher's hut, shut against the wind."
     }
    ]
+  },
+  {
+   "map": "town-tallyhill",
+   "at": [
+    6,
+    6
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The toll house. A table, a ledger, a stamp on a chain."
+    }
+   ]
+  },
+  {
+   "map": "town-tallyhill",
+   "at": [
+    20,
+    6
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The stables."
+    }
+   ]
+  },
+  {
+   "map": "town-tallyhill",
+   "at": [
+    12,
+    0
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 20,
+      "y": 9,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-tallyhill",
+   "at": [
+    13,
+    0
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-east",
+      "x": 20,
+      "y": 9,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    4,
+    10
+   ],
+   "do": [
+    {
+     "run": "ilseHouse"
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    25,
+    10
+   ],
+   "do": [
+    {
+     "run": "vaultIn"
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    14,
+    5
+   ],
+   "do": [
+    {
+     "run": "settling"
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    15,
+    5
+   ],
+   "do": [
+    {
+     "run": "settling"
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "at": [
+    3,
+    14
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The Guild's house in Corvane. The shutters are closed, and the brass plate has been taken down."
+    }
+   ]
+  },
+  {
+   "map": "corvane-vault",
+   "at": [
+    1,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-corvane",
+      "x": 25,
+      "y": 11,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "corvane-vault",
+   "at": [
+    18,
+    6
+   ],
+   "do": [
+    {
+     "run": "ledgers"
+    }
+   ]
+  },
+  {
+   "map": "town-tarsis",
+   "at": [
+    14,
+    6
+   ],
+   "do": [
+    {
+     "run": "vela"
+    }
+   ]
+  },
+  {
+   "map": "town-tarsis",
+   "at": [
+    15,
+    6
+   ],
+   "do": [
+    {
+     "run": "vela"
+    }
+   ]
+  },
+  {
+   "map": "town-tarsis",
+   "at": [
+    24,
+    11
+   ],
+   "do": [
+    {
+     "run": "infirmary"
+    }
+   ]
+  },
+  {
+   "map": "town-tarsis",
+   "at": [
+    5,
+    11
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The barracks. Bunks, kit, and the sweetish smell of the raw."
+    }
+   ]
   }
  ],
  "zones": [
@@ -2396,6 +3058,76 @@
    "do": [
     {
      "run": "holmGate"
+    }
+   ]
+  },
+  {
+   "map": "town-tallyhill",
+   "area": [
+    10,
+    7,
+    15,
+    10
+   ],
+   "when": {
+    "stage": "ah23",
+    "not": "tollFought"
+   },
+   "do": [
+    {
+     "run": "tollHouse"
+    }
+   ]
+  },
+  {
+   "map": "town-corvane",
+   "area": [
+    12,
+    11,
+    17,
+    15
+   ],
+   "when": {
+    "stage": "ah24"
+   },
+   "do": [
+    {
+     "run": "ottilie"
+    }
+   ]
+  },
+  {
+   "map": "corvane-vault",
+   "area": [
+    3,
+    2,
+    13,
+    8
+   ],
+   "when": {
+    "stage": "ah26",
+    "not": "vaultFought"
+   },
+   "do": [
+    {
+     "run": "vaultGuards"
+    }
+   ]
+  },
+  {
+   "map": "town-tarsis",
+   "area": [
+    12,
+    13,
+    17,
+    15
+   ],
+   "when": {
+    "stage": "ah28"
+   },
+   "do": [
+    {
+     "run": "tarsisGate"
     }
    ]
   }
@@ -6805,7 +7537,8 @@
    {
     "set": {
      "hero": "rhea",
-     "light": "day"
+     "light": "day",
+     "open.vale-east": true
     }
    },
    {
@@ -6813,14 +7546,839 @@
    },
    {
     "goto": {
-     "map": "town-drovers-halt",
+     "map": "town-longbarrow",
      "x": 12,
      "y": 11,
      "facing": "up"
     }
    },
    {
-    "toast": "East to Corvane, before the League's spring settling. The hill road leaves the vale to the east."
+    "say": "",
+    "text": "Longbarrow, at the foot of the hill road. Ilse Varn's letter has a League seal on it, and the toll-men on the hill road are said to bow to that seal like a priest."
+   },
+   {
+    "toast": "East to Corvane, before the League's spring settling. The hill road leaves the vale past Longbarrow."
+   }
+  ],
+  "corvaneShut": [
+   {
+    "say": "",
+    "text": "Corvane's gate wardens look at Ilse's letter, and at the stamp that isn't on it."
+   },
+   {
+    "say": "guard",
+    "text": "\"Every stranger has their letter stamped at the toll house on Tally Hill. North, up the hill road. League law. Even for a League seal.\""
+   }
+  ],
+  "tollHouse": [
+   {
+    "if": {
+     "stage": "ah23",
+     "not": "tollFought"
+    },
+    "then": [
+     {
+      "set": {
+       "tollFought": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Tally Hill. The toll bar is up, which it never is. The toll-men are nowhere. Six horses are tied outside the toll house, and they aren't League horses."
+     },
+     {
+      "say": "",
+      "text": "Warden riders come out of the toll house and the stables at the same time, the way men do who've been waiting for someone."
+     },
+     {
+      "say": "warden",
+      "text": "\"Captain Rhea of the Commons. The Guild's envoy said you'd come this way. He was very sure.\""
+     },
+     {
+      "battle": "road-tollhouse",
+      "win": [
+       {
+        "say": "",
+        "text": "The last rider gets to his horse and goes down the hill road east at a gallop. The toll-men come out of the toll house cellar, where they've been tied up for two days, and are very grateful, and very frightened."
+       },
+       {
+        "say": "tollman",
+        "text": "\"They knew your name. They knew the day. Somebody in Corvane sent word where you'd cross.\""
+       },
+       {
+        "say": "",
+        "text": "He stamps Ilse's letter with the League's scales, and his hand is shaking so badly the stamp is crooked."
+       },
+       {
+        "stage": "ah24"
+       },
+       {
+        "toast": "The letter is stamped. Corvane is to the south."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "tollman",
+      "text": "\"Corvane's south, down the hill road. Mind who you talk to there.\""
+     }
+    ]
+   }
+  ],
+  "ottilie": [
+   {
+    "if": {
+     "stage": "ah24"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Corvane: a tidy hill town of grey stone counting houses, every door with a brass plate, every plate polished. The square is quiet. Too quiet for market day."
+     },
+     {
+      "say": "",
+      "text": "A young knight in polished plate and a League-blue sash is waiting by the fountain with a sword and a buckler. She is very calm."
+     },
+     {
+      "say": "ottilie",
+      "text": "\"Ottilie, sworn sword of the League. The council asks you to leave Corvane by the road you came in on, Captain. Today.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"I'm here to see Ilse Varn.\""
+     },
+     {
+      "say": "ottilie",
+      "text": "\"I know. I'm her guard. The council says she's unwell, and that you'll make her worse. I think the council is lying. I've sworn to obey it anyway.\""
+     },
+     {
+      "say": "ottilie",
+      "text": "\"So. To the first yield, Captain, and then one of us does what the other says.\""
+     },
+     {
+      "duel": "road-ottilie",
+      "win": [
+       {
+        "say": "",
+        "text": "Ottilie's sword is on the cobbles. Her buckler is on the cobbles. She is still standing, which is what she seems to mind most."
+       },
+       {
+        "choose": "Ottilie waits for you to say it.",
+        "options": [
+         {
+          "label": "\"Go back to Ilse. Tell her I'm coming, and tell her what the council asked you to do.\"",
+          "hint": "Ilse hears it from her own guard first.",
+          "do": [
+           {
+            "set": {
+             "ottilieWay": "spared"
+            }
+           },
+           {
+            "say": "",
+            "text": "Ottilie picks up her sword, looks at it, and puts it back in its sheath. Then she bows, very correctly, and goes."
+           }
+          ]
+         },
+         {
+          "label": "\"You're coming with me. I'll tell Ilse myself.\"",
+          "hint": "Make sure of her.",
+          "do": [
+           {
+            "set": {
+             "ottilieWay": "beaten"
+            }
+           },
+           {
+            "say": "",
+            "text": "Rhea takes her sword and walks her across the square. People in the counting house windows watch them go. By the evening, every clerk in Corvane will know that the League's champion was marched through the square."
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "stage": "ah25"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "ilseHouse": [
+   {
+    "if": {
+     "stage": "ah25"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "evening"
+      }
+     },
+     {
+      "say": "",
+      "text": "Ilse Varn's house: narrow, tall, with every window shuttered and a cold fire. Ilse is in her coat, as if she's been ready to leave for days."
+     },
+     {
+      "if": {
+       "eq": {
+        "ottilieWay": "spared"
+       }
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Ottilie is standing behind her chair. She has told Ilse everything. Ilse looks at Rhea, then at her guard."
+       },
+       {
+        "say": "ilse",
+        "text": "\"You beat my sworn sword and sent her back to me to warn me about you. That's either very honest or very clever. I'll take it as honest. I haven't the time to do anything else.\""
+       },
+       {
+        "set": {
+         "recruited.ottilie": true
+        }
+       },
+       {
+        "join": "ottilie"
+       },
+       {
+        "say": "ottilie",
+        "text": "\"Where she goes, I go. That's what sworn means. The council can find another champion.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Ilse sees Ottilie come in without her sword, with Rhea behind her, and goes very still."
+       },
+       {
+        "say": "ilse",
+        "text": "\"So the council sent her, and you beat her, and walked her through the square. Now everyone in Corvane knows I'm the one who wrote to you. Thank you, Captain.\""
+       },
+       {
+        "say": "ottilie",
+        "text": "\"She's right. I'd do it again, though. I'd still be in the square if you'd been the council's.\""
+       }
+      ]
+     },
+     {
+      "say": "ilse",
+      "text": "\"I'm a clerk of the second ledger. I count other people's money. Three months ago a ledger came to me that I wasn't meant to see, and I added it up.\""
+     },
+     {
+      "say": "ilse",
+      "text": "\"The proof is in the counting house vault. The Houses' notes. I can't get them out. The council has locked me out of my own office. But I know the night porters' round, and I know where every key hangs.\""
+     },
+     {
+      "say": "ilse",
+      "text": "\"Tonight, before the settling. After the settling, the notes go back to Vantry and nobody will ever see them again.\""
+     },
+     {
+      "stage": "ah26"
+     },
+     {
+      "toast": "Into the counting house tonight. The door is on the east side of the square."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stagePrefix": "ah2"
+      },
+      "then": [
+       {
+        "say": "ilse",
+        "text": "\"Counting is the only honest thing in Corvane. The numbers don't care who's reading them.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "vaultIn": [
+   {
+    "if": {
+     "stage": "ah26"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "say": "",
+      "text": "Ilse unlocks the counting house's side door with a key she shouldn't have. Inside, the lamps are lit. They're never lit at night."
+     },
+     {
+      "goto": {
+       "map": "corvane-vault",
+       "x": 2,
+       "y": 9,
+       "facing": "right"
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The counting house. Shut, with a brass plate on the door: \"Hours of business, by appointment.\""
+     }
+    ]
+   }
+  ],
+  "vaultGuards": [
+   {
+    "say": "",
+    "text": "The long hall of ledgers. Two League porters, and a vault ironback the size of a cart, chained by the strongroom door, and a man in a good grey coat counting crates of paper by lamplight. A Guild factor. Packing."
+   },
+   {
+    "say": "factor",
+    "text": "\"The Commons captain. The envoy said you'd lose a day on the pass. He was wrong about something at last.\""
+   },
+   {
+    "battle": "road-vault",
+    "win": [
+     {
+      "say": "",
+      "text": "The factor runs for the front office and goes out through a window, leaving his coat. The ironback lies down where it was chained, and sighs, and goes to sleep."
+     },
+     {
+      "set": {
+       "vaultFought": true
+      }
+     }
+    ]
+   }
+  ],
+  "ledgers": [
+   {
+    "if": {
+     "flag": "vaultFought",
+     "not": "ledgersRead"
+    },
+    "then": [
+     {
+      "set": {
+       "ledgersRead": true
+      }
+     },
+     {
+      "say": "",
+      "text": "The strongroom. Ilse goes straight to a shelf and pulls down three ledgers bound in black, and lays them open on the table."
+     },
+     {
+      "say": "ilse",
+      "text": "\"The first. The highland growers, every valley from the cloudline down. They owe for their seed, their trays, their kith. They used to owe the Guild. Two years ago, the League bought every one of those debts. Quietly. For half their worth.\""
+     },
+     {
+      "say": "ilse",
+      "text": "\"The second. The Houses. They've been borrowing against their next broods for three years. Not this year's children. Next year's. And the year after's.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea reads it twice. The Houses are borrowing against children who aren't born yet."
+     },
+     {
+      "say": "ilse",
+      "text": "\"The third. The autumn contract with Tarsis. The Houses can't pay it. So the League is paying it for them, out of what the growers owe the League.\""
+     },
+     {
+      "say": "ilse",
+      "text": "\"The Guild isn't rich, Captain. It's in debt to us up to the eyes. And the highlands are paying the swords that will be sent to burn them. That's what I added up.\""
+     },
+     {
+      "say": "",
+      "text": "At the bottom of the third ledger, in a different hand, a note: the next payment, and where it goes. Not to Tarsis. South. A season's coin, every season, to the Ember Courts."
+     },
+     {
+      "say": "ilse",
+      "text": "\"I don't know what that one is. I've never known. Nobody here asks about the south.\""
+     },
+     {
+      "say": "",
+      "text": "Ilse closes the books and picks up all three."
+     },
+     {
+      "say": "ilse",
+      "text": "\"The settling is in the morning. The whole council, and every House's agent. I'm going to read these out. I'd like you standing next to me when I do.\""
+     },
+     {
+      "fade": "Morning."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "goto": {
+       "map": "town-corvane",
+       "x": 14,
+       "y": 7,
+       "facing": "up"
+      }
+     },
+     {
+      "stage": "ah27"
+     },
+     {
+      "toast": "The spring settling, in the council hall."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "ledgersRead"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Empty shelves, now."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The strongroom door. The vault ironback lies across it, chained, watching you."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "settling": [
+   {
+    "if": {
+     "stage": "ah27"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Corvane's council hall: a round table of black wood, twelve chairs, and on the wall behind them a great brass scale that has been perfectly level for two hundred years."
+     },
+     {
+      "say": "",
+      "text": "Every House has an agent here, in grey. The Guild factor from the counting house is one of them. He has a new coat."
+     },
+     {
+      "say": "",
+      "text": "Ilse reads out the three ledgers. It takes an hour. Nobody interrupts. When she gets to the Houses' borrowing against unborn broods, one of the old councillors puts his hand over his eyes."
+     },
+     {
+      "say": "factor",
+      "text": "\"The Houses' notes are good. The Houses have never failed to pay.\""
+     },
+     {
+      "say": "ilse",
+      "text": "\"The Houses have never been asked to pay. That's different.\""
+     },
+     {
+      "say": "",
+      "text": "Then the council turns to Rhea, because the growers whose debts the League holds are the Commons' own people, and the League needs to know what the Commons will do with them."
+     },
+     {
+      "say": "councillor",
+      "text": "\"The League will stop paying Tarsis on the Houses' behalf. We are not fools. But the growers' debts are real money, Captain. Ten thousand savers in the lowland towns put their coin into them. Widows. Clerks. Mill pensions. What does the Commons say?\""
+     },
+     {
+      "choose": "The whole council waits. Ilse doesn't look at you.",
+      "options": [
+       {
+        "label": "\"Forgive the growers' debts. All of them. They were bought for half, from the people burning them.\"",
+        "hint": "The highlands go free. The lowland savers are ruined.",
+        "do": [
+         {
+          "set": {
+           "road.league": "forgive"
+          }
+         },
+         {
+          "add": {
+           "standing.corvane": -15,
+           "standing.millbridge": 10
+          }
+         },
+         {
+          "say": "",
+          "text": "The hall goes quiet. Then the arguing starts, and goes on all day. In the end the council votes it, seven to five, because Ilse's ledgers are on the table and nobody wants to be the one who read them and voted for the Guild."
+         },
+         {
+          "say": "",
+          "text": "Ten thousand lowland savers lose what they put in. Some of them will be in the Commons' own ranks by autumn, and some of them will never forgive it."
+         }
+        ]
+       },
+       {
+        "label": "\"Write them down slowly. The growers pay what they can, over twenty years, and the savers get something back.\"",
+        "hint": "Fair to the savers. The highlands stay in debt for a generation.",
+        "do": [
+         {
+          "set": {
+           "road.league": "writedown"
+          }
+         },
+         {
+          "add": {
+           "standing.corvane": 20
+          }
+         },
+         {
+          "say": "",
+          "text": "The council votes it before noon. It's sensible. It's fair to the savers. The highland growers will be paying the League for a generation, a little every harvest, and their children after them."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "say": "councillor",
+      "text": "\"Then the League's autumn contract with Tarsis is void. The Houses may pay their own swords, if they can find the coin.\""
+     },
+     {
+      "say": "",
+      "text": "The Guild factor stands up, bows to the scale on the wall, and leaves. He doesn't take his papers."
+     },
+     {
+      "set": {
+       "recruited.ilse": true,
+       "nation.corvane": "pact",
+       "deed.corvane": true
+      }
+     },
+     {
+      "say": "ilse",
+      "text": "\"They'll need someone to keep the Commons' books, now you have creditors. I'm unemployed as of an hour ago. And I'd rather not be in Corvane when the Houses' agents get home.\""
+     },
+     {
+      "toast": "The League stops paying the Guild's swords. Ilse Varn joins the Commons."
+     },
+     {
+      "say": "ilse",
+      "text": "\"Tarsis has paid half its company in lulls for years, on the Houses' credit. Vela Orme's contract ends at the new moon. Without the League's coin, she's free to sell to whoever reaches her first. And the Guild's envoy has a fast horse.\""
+     },
+     {
+      "stage": "ah28"
+     },
+     {
+      "toast": "South-east, over the steppe, to Tarsis."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The council hall. Locked between sittings."
+     }
+    ]
+   }
+  ],
+  "tarsisGate": [
+   {
+    "if": {
+     "stage": "ah28"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Tarsis: a fort of sun-baked stone on a bare rise in the steppe, with a black banner and a coin painted on it. Inside, a yard full of sellswords doing nothing in the patient way of people paid by the season."
+     },
+     {
+      "say": "",
+      "text": "Half of them have their collars turned up. In spring. On the steppe."
+     },
+     {
+      "say": "kesh",
+      "text": "\"Commons? You're the second envoy this month. The first one had a better coat. Captain's in the hall.\""
+     },
+     {
+      "stage": "ah29"
+     }
+    ]
+   }
+  ],
+  "vela": [
+   {
+    "if": {
+     "stage": "ah29",
+     "not": "velaFought"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Vela Orme's hall: a long room with maps on every wall and a strongbox on the table, open, empty. Vela is sitting on the table beside it. White-blonde, scarred lip, a coin on a cord round her neck."
+     },
+     {
+      "say": "vela",
+      "text": "\"The Guild's envoy was here eight days ago. Nice boy. He offered me the Houses' coin. Then a League rider came through and told me the League's not paying it. So he offered me the Houses' word instead. I'd rather have the coin.\""
+     },
+     {
+      "say": "vela",
+      "text": "\"Then he left, south, with his escort, in a hurry. And now you.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"The Commons will pay you not to march for the Guild.\""
+     },
+     {
+      "say": "vela",
+      "text": "\"Everyone pays me not to do things. I don't sell to people who can't fight. A company that's bought by losers is a company that's dead by winter.\""
+     },
+     {
+      "say": "vela",
+      "text": "\"So we'll find out. Tomorrow, on the flat below the fort. My companies against whatever you've brought. Blunted spears, no bows at the face. First side that yields the field.\""
+     },
+     {
+      "fade": "The next morning. The flat below Tarsis."
+     },
+     {
+      "army": "tarsis-yield",
+      "win": [
+       {
+        "set": {
+         "velaFought": true,
+         "tarsisYield": "won"
+        }
+       },
+       {
+        "add": {
+         "standing.tarsis": 20
+        }
+       },
+       {
+        "say": "",
+        "text": "Vela's companies give ground, and give ground, and then give the field. Vela rides out to the middle of it and holds up her open hand. The sellswords on both sides cheer, because sellswords cheer a good fight whoever wins it."
+       },
+       {
+        "say": "vela",
+        "text": "\"Well. You can fight. Come up to the hall. We'll talk about money.\""
+       }
+      ],
+      "lose": [
+       {
+        "set": {
+         "velaFought": true,
+         "tarsisYield": "lost"
+        }
+       },
+       {
+        "say": "",
+        "text": "The Commons yield the field. Vela rides out to the middle of it anyway, and looks at the Commons' lines for a long time."
+       },
+       {
+        "say": "vela",
+        "text": "\"You lost. You lost well, and you didn't run, and nobody broke. That's worth more than you'd think. Come up to the hall.\""
+       }
+      ]
+     },
+     {
+      "stage": "ah30"
+     },
+     {
+      "toast": "Vela will hear the Commons' offer. See the infirmary first."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ah30",
+       "flag": "kesh.seen"
+      },
+      "then": [
+       {
+        "run": "lastContract"
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "stage": "ah30"
+        },
+        "then": [
+         {
+          "say": "vela",
+          "text": "\"Go and see the infirmary first. You should know what you're buying.\""
+         }
+        ],
+        "else": [
+         {
+          "say": "vela",
+          "text": "\"Captain.\""
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "infirmary": [
+   {
+    "if": {
+     "stage": "ah30",
+     "not": "kesh.seen"
+    },
+    "then": [
+     {
+      "set": {
+       "kesh.seen": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Tarsis' infirmary: two long rooms. In the first, ordinary wounds. In the second, with the shutters closed, a dozen sellswords lying on cots who aren't wounded at all. They're in the raw. The Houses' lulls stopped coming with the Houses' coin."
+     },
+     {
+      "say": "",
+      "text": "Kesh is sitting with one of them, holding a cup of water to his mouth."
+     },
+     {
+      "say": "kesh",
+      "text": "\"Half the company wears them. Some of us asked for it, for the pain. Some of us got them in our pay and didn't ask anything. It's a good way to keep a man, Captain. Better than coin.\""
+     },
+     {
+      "say": "kesh",
+      "text": "\"Vela hates it. She took the contracts anyway. A captain who can't pay her company doesn't have a company.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea looks at the man on the cot. The rings on his neck go almost to his ear."
+     },
+     {
+      "say": "kesh",
+      "text": "\"So whatever you're offering her, it had better have lulls in it, or it had better have doctors.\""
+     },
+     {
+      "toast": "Back to Vela's hall."
+     }
+    ],
+    "else": [
+     {
+      "say": "kesh",
+      "text": "\"They're doing better today. Or worse. It's hard to tell, in here.\""
+     }
+    ]
+   }
+  ],
+  "lastContract": [
+   {
+    "say": "",
+    "text": "Vela's hall. Vela, and her lieutenants, and the empty strongbox."
+   },
+   {
+    "say": "vela",
+    "text": "\"So. What's the Commons offering?\""
+   },
+   {
+    "say": "",
+    "text": "Rhea knows what the Commons has. Coin, a little. Greenlings, and Oda's trays. And the Guild lulls the Commons has captured: crates of them, in Kane's stores, waiting to be burned."
+   },
+   {
+    "choose": "Vela waits, with her hand on the coin round her neck.",
+    "options": [
+     {
+      "label": "\"Lulls. The Guild's own, from our stores. Your whole company, paid the way it's always been paid.\"",
+      "hint": "A full company. The Commons is in the lull trade.",
+      "do": [
+       {
+        "set": {
+         "road.tarsis": "lulls",
+         "recruited.vela": true,
+         "nation.tarsis": "pact",
+         "deed.tarsis": true
+        }
+       },
+       {
+        "set": {
+         "lullTrade": true
+        }
+       },
+       {
+        "say": "",
+        "text": "Vela doesn't smile. She just nods, like someone hearing a price she expected."
+       },
+       {
+        "say": "vela",
+        "text": "\"The whole company, then. Every sword. For the season.\""
+       },
+       {
+        "say": "",
+        "text": "In the infirmary, the shutters come open the next week. The men in the raw are up and on the walls again, with fresh lulls on their necks, from the Commons."
+       },
+       {
+        "say": "",
+        "text": "Kesh watches the first crate come in. He doesn't take one. He doesn't stay, either. By the new moon, he's gone."
+       },
+       {
+        "toast": "Tarsis marches for the Commons, every company of it. Paid in lulls."
+       }
+      ]
+     },
+     {
+      "label": "\"Greenlings, and doctors, and all the coin we have. Whoever wants to come off, comes off. Whoever doesn't, walks.\"",
+      "hint": "Half a company, all of it loyal. Half of Tarsis goes through the raw.",
+      "do": [
+       {
+        "set": {
+         "road.tarsis": "greenlings",
+         "recruited.vela": true,
+         "recruited.kesh": true,
+         "nation.tarsis": "pact",
+         "deed.tarsis": true
+        }
+       },
+       {
+        "join": "kesh"
+       },
+       {
+        "say": "",
+        "text": "Vela looks at her lieutenants. Half of them look at the floor."
+       },
+       {
+        "say": "vela",
+        "text": "\"Half my company walks out of that gate before midsummer. You know that.\""
+       },
+       {
+        "say": "rhea",
+        "text": "\"And the half that stays is yours. Not the Houses'.\""
+       },
+       {
+        "say": "",
+        "text": "Over the next month, half of Tarsis goes through the raw on the infirmary cots, with greenlings from the Commons and Rhea sitting up with them. A third of those who start, finish. The rest take their pay and ride off over the steppe to find someone who still pays in lulls."
+       },
+       {
+        "say": "",
+        "text": "Kesh is one of those who finish. He comes to Rhea's fire on the last night, hollow-cheeked, with his twin blades on his back."
+       },
+       {
+        "say": "kesh",
+        "text": "\"I owe you a month of not being dead. I'll pay it off on foot.\""
+       },
+       {
+        "toast": "Half of Tarsis marches for the Commons, weaned. Kesh joins."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "join": "vela"
+   },
+   {
+    "say": "vela",
+    "text": "\"One more thing, since we're friends. The Guild's envoy didn't come here for me. I was on his way. He was going south, across the desert, with an iron chest from the Houses. Second one this year.\""
+   },
+   {
+    "say": "ilse",
+    "text": "\"A season's coin. To the Ember Courts. It's in the ledger. That's what it was.\""
+   },
+   {
+    "stage": "ah31"
+   },
+   {
+    "toast": "South, across the desert, to the Ember Courts."
    }
   ]
  }

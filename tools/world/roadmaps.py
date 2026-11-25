@@ -8,7 +8,7 @@ from act2maps import G, save  # noqa: E402
 TOWN = {"#": "stonewall", ".": "cobble", ",": "grass", ":": "path", "h": "wall", "r": "roof", "d": "door", "w": "well",
         "S": "stall", "H": "hay", "x": "crate", "f": "fence", "~": "water", "=": "bridge", "e": "exit", "C": "cart",
         "F": "campfire", "t": "tent", "T": "tree", "*": "flowers", "p": "plank", "b": "table", "g": "gate", "R": "rock",
-        "I": "iwall", "k": "shelf", "B": "bed", "_": "wetfloor", "v": "tray", "c": "canal", "m": "marsh", "q": "reeds", "n": "snow", "P": "pines", "^": "steps"}
+        "I": "iwall", "k": "shelf", "B": "bed", "_": "wetfloor", "v": "tray", "c": "canal", "m": "marsh", "q": "reeds", "n": "snow", "P": "pines", "^": "steps", "s": "steppe", "a": "sand"}
 MAPS = []
 
 
@@ -218,6 +218,53 @@ house(O, 2, 7, 6, 9, (4,)); house(O, 9, 7, 13, 9, (11,)); house(O, 17, 7, 22, 9,
 O.rect(15, 11, 16, 11, "k"); O.put(7, 11, "F")
 O.rect(12, 12, 13, 13, ":"); O.rect(12, 13, 13, 13, "e")
 FROST = town("town-frostmere", "Frostmere", "dusk", O, (12, 12))
+
+# ================================================================ leg 5: the East, the Corvane League and Tarsis
+# ---------------- Tally Hill: the League's toll house on the hill road ----------------
+# 26 x 14. The hill road runs up the middle to the toll bar; the toll house (west), the stables (east), the hills.
+Y = G(26, 14, ",")
+Y.rect(0, 0, 25, 0, "T"); Y.rect(0, 0, 0, 13, "T"); Y.rect(25, 0, 25, 13, "T")
+Y.rect(12, 0, 13, 13, ":")
+Y.rect(10, 6, 11, 6, "f"); Y.rect(14, 6, 15, 6, "f"); Y.rect(12, 6, 13, 6, ":")       # the toll bar, lifted
+house(Y, 3, 3, 9, 6, (6,))                                                             # the toll house
+house(Y, 17, 3, 23, 6, (20,))                                                          # the stables
+Y.rect(3, 9, 4, 10, "x"); Y.put(8, 10, "w"); Y.rect(18, 9, 22, 9, "f"); Y.rect(19, 10, 21, 11, "H")
+Y.rect(12, 0, 13, 0, "e"); Y.rect(12, 13, 13, 13, "e")
+TALLY = town("town-tallyhill", "Tally Hill toll house", "road", Y, (12, 12))
+
+# ---------------- Corvane: the League's counting-town ----------------
+# 30 x 18. The council hall (north), the counting house (east), Ilse's house (west), the scales fountain.
+V = G(30, 18, ".")
+V.rect(0, 0, 29, 0, "#"); V.rect(0, 17, 29, 17, "#"); V.rect(0, 0, 0, 17, "#"); V.rect(29, 0, 29, 17, "#")
+house(V, 9, 1, 20, 5, (14, 15))                                                        # the council hall
+house(V, 22, 7, 28, 10, (25,))                                                         # the counting house
+house(V, 1, 7, 7, 10, (4,))                                                            # Ilse's house
+house(V, 1, 12, 6, 14, (3,))                                                           # the Guild's house
+V.rect(14, 9, 15, 10, "w"); V.rect(18, 13, 19, 13, "S"); V.rect(10, 13, 11, 13, "S"); V.rect(23, 14, 24, 14, "x")
+V.rect(14, 17, 15, 17, "e")
+CORV = town("town-corvane", "Corvane", "town", V, (14, 16))
+
+# ---------------- The counting house at night ----------------
+# 24 x 12. The front office, the long hall of ledgers, the vault (north-east), the strongroom of the Houses' notes.
+X = G(24, 12, "R")
+X.rect(1, 1, 22, 10, "p")
+X.box(1, 1, 22, 10, "I")
+for y in (3, 5, 7): X.rect(4, y, 12, y, "k")                                         # ledger stacks
+X.box(15, 1, 22, 6, "I"); X.rect(16, 2, 21, 5, "p"); X.put(18, 6, "d"); X.rect(19, 2, 21, 2, "k"); X.put(17, 3, "b")
+X.put(1, 9, "e")
+VAULT = town("corvane-vault", "The counting house, at night", "night", X, (2, 9), rest=False)
+
+# ---------------- Tarsis: the sellsword fortress on the steppe ----------------
+# 30 x 18. A walled fort on the dry steppe: Vela's hall (north), barracks (west), the practice yard, the gate.
+U = G(30, 18, "s")
+U.box(1, 1, 28, 16, "#")
+house(U, 9, 2, 20, 6, (14, 15))                                                        # Vela's hall
+house(U, 2, 8, 8, 11, (5,))                                                            # the barracks
+house(U, 22, 8, 27, 11, (24,))                                                         # the infirmary
+U.box(11, 9, 18, 13, "f"); U.rect(12, 10, 17, 12, "a"); U.put(14, 13, "a"); U.put(15, 13, "a")   # the practice yard
+U.put(4, 14, "F"); U.rect(22, 14, 23, 14, "x"); U.rect(25, 13, 26, 13, "C")
+U.rect(14, 16, 15, 16, ":"); U.rect(14, 17, 15, 17, "e")
+TARSIS = town("town-tarsis", "Tarsis", "camp", U, (14, 15))
 
 if __name__ == "__main__":
     for m in MAPS:

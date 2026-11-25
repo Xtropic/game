@@ -609,6 +609,64 @@
    ],
    "won": "Gerd yields",
    "lost": "Gerd wins the ring"
+  },
+  "road-ottilie": {
+   "name": "Ottilie",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Corvane's square, by the scales fountain. The clerks have come to the counting house windows. Ottilie, sword and buckler, perfectly still. To the first yield."
+   ],
+   "foe": {
+    "name": "Ottilie",
+    "look": "ottilie",
+    "cast": "ottilie",
+    "level": 22,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 4
+    },
+    "feint": 0.3,
+    "lines": {
+     "hit": [
+      "Her buckler takes you in the face. Neat. Correct. Painful.",
+      "Her point stops a finger from your throat, and withdraws, politely."
+     ],
+     "hurt": [
+      "She steps back, and nods: a fair touch.",
+      "\"Good.\""
+     ],
+     "yield": "Ottilie lowers her sword and steps back. \"Yielded.\"",
+     "down": "Ottilie's sword rings on the cobbles."
+    }
+   },
+   "words": [
+    {
+     "id": "oath",
+     "label": "\"You said the council's lying.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"You said it yourself. The council's lying, and you're fighting for it anyway.\"",
+     "land": "Her guard hangs for a heartbeat.",
+     "miss": "\"I said I'd obey. I didn't say I'd like it.\""
+    },
+    {
+     "id": "form",
+     "label": "Break her rhythm",
+     "attr": "wits",
+     "vs": "finesse",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "She fights by the book. You stop fighting by any book at all.",
+     "land": "She waits for a stroke that never comes, and you're inside her guard.",
+     "miss": "She's read that book too."
+    }
+   ],
+   "won": "Ottilie yields",
+   "lost": "Ottilie wins the yield"
   }
  }
 }

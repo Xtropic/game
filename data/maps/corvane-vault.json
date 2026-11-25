@@ -1,0 +1,36 @@
+{
+ "id": "corvane-vault",
+ "name": "The counting house, at night",
+ "music": "night",
+ "legend": {
+  "d": "door",
+  "e": "exit",
+  "p": "plank",
+  "b": "table",
+  "R": "rock",
+  "I": "iwall",
+  "k": "shelf"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRR",
+  "RIIIIIIIIIIIIIIIIIIIIIIR",
+  "RIpppppppppppppIpppkkkIR",
+  "RIppkkkkkkkkkppIpbppppIR",
+  "RIpppppppppppppIppppppIR",
+  "RIppkkkkkkkkkppIppppppIR",
+  "RIpppppppppppppIIIdIIIIR",
+  "RIppkkkkkkkkkpppppppppIR",
+  "RIppppppppppppppppppppIR",
+  "ReppppppppppppppppppppIR",
+  "RIIIIIIIIIIIIIIIIIIIIIIR",
+  "RRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 2,
+   "y": 9
+  }
+ ]
+}

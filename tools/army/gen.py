@@ -104,6 +104,15 @@ def spindle(g):
     for y in range(9, H): g[y][19] = ":"; g[y][20] = ":"
 
 
+def steppe(g):
+    """The flat below Tarsis: open steppe, a dry stream bed across the middle, two low rises, the fort road."""
+    W, H = len(g[0]), len(g)
+    fill_in(g, 0, 11, W - 1, 12, "=")                     # the dry stream bed, soft going
+    fill_in(g, 6, 5, 11, 8, "^"); fill_in(g, 28, 15, 33, 18, "^")   # two low rises
+    fill_in(g, 19, 0, 20, H - 1, ":")                     # the fort road
+    fill_in(g, 0, H - 2, W - 1, H - 1, "y")               # under the fort wall
+
+
 def harbour(g):
     """Port Ashby's harbour mouth: our boats chained across the top, the water, the mole down the middle, the quay below."""
     W, H = len(g[0]), len(g)
@@ -322,6 +331,44 @@ BATTLES = {
                  effect=dict(terrain=[[29, 7, "~"], [30, 7, "~"], [29, 8, "~"], [30, 8, "~"]])),
         ],
         won="The foundry yards fall", lost="Thrown back at the cut",
+    ),
+    "tarsis-yield": dict(
+        name="The flat below Tarsis",
+        intro=["Vela Orme's companies on the flat below the fort, with blunted spears and the sun behind them. Your companies facing them.",
+               "No killing. First side to yield the field. Every sellsword in Tarsis is on the wall to watch.",
+               "Vela fights the way she's paid to: she'll test your flanks, then come with her riders where you're thin."],
+        terrain=field(40, 24, steppe),
+        commander=dict(name="Vela Orme, captain of Tarsis", cast="vela", level=24),
+        ours=[
+            dict(id="hq", name="Your company", kind="foot", at=[20, 3]),
+            dict(id="pikes", name="Pikes", kind="pike", at=[14, 3]),
+            dict(id="foot-e", name="East foot", kind="foot", at=[26, 3]),
+            dict(id="bows", name="Bows", kind="bow", at=[9, 6]),
+            dict(id="riders", name="Kith riders", kind="horse", at=[32, 4]),
+        ],
+        theirs=[
+            dict(id="t-foot1", name="Tarsis foot", kind="foot", at=[17, 19], officer="warden", level=22),
+            dict(id="t-foot2", name="Tarsis foot", kind="foot", at=[24, 19], officer="warden", level=22),
+            dict(id="t-pike", name="Tarsis pikes", kind="pike", at=[20.5, 17], officer="warden", level=22),
+            dict(id="t-bows", name="Tarsis bows", kind="bow", at=[30, 17], officer="archer", level=22),
+            dict(id="t-horse", name="Vela's riders", kind="horse", at=[5, 20], officer="warden", level=23),
+        ],
+        plan=[
+            dict(at=3, note="Vela's foot cross the dry bed together; her bows take the east rise.", orders=[
+                dict(company="t-foot1", to=[16, 9]), dict(company="t-foot2", to=[25, 9]), dict(company="t-pike", to=[20.5, 10]),
+                dict(company="t-bows", to=[30, 15])]),
+            dict(when="half", note="When your line is fixed, her riders come round the west rise for your flank.", orders=[
+                dict(company="t-horse", via=[3, 9], to=[10, 3])]),
+        ],
+        stratagems=[
+            dict(id="rise", name="Hold the west rise", text="Put a company on the low rise to the west before Vela's riders think of it. Riders don't like going uphill into spears.",
+                 opinions={"commander": "\"She'll come round the west. Riders always come round the side with the most grass.\"", "rider": "\"The rise is soft on the near side. They'll slow.\""},
+                 effect=dict(enemyMorale=10)),
+            dict(id="sun", name="Wait for the sun", text="Ask for the yield at noon, not morning, so the sun isn't in our faces.",
+                 opinions={"scholar": "\"She picked the hour. Make her pick another.\""},
+                 effect=dict(enemyMorale=6)),
+        ],
+        won="Vela yields the field", lost="You yield the field",
     ),
     "ashby-mole": dict(
         name="Ashby's harbour mouth", hold=200,

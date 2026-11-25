@@ -117,4 +117,28 @@ describe("the Long Road: the West", () => {
     expect(log).toContain("battle road-gaol"); expect(f["road.lorne"]).toBe("breakout"); expect(f.lorneWar).toBe(true);
     expect(f.mireFever).toBe(true); expect(f.stage).toBe("ah23");
   });
+  it("the East: the toll house, Ottilie spared, the ledgers, debts forgiven, and Tarsis paid in greenlings", () => {
+    // picks: send Ottilie back, forgive, greenlings
+    const t = start({ stage: "ah23" }, [0, 0, 1]);
+    const { f, r, log } = t;
+    r.run([{ run: "tollHouse" }]); expect(log).toContain("battle road-tollhouse"); expect(f.stage).toBe("ah24");
+    r.run([{ run: "ottilie" }]); expect(log).toContain("duel road-ottilie"); expect(f.ottilieWay).toBe("spared"); expect(f.stage).toBe("ah25");
+    r.run([{ run: "ilseHouse" }]); expect(f["recruited.ottilie"]).toBe(true); expect(f.stage).toBe("ah26");
+    r.run([{ run: "vaultIn" }]); expect(t.map()).toBe("corvane-vault");
+    r.run([{ run: "vaultGuards" }, { run: "ledgers" }]); expect(log).toContain("battle road-vault"); expect(f.stage).toBe("ah27");
+    r.run([{ run: "settling" }]); expect(f["road.league"]).toBe("forgive"); expect(f["recruited.ilse"]).toBe(true); expect(f.stage).toBe("ah28");
+    r.run([{ run: "tarsisGate" }, { run: "vela" }]); expect(log).toContain("army tarsis-yield"); expect(f.stage).toBe("ah30");
+    r.run([{ run: "infirmary" }, { run: "vela" }]);
+    expect(f["road.tarsis"]).toBe("greenlings"); expect(f["recruited.kesh"]).toBe(true); expect(f["recruited.vela"]).toBe(true);
+    expect(f.lullTrade).toBeUndefined(); expect(f.stage).toBe("ah31"); expect(r.busy).toBe(false);
+  });
+
+  it("the East, the other way: Ottilie marched through the square, a slow write-down, and Tarsis paid in lulls", () => {
+    const t = start({ stage: "ah24" }, [1, 1, 0]);
+    const { f, r } = t;
+    r.run([{ run: "ottilie" }, { run: "ilseHouse" }, { run: "vaultIn" }, { run: "vaultGuards" }, { run: "ledgers" }, { run: "settling" }]);
+    expect(f["recruited.ottilie"]).toBeUndefined(); expect(f["road.league"]).toBe("writedown");
+    r.run([{ run: "tarsisGate" }, { run: "vela" }, { run: "infirmary" }, { run: "vela" }]);
+    expect(f["road.tarsis"]).toBe("lulls"); expect(f.lullTrade).toBe(true); expect(f["recruited.kesh"]).toBeUndefined(); expect(f.stage).toBe("ah31");
+  });
 });

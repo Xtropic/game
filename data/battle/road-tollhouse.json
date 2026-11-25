@@ -1,0 +1,94 @@
+{
+ "id": "road-tollhouse",
+ "name": "The Warden riders at Tally Hill",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "Warden riders, dismounted, with sabres and a crossbow, coming out of the toll house and the stables.",
+  "They were told you'd come."
+ ],
+ "won": "The riders scatter down the hill road",
+ "lost": "Pushed back down the hill",
+ "units": [
+  {
+   "id": "tw1",
+   "name": "Warden rider",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "tw2",
+   "name": "Warden rider",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "tw3",
+   "name": "Warden rider",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    162,
+    132
+   ]
+  },
+  {
+   "id": "tw4",
+   "name": "Rider's crossbow",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 21,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  },
+  {
+   "id": "tw5",
+   "name": "Escort sergeant",
+   "look": "warden",
+   "side": "foe",
+   "row": "back",
+   "cast": "warden",
+   "level": 22,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    222,
+    128
+   ]
+  }
+ ]
+}

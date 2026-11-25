@@ -1451,6 +1451,241 @@
    "won": "The foundry yards fall",
    "lost": "Thrown back at the cut"
   },
+  "tarsis-yield": {
+   "id": "tarsis-yield",
+   "legend": {
+    ".": "open",
+    "T": "woods",
+    "^": "hill",
+    "~": "water",
+    "=": "ford",
+    ":": "road",
+    "#": "wall",
+    "g": "gate",
+    "y": "yard"
+   },
+   "name": "The flat below Tarsis",
+   "intro": [
+    "Vela Orme's companies on the flat below the fort, with blunted spears and the sun behind them. Your companies facing them.",
+    "No killing. First side to yield the field. Every sellsword in Tarsis is on the wall to watch.",
+    "Vela fights the way she's paid to: she'll test your flanks, then come with her riders where you're thin."
+   ],
+   "terrain": [
+    "...................::...................",
+    "...................::...................",
+    "...................::...................",
+    "...................::...................",
+    "...................::...................",
+    "......^^^^^^.......::...................",
+    "......^^^^^^.......::...................",
+    "......^^^^^^.......::...................",
+    "......^^^^^^.......::...................",
+    "...................::...................",
+    "...................::...................",
+    "===================::===================",
+    "===================::===================",
+    "...................::...................",
+    "...................::...................",
+    "...................::.......^^^^^^......",
+    "...................::.......^^^^^^......",
+    "...................::.......^^^^^^......",
+    "...................::.......^^^^^^......",
+    "...................::...................",
+    "...................::...................",
+    "...................::...................",
+    "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+   ],
+   "commander": {
+    "name": "Vela Orme, captain of Tarsis",
+    "cast": "vela",
+    "level": 24
+   },
+   "ours": [
+    {
+     "id": "hq",
+     "name": "Your company",
+     "kind": "foot",
+     "at": [
+      20,
+      3
+     ]
+    },
+    {
+     "id": "pikes",
+     "name": "Pikes",
+     "kind": "pike",
+     "at": [
+      14,
+      3
+     ]
+    },
+    {
+     "id": "foot-e",
+     "name": "East foot",
+     "kind": "foot",
+     "at": [
+      26,
+      3
+     ]
+    },
+    {
+     "id": "bows",
+     "name": "Bows",
+     "kind": "bow",
+     "at": [
+      9,
+      6
+     ]
+    },
+    {
+     "id": "riders",
+     "name": "Kith riders",
+     "kind": "horse",
+     "at": [
+      32,
+      4
+     ]
+    }
+   ],
+   "theirs": [
+    {
+     "id": "t-foot1",
+     "name": "Tarsis foot",
+     "kind": "foot",
+     "at": [
+      17,
+      19
+     ],
+     "officer": "warden",
+     "level": 22
+    },
+    {
+     "id": "t-foot2",
+     "name": "Tarsis foot",
+     "kind": "foot",
+     "at": [
+      24,
+      19
+     ],
+     "officer": "warden",
+     "level": 22
+    },
+    {
+     "id": "t-pike",
+     "name": "Tarsis pikes",
+     "kind": "pike",
+     "at": [
+      20.5,
+      17
+     ],
+     "officer": "warden",
+     "level": 22
+    },
+    {
+     "id": "t-bows",
+     "name": "Tarsis bows",
+     "kind": "bow",
+     "at": [
+      30,
+      17
+     ],
+     "officer": "archer",
+     "level": 22
+    },
+    {
+     "id": "t-horse",
+     "name": "Vela's riders",
+     "kind": "horse",
+     "at": [
+      5,
+      20
+     ],
+     "officer": "warden",
+     "level": 23
+    }
+   ],
+   "plan": [
+    {
+     "at": 3,
+     "note": "Vela's foot cross the dry bed together; her bows take the east rise.",
+     "orders": [
+      {
+       "company": "t-foot1",
+       "to": [
+        16,
+        9
+       ]
+      },
+      {
+       "company": "t-foot2",
+       "to": [
+        25,
+        9
+       ]
+      },
+      {
+       "company": "t-pike",
+       "to": [
+        20.5,
+        10
+       ]
+      },
+      {
+       "company": "t-bows",
+       "to": [
+        30,
+        15
+       ]
+      }
+     ]
+    },
+    {
+     "when": "half",
+     "note": "When your line is fixed, her riders come round the west rise for your flank.",
+     "orders": [
+      {
+       "company": "t-horse",
+       "via": [
+        3,
+        9
+       ],
+       "to": [
+        10,
+        3
+       ]
+      }
+     ]
+    }
+   ],
+   "stratagems": [
+    {
+     "id": "rise",
+     "name": "Hold the west rise",
+     "text": "Put a company on the low rise to the west before Vela's riders think of it. Riders don't like going uphill into spears.",
+     "opinions": {
+      "commander": "\"She'll come round the west. Riders always come round the side with the most grass.\"",
+      "rider": "\"The rise is soft on the near side. They'll slow.\""
+     },
+     "effect": {
+      "enemyMorale": 10
+     }
+    },
+    {
+     "id": "sun",
+     "name": "Wait for the sun",
+     "text": "Ask for the yield at noon, not morning, so the sun isn't in our faces.",
+     "opinions": {
+      "scholar": "\"She picked the hour. Make her pick another.\""
+     },
+     "effect": {
+      "enemyMorale": 6
+     }
+    }
+   ],
+   "won": "Vela yields the field",
+   "lost": "You yield the field"
+  },
   "ashby-mole": {
    "id": "ashby-mole",
    "legend": {

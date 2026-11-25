@@ -14,6 +14,7 @@ FAIR, SQ, QUAY, TAN, PEAT, COL, ARC = "hollin-fair", "town-hollin", "hollin-quay
 WEST = "land-west"
 REED, ASH, TAV, BRIG = "town-reedhythe", "town-ashby", "ashby-tavern", "ashby-brig"
 GRAZE, KEST, SNOW, HOLM, GAOL, FROST = "town-grazehold", "town-kestrel-fort", "town-snowgate", "town-holm", "holm-gaol", "town-frostmere"
+TALLY, CORV, VAULT, TARS = "town-tallyhill", "town-corvane", "corvane-vault", "town-tarsis"
 
 cast = {"gateward": "Hollin's gate-ward", "speaker": "The Speaker of the square", "ansel": "Ansel", "orla": "Orla", "davy": "Davy",
         "netmaker": "Bryn", "provost": "Provost Amory", "weaver": "Hanne", "kit": "Kit", "gil": "Gil", "perrine": "Perrine",
@@ -21,7 +22,9 @@ cast = {"gateward": "Hollin's gate-ward", "speaker": "The Speaker of the square"
         "saul": "Mother Saul", "clerk": "Harbour clerk", "pike": "Old Pike", "meg": "Sister Meg", "annet": "Annet", "gully": "Gully Sorne",
         "fairweather": "Fairweather", "posy": "Posy", "dorrit": "Dorrit", "oren": "Oren Tull",
         "abel": "Abel", "rider": "Clan rider", "gerd": "Gerd", "arvo": "Arvo", "brede": "Brede", "guard": "Guard captain", "aurel": "Aurel Hask",
-        "finch": "Finch", "fisher": "Frostmere fisher", "sigrun": "Sigrun", "brannoc": "Brannoc", "king": "The King of Lorne", "woman": "A mother of the eleven"}
+        "finch": "Finch", "fisher": "Frostmere fisher", "sigrun": "Sigrun", "brannoc": "Brannoc", "king": "The King of Lorne", "woman": "A mother of the eleven",
+        "tollman": "League toll-man", "factor": "Guild factor", "councillor": "First Councillor of the League", "ilse": "Ilse Varn",
+        "ottilie": "Ottilie", "vela": "Vela Orme", "kesh": "Kesh"}
 
 objectives = {
     "ah0": "The council in Thornwick chapel.",
@@ -48,7 +51,15 @@ objectives = {
     "ah20": "Holm gaol.",
     "ah21": "The King's dinner, in the hall at the top of the square.",
     "ah22": "Find witnesses for Brannoc: Frostmere on the ice, and Sigrun in the square. Then tell Aurel you're ready.",
-    "ah23": "East to Corvane, before the League's spring settling. The hill road leaves the vale to the east.",
+    "ah23": "East to Corvane, before the League's spring settling. Strangers have their letters stamped at the toll house on Tally Hill first.",
+    "ah24": "Corvane. Find Ilse Varn.",
+    "ah25": "Ilse's house is on the west side of Corvane's square.",
+    "ah26": "Into the League's counting house, at night. Find the Houses' notes.",
+    "ah27": "The spring settling, in Corvane's council hall.",
+    "ah28": "South-east over the steppe to Tarsis. Vela Orme's contract ends at the new moon.",
+    "ah29": "Vela wants to see the Commons fight. Go to her hall.",
+    "ah30": "Tarsis' infirmary, then Vela's answer.",
+    "ah31": "South, across the desert, to the Ember Courts.",
     "ai1": "Autumn, while Rhea is away.",
     "ai2": "Midwinter, while Rhea is away.",
 }
@@ -991,8 +1002,206 @@ S["corranSentence"] = [
 ]
 S["backToRoad2"] = [
     fade("Spring, on the road south."),
-    setf({"hero": "rhea", "light": "day"}), stage("ah23"), goto("town-drovers-halt", 12, 11, "up"),
-    toast("East to Corvane, before the League's spring settling. The hill road leaves the vale to the east."),
+    setf({"hero": "rhea", "light": "day", "open.vale-east": True}), stage("ah23"), goto("town-longbarrow", 12, 11, "up"),
+    n("Longbarrow, at the foot of the hill road. Ilse Varn's letter has a League seal on it, and the toll-men on the hill road are said to bow to that seal like a priest."),
+    toast("East to Corvane, before the League's spring settling. The hill road leaves the vale past Longbarrow."),
+]
+
+# ================================================================== leg 5: the Corvane League and Tarsis
+S["corvaneShut"] = [
+    n("Corvane's gate wardens look at Ilse's letter, and at the stamp that isn't on it."),
+    say("guard", R("Every stranger has their letter stamped at the toll house on Tally Hill. North, up the hill road. League law. Even for a League seal.")),
+]
+S["tollHouse"] = [
+    iff({"stage": "ah23", "not": "tollFought"}, [
+        setf({"tollFought": True}),
+        n("Tally Hill. The toll bar is up, which it never is. The toll-men are nowhere. Six horses are tied outside the toll house, and they aren't League horses."),
+        n("Warden riders come out of the toll house and the stables at the same time, the way men do who've been waiting for someone."),
+        say("warden", R("Captain Rhea of the Commons. The Guild's envoy said you'd come this way. He was very sure.")),
+        {"battle": "road-tollhouse", "win": [
+            n("The last rider gets to his horse and goes down the hill road east at a gallop. The toll-men come out of the toll house cellar, where they've been tied up for two days, and are very grateful, and very frightened."),
+            say("tollman", R("They knew your name. They knew the day. Somebody in Corvane sent word where you'd cross.")),
+            n("He stamps Ilse's letter with the League's scales, and his hand is shaking so badly the stamp is crooked."),
+            stage("ah24"), toast("The letter is stamped. Corvane is to the south."),
+        ]},
+    ], [say("tollman", R("Corvane's south, down the hill road. Mind who you talk to there."))]),
+]
+S["ottilie"] = [
+    iff({"stage": "ah24"}, [
+        n("Corvane: a tidy hill town of grey stone counting houses, every door with a brass plate, every plate polished. The square is quiet. Too quiet for market day."),
+        n("A young knight in polished plate and a League-blue sash is waiting by the fountain with a sword and a buckler. She is very calm."),
+        say("ottilie", R("Ottilie, sworn sword of the League. The council asks you to leave Corvane by the road you came in on, Captain. Today.")),
+        say("rhea", R("I'm here to see Ilse Varn.")),
+        say("ottilie", R("I know. I'm her guard. The council says she's unwell, and that you'll make her worse. I think the council is lying. I've sworn to obey it anyway.")),
+        say("ottilie", R("So. To the first yield, Captain, and then one of us does what the other says.")),
+        {"duel": "road-ottilie", "win": [
+            n("Ottilie's sword is on the cobbles. Her buckler is on the cobbles. She is still standing, which is what she seems to mind most."),
+            choose("Ottilie waits for you to say it.",
+                   opt(R("Go back to Ilse. Tell her I'm coming, and tell her what the council asked you to do."), [
+                       setf({"ottilieWay": "spared"}),
+                       n("Ottilie picks up her sword, looks at it, and puts it back in its sheath. Then she bows, very correctly, and goes."),
+                   ], hint="Ilse hears it from her own guard first."),
+                   opt(R("You're coming with me. I'll tell Ilse myself."), [
+                       setf({"ottilieWay": "beaten"}),
+                       n("Rhea takes her sword and walks her across the square. People in the counting house windows watch them go. By the evening, every clerk in Corvane will know that the League's champion was marched through the square."),
+                   ], hint="Make sure of her.")),
+            stage("ah25"),
+        ]},
+    ]),
+]
+S["ilseHouse"] = [
+    iff({"stage": "ah25"}, [
+        setf({"light": "evening"}),
+        n("Ilse Varn's house: narrow, tall, with every window shuttered and a cold fire. Ilse is in her coat, as if she's been ready to leave for days."),
+        iff({"eq": {"ottilieWay": "spared"}}, [
+            n("Ottilie is standing behind her chair. She has told Ilse everything. Ilse looks at Rhea, then at her guard."),
+            say("ilse", R("You beat my sworn sword and sent her back to me to warn me about you. That's either very honest or very clever. I'll take it as honest. I haven't the time to do anything else.")),
+            setf({"recruited.ottilie": True}), {"join": "ottilie"},
+            say("ottilie", R("Where she goes, I go. That's what sworn means. The council can find another champion.")),
+        ], [
+            n("Ilse sees Ottilie come in without her sword, with Rhea behind her, and goes very still."),
+            say("ilse", R("So the council sent her, and you beat her, and walked her through the square. Now everyone in Corvane knows I'm the one who wrote to you. Thank you, Captain.")),
+            say("ottilie", R("She's right. I'd do it again, though. I'd still be in the square if you'd been the council's.")),
+        ]),
+        say("ilse", R("I'm a clerk of the second ledger. I count other people's money. Three months ago a ledger came to me that I wasn't meant to see, and I added it up.")),
+        say("ilse", R("The proof is in the counting house vault. The Houses' notes. I can't get them out. The council has locked me out of my own office. But I know the night porters' round, and I know where every key hangs.")),
+        say("ilse", R("Tonight, before the settling. After the settling, the notes go back to Vantry and nobody will ever see them again.")),
+        stage("ah26"),
+        toast("Into the counting house tonight. The door is on the east side of the square."),
+    ], [iff({"stagePrefix": "ah2"}, [say("ilse", R("Counting is the only honest thing in Corvane. The numbers don't care who's reading them."))])]),
+]
+S["vaultIn"] = [
+    iff({"stage": "ah26"}, [
+        setf({"light": "night"}),
+        n("Ilse unlocks the counting house's side door with a key she shouldn't have. Inside, the lamps are lit. They're never lit at night."),
+        goto(VAULT, 2, 9, "right"),
+    ], [n("The counting house. Shut, with a brass plate on the door: \"Hours of business, by appointment.\"")]),
+]
+S["vaultGuards"] = [
+    n("The long hall of ledgers. Two League porters, and a vault ironback the size of a cart, chained by the strongroom door, and a man in a good grey coat counting crates of paper by lamplight. A Guild factor. Packing."),
+    say("factor", R("The Commons captain. The envoy said you'd lose a day on the pass. He was wrong about something at last.")),
+    {"battle": "road-vault", "win": [
+        n("The factor runs for the front office and goes out through a window, leaving his coat. The ironback lies down where it was chained, and sighs, and goes to sleep."),
+        setf({"vaultFought": True}),
+    ]},
+]
+S["ledgers"] = [
+    iff({"flag": "vaultFought", "not": "ledgersRead"}, [
+        setf({"ledgersRead": True}),
+        n("The strongroom. Ilse goes straight to a shelf and pulls down three ledgers bound in black, and lays them open on the table."),
+        say("ilse", R("The first. The highland growers, every valley from the cloudline down. They owe for their seed, their trays, their kith. They used to owe the Guild. Two years ago, the League bought every one of those debts. Quietly. For half their worth.")),
+        say("ilse", R("The second. The Houses. They've been borrowing against their next broods for three years. Not this year's children. Next year's. And the year after's.")),
+        n("Rhea reads it twice. The Houses are borrowing against children who aren't born yet."),
+        say("ilse", R("The third. The autumn contract with Tarsis. The Houses can't pay it. So the League is paying it for them, out of what the growers owe the League.")),
+        say("ilse", R("The Guild isn't rich, Captain. It's in debt to us up to the eyes. And the highlands are paying the swords that will be sent to burn them. That's what I added up.")),
+        n("At the bottom of the third ledger, in a different hand, a note: the next payment, and where it goes. Not to Tarsis. South. A season's coin, every season, to the Ember Courts."),
+        say("ilse", R("I don't know what that one is. I've never known. Nobody here asks about the south.")),
+        n("Ilse closes the books and picks up all three."),
+        say("ilse", R("The settling is in the morning. The whole council, and every House's agent. I'm going to read these out. I'd like you standing next to me when I do.")),
+        fade("Morning."), setf({"light": "day"}), goto(CORV, 14, 7, "up"), stage("ah27"),
+        toast("The spring settling, in the council hall."),
+    ], [iff({"flag": "ledgersRead"}, [n("Empty shelves, now.")], [n("The strongroom door. The vault ironback lies across it, chained, watching you.")])]),
+]
+S["settling"] = [
+    iff({"stage": "ah27"}, [
+        n("Corvane's council hall: a round table of black wood, twelve chairs, and on the wall behind them a great brass scale that has been perfectly level for two hundred years."),
+        n("Every House has an agent here, in grey. The Guild factor from the counting house is one of them. He has a new coat."),
+        n("Ilse reads out the three ledgers. It takes an hour. Nobody interrupts. When she gets to the Houses' borrowing against unborn broods, one of the old councillors puts his hand over his eyes."),
+        say("factor", R("The Houses' notes are good. The Houses have never failed to pay.")),
+        say("ilse", R("The Houses have never been asked to pay. That's different.")),
+        n("Then the council turns to Rhea, because the growers whose debts the League holds are the Commons' own people, and the League needs to know what the Commons will do with them."),
+        say("councillor", R("The League will stop paying Tarsis on the Houses' behalf. We are not fools. But the growers' debts are real money, Captain. Ten thousand savers in the lowland towns put their coin into them. Widows. Clerks. Mill pensions. What does the Commons say?")),
+        choose("The whole council waits. Ilse doesn't look at you.",
+               opt(R("Forgive the growers' debts. All of them. They were bought for half, from the people burning them."), [
+                   setf({"road.league": "forgive"}), add({"standing.corvane": -15, "standing.millbridge": 10}),
+                   n("The hall goes quiet. Then the arguing starts, and goes on all day. In the end the council votes it, seven to five, because Ilse's ledgers are on the table and nobody wants to be the one who read them and voted for the Guild."),
+                   n("Ten thousand lowland savers lose what they put in. Some of them will be in the Commons' own ranks by autumn, and some of them will never forgive it."),
+               ], hint="The highlands go free. The lowland savers are ruined."),
+               opt(R("Write them down slowly. The growers pay what they can, over twenty years, and the savers get something back."), [
+                   setf({"road.league": "writedown"}), add({"standing.corvane": 20}),
+                   n("The council votes it before noon. It's sensible. It's fair to the savers. The highland growers will be paying the League for a generation, a little every harvest, and their children after them."),
+               ], hint="Fair to the savers. The highlands stay in debt for a generation.")),
+        say("councillor", R("Then the League's autumn contract with Tarsis is void. The Houses may pay their own swords, if they can find the coin.")),
+        n("The Guild factor stands up, bows to the scale on the wall, and leaves. He doesn't take his papers."),
+        setf({"recruited.ilse": True, "nation.corvane": "pact", "deed.corvane": True}),
+        say("ilse", R("They'll need someone to keep the Commons' books, now you have creditors. I'm unemployed as of an hour ago. And I'd rather not be in Corvane when the Houses' agents get home.")),
+        toast("The League stops paying the Guild's swords. Ilse Varn joins the Commons."),
+        say("ilse", R("Tarsis has paid half its company in lulls for years, on the Houses' credit. Vela Orme's contract ends at the new moon. Without the League's coin, she's free to sell to whoever reaches her first. And the Guild's envoy has a fast horse.")),
+        stage("ah28"),
+        toast("South-east, over the steppe, to Tarsis."),
+    ], [n("The council hall. Locked between sittings.")]),
+]
+S["tarsisGate"] = [
+    iff({"stage": "ah28"}, [
+        n("Tarsis: a fort of sun-baked stone on a bare rise in the steppe, with a black banner and a coin painted on it. Inside, a yard full of sellswords doing nothing in the patient way of people paid by the season."),
+        n("Half of them have their collars turned up. In spring. On the steppe."),
+        say("kesh", R("Commons? You're the second envoy this month. The first one had a better coat. Captain's in the hall.")),
+        stage("ah29"),
+    ]),
+]
+S["vela"] = [
+    iff({"stage": "ah29", "not": "velaFought"}, [
+        n("Vela Orme's hall: a long room with maps on every wall and a strongbox on the table, open, empty. Vela is sitting on the table beside it. White-blonde, scarred lip, a coin on a cord round her neck."),
+        say("vela", R("The Guild's envoy was here eight days ago. Nice boy. He offered me the Houses' coin. Then a League rider came through and told me the League's not paying it. So he offered me the Houses' word instead. I'd rather have the coin.")),
+        say("vela", R("Then he left, south, with his escort, in a hurry. And now you.")),
+        say("rhea", R("The Commons will pay you not to march for the Guild.")),
+        say("vela", R("Everyone pays me not to do things. I don't sell to people who can't fight. A company that's bought by losers is a company that's dead by winter.")),
+        say("vela", R("So we'll find out. Tomorrow, on the flat below the fort. My companies against whatever you've brought. Blunted spears, no bows at the face. First side that yields the field.")),
+        fade("The next morning. The flat below Tarsis."),
+        {"army": "tarsis-yield", "win": [
+            setf({"velaFought": True, "tarsisYield": "won"}), add({"standing.tarsis": 20}),
+            n("Vela's companies give ground, and give ground, and then give the field. Vela rides out to the middle of it and holds up her open hand. The sellswords on both sides cheer, because sellswords cheer a good fight whoever wins it."),
+            say("vela", R("Well. You can fight. Come up to the hall. We'll talk about money.")),
+        ], "lose": [
+            setf({"velaFought": True, "tarsisYield": "lost"}),
+            n("The Commons yield the field. Vela rides out to the middle of it anyway, and looks at the Commons' lines for a long time."),
+            say("vela", R("You lost. You lost well, and you didn't run, and nobody broke. That's worth more than you'd think. Come up to the hall.")),
+        ]},
+        stage("ah30"),
+        toast("Vela will hear the Commons' offer. See the infirmary first."),
+    ], [iff({"stage": "ah30", "flag": "kesh.seen"}, [run("lastContract")],
+            [iff({"stage": "ah30"}, [say("vela", R("Go and see the infirmary first. You should know what you're buying."))], [say("vela", R("Captain."))])])]),
+]
+S["infirmary"] = [
+    iff({"stage": "ah30", "not": "kesh.seen"}, [
+        setf({"kesh.seen": True}),
+        n("Tarsis' infirmary: two long rooms. In the first, ordinary wounds. In the second, with the shutters closed, a dozen sellswords lying on cots who aren't wounded at all. They're in the raw. The Houses' lulls stopped coming with the Houses' coin."),
+        n("Kesh is sitting with one of them, holding a cup of water to his mouth."),
+        say("kesh", R("Half the company wears them. Some of us asked for it, for the pain. Some of us got them in our pay and didn't ask anything. It's a good way to keep a man, Captain. Better than coin.")),
+        say("kesh", R("Vela hates it. She took the contracts anyway. A captain who can't pay her company doesn't have a company.")),
+        n("Rhea looks at the man on the cot. The rings on his neck go almost to his ear."),
+        say("kesh", R("So whatever you're offering her, it had better have lulls in it, or it had better have doctors.")),
+        toast("Back to Vela's hall."),
+    ], [say("kesh", R("They're doing better today. Or worse. It's hard to tell, in here."))]),
+]
+S["lastContract"] = [
+    n("Vela's hall. Vela, and her lieutenants, and the empty strongbox."),
+    say("vela", R("So. What's the Commons offering?")),
+    n("Rhea knows what the Commons has. Coin, a little. Greenlings, and Oda's trays. And the Guild lulls the Commons has captured: crates of them, in Kane's stores, waiting to be burned."),
+    choose("Vela waits, with her hand on the coin round her neck.",
+           opt(R("Lulls. The Guild's own, from our stores. Your whole company, paid the way it's always been paid."), [
+               setf({"road.tarsis": "lulls", "recruited.vela": True, "nation.tarsis": "pact", "deed.tarsis": True}), setf({"lullTrade": True}),
+               n("Vela doesn't smile. She just nods, like someone hearing a price she expected."),
+               say("vela", R("The whole company, then. Every sword. For the season.")),
+               n("In the infirmary, the shutters come open the next week. The men in the raw are up and on the walls again, with fresh lulls on their necks, from the Commons."),
+               n("Kesh watches the first crate come in. He doesn't take one. He doesn't stay, either. By the new moon, he's gone."),
+               toast("Tarsis marches for the Commons, every company of it. Paid in lulls."),
+           ], hint="A full company. The Commons is in the lull trade."),
+           opt(R("Greenlings, and doctors, and all the coin we have. Whoever wants to come off, comes off. Whoever doesn't, walks."), [
+               setf({"road.tarsis": "greenlings", "recruited.vela": True, "recruited.kesh": True, "nation.tarsis": "pact", "deed.tarsis": True}), {"join": "kesh"},
+               n("Vela looks at her lieutenants. Half of them look at the floor."),
+               say("vela", R("Half my company walks out of that gate before midsummer. You know that.")),
+               say("rhea", R("And the half that stays is yours. Not the Houses'.")),
+               n("Over the next month, half of Tarsis goes through the raw on the infirmary cots, with greenlings from the Commons and Rhea sitting up with them. A third of those who start, finish. The rest take their pay and ride off over the steppe to find someone who still pays in lulls."),
+               n("Kesh is one of those who finish. He comes to Rhea's fire on the last night, hollow-cheeked, with his twin blades on his back."),
+               say("kesh", R("I owe you a month of not being dead. I'll pay it off on foot.")),
+               toast("Half of Tarsis marches for the Commons, weaned. Kesh joins."),
+           ], hint="Half a company, all of it loyal. Half of Tarsis goes through the raw.")),
+    {"join": "vela"},
+    say("vela", R("One more thing, since we're friends. The Guild's envoy didn't come here for me. I was on his way. He was going south, across the desert, with an iron chest from the Houses. Second one this year.")),
+    say("ilse", R("A season's coin. To the Ember Courts. It's in the ledger. That's what it was.")),
+    stage("ah31"),
+    toast("South, across the desert, to the Ember Courts."),
 ]
 
 # ================================================================== actors, steps, looks
@@ -1060,6 +1269,21 @@ actors = [
     actor("fisher", FROST, 11, 10, "wb-fisher", [run("frostmere")], {"stagePrefix": "ah"}),
     actor("frost-old", FROST, 4, 10, "elder", [n("An old man mending a net on the step of the end hut. He keeps his collar closed when strangers look at him.")], {"stage": ["ah15", "ah16", "ah17", "ah18", "ah19", "ah20", "ah21"]}),
     actor("frost-child", FROST, 17, 12, "kid3", [n("A child on the ice with a hand line, pulling up a fish no longer than a finger, very proud of it.")], {"stagePrefix": "ah"}),
+    # Tally Hill, Corvane, Tarsis
+    actor("tollman", TALLY, 6, 8, "vil1", [run("tollHouse")], {"stagePrefix": "ah", "flag": "tollFought"}),
+    actor("tally-groom", TALLY, 20, 8, "kid3", [n("A stable boy, sweeping out the stalls the Warden horses were in. \"They didn't pay for the hay. Wardens never pay for the hay.\"")], {"stagePrefix": "ah"}),
+    actor("tally-drover", TALLY, 15, 11, "vil4", [n("A drover with three ironbacks, waiting for the toll bar. \"Corvane counts everything. They counted my beasts' teeth last year.\"")], {"stagePrefix": "ah"}),
+    actor("ilse", CORV, 4, 11, "ilse", [run("ilseHouse")], {"stage": ["ah25"]}),
+    actor("corv-clerk", CORV, 18, 7, "vil1", [n("A clerk in a black coat with ink on his cuffs, hurrying. \"Settling week. Nobody sleeps in settling week.\"")], {"stagePrefix": "ah"}),
+    actor("corv-widow", CORV, 10, 12, "kr-mother", [n("An old woman in good black, at a stall. \"My husband's pension is in the growers' notes. Safe as stone, the League said. The League always says that.\"")], {"stagePrefix": "ah"}),
+    actor("corv-porter", CORV, 24, 12, "warden2", [n("A League porter outside the counting house, with a brass-tipped staff. \"Hours of business are by appointment. Nobody has an appointment.\"")], {"stagePrefix": "ah", "not": "ledgersRead"}),
+    actor("ilse-after", CORV, 16, 8, "ilse", [say("ilse", R("Ten thousand savers, or a generation of growers. I added it up both ways. Neither comes out even."))], {"stage": ["ah28"]}),
+    actor("kesh", TARS, 15, 14, "kesh", [say("kesh", R("Captain's in the hall. Mind the dogs. Mind the captain more."))], {"stage": ["ah29"]}),
+    actor("kesh-inf", TARS, 24, 12, "kesh", [run("infirmary")], {"stage": ["ah30"], "not": "kesh.seen"}),
+    actor("vela", TARS, 14, 7, "vela", [run("vela")], {"stage": ["ah29", "ah30"]}),
+    actor("tars-sword", TARS, 5, 13, "smuggler", [n("A sellsword sharpening a blade that's already sharp. His collar is turned up to his ears.")], {"stagePrefix": "ah"}),
+    actor("tars-cook", TARS, 6, 14, "vil5", [n("The company cook, stirring a pot. \"Twenty years I've cooked for Tarsis. Never seen the strongbox empty. Never.\"")], {"stagePrefix": "ah"}),
+    actor("tars-recruit", TARS, 20, 13, "vil3", [n("A young sellsword, watching the practice yard. \"Captain says we fight for whoever pays. Nobody's paid since the thaw.\"")], {"stagePrefix": "ah"}),
 ]
 
 def step(map, at, do, when=None):
@@ -1071,11 +1295,14 @@ def step(map, at, do, when=None):
 PLACES = {("west", "hollin"): (FAIR, (13, 12)), ("west", "college"): (COL, (13, 14)), ("west", "peatmoor"): (PEAT, (8, 12)),
           ("west", "reedhythe"): (REED, (12, 12)), ("coast", "ashby"): (ASH, (15, 16)),
           ("north", "grazehold"): (GRAZE, (12, 12)), ("north", "kestrel-fort"): (KEST, (14, 16)), ("north", "snowgate"): (SNOW, (13, 12)),
-          ("north", "holm"): (HOLM, (15, 16)), ("north", "frostmere"): (FROST, (12, 12))}
+          ("north", "holm"): (HOLM, (15, 16)), ("north", "frostmere"): (FROST, (12, 12)),
+          ("east", "tallyhill"): (TALLY, (12, 12)), ("east", "corvane"): (CORV, (14, 16)), ("east", "tarsis"): (TARS, (14, 15))}
 LANDS = {l: {p["id"]: (p["x"], p["y"]) for p in json.load(open(os.path.join(ROOT, f"data/maps/land-{l}.json")))["places"]} for l in {k[0] for k in PLACES}}
 LAND = LANDS["west"]
 HOLM_SHUT = {"stage": ["ah15", "ah16", "ah17", "ah18"]}
-steps = [step("land-north", tuple(LANDS["north"]["holm"]), [n("Holm's gates are shut to valley folk. A guard on the wall shouts down that the King gives no leave to strangers from the south this winter.")], HOLM_SHUT)]
+steps = [step("land-north", tuple(LANDS["north"]["holm"]), [n("Holm's gates are shut to valley folk. A guard on the wall shouts down that the King gives no leave to strangers from the south this winter.")], HOLM_SHUT),
+         step("land-east", tuple(LANDS["east"]["corvane"]), [run("corvaneShut")], {"stage": "ah23"}),
+         step("land-east", tuple(LANDS["east"]["tarsis"]), [n("Tarsis' gate is barred. A sellsword on the wall calls down that the company takes no visitors while the captain's contract stands.")], {"stage": ["ah23", "ah24", "ah25", "ah26", "ah27"]})]
 for (land, pid), (mid, (sx, sy)) in PLACES.items():
     lx, ly = LANDS[land][pid]
     steps.append(step(f"land-{land}", (lx, ly), [goto(mid, sx, sy, "up")], {"stagePrefix": "a"}))
@@ -1113,6 +1340,19 @@ steps += [
     step(HOLM, (3, 14), [n("Holm gaol. A guard leans on the door and watches you until you go.")]),
     step(GAOL, (1, 10), [goto(HOLM, 3, 15, "down")]),
     *[step(FROST, (x, 9), [n("A fisher's hut, shut against the wind.")]) for x in (4, 11, 19)],
+    # the East
+    step(TALLY, (6, 6), [n("The toll house. A table, a ledger, a stamp on a chain.")]),
+    step(TALLY, (20, 6), [n("The stables.")]),
+    *[step(TALLY, (x, 0), [goto("land-east", LANDS["east"]["tallyhill"][0], LANDS["east"]["tallyhill"][1] - 1, "up")]) for x in (12, 13)],
+    step(CORV, (4, 10), [run("ilseHouse")]),
+    step(CORV, (25, 10), [run("vaultIn")]),
+    *[step(CORV, (x, 5), [run("settling")]) for x in (14, 15)],
+    step(CORV, (3, 14), [n("The Guild's house in Corvane. The shutters are closed, and the brass plate has been taken down.")]),
+    step(VAULT, (1, 9), [goto(CORV, 25, 11, "down")]),
+    step(VAULT, (18, 6), [run("ledgers")]),
+    *[step(TARS, (x, 6), [run("vela")]) for x in (14, 15)],
+    step(TARS, (24, 11), [run("infirmary")]),
+    step(TARS, (5, 11), [n("The barracks. Bunks, kit, and the sweetish smell of the raw.")]),
 ]
 zones = [
     {"map": FAIR, "area": [11, 9, 16, 11], "when": {"stage": "ah1"}, "do": [run("fairArrive")]},
@@ -1123,6 +1363,10 @@ zones = [
     {"map": "town-drovers-halt", "area": [10, 9, 14, 11], "when": {"stage": "ah14", "not": "abelDone"}, "do": [run("abel")]},
     {"map": SNOW, "area": [11, 5, 16, 9], "when": {"stage": "ah18", "not": "snowDone"}, "do": [run("snowgate")]},
     {"map": HOLM, "area": [12, 13, 19, 16], "when": {"stage": "ah19"}, "do": [run("holmGate")]},
+    {"map": TALLY, "area": [10, 7, 15, 10], "when": {"stage": "ah23", "not": "tollFought"}, "do": [run("tollHouse")]},
+    {"map": CORV, "area": [12, 11, 17, 15], "when": {"stage": "ah24"}, "do": [run("ottilie")]},
+    {"map": VAULT, "area": [3, 2, 13, 8], "when": {"stage": "ah26", "not": "vaultFought"}, "do": [run("vaultGuards")]},
+    {"map": TARS, "area": [12, 13, 17, 15], "when": {"stage": "ah28"}, "do": [run("tarsisGate")]},
 ]
 looks = [
     {"map": FAIR, "tile": "hay", "do": [n("Straw targets, stuck so full of knife holes that they're held together with string.")]},
@@ -1190,6 +1434,23 @@ BATTLES = {
                   unit("mb3", "Warden marine", "warden", "front", [162, 132], cast="warden", level=18, skills=["wstrike"]),
                   unit("mba", "Marine crossbow", "archer", "back", [230, 100], cast="archer", level=18, skills=["bow"]),
                   unit("mbb", "The bosun", "cartwarden", "back", [222, 128], cast="warden", level=19, skills=["wstrike"])]},
+    "road-tollhouse": {
+        "id": "road-tollhouse", "name": "The Warden riders at Tally Hill", "backdrop": "road", "party": True,
+        "intro": ["Warden riders, dismounted, with sabres and a crossbow, coming out of the toll house and the stables.", "They were told you'd come."],
+        "won": "The riders scatter down the hill road", "lost": "Pushed back down the hill",
+        "units": [unit("tw1", "Warden rider", "warden", "front", [170, 94], cast="warden", level=21, skills=["wstrike"]),
+                  unit("tw2", "Warden rider", "warden", "front", [196, 116], cast="warden", level=21, skills=["wstrike"]),
+                  unit("tw3", "Warden rider", "cartwarden", "front", [162, 132], cast="warden", level=21, skills=["wstrike"]),
+                  unit("tw4", "Rider's crossbow", "archer", "back", [230, 100], cast="archer", level=21, skills=["bow"]),
+                  unit("tw5", "Escort sergeant", "warden", "back", [222, 128], cast="warden", level=22, skills=["wstrike"])]},
+    "road-vault": {
+        "id": "road-vault", "name": "The counting house at night", "backdrop": "cistern", "party": True,
+        "intro": ["Two League porters with brass-shod staves, the Guild factor's bodyguard, and a vault ironback straining at its chain.", "Behind them, the strongroom."],
+        "won": "The long hall is clear", "lost": "Driven back to the side door",
+        "units": [unit("cv1", "League porter", "warden2", "front", [170, 96], cast="warden", level=21, skills=["wstrike"]),
+                  unit("cv2", "League porter", "warden2", "front", [196, 118], cast="warden", level=21, skills=["wstrike"]),
+                  unit("cvk", "Vault ironback", "ironback:#5a5a62", "front", [158, 132], hp=110, kith=True, level=22, skills=["maul", "horns"], species="vault-ironback"),
+                  unit("cv3", "Factor's bodyguard", "smuggler", "back", [230, 100], cast="archer", level=22, skills=["bow"])]},
     "road-ringhunters": {
         "id": "road-ringhunters", "name": "The King's ring-hunters", "backdrop": "snow", "party": True,
         "intro": ["Four ring-hunters in Lorne blue, and their hounds, coming over the ice in a line.", "The old man is on his step behind you, with his collar open."],
@@ -1218,6 +1479,14 @@ def word(id, label, attr, vs, amount, line, land, miss):
     return {"id": id, "label": label, "attr": attr, "vs": vs, "effect": "resolve", "amount": amount, "line": line, "land": land, "miss": miss}
 
 DUELS = {
+    "road-ottilie": duel("Ottilie", "yard",
+        ["Corvane's square, by the scales fountain. The clerks have come to the counting house windows. Ottilie, sword and buckler, perfectly still. To the first yield."],
+        foe("Ottilie", "ottilie", "ottilie", 22, (3, 2, 4), 0.3,
+            ["Her buckler takes you in the face. Neat. Correct. Painful.", "Her point stops a finger from your throat, and withdraws, politely."], ["She steps back, and nods: a fair touch.", "\"Good.\""],
+            "Ottilie lowers her sword and steps back. \"Yielded.\"", "Ottilie's sword rings on the cobbles."),
+        [word("oath", R("You said the council's lying."), "presence", "nerve", 25, R("You said it yourself. The council's lying, and you're fighting for it anyway."), "Her guard hangs for a heartbeat.", "\"I said I'd obey. I didn't say I'd like it.\""),
+         word("form", "Break her rhythm", "wits", "finesse", 30, "She fights by the book. You stop fighting by any book at all.", "She waits for a stroke that never comes, and you're inside her guard.", "She's read that book too.")],
+        "Ottilie yields", "Ottilie wins the yield"),
     "road-gerd": duel("Gerd", "snow",
         ["The ring at Kestrel Fort, trampled snow inside a fence of lances, with the whole clan on the other side of it. Gerd, with a cracked rib and a war axe, and a bandage bleeding through."],
         foe("Gerd", "gerd", "gerd", 20, (4, 2, 2), 0.2,
@@ -1237,7 +1506,7 @@ DUELS = {
 }
 
 # ================================================================== voices and music
-voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell", "arvoStable", "gerdBeaten", "kingsDinner", "trial4"]
+voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell", "arvoStable", "gerdBeaten", "kingsDinner", "trial4", "ledgers", "settling", "lastContract"]
 moods = {
     "scenes": {"roadStart": "camp", "fairArrive": "hope", "kit": "hope", "kitBeaten": "hope", "speaker": "tension", "ansel": "camp",
                "reedHide": "night", "gilCaught": "tender", "orla": "dread", "cellar": "night", "cellarWon": "hope", "bryn": "camp", "barge": "tension",

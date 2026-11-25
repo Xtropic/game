@@ -1,0 +1,48 @@
+{
+ "id": "town-tarsis",
+ "name": "Tarsis",
+ "music": "camp",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "f": "fence",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire",
+  "s": "steppe",
+  "a": "sand"
+ },
+ "rows": [
+  "ssssssssssssssssssssssssssssss",
+  "s############################s",
+  "s#sssssssrrrrrrrrrrrrsssssss#s",
+  "s#sssssssrrrrrrrrrrrrsssssss#s",
+  "s#sssssssrrrrrrrrrrrrsssssss#s",
+  "s#sssssssrrrrrrrrrrrrsssssss#s",
+  "s#ssssssshhhhhddhhhhhsssssss#s",
+  "s#ssssssssssssssssssssssssss#s",
+  "s#rrrrrrrsssssssssssssrrrrrr#s",
+  "s#rrrrrrrssffffffffsssrrrrrr#s",
+  "s#rrrrrrrssfaaaaaafsssrrrrrr#s",
+  "s#hhhdhhhssfaaaaaafssshhdhhh#s",
+  "s#sssssssssfaaaaaafsssssssss#s",
+  "s#sssssssssfffaafffssssssCCs#s",
+  "s#ssFsssssssssssssssssxxssss#s",
+  "s#ssssssssssssssssssssssssss#s",
+  "s#############::#############s",
+  "sssssssssssssseessssssssssssss"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 15
+  }
+ ]
+}
