@@ -86,4 +86,35 @@ describe("the Long Road: the West", () => {
     expect(f["road.ashby"]).toBe("blockade"); expect(log).toContain("army ashby-mole"); expect(f.ashbyBlockaded).toBe(true);
     expect(f.orenTalk).toBe("told"); expect(f.stage).toBe("ah14");
   });
+  it("the North: Abel's herd, Arvo's secret kept, the slide dug out, and a trial won in Holm", () => {
+    // picks: herd first, keep quiet, dig, Finch "ask", Sigrun speaks, Aurel ready, trial
+    const t = start({ stage: "ah14", collegeProof: true }, [0, 1, 0, 1, 0, 0, 0]);
+    const { f, r, log } = t;
+    r.run([{ run: "abel" }]); expect(f["open.vale-north"]).toBe(true); expect(f["recruited.abel"]).toBe(true); expect(f.stage).toBe("ah15");
+    expect(wayOpen("vale-north", f)).toBe(true);
+    r.run([{ run: "riders" }, { run: "gerdHall" }, { run: "arvoStable" }]);
+    expect(log).toContain("duel road-gerd"); expect(f["recruited.gerd"]).toBe(true); expect(f["recruited.arvo"]).toBe(true);
+    expect(f["road.drevka"]).toBe("quiet"); expect(f.stage).toBe("ah18");
+    r.run([{ run: "snowgate" }]); expect(f["recruited.brede"]).toBe(true); expect(f.stage).toBe("ah19");
+    r.run([{ run: "holmGate" }]); expect(f.stage).toBe("ah21"); expect(t.map()).toBe("town-holm");
+    r.run([{ run: "kingsDinner" }]); expect(f.finchWall).toBe("ask"); expect(f.stage).toBe("ah22");
+    r.run([{ run: "frostmere" }]); expect(log).toContain("battle road-ringhunters"); expect(f["wit.frostmere"]).toBe(true);
+    r.run([{ run: "sigrun" }]); expect(f["wit.sigrun"]).toBe(true);
+    r.run([{ run: "aurelCase" }]);
+    expect(f["road.lorne"]).toBe("won"); expect(f["recruited.sigrun"]).toBe(true); expect(f.brannocHanged).toBeUndefined();
+    expect(f.ilseLetter).toBe(true); expect(f.stage).toBe("ah23"); expect(f.hero).toBe("rhea"); expect(f.stairHeld).toBe("fight");
+    expect(r.busy).toBe(false);
+  });
+
+  it("the North, the hard way: Arvo shamed, no witnesses, and Brannoc broken out of Holm gaol", () => {
+    // picks: carts first, shame, press on, blame, (no Sigrun), Aurel ready, break out
+    const t = start({ stage: "ah14", collegeProof: false, corranFate: "left" }, [1, 0, 1, 0, 0, 1]);
+    const { f, r, log } = t;
+    r.run([{ run: "abel" }, { run: "riders" }, { run: "gerdHall" }, { run: "arvoStable" }]);
+    expect(f["recruited.gerd"]).toBeUndefined(); expect(f.arvoGuild).toBe(true); expect(f["nation.drevka"]).toBe("pact");
+    r.run([{ run: "snowgate" }, { run: "holmGate" }, { run: "kingsDinner" }]); expect(f["recruited.brede"]).toBeUndefined();
+    r.run([{ run: "aurelCase" }]);
+    expect(log).toContain("battle road-gaol"); expect(f["road.lorne"]).toBe("breakout"); expect(f.lorneWar).toBe(true);
+    expect(f.mireFever).toBe(true); expect(f.stage).toBe("ah23");
+  });
 });

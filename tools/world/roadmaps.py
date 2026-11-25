@@ -8,7 +8,7 @@ from act2maps import G, save  # noqa: E402
 TOWN = {"#": "stonewall", ".": "cobble", ",": "grass", ":": "path", "h": "wall", "r": "roof", "d": "door", "w": "well",
         "S": "stall", "H": "hay", "x": "crate", "f": "fence", "~": "water", "=": "bridge", "e": "exit", "C": "cart",
         "F": "campfire", "t": "tent", "T": "tree", "*": "flowers", "p": "plank", "b": "table", "g": "gate", "R": "rock",
-        "I": "iwall", "k": "shelf", "B": "bed", "_": "wetfloor", "v": "tray", "c": "canal", "m": "marsh", "q": "reeds"}
+        "I": "iwall", "k": "shelf", "B": "bed", "_": "wetfloor", "v": "tray", "c": "canal", "m": "marsh", "q": "reeds", "n": "snow", "P": "pines", "^": "steps"}
 MAPS = []
 
 
@@ -155,6 +155,69 @@ B.rect(2, 7, 23, 10, "_"); B.rect(3, 8, 4, 9, "B"); B.rect(20, 8, 21, 9, "B"); B
 B.put(7, 6, "d")                                                     # the hatch down
 B.put(0, 3, "e"); B.rect(1, 3, 1, 3, "p")                            # the boat alongside, back to the mole
 BRIG = town("ashby-brig", "The Guild brig Patience", "night", B, (1, 3), rest=False)
+
+# ================================================================ legs 3 and 4: the North, the Drevka clans and Lorne
+# ---------------- Grazehold: the clans' riders' camp at the head of the drove road ----------------
+# 26 x 14. Hide tents round a fire, the ironback lines, the drove road coming up from the south.
+Z = G(26, 14, ",")
+Z.rect(0, 0, 25, 1, "P"); Z.put(0, 2, "P"); Z.put(25, 2, "P")
+for x in (3, 8, 15, 20): Z.rect(x, 3, x + 2, 4, "t")
+Z.put(12, 7, "F"); Z.box(17, 8, 24, 11, "f"); Z.rect(18, 9, 23, 10, ","); Z.put(17, 10, ","); Z.rect(22, 9, 23, 9, "H")
+Z.rect(12, 9, 13, 13, ":"); Z.rect(12, 13, 13, 13, "e"); Z.rect(2, 10, 3, 11, "x")
+GRAZE = town("town-grazehold", "Grazehold", "camp", Z, (12, 12))
+
+# ---------------- Kestrel Fort: the clans' hall on its crag ----------------
+# 30 x 18. The great hall (north), the stables (east), the champion's ring (middle), the gate (bottom).
+K2 = G(30, 18, ".")
+K2.rect(0, 0, 29, 0, "#"); K2.rect(0, 17, 29, 17, "#"); K2.rect(0, 0, 0, 17, "#"); K2.rect(29, 0, 29, 17, "#")
+house(K2, 7, 1, 22, 5, (14, 15))                                     # the hall
+house(K2, 23, 8, 28, 11, (25,))                                      # the stables
+K2.box(10, 8, 19, 13, "f"); K2.rect(11, 9, 18, 12, ","); K2.put(14, 13, ","); K2.put(15, 13, ",")   # the ring
+K2.put(4, 9, "F"); K2.rect(2, 13, 4, 14, "x"); K2.rect(24, 14, 26, 14, "H")
+K2.rect(14, 17, 15, 17, "e")
+KESTREL = town("town-kestrel-fort", "Kestrel Fort", "camp", K2, (14, 16))
+
+# ---------------- Snowgate: the high pass ----------------
+# 28 x 14. The pass between two walls of rock, the hostel (west), the slope where the snow comes down (east).
+N = G(28, 14, "n")
+N.rect(0, 0, 27, 1, "R"); N.rect(0, 0, 2, 13, "R"); N.rect(25, 0, 27, 13, "R")
+house(N, 4, 3, 9, 5, (6,))
+N.rect(12, 2, 15, 13, ":"); N.rect(18, 3, 23, 6, "R"); N.rect(17, 8, 23, 10, "x")   # the rocks above, the buried mule train
+N.rect(12, 13, 15, 13, "e"); N.rect(12, 1, 15, 1, "e")
+SNOW = town("town-snowgate", "Snowgate", "road", N, (13, 12))
+
+# ---------------- Holm: the King of Lorne's city ----------------
+# 32 x 18. The gate (bottom), the square with its gallows (middle), the court (west), the king's hall (north),
+# Aurel's house (east), the gaol stair (south-west).
+M2 = G(32, 18, ".")
+M2.rect(0, 0, 31, 0, "#"); M2.rect(0, 17, 31, 17, "#"); M2.rect(0, 0, 0, 17, "#"); M2.rect(31, 0, 31, 17, "#")
+house(M2, 9, 1, 22, 5, (15, 16))                                     # the king's hall
+house(M2, 1, 7, 7, 10, (4,))                                         # the court
+house(M2, 24, 7, 30, 10, (27,))                                      # Aurel's house
+house(M2, 1, 12, 5, 14, (3,))                                        # the gaol stair
+M2.rect(14, 9, 17, 10, "b"); M2.put(15, 8, "R")                      # the gallows platform and its post
+M2.put(11, 13, "w"); M2.rect(20, 13, 21, 13, "S"); M2.rect(24, 14, 25, 14, "x")
+M2.rect(15, 17, 16, 17, "e")
+HOLM = town("town-holm", "Holm", "town", M2, (15, 16))
+
+# ---------------- Holm's gaol ----------------
+# 24 x 12. Cells along the north wall, the guardroom (east), the stair up (south-west).
+J = G(24, 12, "R")
+J.rect(1, 1, 22, 10, "_")
+for x in (2, 7, 12, 17): J.box(x, 1, x + 4, 4, "I"); J.rect(x + 1, 2, x + 3, 3, "_"); J.put(x + 2, 4, "d"); J.put(x + 1, 2, "B")
+J.box(17, 6, 22, 10, "I"); J.rect(18, 7, 21, 9, "p"); J.put(17, 8, "d"); J.put(20, 7, "b"); J.put(21, 9, "F")
+J.put(1, 10, "e")
+GAOL = town("holm-gaol", "Holm gaol", "caves", J, (2, 10), rest=False)
+
+# ---------------- Frostmere: the fishing village on the ice ----------------
+# 26 x 14. Huts on the shore, the frozen mere with fishing holes, the drying racks.
+O = G(26, 14, "n")
+O.rect(0, 0, 25, 5, "~"); O.rect(3, 2, 22, 5, "_")
+for x in (6, 12, 18): O.put(x, 3, "~")
+house(O, 2, 7, 6, 9, (4,)); house(O, 9, 7, 13, 9, (11,)); house(O, 17, 7, 22, 9, (19,))
+O.rect(15, 11, 16, 11, "k"); O.put(7, 11, "F")
+O.rect(12, 12, 13, 13, ":"); O.rect(12, 13, 13, 13, "e")
+FROST = town("town-frostmere", "Frostmere", "dusk", O, (12, 12))
 
 if __name__ == "__main__":
     for m in MAPS:

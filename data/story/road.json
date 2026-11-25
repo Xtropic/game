@@ -12,7 +12,11 @@
   "gully",
   "brigWon",
   "harbourPrice",
-  "corranCell"
+  "corranCell",
+  "arvoStable",
+  "gerdBeaten",
+  "kingsDinner",
+  "trial4"
  ],
  "moods": {
   "scenes": {
@@ -63,7 +67,28 @@
    "corranPool": "camp",
    "corranMire": "camp",
    "corranCell": "camp",
-   "backToRoad1": "camp"
+   "backToRoad1": "camp",
+   "abel": "camp",
+   "riders": "camp",
+   "gerdHall": "camp",
+   "arvoStable": "camp",
+   "gerdBeaten": "camp",
+   "snowgate": "camp",
+   "holmGate": "camp",
+   "aurelCell": "camp",
+   "kingsDinner": "camp",
+   "aurelCase": "camp",
+   "frostmere": "camp",
+   "sigrun": "camp",
+   "trialChoice": "camp",
+   "trial4": "camp",
+   "breakout4": "camp",
+   "afterLorne": "camp",
+   "corranWinterRoad": "camp",
+   "corranStair": "camp",
+   "corranFever": "camp",
+   "corranSentence": "camp",
+   "backToRoad2": "camp"
   },
   "stages": {
    "ah5": "night"
@@ -92,7 +117,20 @@
   "fairweather": "Fairweather",
   "posy": "Posy",
   "dorrit": "Dorrit",
-  "oren": "Oren Tull"
+  "oren": "Oren Tull",
+  "abel": "Abel",
+  "rider": "Clan rider",
+  "gerd": "Gerd",
+  "arvo": "Arvo",
+  "brede": "Brede",
+  "guard": "Guard captain",
+  "aurel": "Aurel Hask",
+  "finch": "Finch",
+  "fisher": "Frostmere fisher",
+  "sigrun": "Sigrun",
+  "brannoc": "Brannoc",
+  "king": "The King of Lorne",
+  "woman": "A mother of the eleven"
  },
  "objectives": {
   "ah0": "The council in Thornwick chapel.",
@@ -111,7 +149,17 @@
   "ah12": "The Guild brig Patience.",
   "ah13": "Gully is waiting in his office.",
   "ah14": "North, to Lorne, through the Drevka clans' lands. The drove road leaves the vale to the north.",
-  "ai1": "Autumn, while Rhea is away."
+  "ah15": "Up the drove road to Grazehold, where the clans' riders keep the high grazing.",
+  "ah16": "Kestrel Fort. The clans' champion speaks for them.",
+  "ah17": "A duel with the clans' champion at dawn. The stables are on the east side of the fort.",
+  "ah18": "Over the high pass at Snowgate, to Lorne, before the snow shuts it.",
+  "ah19": "Holm, the King of Lorne's city, on the north coast.",
+  "ah20": "Holm gaol.",
+  "ah21": "The King's dinner, in the hall at the top of the square.",
+  "ah22": "Find witnesses for Brannoc: Frostmere on the ice, and Sigrun in the square. Then tell Aurel you're ready.",
+  "ah23": "East to Corvane, before the League's spring settling. The hill road leaves the vale to the east.",
+  "ai1": "Autumn, while Rhea is away.",
+  "ai2": "Midwinter, while Rhea is away."
  },
  "actors": [
   {
@@ -608,9 +656,358 @@
      "text": "A sailor from somewhere hot, watching the harbour. \"Lorne's waters ice up at the first frost. After that, nobody sails north till spring.\""
     }
    ]
+  },
+  {
+   "id": "abel",
+   "map": "town-drovers-halt",
+   "x": 13,
+   "y": 8,
+   "look": "abel",
+   "when": {
+    "stage": [
+     "ah14"
+    ]
+   },
+   "talk": [
+    {
+     "run": "abel"
+    }
+   ]
+  },
+  {
+   "id": "toll-sergeant",
+   "map": "town-drovers-halt",
+   "x": 12,
+   "y": 10,
+   "look": "soldier",
+   "when": {
+    "stage": [
+     "ah14"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The Commons toll sergeant, counting carts. \"Supplies for the winter camps. Every one of them late.\""
+    }
+   ]
+  },
+  {
+   "id": "rider",
+   "map": "town-grazehold",
+   "x": 11,
+   "y": 6,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "run": "riders"
+    }
+   ]
+  },
+  {
+   "id": "graze-rider2",
+   "map": "town-grazehold",
+   "x": 14,
+   "y": 8,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A clan rider oiling a lance. She doesn't take her eyes off Rhea's hands."
+    }
+   ]
+  },
+  {
+   "id": "graze-herder",
+   "map": "town-grazehold",
+   "x": 20,
+   "y": 10,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A herder among the ironbacks. \"Lorne riders took twelve head off the east slope last spring. They'll take the whole slope next.\""
+    }
+   ]
+  },
+  {
+   "id": "gerd-ring",
+   "map": "town-kestrel-fort",
+   "x": 14,
+   "y": 7,
+   "look": "gerd",
+   "when": {
+    "stage": [
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21",
+     "ah22",
+     "ah23"
+    ]
+   },
+   "talk": [
+    {
+     "say": "gerd",
+     "text": "\"The clans have heard you, valley captain. Now go and make Lorne hear you.\""
+    }
+   ]
+  },
+  {
+   "id": "kest-smith",
+   "map": "town-kestrel-fort",
+   "x": 4,
+   "y": 10,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The fort's smith, hammering out a lance head. \"Arvo won the Iron Ride with a cracked shoulder. Champions don't stop for a shoulder.\""
+    }
+   ]
+  },
+  {
+   "id": "kest-wife",
+   "map": "town-kestrel-fort",
+   "x": 22,
+   "y": 15,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A clanswoman with a baby on her back. \"Gerd's been champion, and his father, and his. That's three hundred years of fathers in the ring.\""
+    }
+   ]
+  },
+  {
+   "id": "snow-host",
+   "map": "town-snowgate",
+   "x": 6,
+   "y": 7,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The hostel keeper, sweeping snow off her step with a broom that's mostly handle. \"Brede? She's the only one who goes out after a slide. The rest of us count the mules and say a word.\""
+    }
+   ]
+  },
+  {
+   "id": "snow-drover",
+   "map": "town-snowgate",
+   "x": 9,
+   "y": 10,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A drover stamping his feet by a tethered mule. \"Up here the slope decides who crosses. Not the King, not the clans. The slope.\""
+    }
+   ]
+  },
+  {
+   "id": "snow-monk",
+   "map": "town-snowgate",
+   "x": 20,
+   "y": 12,
+   "look": "elder2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old hostel brother, chipping ice off the post that marks the road. \"Forty-one years. I've buried eleven travellers and dug out two hundred. Brede's dug out more than me, and she's thirty.\""
+    }
+   ]
+  },
+  {
+   "id": "guard",
+   "map": "town-holm",
+   "x": 13,
+   "y": 15,
+   "look": "warden2",
+   "when": {
+    "stage": [
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18"
+    ]
+   },
+   "talk": [
+    {
+     "say": "guard",
+     "text": "\"Papers. And open your collar.\""
+    }
+   ]
+  },
+  {
+   "id": "aurel",
+   "map": "town-holm",
+   "x": 26,
+   "y": 11,
+   "look": "aurel",
+   "when": {
+    "stage": [
+     "ah21",
+     "ah22"
+    ]
+   },
+   "talk": [
+    {
+     "run": "aurelCase"
+    }
+   ]
+  },
+  {
+   "id": "sigrun",
+   "map": "town-holm",
+   "x": 13,
+   "y": 11,
+   "look": "sigrun",
+   "when": {
+    "stage": [
+     "ah22"
+    ]
+   },
+   "talk": [
+    {
+     "run": "sigrun"
+    }
+   ]
+  },
+  {
+   "id": "holm-fishwife",
+   "map": "town-holm",
+   "x": 20,
+   "y": 15,
+   "look": "kr-mother",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A fishwife with her collar buttoned to the chin, like everyone in Holm. \"The gallows? It's been empty since harvest. That's a long time, for Holm.\""
+    }
+   ]
+  },
+  {
+   "id": "holm-clerk",
+   "map": "town-holm",
+   "x": 6,
+   "y": 11,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A court clerk, hurrying. \"The court sits on fourth days. The King hasn't come to it in eleven years.\""
+    }
+   ]
+  },
+  {
+   "id": "fisher",
+   "map": "town-frostmere",
+   "x": 11,
+   "y": 10,
+   "look": "wb-fisher",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "run": "frostmere"
+    }
+   ]
+  },
+  {
+   "id": "frost-old",
+   "map": "town-frostmere",
+   "x": 4,
+   "y": 10,
+   "look": "elder",
+   "when": {
+    "stage": [
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18",
+     "ah19",
+     "ah20",
+     "ah21"
+    ]
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old man mending a net on the step of the end hut. He keeps his collar closed when strangers look at him."
+    }
+   ]
+  },
+  {
+   "id": "frost-child",
+   "map": "town-frostmere",
+   "x": 17,
+   "y": 12,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A child on the ice with a hand line, pulling up a fish no longer than a finger, very proud of it."
+    }
+   ]
   }
  ],
  "steps": [
+  {
+   "map": "land-north",
+   "at": [
+    25,
+    6
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "Holm's gates are shut to valley folk. A guard on the wall shouts down that the King gives no leave to strangers from the south this winter."
+    }
+   ],
+   "when": {
+    "stage": [
+     "ah15",
+     "ah16",
+     "ah17",
+     "ah18"
+    ]
+   }
+  },
   {
    "map": "land-west",
    "at": [
@@ -876,6 +1273,310 @@
       "map": "land-coast",
       "x": 20,
       "y": 18,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-north",
+   "at": [
+    54,
+    31
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-grazehold",
+      "x": 12,
+      "y": 12,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-grazehold",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 54,
+      "y": 32,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-grazehold",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 54,
+      "y": 32,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-north",
+   "at": [
+    45,
+    22
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-kestrel-fort",
+      "x": 14,
+      "y": 16,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-kestrel-fort",
+   "at": [
+    14,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 45,
+      "y": 23,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-kestrel-fort",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 45,
+      "y": 23,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-north",
+   "at": [
+    19,
+    23
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-snowgate",
+      "x": 13,
+      "y": 12,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 24,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 24,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    14,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 24,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    15,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 24,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-north",
+   "at": [
+    25,
+    6
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-holm",
+      "x": 15,
+      "y": 16,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 25,
+      "y": 7,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    16,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 25,
+      "y": 7,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-north",
+   "at": [
+    36,
+    11
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-frostmere",
+      "x": 12,
+      "y": 12,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-frostmere",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 36,
+      "y": 12,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-frostmere",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 36,
+      "y": 12,
       "facing": "down"
      }
     }
@@ -1302,6 +2003,258 @@
      }
     }
    ]
+  },
+  {
+   "map": "town-kestrel-fort",
+   "at": [
+    14,
+    5
+   ],
+   "do": [
+    {
+     "run": "gerdHall"
+    }
+   ]
+  },
+  {
+   "map": "town-kestrel-fort",
+   "at": [
+    15,
+    5
+   ],
+   "do": [
+    {
+     "run": "gerdHall"
+    }
+   ]
+  },
+  {
+   "map": "town-kestrel-fort",
+   "at": [
+    25,
+    11
+   ],
+   "do": [
+    {
+     "run": "arvoStable"
+    }
+   ],
+   "when": {
+    "stage": "ah17"
+   }
+  },
+  {
+   "map": "town-kestrel-fort",
+   "at": [
+    25,
+    11
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The stables. Ironbacks breathing in the dark, and harness on every peg."
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    6,
+    5
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The hostel. A fire, a pot, and a row of wet boots by the door."
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    12,
+    1
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 22,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    13,
+    1
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 22,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    14,
+    1
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 22,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "at": [
+    15,
+    1
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-north",
+      "x": 19,
+      "y": 22,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    15,
+    5
+   ],
+   "do": [
+    {
+     "run": "kingsDinner"
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    16,
+    5
+   ],
+   "do": [
+    {
+     "run": "kingsDinner"
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    27,
+    10
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "Aurel Hask's house. The shutters are closed, and the knocker is a rope knot cast in iron."
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    4,
+    10
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "The King's court. Locked, except on fourth days."
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "at": [
+    3,
+    14
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "Holm gaol. A guard leans on the door and watches you until you go."
+    }
+   ]
+  },
+  {
+   "map": "holm-gaol",
+   "at": [
+    1,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-holm",
+      "x": 3,
+      "y": 15,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-frostmere",
+   "at": [
+    4,
+    9
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "A fisher's hut, shut against the wind."
+    }
+   ]
+  },
+  {
+   "map": "town-frostmere",
+   "at": [
+    11,
+    9
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "A fisher's hut, shut against the wind."
+    }
+   ]
+  },
+  {
+   "map": "town-frostmere",
+   "at": [
+    19,
+    9
+   ],
+   "do": [
+    {
+     "say": "",
+     "text": "A fisher's hut, shut against the wind."
+    }
+   ]
   }
  ],
  "zones": [
@@ -1390,6 +2343,59 @@
    "do": [
     {
      "run": "ashbyArrive"
+    }
+   ]
+  },
+  {
+   "map": "town-drovers-halt",
+   "area": [
+    10,
+    9,
+    14,
+    11
+   ],
+   "when": {
+    "stage": "ah14",
+    "not": "abelDone"
+   },
+   "do": [
+    {
+     "run": "abel"
+    }
+   ]
+  },
+  {
+   "map": "town-snowgate",
+   "area": [
+    11,
+    5,
+    16,
+    9
+   ],
+   "when": {
+    "stage": "ah18",
+    "not": "snowDone"
+   },
+   "do": [
+    {
+     "run": "snowgate"
+    }
+   ]
+  },
+  {
+   "map": "town-holm",
+   "area": [
+    12,
+    13,
+    19,
+    16
+   ],
+   "when": {
+    "stage": "ah19"
+   },
+   "do": [
+    {
+     "run": "holmGate"
     }
    ]
   }
@@ -4221,6 +5227,1600 @@
    },
    {
     "toast": "North, through the Drevka clans' lands, to Lorne. The drove road leaves the vale to the north."
+   }
+  ],
+  "abel": [
+   {
+    "if": {
+     "stage": "ah14",
+     "not": "abelDone"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Drovers' Halt is full of beasts. An old drover in a red coat, with a white moustache and a horn on a strap, is arguing with the Commons toll sergeant at the gate to the drove road."
+     },
+     {
+      "say": "abel",
+      "text": "\"Three hundred head of ironback, captain, going up to the high grazing before the snow shuts it. Your sergeant says the army's carts go first. Your carts can wait a day. My beasts can't wait for the snow.\""
+     },
+     {
+      "say": "abel",
+      "text": "\"And you'll want to go up the drove road yourself, I'm told. The clans' riders turn back anyone they don't know. They know me. Forty years.\""
+     },
+     {
+      "choose": "The toll sergeant looks at Rhea. The supply carts are lined up behind him.",
+      "options": [
+       {
+        "label": "\"Let the herd through first.\"",
+        "hint": "The army's supplies wait a day.",
+        "do": [
+         {
+          "set": {
+           "abelDone": true,
+           "recruited.abel": true
+          }
+         },
+         {
+          "join": "abel"
+         },
+         {
+          "say": "",
+          "text": "The carts wait. The ironbacks go up the drove road in a long brown river, bells clanking, and Abel walks at the head with his crook."
+         },
+         {
+          "say": "abel",
+          "text": "\"Come on, then, captain. Walk with me, and the riders will think you're mine.\""
+         },
+         {
+          "set": {
+           "open.vale-north": true
+          }
+         },
+         {
+          "stage": "ah15"
+         },
+         {
+          "toast": "The drove road north is open."
+         }
+        ]
+       },
+       {
+        "label": "\"The army's carts go first.\"",
+        "hint": "The war first.",
+        "do": [
+         {
+          "set": {
+           "abelDone": true
+          }
+         },
+         {
+          "say": "",
+          "text": "Abel spits, very precisely, beside the toll sergeant's boot. The carts go through. The herd goes up the next morning, in sleet."
+         },
+         {
+          "say": "abel",
+          "text": "\"You'll still want the riders to let you up. I'll tell them you're nobody worth killing. That's the best I can do.\""
+         },
+         {
+          "set": {
+           "open.vale-north": true
+          }
+         },
+         {
+          "stage": "ah15"
+         },
+         {
+          "toast": "The drove road north is open."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "abel",
+      "text": "\"Ironbacks don't care who wins. They care about grass. Wise beasts.\""
+     }
+    ]
+   }
+  ],
+  "riders": [
+   {
+    "if": {
+     "stage": "ah15"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Grazehold: hide tents round a fire, ironbacks on long lines, and a dozen clan riders who all stand up at once when the strangers come into the firelight."
+     },
+     {
+      "say": "rider",
+      "text": "\"Valley people. Abel says you're harmless. Abel says that about wolves.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"I need to speak to your champion. Lorne has been offered your grazing.\""
+     },
+     {
+      "say": "",
+      "text": "The riders laugh. Then one of them sees the paper in Rhea's hand, and the Guild's standing loftbuck pressed into its wax, and stops laughing."
+     },
+     {
+      "say": "rider",
+      "text": "\"Kestrel Fort. Gerd speaks for the clans. If he wants to hear it, he'll hear it. If he doesn't, nobody will find you till the thaw.\""
+     },
+     {
+      "stage": "ah16"
+     }
+    ],
+    "else": [
+     {
+      "say": "rider",
+      "text": "\"Kestrel Fort's to the north-west. Don't stray off the road. The road is the only thing up here that's yours.\""
+     }
+    ]
+   }
+  ],
+  "gerdHall": [
+   {
+    "if": {
+     "stage": "ah16"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Gerd's hall is long and smoky, hung with old harness and older shields. Gerd himself sits at the high table: a huge grey-bearded man with clan tattoos on his shaved head, and a fresh bandage across his brow."
+     },
+     {
+      "say": "",
+      "text": "Rhea puts the Guild's letter on the table in front of him. He reads it twice."
+     },
+     {
+      "say": "gerd",
+      "text": "\"Lorne has wanted the high grazing since my grandfather's time. They've never been offered it before.\""
+     },
+     {
+      "say": "gerd",
+      "text": "\"A paper from the coast. A seal anyone could cut. Lorne's envoy and the Guild's sat at this table at midsummer, and drank my mead, and said nothing of it.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Then ask yourself why they came.\""
+     },
+     {
+      "say": "gerd",
+      "text": "\"I don't ask myself things. The clans follow strength. If the valley captain wants the clans to hear her, the clans' champion will meet her in the ring at dawn. My son Arvo is the champion this year.\""
+     },
+     {
+      "stage": "ah17"
+     },
+     {
+      "toast": "A duel with the clans' champion, at dawn. The stables are to the east."
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ah17"
+      },
+      "then": [
+       {
+        "say": "gerd",
+        "text": "\"Dawn. In the ring.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "gerd",
+        "text": "\"Valley captain.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "arvoStable": [
+   {
+    "if": {
+     "stage": "ah17",
+     "not": "arvoFound"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "night",
+       "arvoFound": true
+      }
+     },
+     {
+      "say": "",
+      "text": "The stables, late. The champion's ironback is restless in its stall, and the champion is sitting in the straw beside it with his knees up and his high fur collar pulled up to his ears."
+     },
+     {
+      "say": "",
+      "text": "Arvo is sixteen. He's shaking. Not with cold."
+     },
+     {
+      "say": "arvo",
+      "text": "\"Go away. I'm fighting you tomorrow. We're not meant to talk.\""
+     },
+     {
+      "say": "",
+      "text": "Rhea has seen the raw a hundred times. She crouches down in the straw and waits. After a while, he pulls his collar down."
+     },
+     {
+      "say": "",
+      "text": "A Guild lull on the side of his neck, fat and pale. And under it, two rings already."
+     },
+     {
+      "say": "arvo",
+      "text": "\"A trader came up the pass with the Guild's boy, at midsummer. I hurt my shoulder at the Iron Ride and it wouldn't stop. He said this would help. It did. Then it fell off and I couldn't... I can't fight with the shakes. I can't fight without it.\""
+     },
+     {
+      "say": "arvo",
+      "text": "\"If the clans see a champion with rings, my father's finished. Nobody follows a man whose son wears the Guild.\""
+     },
+     {
+      "fade": "Dawn."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "say": "",
+      "text": "At dawn, Gerd walks into the ring, not Arvo. The bandage on his brow has bled through. He moves like a man with a cracked rib, and the whole clan can see it."
+     },
+     {
+      "say": "gerd",
+      "text": "\"My son is unwell. The champion's father fights in his place. That's the old law.\""
+     },
+     {
+      "say": "",
+      "text": "The clan murmurs. They know Arvo isn't unwell. They don't know what he is."
+     },
+     {
+      "choose": "Gerd waits in the ring, hurt. Arvo is watching from the stable door.",
+      "options": [
+       {
+        "label": "\"Your champion is ringed. The Guild did this to your son, the same Guild that's selling your grazing.\"",
+        "hint": "The truth wins the clans. It costs the boy everything.",
+        "do": [
+         {
+          "set": {
+           "drevkaWay": "shamed"
+          }
+         },
+         {
+          "add": {
+           "standing.drevka": 25
+          }
+         },
+         {
+          "say": "",
+          "text": "The clan hears it. They turn and look at the stable door. Arvo is gone from it."
+         },
+         {
+          "say": "",
+          "text": "Gerd fights anyway, because he has to now, and he fights like a man with nothing left to lose. It isn't long."
+         }
+        ]
+       },
+       {
+        "label": "Say nothing, and fight Gerd",
+        "hint": "Beat a hurt man in front of his clan. Keep the boy's secret.",
+        "do": [
+         {
+          "set": {
+           "drevkaWay": "quiet"
+          }
+         },
+         {
+          "add": {
+           "standing.drevka": 10
+          }
+         },
+         {
+          "say": "",
+          "text": "Rhea steps into the ring. She doesn't look at the stable door."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "duel": "road-gerd",
+      "win": [
+       {
+        "run": "gerdBeaten"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "gerdBeaten": [
+   {
+    "say": "",
+    "text": "Gerd goes down on one knee in the trampled snow of the ring, and stays there, and the clan is silent."
+   },
+   {
+    "if": {
+     "eq": {
+      "drevkaWay": "quiet"
+     }
+    },
+    "then": [
+     {
+      "say": "gerd",
+      "text": "\"You saw him last night. You knew why I was in the ring. And you said nothing, in front of all of them.\""
+     },
+     {
+      "say": "gerd",
+      "text": "\"The clans heard you, valley captain. I'll ride south with your Commons when it's time, and every clan that follows me.\""
+     },
+     {
+      "say": "",
+      "text": "That evening Arvo comes to Rhea's fire, with his collar down, in front of anyone who wants to look."
+     },
+     {
+      "say": "arvo",
+      "text": "\"You have greenlings. Abel says so. I want to come off. And I want to ride with you while I do, so nobody here has to watch.\""
+     },
+     {
+      "set": {
+       "recruited.gerd": true,
+       "recruited.arvo": true,
+       "road.drevka": "quiet",
+       "nation.drevka": "pact",
+       "deed.drevka": true
+      }
+     },
+     {
+      "join": "arvo"
+     },
+     {
+      "toast": "A pact with the Drevka clans. Gerd and Arvo join the Commons."
+     }
+    ],
+    "else": [
+     {
+      "say": "gerd",
+      "text": "\"You've won the clans. They'll ride for you. Not for me. I've got no son to follow me into the ring.\""
+     },
+     {
+      "say": "",
+      "text": "Arvo's ironback is gone from its stall by morning, and the boy with it. A clan rider who went after him comes back alone, and says the tracks go down the pass towards the Guild's post at Snowgate."
+     },
+     {
+      "set": {
+       "road.drevka": "shamed",
+       "arvoGuild": true,
+       "nation.drevka": "pact",
+       "deed.drevka": true
+      }
+     },
+     {
+      "toast": "A pact with the Drevka clans. Arvo rides to the Guild."
+     }
+    ]
+   },
+   {
+    "say": "gerd",
+    "text": "\"And now Lorne. If the King signs that paper, Lorne's riders come over the high pass in the spring, and the clans fight on two fronts. My riders will see you to Holm. Through Snowgate, before the pass shuts.\""
+   },
+   {
+    "stage": "ah18"
+   }
+  ],
+  "snowgate": [
+   {
+    "if": {
+     "stage": "ah18",
+     "not": "snowDone"
+    },
+    "then": [
+     {
+      "set": {
+       "snowDone": true
+      }
+     },
+     {
+      "say": "",
+      "text": "Snowgate. The pass between two walls of rock, with the hostel tucked in under the west wall, and the snow already knee-deep on the road."
+     },
+     {
+      "say": "",
+      "text": "A sound like a door slamming, very far away, high up on the east slope. And then the snow comes down."
+     },
+     {
+      "fade": "..."
+     },
+     {
+      "say": "",
+      "text": "When it stops, the road ahead is clear. Behind them, where the clan's mule train was coming up with the baggage and two drovers, there's a slope of fresh snow, and one mule's head above it, braying."
+     },
+     {
+      "say": "",
+      "text": "A woman in a crimson hood is already digging. She came out of the hostel at the first sound. She doesn't look up."
+     },
+     {
+      "say": "brede",
+      "text": "\"There are two drovers under that. Help me or go on. The pass shuts at dark either way.\""
+     },
+     {
+      "choose": "The light is going. Holm is a day on, over the top.",
+      "options": [
+       {
+        "label": "Turn back and dig",
+        "hint": "Lose a day. Two men under the snow.",
+        "do": [
+         {
+          "set": {
+           "snowDug": true,
+           "recruited.brede": true
+          }
+         },
+         {
+          "join": "brede"
+         },
+         {
+          "say": "",
+          "text": "They dig until their hands stop working. Both drovers come out alive, blue and swearing. Four of the mules don't."
+         },
+         {
+          "say": "brede",
+          "text": "\"You turned back. Nobody turns back on this pass. I'm Brede. I'll see you over the top, and I'll see you down the other side, and after that I'll see.\""
+         },
+         {
+          "say": "",
+          "text": "They cross the top in the dark, roped together, and lose a day."
+         }
+        ]
+       },
+       {
+        "label": "Press on, before the pass shuts",
+        "hint": "Holm before the King signs.",
+        "do": [
+         {
+          "set": {
+           "snowDug": false
+          }
+         },
+         {
+          "say": "",
+          "text": "The clan riders go back for the drovers. Rhea's party goes on over the top in the last of the light, and reaches Holm a day sooner."
+         },
+         {
+          "say": "",
+          "text": "At Holm she hears that one of the drovers lived."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "stage": "ah19"
+     },
+     {
+      "toast": "Over the high pass, into Lorne. Holm is to the north."
+     }
+    ]
+   }
+  ],
+  "holmGate": [
+   {
+    "if": {
+     "stage": "ah19"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Holm: a grey stone city on a grey sea, with a gallows in the middle of its square, and nothing hanging from it today."
+     },
+     {
+      "if": {
+       "flag": "brannocBuilder"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Brannoc has come all this way in the baggage cart, with his back strapped, because his sister lives in Holm and he hasn't seen her in twenty years."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Brannoc has come all this way because his sister lives in Holm, and he hasn't seen her in twenty years."
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "At the gate, the guard captain looks at the travel papers, and then at Brannoc, and then at Brannoc's neck."
+     },
+     {
+      "say": "guard",
+      "text": "\"Eleven rings. And the rest of you carrying highland poison in your baggage. Arrest them all. The King's court will want to see this.\""
+     },
+     {
+      "fade": "Holm gaol."
+     },
+     {
+      "goto": {
+       "map": "holm-gaol",
+       "x": 3,
+       "y": 6,
+       "facing": "up"
+      }
+     },
+     {
+      "stage": "ah20"
+     },
+     {
+      "run": "aurelCell"
+     }
+    ]
+   }
+  ],
+  "aurelCell": [
+   {
+    "say": "",
+    "text": "The cells under Holm stink of seawater. They put Brannoc in the end cell on his own, and Rhea's people in the others."
+   },
+   {
+    "say": "",
+    "text": "At midnight a lamp comes down the stair: a thin grey man in a magistrate's black robe, with a white rope-knot badge at his collar."
+   },
+   {
+    "say": "aurel",
+    "text": "\"Aurel Hask. Magistrate of the King's court. My wife's name was Brannoc's, once. She cried for an hour when they told her who'd been brought in.\""
+   },
+   {
+    "say": "aurel",
+    "text": "\"I've signed for the rest of you, on my name, which is worth less tonight than it was this morning. Brannoc stays. In Lorne a man with rings hangs. That's the law. I've hanged men for it.\""
+   },
+   {
+    "say": "rhea",
+    "text": "\"He hasn't worn a lull in two years.\""
+   },
+   {
+    "say": "aurel",
+    "text": "\"Lorne doesn't care. A ring is a ring. Unless someone can prove to the court that a ringed man can come off, and stay off, and is no danger to anyone. Nobody's ever proved it. Nobody's ever tried.\""
+   },
+   {
+    "say": "aurel",
+    "text": "\"And the King gives a dinner tomorrow for the envoys. Both of them. You'll want to wash.\""
+   },
+   {
+    "set": {
+     "holmFree": true
+    }
+   },
+   {
+    "stage": "ah21"
+   },
+   {
+    "goto": {
+     "map": "town-holm",
+     "x": 27,
+     "y": 11,
+     "facing": "down"
+    }
+   }
+  ],
+  "kingsDinner": [
+   {
+    "if": {
+     "stage": "ah21"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "evening"
+      }
+     },
+     {
+      "say": "",
+      "text": "The King of Lorne's hall: a long table, a fire at each end, and a thin old king in the middle who says very little and watches everything."
+     },
+     {
+      "say": "",
+      "text": "Across the table from Rhea, in a good grey coat with the Guild's loftbuck on the clasp, sits Finch."
+     },
+     {
+      "say": "",
+      "text": "He's taller. He has a scar through one eyebrow that he didn't have at Kell's Bridge. He doesn't look at her once, all through the dinner, and he speaks for the Guild beautifully."
+     },
+     {
+      "say": "finch",
+      "text": "\"The Houses ask only for peace in the north. Lorne's passes closed. Lorne's riders where Lorne wants them. And the high grazing, which the clans have never used well.\""
+     },
+     {
+      "say": "",
+      "text": "When it's Rhea's turn, she says what she came to say. The King listens to both of them with exactly the same face."
+     },
+     {
+      "fade": "Later. The city wall."
+     },
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "say": "",
+      "text": "He's on the wall above the harbour, alone, as if he knew she'd come. Maybe he did. He always knew where she'd go."
+     },
+     {
+      "say": "finch",
+      "text": "\"You shouldn't be here. They hang people with rings in this town. They'd hang you for the trays in your baggage if Aurel hadn't signed.\""
+     },
+     {
+      "choose": "Finch is looking at the sea, not at her.",
+      "options": [
+       {
+        "label": "\"You offered them the clans' grazing. Abel's beasts. Gerd's people. Do you even know what that means?\"",
+        "hint": "Say what he's done.",
+        "do": [
+         {
+          "add": {
+           "finchTrust": -6
+          }
+         },
+         {
+          "set": {
+           "finchWall": "blame"
+          }
+         },
+         {
+          "say": "finch",
+          "text": "\"It means the Houses win, and fewer people die getting there. I did the sum. You taught me to do sums.\""
+         },
+         {
+          "say": "",
+          "text": "He goes in without another word."
+         }
+        ]
+       },
+       {
+        "label": "\"Come home, Finch. Whatever they've told you.\"",
+        "hint": "Ask.",
+        "do": [
+         {
+          "add": {
+           "finchTrust": 6
+          }
+         },
+         {
+          "set": {
+           "finchWall": "ask"
+          }
+         },
+         {
+          "say": "finch",
+          "text": "\"Home's a burnt valley.\""
+         },
+         {
+          "say": "",
+          "text": "But he stays on the wall with her until the bell, and neither of them says anything else, and it's the longest they've stood together since the harvest before the raid."
+         }
+        ]
+       },
+       {
+        "label": "Stand beside him and say nothing",
+        "hint": "He was always better at silence.",
+        "do": [
+         {
+          "add": {
+           "finchTrust": 2
+          }
+         },
+         {
+          "set": {
+           "finchWall": "silence"
+          }
+         },
+         {
+          "say": "",
+          "text": "They stand there. Out on the water, a seal comes up, looks at them, and goes down again. Finch nearly laughs. He catches it in time."
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "stage": "ah22"
+     },
+     {
+      "toast": "Prove to Lorne's court that a ringed man can be weaned. Find witnesses: Frostmere, the fishing village on the ice, and anyone in Holm who'll speak."
+     },
+     {
+      "fade": "Morning."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "goto": {
+       "map": "town-holm",
+       "x": 27,
+       "y": 11,
+       "facing": "down"
+      }
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The King's hall. The door wardens don't move aside for valley folk."
+     }
+    ]
+   }
+  ],
+  "aurelCase": [
+   {
+    "if": {
+     "stage": "ah22"
+    },
+    "then": [
+     {
+      "say": "aurel",
+      "text": "\"Witnesses. People the court can see. There are weaned people in Lorne; there have to be. Nobody admits it, because admitting it is a rope.\""
+     },
+     {
+      "say": "aurel",
+      "text": "\"Try Frostmere, out on the ice. The fishing families there don't come to Holm, and Holm doesn't go there. And there's a knight doing penance in the square, Sigrun. Ask her why.\""
+     },
+     {
+      "if": {
+       "not": "ledgerCounted"
+      },
+      "then": [
+       {
+        "set": {
+         "ledgerCounted": true
+        }
+       },
+       {
+        "if": {
+         "flag": "collegeProof"
+        },
+        "then": [
+         {
+          "set": {
+           "wit.ledger": true
+          }
+         },
+         {
+          "add": {
+           "witnesses": 1
+          }
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "eq": {
+            "road.college": "refused"
+           }
+          },
+          "then": [
+           {
+            "set": {
+             "wit.ledger": true
+            }
+           },
+           {
+            "add": {
+             "witnesses": 1
+            }
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "if": {
+         "flag": "wit.ledger"
+        },
+        "then": [
+         {
+          "say": "aurel",
+          "text": "\"The College's record from Hollin will help. A court likes paper. It's not a face, though.\""
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "if": {
+       "atLeast": {
+        "witnesses": 2
+       }
+      },
+      "then": [
+       {
+        "say": "aurel",
+        "text": "\"You have enough to stand up in court. Whether it's enough to win, I don't know.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "aurel",
+        "text": "\"You haven't enough yet. One voice is a story. The court wants two.\""
+       }
+      ]
+     },
+     {
+      "choose": "Aurel waits for an answer.",
+      "options": [
+       {
+        "label": "I'm ready. Ask for the day.",
+        "do": [
+         {
+          "run": "trialChoice"
+         }
+        ]
+       },
+       {
+        "label": "Not yet.",
+        "do": [
+         {
+          "say": "aurel",
+          "text": "\"Don't take long. Winter's short in court and long in the cells.\""
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "say": "aurel",
+      "text": "\"Holm is a hard town. It thinks that's the same as a fair one.\""
+     }
+    ]
+   }
+  ],
+  "frostmere": [
+   {
+    "if": {
+     "stage": "ah22",
+     "not": "wit.frostmere"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Frostmere is a dozen huts on the shore of a frozen mere. The fishers stop work when the strangers come, and the women take the children inside."
+     },
+     {
+      "say": "fisher",
+      "text": "\"Valley folk. With the Commons? ... Then you'd best go before the hunters see you here. The King's ring-hunters come out every month to look at our necks.\""
+     },
+     {
+      "say": "",
+      "text": "An old man is mending a net on the step of the end hut, with his collar open in the cold. His neck is a mass of old pale rings, faded nearly to nothing. Twenty, at least."
+     },
+     {
+      "say": "fisher",
+      "text": "\"My father. He came off them on his own, forty winters ago, with the whole village sitting up with him. Half the old ones here did. We don't talk about it. In Holm it's a rope.\""
+     },
+     {
+      "say": "",
+      "text": "Then the dogs. Four riders coming over the ice in a line, in Lorne blue, with ring-hunting hounds on long leashes."
+     },
+     {
+      "say": "fisher",
+      "text": "\"Every month. They've never found him. They've never looked properly. Today they will, because you're here.\""
+     },
+     {
+      "battle": "road-ringhunters",
+      "win": [
+       {
+        "say": "",
+        "text": "The ring-hunters ride back to Holm with their dogs and a story. The old man watches them go from his step, and closes his collar."
+       },
+       {
+        "say": "fisher",
+        "text": "\"Well. They'll be back with more. So I might as well go to Holm and be hanged in good company. I'll speak for your man. Forty winters, I'll tell them.\""
+       },
+       {
+        "set": {
+         "wit.frostmere": true
+        }
+       },
+       {
+        "add": {
+         "witnesses": 1
+        }
+       },
+       {
+        "toast": "A witness: the old man of Frostmere."
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "wit.frostmere"
+      },
+      "then": [
+       {
+        "say": "fisher",
+        "text": "\"Father's packing his good coat. He says if they hang him, he wants to look nice.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Frostmere's huts are shut tight against the wind."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "sigrun": [
+   {
+    "if": {
+     "stage": "ah22",
+     "not": "sigrunAsked"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "A tall knight in silver-blue plate kneels on the stones beside the gallows, bareheaded in the cold, with a stripe of black disgrace paint across her brow."
+     },
+     {
+      "say": "sigrun",
+      "text": "\"Sigrun, once of the King's guard. Stripped of rank for letting a magistrate's letters through the border without reading them. The letters were from his wife's brother. In the valleys.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"Brannoc.\""
+     },
+     {
+      "say": "sigrun",
+      "text": "\"I read them afterwards. He wrote that he was eleven months on lulls and two years off them. I've seen men in the guard come off in secret, with nothing but a locked room and a friend outside it. Two of them. They're still in the guard.\""
+     },
+     {
+      "say": "sigrun",
+      "text": "\"If I say that in court, I'm finished in Lorne, and so are they.\""
+     },
+     {
+      "set": {
+       "sigrunAsked": true
+      }
+     },
+     {
+      "choose": "Sigrun kneels on the stones, waiting to see what you'll ask.",
+      "options": [
+       {
+        "label": "\"Say it. Not their names. Just that you've seen it.\"",
+        "hint": "It will finish her in Lorne.",
+        "do": [
+         {
+          "set": {
+           "wit.sigrun": true
+          }
+         },
+         {
+          "add": {
+           "witnesses": 1
+          }
+         },
+         {
+          "say": "sigrun",
+          "text": "\"No names. Very well. There's nothing left of me here to lose.\""
+         },
+         {
+          "toast": "A witness: Sigrun, once of the King's guard."
+         }
+        ]
+       },
+       {
+        "label": "Don't ask her",
+        "hint": "She's lost enough.",
+        "do": [
+         {
+          "say": "",
+          "text": "Rhea leaves her kneeling. Sigrun watches her go with an expression it takes Rhea a long time to understand: disappointment."
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "wit.sigrun"
+      },
+      "then": [
+       {
+        "say": "sigrun",
+        "text": "\"I'll be there.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "sigrun",
+        "text": "\"Lorne's justice. Enjoy it.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "trialChoice": [
+   {
+    "if": {
+     "stage": "ah22"
+    },
+    "then": [
+     {
+      "say": "aurel",
+      "text": "\"Before I ask the court for a day, you should know there's another way. Some of the gaol guards drink at the Anchor. Some of them owe me. A door could be left open on a winter night.\""
+     },
+     {
+      "say": "aurel",
+      "text": "\"If he walks out, Lorne will call it the Commons breaking the King's gaol. The King will sign the Guild's paper the same week. I'd lose my seat. I don't care about my seat.\""
+     },
+     {
+      "choose": "Aurel waits. Brannoc is in the end cell.",
+      "options": [
+       {
+        "label": "Put Brannoc on trial",
+        "hint": "Win, and Lorne's law changes. Lose, and he hangs.",
+        "do": [
+         {
+          "set": {
+           "lorneWay": "trial"
+          }
+         },
+         {
+          "run": "trial4"
+         }
+        ]
+       },
+       {
+        "label": "Break him out",
+        "hint": "He lives. Lorne goes to the Guild.",
+        "do": [
+         {
+          "set": {
+           "lorneWay": "breakout"
+          }
+         },
+         {
+          "run": "breakout4"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "trial4": [
+   {
+    "fade": "The King's court. A grey morning."
+   },
+   {
+    "goto": {
+     "map": "town-holm",
+     "x": 4,
+     "y": 11,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "The court is a cold stone room full of people in their coats. The King himself has come, and sits at the back, which nobody can remember him doing before."
+   },
+   {
+    "say": "",
+    "text": "Brannoc stands in the dock with his collar open, so the court can see all eleven rings."
+   },
+   {
+    "say": "brannoc",
+    "text": "\"Eleven months. Then two years without. I'm not asking you to like it. I'm asking you to look.\""
+   },
+   {
+    "if": {
+     "flag": "wit.frostmere"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The old man from Frostmere walks the length of the court, opens his collar, and tells them forty winters. Some of the fishermen's wives in the gallery start to cry, and don't explain why."
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "wit.sigrun"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Sigrun, still in her disgrace paint, tells the court she has seen men of the King's own guard come off lulls and serve on. She gives no names. The guard captain at the door goes white."
+     }
+    ]
+   },
+   {
+    "if": {
+     "flag": "wit.ledger"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Rhea reads from the College's record: the hearing at Hollin, the trial ledger, the College refusing the Guild's certificate. The court's clerk asks for a copy."
+     }
+    ]
+   },
+   {
+    "if": {
+     "atLeast": {
+      "witnesses": 2
+     }
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The court deliberates for an hour. The King doesn't move from his bench at the back."
+     },
+     {
+      "say": "aurel",
+      "text": "\"The court finds that the accused wears the marks of the Guild and not its creature. A ring is a scar, not a crime. He walks free. And the law of Lorne will be read again by the King's council, in the light of this.\""
+     },
+     {
+      "say": "",
+      "text": "Nobody cheers. In Lorne nobody cheers in court. But on the way out, an old guardsman at the door undoes his collar, very slightly, and looks Rhea in the eye."
+     },
+     {
+      "say": "king",
+      "text": "\"The Guild's envoy will be told that Lorne does not sign. Lorne doesn't buy grazing from people who don't own it. Tell the clans that from me.\""
+     },
+     {
+      "set": {
+       "road.lorne": "won",
+       "nation.lorne": "pact",
+       "deed.lorne": true,
+       "recruited.aurel": true
+      }
+     },
+     {
+      "add": {
+       "standing.lorne": 40
+      }
+     },
+     {
+      "if": {
+       "flag": "wit.sigrun"
+      },
+      "then": [
+       {
+        "set": {
+         "recruited.sigrun": true
+        }
+       },
+       {
+        "join": "sigrun"
+       },
+       {
+        "say": "",
+        "text": "Sigrun asks the King for her pardon in front of the court, and gets it, and asks in the same breath for leave to ride south with the Commons."
+       }
+      ]
+     },
+     {
+      "toast": "Lorne's court frees Brannoc. Lorne refuses the Guild."
+     }
+    ],
+    "else": [
+     {
+      "say": "",
+      "text": "The court deliberates for an hour. Then the clerk reads the law, which is very old and very short."
+     },
+     {
+      "say": "aurel",
+      "text": "\"The court finds that the accused wears the marks of the Guild. The law of Lorne is the law. He hangs at dawn.\""
+     },
+     {
+      "say": "",
+      "text": "Aurel reads it in a steady voice. Afterwards he goes out to the yard and is sick against the wall."
+     },
+     {
+      "fade": "Dawn. The square."
+     },
+     {
+      "say": "",
+      "text": "Brannoc asks for nothing but a clear morning, and gets one. He looks at the sea the whole time. Rhea stands where he can see her, because he asked her to."
+     },
+     {
+      "say": "",
+      "text": "Afterwards, the King sends word that Lorne will not sign the Guild's paper. Nobody in Holm will say why. Everybody in Holm knows."
+     },
+     {
+      "set": {
+       "road.lorne": "lost",
+       "brannocHanged": true,
+       "nation.lorne": "held"
+      }
+     },
+     {
+      "leave": "brannoc"
+     },
+     {
+      "toast": "Brannoc hangs in Holm. Lorne refuses the Guild."
+     }
+    ]
+   },
+   {
+    "run": "afterLorne"
+   }
+  ],
+  "breakout4": [
+   {
+    "fade": "Holm gaol. A winter night."
+   },
+   {
+    "set": {
+     "light": "night"
+    }
+   },
+   {
+    "goto": {
+     "map": "holm-gaol",
+     "x": 2,
+     "y": 9,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "The door at the top of the stair is unlocked, as promised. The guardroom is not empty, as promised. Somebody else has paid the guards tonight too."
+   },
+   {
+    "battle": "road-gaol",
+    "win": [
+     {
+      "say": "",
+      "text": "Brannoc comes out of the end cell on his own feet, with his collar up and his face set."
+     },
+     {
+      "say": "brannoc",
+      "text": "\"They'll say the Commons broke the King's gaol. They'll be right.\""
+     },
+     {
+      "fade": "Out of Holm, over the ice, before dawn."
+     },
+     {
+      "set": {
+       "light": "day"
+      }
+     },
+     {
+      "say": "",
+      "text": "By the time they reach the high pass, the news has gone ahead of them: the King of Lorne has signed the Guild's paper. Lorne's riders will come south over the passes when the snow goes."
+     },
+     {
+      "set": {
+       "road.lorne": "breakout",
+       "lorneWar": true
+      }
+     },
+     {
+      "add": {
+       "standing.lorne": -50,
+       "standing.drevka": -10
+      }
+     },
+     {
+      "toast": "Brannoc is free. Lorne signs with the Guild."
+     }
+    ]
+   },
+   {
+    "run": "afterLorne"
+   }
+  ],
+  "afterLorne": [
+   {
+    "say": "",
+    "text": "Before she leaves Lorne, Aurel brings her two things. A letter that came for her through the League's house in Holm, sealed with the Corvane League's scales. And a page from the Guild envoy's rooms, left behind when he went."
+   },
+   {
+    "say": "",
+    "text": "The page is a list in Finch's hand. Places and dates. Kestrel Fort, done. Holm, done. Corvane: \"the spring settling. The Houses' notes fall due. Without the League, no Tarsis.\""
+   },
+   {
+    "say": "",
+    "text": "The letter is from a League clerk named Ilse Varn. She has opened the League's ledgers, she writes, and she is frightened of what's in them. She asks for the Commons' protection. She will meet the envoy at Corvane before the spring settling."
+   },
+   {
+    "set": {
+     "ilseLetter": true
+    }
+   },
+   {
+    "stage": "ah23"
+   },
+   {
+    "run": "corranWinterRoad"
+   }
+  ],
+  "corranWinterRoad": [
+   {
+    "if": {
+     "eq": {
+      "corranFate": "thornwick"
+     }
+    },
+    "then": [
+     {
+      "run": "corranStair"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "corranFate": "left"
+       }
+      },
+      "then": [
+       {
+        "run": "corranFever"
+       }
+      ],
+      "else": [
+       {
+        "run": "corranSentence"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "run": "backToRoad2"
+   }
+  ],
+  "corranStair": [
+   {
+    "fade": "Thornwick. Midwinter, while she is away."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "night"
+    }
+   },
+   {
+    "stage": "ai2"
+   },
+   {
+    "say": "",
+    "text": "House catchers come up the Kerrow road in the snow at night, six of them, with a list of runaways and a cart with a cage on it. The watch sees their lanterns on the switchbacks an hour before they reach the gate."
+   },
+   {
+    "say": "dorrit",
+    "text": "\"Six. We've got the cooks, Haldane, and you. The rest are down at the camp for the winter muster.\""
+   },
+   {
+    "say": "",
+    "text": "Corran looks at the terrace stair: narrow, iced, two men wide. A Warden would hold it with six. He knows. He's held stairs."
+   },
+   {
+    "choose": "The lanterns are on the last switchback.",
+    "options": [
+     {
+      "label": "Hold the stair, the Warden way",
+      "hint": "He knows how. He hates that he knows.",
+      "do": [
+       {
+        "set": {
+         "stairHeld": "fight"
+        }
+       },
+       {
+        "add": {
+         "hold": 4
+        }
+       },
+       {
+        "say": "",
+        "text": "He holds it with a door bar and Dorrit's lamp and the cooks behind him with pans. The catchers come up the ice one at a time, because that's how a stair works, and go back down it the same way. Nobody dies. One of them leaves a tooth."
+       },
+       {
+        "say": "",
+        "text": "The children watch from the bathhouse windows. In the morning, Wren draws him on her slate, holding the stair. She gives him a cape, which he hasn't got."
+       }
+      ]
+     },
+     {
+      "label": "Meet them at the gate and talk",
+      "hint": "He was a Warden officer once. They'll listen to that voice.",
+      "do": [
+       {
+        "set": {
+         "stairHeld": "talk"
+        }
+       },
+       {
+        "add": {
+         "hold": 2
+        }
+       },
+       {
+        "say": "",
+        "text": "He goes down to the gate with no weapon and tells the catchers' sergeant his name, and his old rank, and the name of his old commander, and what Halloran will do to a sergeant who starts a fight at a Commons post without orders."
+       },
+       {
+        "say": "",
+        "text": "Every word is true. The catchers go back down the road. Corran is sick in the snow behind the gate afterwards, and doesn't know if it's the cold or the voice he used."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranFever": [
+   {
+    "fade": "House Mire. Midwinter."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "night"
+    }
+   },
+   {
+    "stage": "ai2"
+   },
+   {
+    "say": "",
+    "text": "The fever goes through Mire's sick room in the dark of the year. The House physician comes once, looks at the children on their pallets, and marks a cross in his book beside six names."
+   },
+   {
+    "say": "",
+    "text": "Corran sits up with the six. He has no medicine. He has water, and a cloth, and the foal song, with the third line wrong."
+   },
+   {
+    "say": "",
+    "text": "Four of them live. He doesn't know why four and not six. Nobody does."
+   },
+   {
+    "set": {
+     "mireFever": true
+    }
+   },
+   {
+    "add": {
+     "hold": 3
+    }
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranSentence": [
+   {
+    "fade": "Millbridge. Midwinter."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ai2"
+   },
+   {
+    "say": "",
+    "text": "The town meets in the corn hall about the man in the gaol. Again. The reeve wants it done. Half the eleven families want it done. The other half have stopped coming to the meetings."
+   },
+   {
+    "say": "",
+    "text": "They bring him up from the cells to answer them. The first question comes from a woman whose son was one of the eleven."
+   },
+   {
+    "say": "woman",
+    "text": "\"Why should you live?\""
+   },
+   {
+    "choose": "The corn hall is silent, waiting.",
+    "options": [
+     {
+      "label": "\"I shouldn't. I'm only asking you to wait until the war's done, so I can tell the Commons what I know first.\"",
+      "hint": "Give them a reason that isn't about him.",
+      "by": "corran",
+      "do": [
+       {
+        "set": {
+         "corranAnswer": "use"
+        }
+       },
+       {
+        "add": {
+         "hold": 2
+        }
+       },
+       {
+        "say": "",
+        "text": "It's true, and it's useful, and they hate that it's useful. They vote to wait."
+       }
+      ]
+     },
+     {
+      "label": "\"I don't know. I'm not the one who should answer that.\"",
+      "hint": "The truth.",
+      "by": "corran",
+      "do": [
+       {
+        "set": {
+         "corranAnswer": "none"
+        }
+       },
+       {
+        "add": {
+         "hold": 4
+        }
+       },
+       {
+        "say": "",
+        "text": "The woman looks at him for a long time. Then she sits down. Nobody else asks anything. The reeve puts it off again, until spring."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "backToRoad2": [
+   {
+    "fade": "Spring, on the road south."
+   },
+   {
+    "set": {
+     "hero": "rhea",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ah23"
+   },
+   {
+    "goto": {
+     "map": "town-drovers-halt",
+     "x": 12,
+     "y": 11,
+     "facing": "up"
+    }
+   },
+   {
+    "toast": "East to Corvane, before the League's spring settling. The hill road leaves the vale to the east."
    }
   ]
  }

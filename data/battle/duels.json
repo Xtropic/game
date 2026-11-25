@@ -551,6 +551,64 @@
    ],
    "won": "Kit yields",
    "lost": "Kit wins the round"
+  },
+  "road-gerd": {
+   "name": "Gerd",
+   "backdrop": "snow",
+   "mustWin": true,
+   "intro": [
+    "The ring at Kestrel Fort, trampled snow inside a fence of lances, with the whole clan on the other side of it. Gerd, with a cracked rib and a war axe, and a bandage bleeding through."
+   ],
+   "foe": {
+    "name": "Gerd",
+    "look": "gerd",
+    "cast": "gerd",
+    "level": 20,
+    "moves": {
+     "high": 4,
+     "low": 2,
+     "thrust": 2
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "The axe haft takes you across the ribs. The clan roars.",
+      "He's slow. He's still faster than you'd like."
+     ],
+     "hurt": [
+      "He grunts and holds his side.",
+      "\"Again.\""
+     ],
+     "yield": "Gerd lowers his axe and goes down on one knee.",
+     "down": "Gerd falls in the snow and doesn't get up."
+    }
+   },
+   "words": [
+    {
+     "id": "rib",
+     "label": "Work his left side",
+     "attr": "wits",
+     "vs": "grit",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "You stop going for his head and go for the side he's guarding.",
+     "land": "He bends round the rib, and his guard drops.",
+     "miss": "He knows his own weakness better than you do."
+    },
+    {
+     "id": "son",
+     "label": "\"You don't have to do this for him.\"",
+     "attr": "heart",
+     "vs": "presence",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"You don't have to bleed for him. Not like this.\"",
+     "land": "For a breath his axe hangs. He looks at the stable door.",
+     "miss": "\"I'm his father. That's what fathers do.\""
+    }
+   ],
+   "won": "Gerd yields",
+   "lost": "Gerd wins the ring"
   }
  }
 }

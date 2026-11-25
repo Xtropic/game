@@ -323,7 +323,7 @@ S["winter4"] = [
          "lose": [n("They burn the stores and the kith pens before they go. Nobody inside the walls is taken. It's the only thing Rhea lets herself count.")]},
     ]),
     iff({"flag": "tobinRelapse"}, [n("No moss comes down from Ume's terraces this winter. Oda breeds the trays on what she has, and goes to bed later every night.")]),
-    iff({"flag": "brannocBuilder"}, [n("Brannoc builds scaling ladders in the chapel all winter, with his back strapped. Sixty of them, light enough for a child to carry. He doesn't say what they're for. Everybody knows.")]),
+    iff({"flag": "brannocBuilder", "not": "brannocHanged"}, [n("Brannoc builds scaling ladders in the chapel all winter, with his back strapped. Sixty of them, light enough for a child to carry. He doesn't say what they're for. Everybody knows.")]),
     iff({"flag": "catchersCame"}, [n("Fennick sleeps in the gatehouse now, with a lamp, as if being where the catchers would come first could pay for the two they took.")]),
     iff({"eq": {"corranFate": "thornwick"}}, [run("relapse")], [
         iff({"flag": "corranChained"}, [run("relapseChained")])]),

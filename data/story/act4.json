@@ -2037,7 +2037,8 @@
    },
    {
     "if": {
-     "flag": "brannocBuilder"
+     "flag": "brannocBuilder",
+     "not": "brannocHanged"
     },
     "then": [
      {

@@ -1,0 +1,40 @@
+{
+ "id": "town-snowgate",
+ "name": "Snowgate",
+ "music": "road",
+ "rest": true,
+ "legend": {
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "e": "exit",
+  "R": "rock",
+  "n": "snow"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+  "RRRRRRRRRRRReeeeRRRRRRRRRRRR",
+  "RRRnnnnnnnnn::::nnnnnnnnnRRR",
+  "RRRnrrrrrrnn::::nnRRRRRRnRRR",
+  "RRRnrrrrrrnn::::nnRRRRRRnRRR",
+  "RRRnhhdhhhnn::::nnRRRRRRnRRR",
+  "RRRnnnnnnnnn::::nnRRRRRRnRRR",
+  "RRRnnnnnnnnn::::nnnnnnnnnRRR",
+  "RRRnnnnnnnnn::::nxxxxxxxnRRR",
+  "RRRnnnnnnnnn::::nxxxxxxxnRRR",
+  "RRRnnnnnnnnn::::nxxxxxxxnRRR",
+  "RRRnnnnnnnnn::::nnnnnnnnnRRR",
+  "RRRnnnnnnnnn::::nnnnnnnnnRRR",
+  "RRRnnnnnnnnneeeennnnnnnnnRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 12
+  }
+ ]
+}

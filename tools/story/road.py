@@ -13,12 +13,15 @@ TW = "thornwick"
 FAIR, SQ, QUAY, TAN, PEAT, COL, ARC = "hollin-fair", "town-hollin", "hollin-quay", "hollin-tannery", "town-peatmoor", "town-college", "college-archive"
 WEST = "land-west"
 REED, ASH, TAV, BRIG = "town-reedhythe", "town-ashby", "ashby-tavern", "ashby-brig"
+GRAZE, KEST, SNOW, HOLM, GAOL, FROST = "town-grazehold", "town-kestrel-fort", "town-snowgate", "town-holm", "holm-gaol", "town-frostmere"
 
 cast = {"gateward": "Hollin's gate-ward", "speaker": "The Speaker of the square", "ansel": "Ansel", "orla": "Orla", "davy": "Davy",
         "netmaker": "Bryn", "provost": "Provost Amory", "weaver": "Hanne", "kit": "Kit", "gil": "Gil", "perrine": "Perrine",
         "bargeman": "Guild bargemaster", "linnet": "Linnet",
         "saul": "Mother Saul", "clerk": "Harbour clerk", "pike": "Old Pike", "meg": "Sister Meg", "annet": "Annet", "gully": "Gully Sorne",
-        "fairweather": "Fairweather", "posy": "Posy", "dorrit": "Dorrit", "oren": "Oren Tull"}
+        "fairweather": "Fairweather", "posy": "Posy", "dorrit": "Dorrit", "oren": "Oren Tull",
+        "abel": "Abel", "rider": "Clan rider", "gerd": "Gerd", "arvo": "Arvo", "brede": "Brede", "guard": "Guard captain", "aurel": "Aurel Hask",
+        "finch": "Finch", "fisher": "Frostmere fisher", "sigrun": "Sigrun", "brannoc": "Brannoc", "king": "The King of Lorne", "woman": "A mother of the eleven"}
 
 objectives = {
     "ah0": "The council in Thornwick chapel.",
@@ -37,7 +40,17 @@ objectives = {
     "ah12": "The Guild brig Patience.",
     "ah13": "Gully is waiting in his office.",
     "ah14": "North, to Lorne, through the Drevka clans' lands. The drove road leaves the vale to the north.",
+    "ah15": "Up the drove road to Grazehold, where the clans' riders keep the high grazing.",
+    "ah16": "Kestrel Fort. The clans' champion speaks for them.",
+    "ah17": "A duel with the clans' champion at dawn. The stables are on the east side of the fort.",
+    "ah18": "Over the high pass at Snowgate, to Lorne, before the snow shuts it.",
+    "ah19": "Holm, the King of Lorne's city, on the north coast.",
+    "ah20": "Holm gaol.",
+    "ah21": "The King's dinner, in the hall at the top of the square.",
+    "ah22": "Find witnesses for Brannoc: Frostmere on the ice, and Sigrun in the square. Then tell Aurel you're ready.",
+    "ah23": "East to Corvane, before the League's spring settling. The hill road leaves the vale to the east.",
     "ai1": "Autumn, while Rhea is away.",
+    "ai2": "Midwinter, while Rhea is away.",
 }
 
 S = {}
@@ -656,6 +669,332 @@ S["backToRoad1"] = [
     toast("North, through the Drevka clans' lands, to Lorne. The drove road leaves the vale to the north."),
 ]
 
+# ================================================================== leg 3: the Drevka clans
+S["abel"] = [
+    iff({"stage": "ah14", "not": "abelDone"}, [
+        n("Drovers' Halt is full of beasts. An old drover in a red coat, with a white moustache and a horn on a strap, is arguing with the Commons toll sergeant at the gate to the drove road."),
+        say("abel", R("Three hundred head of ironback, captain, going up to the high grazing before the snow shuts it. Your sergeant says the army's carts go first. Your carts can wait a day. My beasts can't wait for the snow.")),
+        say("abel", R("And you'll want to go up the drove road yourself, I'm told. The clans' riders turn back anyone they don't know. They know me. Forty years.")),
+        choose("The toll sergeant looks at Rhea. The supply carts are lined up behind him.",
+               opt(R("Let the herd through first."), [
+                   setf({"abelDone": True, "recruited.abel": True}), {"join": "abel"},
+                   n("The carts wait. The ironbacks go up the drove road in a long brown river, bells clanking, and Abel walks at the head with his crook."),
+                   say("abel", R("Come on, then, captain. Walk with me, and the riders will think you're mine.")),
+                   setf({"open.vale-north": True}), stage("ah15"), toast("The drove road north is open."),
+               ], hint="The army's supplies wait a day."),
+               opt(R("The army's carts go first."), [
+                   setf({"abelDone": True}),
+                   n("Abel spits, very precisely, beside the toll sergeant's boot. The carts go through. The herd goes up the next morning, in sleet."),
+                   say("abel", R("You'll still want the riders to let you up. I'll tell them you're nobody worth killing. That's the best I can do.")),
+                   setf({"open.vale-north": True}), stage("ah15"), toast("The drove road north is open."),
+               ], hint="The war first.")),
+    ], [say("abel", R("Ironbacks don't care who wins. They care about grass. Wise beasts."))]),
+]
+S["riders"] = [
+    iff({"stage": "ah15"}, [
+        n("Grazehold: hide tents round a fire, ironbacks on long lines, and a dozen clan riders who all stand up at once when the strangers come into the firelight."),
+        say("rider", R("Valley people. Abel says you're harmless. Abel says that about wolves.")),
+        say("rhea", R("I need to speak to your champion. Lorne has been offered your grazing.")),
+        n("The riders laugh. Then one of them sees the paper in Rhea's hand, and the Guild's standing loftbuck pressed into its wax, and stops laughing."),
+        say("rider", R("Kestrel Fort. Gerd speaks for the clans. If he wants to hear it, he'll hear it. If he doesn't, nobody will find you till the thaw.")),
+        stage("ah16"),
+    ], [say("rider", R("Kestrel Fort's to the north-west. Don't stray off the road. The road is the only thing up here that's yours."))]),
+]
+S["gerdHall"] = [
+    iff({"stage": "ah16"}, [
+        n("Gerd's hall is long and smoky, hung with old harness and older shields. Gerd himself sits at the high table: a huge grey-bearded man with clan tattoos on his shaved head, and a fresh bandage across his brow."),
+        n("Rhea puts the Guild's letter on the table in front of him. He reads it twice."),
+        say("gerd", R("Lorne has wanted the high grazing since my grandfather's time. They've never been offered it before.")),
+        say("gerd", R("A paper from the coast. A seal anyone could cut. Lorne's envoy and the Guild's sat at this table at midsummer, and drank my mead, and said nothing of it.")),
+        say("rhea", R("Then ask yourself why they came.")),
+        say("gerd", R("I don't ask myself things. The clans follow strength. If the valley captain wants the clans to hear her, the clans' champion will meet her in the ring at dawn. My son Arvo is the champion this year.")),
+        stage("ah17"),
+        toast("A duel with the clans' champion, at dawn. The stables are to the east."),
+    ], [iff({"stage": "ah17"}, [say("gerd", R("Dawn. In the ring."))], [say("gerd", R("Valley captain."))])]),
+]
+S["arvoStable"] = [
+    iff({"stage": "ah17", "not": "arvoFound"}, [
+        setf({"light": "night", "arvoFound": True}),
+        n("The stables, late. The champion's ironback is restless in its stall, and the champion is sitting in the straw beside it with his knees up and his high fur collar pulled up to his ears."),
+        n("Arvo is sixteen. He's shaking. Not with cold."),
+        say("arvo", R("Go away. I'm fighting you tomorrow. We're not meant to talk.")),
+        n("Rhea has seen the raw a hundred times. She crouches down in the straw and waits. After a while, he pulls his collar down."),
+        n("A Guild lull on the side of his neck, fat and pale. And under it, two rings already."),
+        say("arvo", R("A trader came up the pass with the Guild's boy, at midsummer. I hurt my shoulder at the Iron Ride and it wouldn't stop. He said this would help. It did. Then it fell off and I couldn't... I can't fight with the shakes. I can't fight without it.")),
+        say("arvo", R("If the clans see a champion with rings, my father's finished. Nobody follows a man whose son wears the Guild.")),
+        fade("Dawn."), setf({"light": "day"}),
+        n("At dawn, Gerd walks into the ring, not Arvo. The bandage on his brow has bled through. He moves like a man with a cracked rib, and the whole clan can see it."),
+        say("gerd", R("My son is unwell. The champion's father fights in his place. That's the old law.")),
+        n("The clan murmurs. They know Arvo isn't unwell. They don't know what he is."),
+        choose("Gerd waits in the ring, hurt. Arvo is watching from the stable door.",
+               opt(R("Your champion is ringed. The Guild did this to your son, the same Guild that's selling your grazing."), [
+                   setf({"drevkaWay": "shamed"}), add({"standing.drevka": 25}),
+                   n("The clan hears it. They turn and look at the stable door. Arvo is gone from it."),
+                   n("Gerd fights anyway, because he has to now, and he fights like a man with nothing left to lose. It isn't long."),
+               ], hint="The truth wins the clans. It costs the boy everything."),
+               opt("Say nothing, and fight Gerd", [
+                   setf({"drevkaWay": "quiet"}), add({"standing.drevka": 10}),
+                   n("Rhea steps into the ring. She doesn't look at the stable door."),
+               ], hint="Beat a hurt man in front of his clan. Keep the boy's secret.")),
+        {"duel": "road-gerd", "win": [run("gerdBeaten")]},
+    ]),
+]
+S["gerdBeaten"] = [
+    n("Gerd goes down on one knee in the trampled snow of the ring, and stays there, and the clan is silent."),
+    iff({"eq": {"drevkaWay": "quiet"}}, [
+        say("gerd", R("You saw him last night. You knew why I was in the ring. And you said nothing, in front of all of them.")),
+        say("gerd", R("The clans heard you, valley captain. I'll ride south with your Commons when it's time, and every clan that follows me.")),
+        n("That evening Arvo comes to Rhea's fire, with his collar down, in front of anyone who wants to look."),
+        say("arvo", R("You have greenlings. Abel says so. I want to come off. And I want to ride with you while I do, so nobody here has to watch.")),
+        setf({"recruited.gerd": True, "recruited.arvo": True, "road.drevka": "quiet", "nation.drevka": "pact", "deed.drevka": True}), {"join": "arvo"},
+        toast("A pact with the Drevka clans. Gerd and Arvo join the Commons."),
+    ], [
+        say("gerd", R("You've won the clans. They'll ride for you. Not for me. I've got no son to follow me into the ring.")),
+        n("Arvo's ironback is gone from its stall by morning, and the boy with it. A clan rider who went after him comes back alone, and says the tracks go down the pass towards the Guild's post at Snowgate."),
+        setf({"road.drevka": "shamed", "arvoGuild": True, "nation.drevka": "pact", "deed.drevka": True}),
+        toast("A pact with the Drevka clans. Arvo rides to the Guild."),
+    ]),
+    say("gerd", R("And now Lorne. If the King signs that paper, Lorne's riders come over the high pass in the spring, and the clans fight on two fronts. My riders will see you to Holm. Through Snowgate, before the pass shuts.")),
+    stage("ah18"),
+]
+S["snowgate"] = [
+    iff({"stage": "ah18", "not": "snowDone"}, [
+        setf({"snowDone": True}),
+        n("Snowgate. The pass between two walls of rock, with the hostel tucked in under the west wall, and the snow already knee-deep on the road."),
+        n("A sound like a door slamming, very far away, high up on the east slope. And then the snow comes down."),
+        fade("..."),
+        n("When it stops, the road ahead is clear. Behind them, where the clan's mule train was coming up with the baggage and two drovers, there's a slope of fresh snow, and one mule's head above it, braying."),
+        n("A woman in a crimson hood is already digging. She came out of the hostel at the first sound. She doesn't look up."),
+        say("brede", R("There are two drovers under that. Help me or go on. The pass shuts at dark either way.")),
+        choose("The light is going. Holm is a day on, over the top.",
+               opt("Turn back and dig", [
+                   setf({"snowDug": True, "recruited.brede": True}), {"join": "brede"},
+                   n("They dig until their hands stop working. Both drovers come out alive, blue and swearing. Four of the mules don't."),
+                   say("brede", R("You turned back. Nobody turns back on this pass. I'm Brede. I'll see you over the top, and I'll see you down the other side, and after that I'll see.")),
+                   n("They cross the top in the dark, roped together, and lose a day."),
+               ], hint="Lose a day. Two men under the snow."),
+               opt("Press on, before the pass shuts", [
+                   setf({"snowDug": False}),
+                   n("The clan riders go back for the drovers. Rhea's party goes on over the top in the last of the light, and reaches Holm a day sooner."),
+                   n("At Holm she hears that one of the drovers lived."),
+               ], hint="Holm before the King signs.")),
+        stage("ah19"),
+        toast("Over the high pass, into Lorne. Holm is to the north."),
+    ]),
+]
+
+# ================================================================== leg 4: Lorne
+S["holmGate"] = [
+    iff({"stage": "ah19"}, [
+        n("Holm: a grey stone city on a grey sea, with a gallows in the middle of its square, and nothing hanging from it today."),
+        iff({"flag": "brannocBuilder"}, [n("Brannoc has come all this way in the baggage cart, with his back strapped, because his sister lives in Holm and he hasn't seen her in twenty years.")],
+            [n("Brannoc has come all this way because his sister lives in Holm, and he hasn't seen her in twenty years.")]),
+        n("At the gate, the guard captain looks at the travel papers, and then at Brannoc, and then at Brannoc's neck."),
+        say("guard", R("Eleven rings. And the rest of you carrying highland poison in your baggage. Arrest them all. The King's court will want to see this.")),
+        fade("Holm gaol."), goto(GAOL, 3, 6, "up"), stage("ah20"),
+        run("aurelCell"),
+    ]),
+]
+S["aurelCell"] = [
+    n("The cells under Holm stink of seawater. They put Brannoc in the end cell on his own, and Rhea's people in the others."),
+    n("At midnight a lamp comes down the stair: a thin grey man in a magistrate's black robe, with a white rope-knot badge at his collar."),
+    say("aurel", R("Aurel Hask. Magistrate of the King's court. My wife's name was Brannoc's, once. She cried for an hour when they told her who'd been brought in.")),
+    say("aurel", R("I've signed for the rest of you, on my name, which is worth less tonight than it was this morning. Brannoc stays. In Lorne a man with rings hangs. That's the law. I've hanged men for it.")),
+    say("rhea", R("He hasn't worn a lull in two years.")),
+    say("aurel", R("Lorne doesn't care. A ring is a ring. Unless someone can prove to the court that a ringed man can come off, and stay off, and is no danger to anyone. Nobody's ever proved it. Nobody's ever tried.")),
+    say("aurel", R("And the King gives a dinner tomorrow for the envoys. Both of them. You'll want to wash.")),
+    setf({"holmFree": True}), stage("ah21"),
+    goto(HOLM, 27, 11, "down"),
+]
+S["kingsDinner"] = [
+    iff({"stage": "ah21"}, [
+        setf({"light": "evening"}),
+        n("The King of Lorne's hall: a long table, a fire at each end, and a thin old king in the middle who says very little and watches everything."),
+        n("Across the table from Rhea, in a good grey coat with the Guild's loftbuck on the clasp, sits Finch."),
+        n("He's taller. He has a scar through one eyebrow that he didn't have at Kell's Bridge. He doesn't look at her once, all through the dinner, and he speaks for the Guild beautifully."),
+        say("finch", R("The Houses ask only for peace in the north. Lorne's passes closed. Lorne's riders where Lorne wants them. And the high grazing, which the clans have never used well.")),
+        n("When it's Rhea's turn, she says what she came to say. The King listens to both of them with exactly the same face."),
+        fade("Later. The city wall."), setf({"light": "night"}),
+        n("He's on the wall above the harbour, alone, as if he knew she'd come. Maybe he did. He always knew where she'd go."),
+        say("finch", R("You shouldn't be here. They hang people with rings in this town. They'd hang you for the trays in your baggage if Aurel hadn't signed.")),
+        choose("Finch is looking at the sea, not at her.",
+               opt(R("You offered them the clans' grazing. Abel's beasts. Gerd's people. Do you even know what that means?"), [
+                   add({"finchTrust": -6}), setf({"finchWall": "blame"}),
+                   say("finch", R("It means the Houses win, and fewer people die getting there. I did the sum. You taught me to do sums.")),
+                   n("He goes in without another word."),
+               ], hint="Say what he's done."),
+               opt(R("Come home, Finch. Whatever they've told you."), [
+                   add({"finchTrust": 6}), setf({"finchWall": "ask"}),
+                   say("finch", R("Home's a burnt valley.")),
+                   n("But he stays on the wall with her until the bell, and neither of them says anything else, and it's the longest they've stood together since the harvest before the raid."),
+               ], hint="Ask."),
+               opt("Stand beside him and say nothing", [
+                   add({"finchTrust": 2}), setf({"finchWall": "silence"}),
+                   n("They stand there. Out on the water, a seal comes up, looks at them, and goes down again. Finch nearly laughs. He catches it in time."),
+               ], hint="He was always better at silence.")),
+        stage("ah22"),
+        toast("Prove to Lorne's court that a ringed man can be weaned. Find witnesses: Frostmere, the fishing village on the ice, and anyone in Holm who'll speak."),
+        fade("Morning."), setf({"light": "day"}), goto(HOLM, 27, 11, "down"),
+    ], [n("The King's hall. The door wardens don't move aside for valley folk.")]),
+]
+S["aurelCase"] = [
+    iff({"stage": "ah22"}, [
+        say("aurel", R("Witnesses. People the court can see. There are weaned people in Lorne; there have to be. Nobody admits it, because admitting it is a rope.")),
+        say("aurel", R("Try Frostmere, out on the ice. The fishing families there don't come to Holm, and Holm doesn't go there. And there's a knight doing penance in the square, Sigrun. Ask her why.")),
+        iff({"not": "ledgerCounted"}, [setf({"ledgerCounted": True}),
+            iff({"flag": "collegeProof"}, [setf({"wit.ledger": True}), add({"witnesses": 1})],
+                [iff({"eq": {"road.college": "refused"}}, [setf({"wit.ledger": True}), add({"witnesses": 1})])]),
+            iff({"flag": "wit.ledger"}, [say("aurel", R("The College's record from Hollin will help. A court likes paper. It's not a face, though."))])]),
+        iff({"atLeast": {"witnesses": 2}}, [say("aurel", R("You have enough to stand up in court. Whether it's enough to win, I don't know."))],
+            [say("aurel", R("You haven't enough yet. One voice is a story. The court wants two."))]),
+        choose("Aurel waits for an answer.",
+               opt("I'm ready. Ask for the day.", [run("trialChoice")]),
+               opt("Not yet.", [say("aurel", R("Don't take long. Winter's short in court and long in the cells."))])),
+    ], [say("aurel", R("Holm is a hard town. It thinks that's the same as a fair one."))]),
+]
+S["frostmere"] = [
+    iff({"stage": "ah22", "not": "wit.frostmere"}, [
+        n("Frostmere is a dozen huts on the shore of a frozen mere. The fishers stop work when the strangers come, and the women take the children inside."),
+        say("fisher", R("Valley folk. With the Commons? ... Then you'd best go before the hunters see you here. The King's ring-hunters come out every month to look at our necks.")),
+        n("An old man is mending a net on the step of the end hut, with his collar open in the cold. His neck is a mass of old pale rings, faded nearly to nothing. Twenty, at least."),
+        say("fisher", R("My father. He came off them on his own, forty winters ago, with the whole village sitting up with him. Half the old ones here did. We don't talk about it. In Holm it's a rope.")),
+        n("Then the dogs. Four riders coming over the ice in a line, in Lorne blue, with ring-hunting hounds on long leashes."),
+        say("fisher", R("Every month. They've never found him. They've never looked properly. Today they will, because you're here.")),
+        {"battle": "road-ringhunters", "win": [
+            n("The ring-hunters ride back to Holm with their dogs and a story. The old man watches them go from his step, and closes his collar."),
+            say("fisher", R("Well. They'll be back with more. So I might as well go to Holm and be hanged in good company. I'll speak for your man. Forty winters, I'll tell them.")),
+            setf({"wit.frostmere": True}), add({"witnesses": 1}),
+            toast("A witness: the old man of Frostmere."),
+        ]},
+    ], [iff({"flag": "wit.frostmere"}, [say("fisher", R("Father's packing his good coat. He says if they hang him, he wants to look nice."))], [n("Frostmere's huts are shut tight against the wind.")])]),
+]
+S["sigrun"] = [
+    iff({"stage": "ah22", "not": "sigrunAsked"}, [
+        n("A tall knight in silver-blue plate kneels on the stones beside the gallows, bareheaded in the cold, with a stripe of black disgrace paint across her brow."),
+        say("sigrun", R("Sigrun, once of the King's guard. Stripped of rank for letting a magistrate's letters through the border without reading them. The letters were from his wife's brother. In the valleys.")),
+        say("rhea", R("Brannoc.")),
+        say("sigrun", R("I read them afterwards. He wrote that he was eleven months on lulls and two years off them. I've seen men in the guard come off in secret, with nothing but a locked room and a friend outside it. Two of them. They're still in the guard.")),
+        say("sigrun", R("If I say that in court, I'm finished in Lorne, and so are they.")),
+        setf({"sigrunAsked": True}),
+        choose("Sigrun kneels on the stones, waiting to see what you'll ask.",
+               opt(R("Say it. Not their names. Just that you've seen it."), [
+                   setf({"wit.sigrun": True}), add({"witnesses": 1}),
+                   say("sigrun", R("No names. Very well. There's nothing left of me here to lose.")),
+                   toast("A witness: Sigrun, once of the King's guard."),
+               ], hint="It will finish her in Lorne."),
+               opt("Don't ask her", [n("Rhea leaves her kneeling. Sigrun watches her go with an expression it takes Rhea a long time to understand: disappointment.")], hint="She's lost enough.")),
+    ], [iff({"flag": "wit.sigrun"}, [say("sigrun", R("I'll be there."))], [say("sigrun", R("Lorne's justice. Enjoy it."))])]),
+]
+S["trialChoice"] = [
+    iff({"stage": "ah22"}, [
+        say("aurel", R("Before I ask the court for a day, you should know there's another way. Some of the gaol guards drink at the Anchor. Some of them owe me. A door could be left open on a winter night.")),
+        say("aurel", R("If he walks out, Lorne will call it the Commons breaking the King's gaol. The King will sign the Guild's paper the same week. I'd lose my seat. I don't care about my seat.")),
+        choose("Aurel waits. Brannoc is in the end cell.",
+               opt("Put Brannoc on trial", [setf({"lorneWay": "trial"}), run("trial4")], hint="Win, and Lorne's law changes. Lose, and he hangs."),
+               opt("Break him out", [setf({"lorneWay": "breakout"}), run("breakout4")], hint="He lives. Lorne goes to the Guild.")),
+    ]),
+]
+S["trial4"] = [
+    fade("The King's court. A grey morning."),
+    goto(HOLM, 4, 11, "up"),
+    n("The court is a cold stone room full of people in their coats. The King himself has come, and sits at the back, which nobody can remember him doing before."),
+    n("Brannoc stands in the dock with his collar open, so the court can see all eleven rings."),
+    say("brannoc", R("Eleven months. Then two years without. I'm not asking you to like it. I'm asking you to look.")),
+    iff({"flag": "wit.frostmere"}, [n("The old man from Frostmere walks the length of the court, opens his collar, and tells them forty winters. Some of the fishermen's wives in the gallery start to cry, and don't explain why.")]),
+    iff({"flag": "wit.sigrun"}, [n("Sigrun, still in her disgrace paint, tells the court she has seen men of the King's own guard come off lulls and serve on. She gives no names. The guard captain at the door goes white.")]),
+    iff({"flag": "wit.ledger"}, [n("Rhea reads from the College's record: the hearing at Hollin, the trial ledger, the College refusing the Guild's certificate. The court's clerk asks for a copy.")]),
+    iff({"atLeast": {"witnesses": 2}}, [
+        n("The court deliberates for an hour. The King doesn't move from his bench at the back."),
+        say("aurel", R("The court finds that the accused wears the marks of the Guild and not its creature. A ring is a scar, not a crime. He walks free. And the law of Lorne will be read again by the King's council, in the light of this.")),
+        n("Nobody cheers. In Lorne nobody cheers in court. But on the way out, an old guardsman at the door undoes his collar, very slightly, and looks Rhea in the eye."),
+        say("king", R("The Guild's envoy will be told that Lorne does not sign. Lorne doesn't buy grazing from people who don't own it. Tell the clans that from me.")),
+        setf({"road.lorne": "won", "nation.lorne": "pact", "deed.lorne": True, "recruited.aurel": True}), add({"standing.lorne": 40}),
+        iff({"flag": "wit.sigrun"}, [setf({"recruited.sigrun": True}), {"join": "sigrun"}, n("Sigrun asks the King for her pardon in front of the court, and gets it, and asks in the same breath for leave to ride south with the Commons.")]),
+        toast("Lorne's court frees Brannoc. Lorne refuses the Guild."),
+    ], [
+        n("The court deliberates for an hour. Then the clerk reads the law, which is very old and very short."),
+        say("aurel", R("The court finds that the accused wears the marks of the Guild. The law of Lorne is the law. He hangs at dawn.")),
+        n("Aurel reads it in a steady voice. Afterwards he goes out to the yard and is sick against the wall."),
+        fade("Dawn. The square."),
+        n("Brannoc asks for nothing but a clear morning, and gets one. He looks at the sea the whole time. Rhea stands where he can see her, because he asked her to."),
+        n("Afterwards, the King sends word that Lorne will not sign the Guild's paper. Nobody in Holm will say why. Everybody in Holm knows."),
+        setf({"road.lorne": "lost", "brannocHanged": True, "nation.lorne": "held"}), {"leave": "brannoc"},
+        toast("Brannoc hangs in Holm. Lorne refuses the Guild."),
+    ]),
+    run("afterLorne"),
+]
+S["breakout4"] = [
+    fade("Holm gaol. A winter night."), setf({"light": "night"}),
+    goto(GAOL, 2, 9, "up"),
+    n("The door at the top of the stair is unlocked, as promised. The guardroom is not empty, as promised. Somebody else has paid the guards tonight too."),
+    {"battle": "road-gaol", "win": [
+        n("Brannoc comes out of the end cell on his own feet, with his collar up and his face set."),
+        say("brannoc", R("They'll say the Commons broke the King's gaol. They'll be right.")),
+        fade("Out of Holm, over the ice, before dawn."), setf({"light": "day"}),
+        n("By the time they reach the high pass, the news has gone ahead of them: the King of Lorne has signed the Guild's paper. Lorne's riders will come south over the passes when the snow goes."),
+        setf({"road.lorne": "breakout", "lorneWar": True}), add({"standing.lorne": -50, "standing.drevka": -10}),
+        toast("Brannoc is free. Lorne signs with the Guild."),
+    ]},
+    run("afterLorne"),
+]
+S["afterLorne"] = [
+    n("Before she leaves Lorne, Aurel brings her two things. A letter that came for her through the League's house in Holm, sealed with the Corvane League's scales. And a page from the Guild envoy's rooms, left behind when he went."),
+    n("The page is a list in Finch's hand. Places and dates. Kestrel Fort, done. Holm, done. Corvane: \"the spring settling. The Houses' notes fall due. Without the League, no Tarsis.\""),
+    n("The letter is from a League clerk named Ilse Varn. She has opened the League's ledgers, she writes, and she is frightened of what's in them. She asks for the Commons' protection. She will meet the envoy at Corvane before the spring settling."),
+    setf({"ilseLetter": True}),
+    stage("ah23"),
+    run("corranWinterRoad"),
+]
+
+# ================================================================== Corran's winter (the second interlude)
+S["corranWinterRoad"] = [
+    iff({"eq": {"corranFate": "thornwick"}}, [run("corranStair")], [
+        iff({"eq": {"corranFate": "left"}}, [run("corranFever")], [run("corranSentence")])]),
+    run("backToRoad2"),
+]
+S["corranStair"] = [
+    fade("Thornwick. Midwinter, while she is away."),
+    setf({"hero": "corran", "light": "night"}), stage("ai2"),
+    n("House catchers come up the Kerrow road in the snow at night, six of them, with a list of runaways and a cart with a cage on it. The watch sees their lanterns on the switchbacks an hour before they reach the gate."),
+    say("dorrit", R("Six. We've got the cooks, Haldane, and you. The rest are down at the camp for the winter muster.")),
+    n("Corran looks at the terrace stair: narrow, iced, two men wide. A Warden would hold it with six. He knows. He's held stairs."),
+    choose("The lanterns are on the last switchback.",
+           opt("Hold the stair, the Warden way", [setf({"stairHeld": "fight"}), add({"hold": 4}),
+               n("He holds it with a door bar and Dorrit's lamp and the cooks behind him with pans. The catchers come up the ice one at a time, because that's how a stair works, and go back down it the same way. Nobody dies. One of them leaves a tooth."),
+               n("The children watch from the bathhouse windows. In the morning, Wren draws him on her slate, holding the stair. She gives him a cape, which he hasn't got.")], hint="He knows how. He hates that he knows."),
+           opt("Meet them at the gate and talk", [setf({"stairHeld": "talk"}), add({"hold": 2}),
+               n("He goes down to the gate with no weapon and tells the catchers' sergeant his name, and his old rank, and the name of his old commander, and what Halloran will do to a sergeant who starts a fight at a Commons post without orders."),
+               n("Every word is true. The catchers go back down the road. Corran is sick in the snow behind the gate afterwards, and doesn't know if it's the cold or the voice he used.")], hint="He was a Warden officer once. They'll listen to that voice.")),
+    setf({"hero": "rhea"}),
+]
+S["corranFever"] = [
+    fade("House Mire. Midwinter."),
+    setf({"hero": "corran", "light": "night"}), stage("ai2"),
+    n("The fever goes through Mire's sick room in the dark of the year. The House physician comes once, looks at the children on their pallets, and marks a cross in his book beside six names."),
+    n("Corran sits up with the six. He has no medicine. He has water, and a cloth, and the foal song, with the third line wrong."),
+    n("Four of them live. He doesn't know why four and not six. Nobody does."),
+    setf({"mireFever": True}), add({"hold": 3}),
+    setf({"hero": "rhea"}),
+]
+S["corranSentence"] = [
+    fade("Millbridge. Midwinter."),
+    setf({"hero": "corran", "light": "day"}), stage("ai2"),
+    n("The town meets in the corn hall about the man in the gaol. Again. The reeve wants it done. Half the eleven families want it done. The other half have stopped coming to the meetings."),
+    n("They bring him up from the cells to answer them. The first question comes from a woman whose son was one of the eleven."),
+    say("woman", R("Why should you live?")),
+    choose("The corn hall is silent, waiting.",
+           opt(R("I shouldn't. I'm only asking you to wait until the war's done, so I can tell the Commons what I know first."), [setf({"corranAnswer": "use"}), add({"hold": 2}),
+               n("It's true, and it's useful, and they hate that it's useful. They vote to wait.")], by="corran", hint="Give them a reason that isn't about him."),
+           opt(R("I don't know. I'm not the one who should answer that."), [setf({"corranAnswer": "none"}), add({"hold": 4}),
+               n("The woman looks at him for a long time. Then she sits down. Nobody else asks anything. The reeve puts it off again, until spring.")], by="corran", hint="The truth.")),
+    setf({"hero": "rhea"}),
+]
+S["backToRoad2"] = [
+    fade("Spring, on the road south."),
+    setf({"hero": "rhea", "light": "day"}), stage("ah23"), goto("town-drovers-halt", 12, 11, "up"),
+    toast("East to Corvane, before the League's spring settling. The hill road leaves the vale to the east."),
+]
+
 # ================================================================== actors, steps, looks
 def actor(id, map, x, y, look, talk, when=None, **kw):
     a = {"id": id, "map": map, "x": x, "y": y, "look": look}
@@ -700,6 +1039,27 @@ actors = [
     actor("ash-docker", ASH, 10, 7, "vil4", [n("A docker coiling rope. \"The Patience? She's been loading for a week. Apprentices, they say. Funny sort of apprentices. They cry.\"")], {"stagePrefix": "ah", "not": "brigTaken"}),
     actor("ash-docker2", ASH, 10, 7, "vil4", [n("A docker coiling rope. \"Someone took the Patience's whole cargo off her in the night. Not a soul in Ashby saw anything. Not a soul.\"")], {"stagePrefix": "ah", "flag": "brigTaken"}),
     actor("ash-sailor", ASH, 22, 7, "smuggler", [n("A sailor from somewhere hot, watching the harbour. \"Lorne's waters ice up at the first frost. After that, nobody sails north till spring.\"")], ROAD),
+    # Drovers' Halt, Grazehold, Kestrel Fort, Snowgate
+    actor("abel", "town-drovers-halt", 13, 8, "abel", [run("abel")], {"stage": ["ah14"]}),
+    actor("toll-sergeant", "town-drovers-halt", 12, 10, "soldier", [n("The Commons toll sergeant, counting carts. \"Supplies for the winter camps. Every one of them late.\"")], {"stage": ["ah14"]}),
+    actor("rider", GRAZE, 11, 6, "vil4", [run("riders")], {"stagePrefix": "ah"}),
+    actor("graze-rider2", GRAZE, 14, 8, "vil6", [n("A clan rider oiling a lance. She doesn't take her eyes off Rhea's hands.")], {"stagePrefix": "ah"}),
+    actor("graze-herder", GRAZE, 20, 10, "vil3", [n("A herder among the ironbacks. \"Lorne riders took twelve head off the east slope last spring. They'll take the whole slope next.\"")], {"stagePrefix": "ah"}),
+    actor("gerd-ring", KEST, 14, 7, "gerd", [say("gerd", R("The clans have heard you, valley captain. Now go and make Lorne hear you."))], {"stage": ["ah18", "ah19", "ah20", "ah21", "ah22", "ah23"]}),
+    actor("kest-smith", KEST, 4, 10, "vil5", [n("The fort's smith, hammering out a lance head. \"Arvo won the Iron Ride with a cracked shoulder. Champions don't stop for a shoulder.\"")], {"stagePrefix": "ah"}),
+    actor("kest-wife", KEST, 22, 15, "vil2", [n("A clanswoman with a baby on her back. \"Gerd's been champion, and his father, and his. That's three hundred years of fathers in the ring.\"")], {"stagePrefix": "ah"}),
+    actor("snow-host", SNOW, 6, 7, "vil7", [n("The hostel keeper, sweeping snow off her step with a broom that's mostly handle. \"Brede? She's the only one who goes out after a slide. The rest of us count the mules and say a word.\"")], {"stagePrefix": "ah"}),
+    actor("snow-drover", SNOW, 9, 10, "vil4", [n("A drover stamping his feet by a tethered mule. \"Up here the slope decides who crosses. Not the King, not the clans. The slope.\"")], {"stagePrefix": "ah"}),
+    actor("snow-monk", SNOW, 20, 12, "elder2", [n("An old hostel brother, chipping ice off the post that marks the road. \"Forty-one years. I've buried eleven travellers and dug out two hundred. Brede's dug out more than me, and she's thirty.\"")], {"stagePrefix": "ah"}),
+    # Holm and Frostmere
+    actor("guard", HOLM, 13, 15, "warden2", [say("guard", R("Papers. And open your collar."))], {"stage": ["ah15", "ah16", "ah17", "ah18"]}),
+    actor("aurel", HOLM, 26, 11, "aurel", [run("aurelCase")], {"stage": ["ah21", "ah22"]}),
+    actor("sigrun", HOLM, 13, 11, "sigrun", [run("sigrun")], {"stage": ["ah22"]}),
+    actor("holm-fishwife", HOLM, 20, 15, "kr-mother", [n("A fishwife with her collar buttoned to the chin, like everyone in Holm. \"The gallows? It's been empty since harvest. That's a long time, for Holm.\"")], {"stagePrefix": "ah"}),
+    actor("holm-clerk", HOLM, 6, 11, "vil1", [n("A court clerk, hurrying. \"The court sits on fourth days. The King hasn't come to it in eleven years.\"")], {"stagePrefix": "ah"}),
+    actor("fisher", FROST, 11, 10, "wb-fisher", [run("frostmere")], {"stagePrefix": "ah"}),
+    actor("frost-old", FROST, 4, 10, "elder", [n("An old man mending a net on the step of the end hut. He keeps his collar closed when strangers look at him.")], {"stage": ["ah15", "ah16", "ah17", "ah18", "ah19", "ah20", "ah21"]}),
+    actor("frost-child", FROST, 17, 12, "kid3", [n("A child on the ice with a hand line, pulling up a fish no longer than a finger, very proud of it.")], {"stagePrefix": "ah"}),
 ]
 
 def step(map, at, do, when=None):
@@ -709,10 +1069,13 @@ def step(map, at, do, when=None):
 
 # where each place lets out onto its land map, and back
 PLACES = {("west", "hollin"): (FAIR, (13, 12)), ("west", "college"): (COL, (13, 14)), ("west", "peatmoor"): (PEAT, (8, 12)),
-          ("west", "reedhythe"): (REED, (12, 12)), ("coast", "ashby"): (ASH, (15, 16))}
+          ("west", "reedhythe"): (REED, (12, 12)), ("coast", "ashby"): (ASH, (15, 16)),
+          ("north", "grazehold"): (GRAZE, (12, 12)), ("north", "kestrel-fort"): (KEST, (14, 16)), ("north", "snowgate"): (SNOW, (13, 12)),
+          ("north", "holm"): (HOLM, (15, 16)), ("north", "frostmere"): (FROST, (12, 12))}
 LANDS = {l: {p["id"]: (p["x"], p["y"]) for p in json.load(open(os.path.join(ROOT, f"data/maps/land-{l}.json")))["places"]} for l in {k[0] for k in PLACES}}
 LAND = LANDS["west"]
-steps = []
+HOLM_SHUT = {"stage": ["ah15", "ah16", "ah17", "ah18"]}
+steps = [step("land-north", tuple(LANDS["north"]["holm"]), [n("Holm's gates are shut to valley folk. A guard on the wall shouts down that the King gives no leave to strangers from the south this winter.")], HOLM_SHUT)]
 for (land, pid), (mid, (sx, sy)) in PLACES.items():
     lx, ly = LANDS[land][pid]
     steps.append(step(f"land-{land}", (lx, ly), [goto(mid, sx, sy, "up")], {"stagePrefix": "a"}))
@@ -738,6 +1101,18 @@ steps += [
     step(ASH, (26, 11), [run("harbourOffice")]),
     *[step(ASH, (x, 1), [run("moleEnd")]) for x in (15, 16)],
     step(BRIG, (0, 3), [goto(ASH, 15, 2, "down")]),
+    # the North
+    *[step(KEST, (x, 5), [run("gerdHall")]) for x in (14, 15)],
+    step(KEST, (25, 11), [run("arvoStable")], {"stage": "ah17"}),
+    step(KEST, (25, 11), [n("The stables. Ironbacks breathing in the dark, and harness on every peg.")]),
+    step(SNOW, (6, 5), [n("The hostel. A fire, a pot, and a row of wet boots by the door.")]),
+    *[step(SNOW, (x, 1), [goto("land-north", LANDS["north"]["snowgate"][0], LANDS["north"]["snowgate"][1] - 1, "up")]) for x in range(12, 16)],
+    *[step(HOLM, (x, 5), [run("kingsDinner")]) for x in (15, 16)],
+    step(HOLM, (27, 10), [n("Aurel Hask's house. The shutters are closed, and the knocker is a rope knot cast in iron.")]),
+    step(HOLM, (4, 10), [n("The King's court. Locked, except on fourth days.")]),
+    step(HOLM, (3, 14), [n("Holm gaol. A guard leans on the door and watches you until you go.")]),
+    step(GAOL, (1, 10), [goto(HOLM, 3, 15, "down")]),
+    *[step(FROST, (x, 9), [n("A fisher's hut, shut against the wind.")]) for x in (4, 11, 19)],
 ]
 zones = [
     {"map": FAIR, "area": [11, 9, 16, 11], "when": {"stage": "ah1"}, "do": [run("fairArrive")]},
@@ -745,6 +1120,9 @@ zones = [
     {"map": PEAT, "area": [16, 5, 18, 7], "when": {"flag": "fensAsked", "not": "ward.fens"}, "do": [run("reedHide")]},
     {"map": ARC, "area": [1, 7, 28, 8], "when": {"stage": "ah5", "not": "archiveFought"}, "do": [run("archiveGuards")]},
     {"map": ASH, "area": [12, 13, 19, 16], "when": {"stage": "ah9"}, "do": [run("ashbyArrive")]},
+    {"map": "town-drovers-halt", "area": [10, 9, 14, 11], "when": {"stage": "ah14", "not": "abelDone"}, "do": [run("abel")]},
+    {"map": SNOW, "area": [11, 5, 16, 9], "when": {"stage": "ah18", "not": "snowDone"}, "do": [run("snowgate")]},
+    {"map": HOLM, "area": [12, 13, 19, 16], "when": {"stage": "ah19"}, "do": [run("holmGate")]},
 ]
 looks = [
     {"map": FAIR, "tile": "hay", "do": [n("Straw targets, stuck so full of knife holes that they're held together with string.")]},
@@ -812,6 +1190,23 @@ BATTLES = {
                   unit("mb3", "Warden marine", "warden", "front", [162, 132], cast="warden", level=18, skills=["wstrike"]),
                   unit("mba", "Marine crossbow", "archer", "back", [230, 100], cast="archer", level=18, skills=["bow"]),
                   unit("mbb", "The bosun", "cartwarden", "back", [222, 128], cast="warden", level=19, skills=["wstrike"])]},
+    "road-ringhunters": {
+        "id": "road-ringhunters", "name": "The King's ring-hunters", "backdrop": "snow", "party": True,
+        "intro": ["Four ring-hunters in Lorne blue, and their hounds, coming over the ice in a line.", "The old man is on his step behind you, with his collar open."],
+        "won": "The ring-hunters ride back to Holm", "lost": "Driven back across the ice",
+        "units": [unit("rh1", "Ring-hunter", "warden2", "front", [170, 94], cast="warden", level=19, skills=["wstrike"]),
+                  unit("rh2", "Ring-hunter", "warden2", "front", [196, 116], cast="warden", level=19, skills=["wstrike"]),
+                  unit("rk1", "Ring hound", "strider:#d8dde2", "front", [160, 132], hp=56, kith=True, level=19, skills=["pounce", "maul"], species="snow-strider"),
+                  unit("rk2", "Ring hound", "strider:#c8ced4", "back", [222, 128], hp=56, kith=True, level=19, skills=["pounce"], species="snow-strider"),
+                  unit("rh3", "Hunt captain", "archer", "back", [230, 100], cast="archer", level=20, skills=["bow"])]},
+    "road-gaol": {
+        "id": "road-gaol", "name": "Holm gaol, at night", "backdrop": "cistern", "party": True,
+        "intro": ["The guardroom at the top of the stair. Gaolers with clubs, and two strangers in good boots who were paid more than the gaolers.", "Behind you, Brannoc's cell."],
+        "won": "The stair is clear", "lost": "Thrown back down the stair",
+        "units": [unit("hg1", "Gaoler", "warden2", "front", [170, 94], cast="warden", level=20, skills=["wstrike"]),
+                  unit("hg2", "Gaoler", "warden2", "front", [196, 116], cast="warden", level=20, skills=["wstrike"]),
+                  unit("hg3", "Paid knife", "smuggler", "front", [162, 132], cast="warden", level=21, skills=["wstrike"]),
+                  unit("hg4", "Paid knife", "smuggler", "back", [230, 100], cast="archer", level=21, skills=["bow"])]},
 }
 
 def duel(name, backdrop, intro, foe, words, won, lost, must=True):
@@ -823,6 +1218,14 @@ def word(id, label, attr, vs, amount, line, land, miss):
     return {"id": id, "label": label, "attr": attr, "vs": vs, "effect": "resolve", "amount": amount, "line": line, "land": land, "miss": miss}
 
 DUELS = {
+    "road-gerd": duel("Gerd", "snow",
+        ["The ring at Kestrel Fort, trampled snow inside a fence of lances, with the whole clan on the other side of it. Gerd, with a cracked rib and a war axe, and a bandage bleeding through."],
+        foe("Gerd", "gerd", "gerd", 20, (4, 2, 2), 0.2,
+            ["The axe haft takes you across the ribs. The clan roars.", "He's slow. He's still faster than you'd like."], ["He grunts and holds his side.", "\"Again.\""],
+            "Gerd lowers his axe and goes down on one knee.", "Gerd falls in the snow and doesn't get up."),
+        [word("rib", "Work his left side", "wits", "grit", 30, "You stop going for his head and go for the side he's guarding.", "He bends round the rib, and his guard drops.", "He knows his own weakness better than you do."),
+         word("son", R("You don't have to do this for him."), "heart", "presence", 25, R("You don't have to bleed for him. Not like this."), "For a breath his axe hangs. He looks at the stable door.", "\"I'm his father. That's what fathers do.\"")],
+        "Gerd yields", "Gerd wins the ring"),
     "road-kit": duel("Kit", "meadow",
         ["The target range at Hollin's fair, roped off, with half the fair leaning on the rope. Kit, with a bandolier of knives and a grin. Blunted blades, first to yield."],
         foe("Kit", "kit", "kit", 16, (2, 2, 4), 0.35,
@@ -834,7 +1237,7 @@ DUELS = {
 }
 
 # ================================================================== voices and music
-voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell"]
+voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell", "arvoStable", "gerdBeaten", "kingsDinner", "trial4"]
 moods = {
     "scenes": {"roadStart": "camp", "fairArrive": "hope", "kit": "hope", "kitBeaten": "hope", "speaker": "tension", "ansel": "camp",
                "reedHide": "night", "gilCaught": "tender", "orla": "dread", "cellar": "night", "cellarWon": "hope", "bryn": "camp", "barge": "tension",

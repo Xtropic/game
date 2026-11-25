@@ -1,0 +1,41 @@
+{
+ "id": "town-grazehold",
+ "name": "Grazehold",
+ "music": "camp",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "H": "hay",
+  "x": "crate",
+  "f": "fence",
+  "e": "exit",
+  "F": "campfire",
+  "t": "tent",
+  "P": "pines"
+ },
+ "rows": [
+  "PPPPPPPPPPPPPPPPPPPPPPPPPP",
+  "PPPPPPPPPPPPPPPPPPPPPPPPPP",
+  "P,,,,,,,,,,,,,,,,,,,,,,,,P",
+  ",,,ttt,,ttt,,,,ttt,,ttt,,,",
+  ",,,ttt,,ttt,,,,ttt,,ttt,,,",
+  ",,,,,,,,,,,,,,,,,,,,,,,,,,",
+  ",,,,,,,,,,,,,,,,,,,,,,,,,,",
+  ",,,,,,,,,,,,F,,,,,,,,,,,,,",
+  ",,,,,,,,,,,,,,,,,ffffffff,",
+  ",,,,,,,,,,,,::,,,f,,,,HHf,",
+  ",,xx,,,,,,,,::,,,,,,,,,,f,",
+  ",,xx,,,,,,,,::,,,ffffffff,",
+  ",,,,,,,,,,,,::,,,,,,,,,,,,",
+  ",,,,,,,,,,,,ee,,,,,,,,,,,,"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  }
+ ]
+}

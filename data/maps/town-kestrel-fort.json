@@ -1,0 +1,47 @@
+{
+ "id": "town-kestrel-fort",
+ "name": "Kestrel Fort",
+ "music": "camp",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  ",": "grass",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "x": "crate",
+  "f": "fence",
+  "e": "exit",
+  "F": "campfire"
+ },
+ "rows": [
+  "##############################",
+  "#......rrrrrrrrrrrrrrrr......#",
+  "#......rrrrrrrrrrrrrrrr......#",
+  "#......rrrrrrrrrrrrrrrr......#",
+  "#......rrrrrrrrrrrrrrrr......#",
+  "#......hhhhhhhddhhhhhhh......#",
+  "#............................#",
+  "#............................#",
+  "#.........ffffffffff...rrrrrr#",
+  "#...F.....f,,,,,,,,f...rrrrrr#",
+  "#.........f,,,,,,,,f...rrrrrr#",
+  "#.........f,,,,,,,,f...hhdhhh#",
+  "#.........f,,,,,,,,f.........#",
+  "#.xxx.....ffff,,ffff.........#",
+  "#.xxx...................HHH..#",
+  "#............................#",
+  "#............................#",
+  "##############ee##############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 16
+  }
+ ]
+}
