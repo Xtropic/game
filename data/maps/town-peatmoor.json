@@ -1,0 +1,42 @@
+{
+ "id": "town-peatmoor",
+ "name": "Peatmoor",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "f": "fence",
+  "e": "exit",
+  "m": "marsh",
+  "q": "reeds"
+ },
+ "rows": [
+  "mmmmmmmmmmmmmmmmmmmmmmmmmm",
+  "mmmmmmmmmmmmmmmmmqqqqqqqqm",
+  "mm,,,,,,,,,,,,,,mqqqqqqqqm",
+  "mm,rrrrr,,rrrrr,mqqqqqqqqm",
+  "mm,rrrrr,,rrrrr,mqqqqqqqqm",
+  "mm,rrrrr,,rrrrr,mq,,,,qqqm",
+  "mm,hhdhh,,hhdhh,,q,,,,qqqm",
+  "mm,,,,,,,,,,,,,,mq,,,,qqqm",
+  "mm,,fffff,ffff,,mqqqqqqqqm",
+  "mm,,f,H,,,,,,f,,mqqqqqqqqm",
+  "mm,,ffffffffff,,mqqqqqqqqm",
+  "mm,,,,,,::,,,,,,mqqqqqqqqm",
+  "mmmmmmmm::mmmmmmmqqqqqqqqm",
+  "mmmmmmmmeemmmmmmmmmmmmmmmm"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 8,
+   "y": 12
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+{
+ "id": "road-fen-thief",
+ "name": "The reed hide",
+ "backdrop": "meadow",
+ "party": true,
+ "intro": [
+  "Six stolen reedcats and a draught buck, all answering one boy's whistle.",
+  "Don't hurt them more than you must. They're the farmers' kith."
+ ],
+ "won": "The kith scatter into the reeds",
+ "lost": "Driven back into the water",
+ "units": [
+  {
+   "id": "rf1",
+   "name": "Stolen reedcat",
+   "look": "reedcat:#7a6a4a",
+   "side": "foe",
+   "row": "front",
+   "hp": 50,
+   "kith": true,
+   "level": 16,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "species": "fog-reedcat",
+   "at": [
+    166,
+    96
+   ]
+  },
+  {
+   "id": "rf2",
+   "name": "Stolen reedcat",
+   "look": "reedcat:#6a5a3a",
+   "side": "foe",
+   "row": "front",
+   "hp": 50,
+   "kith": true,
+   "level": 16,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "species": "fog-reedcat",
+   "at": [
+    192,
+    120
+   ]
+  },
+  {
+   "id": "rf3",
+   "name": "Draught buck",
+   "look": "loftbuck:#8a7a5a",
+   "side": "foe",
+   "row": "front",
+   "hp": 80,
+   "kith": true,
+   "level": 16,
+   "skills": [
+    "maul"
+   ],
+   "species": "drove-loftbuck",
+   "at": [
+    176,
+    136
+   ]
+  },
+  {
+   "id": "rf4",
+   "name": "Stolen reedcat",
+   "look": "reedcat:#8a7a5a",
+   "side": "foe",
+   "row": "back",
+   "hp": 46,
+   "kith": true,
+   "level": 16,
+   "skills": [
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    226,
+    104
+   ]
+  }
+ ]
+}

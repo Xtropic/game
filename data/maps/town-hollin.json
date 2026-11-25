@@ -1,0 +1,46 @@
+{
+ "id": "town-hollin",
+ "name": "Hollin, the square",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "x": "crate",
+  "e": "exit",
+  "b": "table"
+ },
+ "rows": [
+  "##############################",
+  "#........rrrrrrrrrrrr.rrrrrrr#",
+  "#........rrrrrrrrrrrr.rrrrrrr#",
+  "#........rrrrrrrrrrrr.rrrrrrr#",
+  "#........rrrrrrrrrrrr.rrrrrrr#",
+  "#........hhhhhddhhhhh.hhhdhhh#",
+  "#............................#",
+  "#rrrrrrr.....................#",
+  "#rrrrrrr.....................#",
+  "#rrrrrrr.....bbbb............e",
+  "#hhhhdhh.....bbbb............e",
+  "#............................#",
+  "#..................SS........#",
+  "e.........w..................#",
+  "e...xx................SS.....#",
+  "#............................#",
+  "#............................#",
+  "##############ee##############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 16
+  }
+ ]
+}

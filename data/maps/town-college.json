@@ -1,0 +1,45 @@
+{
+ "id": "town-college",
+ "name": "The College of Physicians",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "e": "exit",
+  "T": "tree",
+  "p": "plank",
+  "b": "table",
+  "I": "iwall"
+ },
+ "rows": [
+  "############################",
+  "#.....IIIIIIIIIIIIIIII.....#",
+  "#.....IppbbbbbbbbbbppI.....#",
+  "#.....IppppppppppppppI.....#",
+  "#.....IppppppppppppppI.....#",
+  "#.....IppppppppppppppI.....#",
+  "#.....IIIIIIIddIIIIIII.....#",
+  "#..........................#",
+  "#rrrrrr..............rrrrrr#",
+  "#rrrrrr..T........T..rrrrrr#",
+  "#rrrrrr......w.......rrrrrr#",
+  "#hhhdhh..............hhdhhh#",
+  "#..........................#",
+  "#........T........T........#",
+  "#..........................#",
+  "#############ee#############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 13,
+   "y": 14
+  }
+ ]
+}

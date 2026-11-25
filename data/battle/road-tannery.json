@@ -1,0 +1,78 @@
+{
+ "id": "road-tannery",
+ "name": "The Guild man's cudgels",
+ "backdrop": "fire",
+ "party": true,
+ "intro": [
+  "Four hired cudgels on the cellar steps, and the Guild man behind them.",
+  "The apprentices are on the cots behind you."
+ ],
+ "won": "The cellar is yours",
+ "lost": "Thrown back against the cots",
+ "units": [
+  {
+   "id": "tc1",
+   "name": "Hired cudgel",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 16,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "tc2",
+   "name": "Hired cudgel",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 16,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "tc3",
+   "name": "Hired cudgel",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 15,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    162,
+    132
+   ]
+  },
+  {
+   "id": "tc4",
+   "name": "The Guild man",
+   "look": "factor",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 16,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

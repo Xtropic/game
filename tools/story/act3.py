@@ -766,7 +766,7 @@ S["lastNight"] = [
         n("Late, when the children are asleep, Rhea goes up onto the terrace wall and sings the foal song out over the cloud, toward Vantry."),
         n("Nothing comes. Somewhere down there, a grey loftbuck lifts its head."),
     ]),
-    run("act4Start"),
+    run("roadStart"),
 ]
 S["fennickAfter"] = [
     iff({"flag": "fennickStayed"}, [

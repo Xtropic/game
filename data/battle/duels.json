@@ -493,6 +493,64 @@
    ],
    "won": "Hallet is down",
    "lost": "Thrown back from the gate"
+  },
+  "road-kit": {
+   "name": "Kit",
+   "backdrop": "meadow",
+   "mustWin": false,
+   "intro": [
+    "The target range at Hollin's fair, roped off, with half the fair leaning on the rope. Kit, with a bandolier of knives and a grin. Blunted blades, first to yield."
+   ],
+   "foe": {
+    "name": "Kit",
+    "look": "kit",
+    "cast": "kit",
+    "level": 16,
+    "moves": {
+     "high": 2,
+     "low": 2,
+     "thrust": 4
+    },
+    "feint": 0.35,
+    "lines": {
+     "hit": [
+      "A blunted knife takes you on the shoulder. The crowd cheers.",
+      "She's behind you before you've turned."
+     ],
+     "hurt": [
+      "She skips back, laughing.",
+      "\"Ow. Fair.\""
+     ],
+     "yield": "Kit tosses her last knife into the straw, point first, and bows to you.",
+     "down": "You catch her wrist and she sits down in the grass."
+    }
+   },
+   "words": [
+    {
+     "id": "crowd",
+     "label": "\"They're watching you lose.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"Listen to them. They came to watch you win.\"",
+     "land": "Her grin slips. Just for a throw.",
+     "miss": "\"They came to watch me. Win or lose. That's the trick.\""
+    },
+    {
+     "id": "tell",
+     "label": "Watch her feet",
+     "attr": "wits",
+     "vs": "finesse",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "You stop watching the knives and watch her feet.",
+     "land": "Her next throw comes exactly where her feet said it would.",
+     "miss": "She has no tell. Or she has a dozen."
+    }
+   ],
+   "won": "Kit yields",
+   "lost": "Kit wins the round"
   }
  }
 }

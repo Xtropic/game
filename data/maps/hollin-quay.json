@@ -1,0 +1,40 @@
+{
+ "id": "hollin-quay",
+ "name": "Hollin, the quay",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "F": "campfire",
+  "p": "plank"
+ },
+ "rows": [
+  "~~~~~~~~~~~~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~~~~~~~~xxxxxxxx~",
+  "~~~~pp~~~~~~pp~~~pppppppp~",
+  "~~~~pp~~~~~~pp~~~pppppppp~",
+  "~~~~pp~~~~~~pp~~~~~~p~~~~~",
+  "pppppppppppppppppppppppppp",
+  "..........................",
+  ".rrrrrr..rrrrr............",
+  ".rrrrrr..rrrrr..xx.......e",
+  ".hhhdhh..hhdhh......F....e",
+  "..........................",
+  "##########################"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 24,
+   "y": 8
+  }
+ ]
+}

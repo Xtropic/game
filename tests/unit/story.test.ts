@@ -384,7 +384,7 @@ describe("Act III: the Houses", () => {
     r.run([{ run: "thornBed3" }]); expect(f.stage).toBe("ad18");
     r.run([{ run: "summerTrial" }]); expect(f.collegeProof).toBe(true); expect(f.stage).toBe("ad19");
     pick(1); r.run([{ run: "captain" }]); expect(f.rank).toBe("Captain"); expect(f.stage).toBe("ad20"); expect(log).toContain("army lockside-hold"); expect(f.lockHeld).toBe(true);
-    r.run([{ run: "thornBed3" }]); expect(f.stage).toBe("af1"); expect(f.act4).toBe(true); // straight on into the autumn
+    r.run([{ run: "thornBed3" }]); expect(f.stage).toBe("ah1"); expect(f.road).toBe(true); // straight on to the council that sends her out on the Long Road
     expect(r.busy).toBe(false);
   });
 

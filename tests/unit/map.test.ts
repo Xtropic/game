@@ -6,7 +6,7 @@ const tiny: MapFile = { id: "t", name: "t", legend: { ".": "grass", "#": "wall" 
 
 describe("map", () => {
   it("every shipped map is valid", () => {
-    expect(Object.keys(MAPS).filter((k) => !k.startsWith("land-") && !k.startsWith("town-") && !k.includes("--")).sort()).toEqual(["backroom", "bend", "broodhouse", "camp", "caves", "cloudpath", "culvert", "ferrow", "hatchery", "highpass", "home", "kellsbridge", "larkfold", "lockhatch", "millbridge", "mire", "roof", "rooms", "sallow", "surgery", "thornwick", "trail", "umes", "undercroft", "underdrain", "yard"]);
+    expect(Object.keys(MAPS).filter((k) => !k.startsWith("land-") && !k.startsWith("town-") && !k.includes("--")).sort()).toEqual(["backroom", "bend", "broodhouse", "camp", "caves", "cloudpath", "college-archive", "culvert", "ferrow", "hatchery", "highpass", "hollin-fair", "hollin-quay", "hollin-tannery", "home", "kellsbridge", "larkfold", "lockhatch", "millbridge", "mire", "roof", "rooms", "sallow", "surgery", "thornwick", "trail", "umes", "undercroft", "underdrain", "yard"]);
     for (const m of Object.values(MAPS)) expect(validateMap(m), m.id).toEqual([]);
   });
   it("opens a solid kind when the story says so (the lower gate)", () => {

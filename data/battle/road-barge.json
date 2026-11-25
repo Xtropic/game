@@ -1,0 +1,81 @@
+{
+ "id": "road-barge",
+ "name": "The Guild barge",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "The bargemaster's crew, with boathooks, and a hatchery reedcat off its chain.",
+  "Behind you, the open crates."
+ ],
+ "won": "The barge is taken",
+ "lost": "Knocked down the hold ladder",
+ "units": [
+  {
+   "id": "bg1",
+   "name": "Barge hand",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 17,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "bg2",
+   "name": "Barge hand",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 17,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "bgc",
+   "name": "Hatchery reedcat",
+   "look": "reedcat:#6a5a4a",
+   "side": "foe",
+   "row": "front",
+   "hp": 56,
+   "kith": true,
+   "level": 17,
+   "skills": [
+    "maul",
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    162,
+    130
+   ]
+  },
+  {
+   "id": "bga",
+   "name": "Bargemaster",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 17,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

@@ -14,6 +14,10 @@ export interface Look {
 
 export const LOOKS: Record<string, Look> = {
   // minor speakers, each with their own look to match their portrait
+  // the Long Road: recruits met in Hollin (matching their portraits)
+  "kit": { hair: "#7a4424", hairLight: "#9a6440", skin: "#d8a47c", skinShade: "#b0825e", coat: "#c0583a", coatShade: "#8e3f29", accent: "#d8b040", legs: "#3a3430", boots: "#5a3a22" },
+  "gil": { hair: "#d8c070", hairLight: "#e8d898", skin: "#ecc8a8", skinShade: "#c0a086", coat: "#c8a030", coatShade: "#957622", accent: "#6a6a4a", legs: "#4a4030", boots: "#3a2a1a" },
+  "perrine": { hair: "#2a1e18", hairLight: "#4a3a30", skin: "#c89a72", skinShade: "#a07b5b", coat: "#8a1e24", coatShade: "#64151a", accent: "#e0d0b0", legs: "#2a2420", boots: "#1a1410", style: "bun" },
   "nurse": { hair: "#c8b890", hairLight: "#d5c9ab", skin: "#e8c4a4", skinShade: "#b99c83", coat: "#4a6a7a", coatShade: "#374f5b", accent: "#e8e0d0", legs: "#3a3430", boots: "#221a14", style: "bun" },
   "child": { hair: "#3a2618", hairLight: "#6b5c51", skin: "#c8a07a", skinShade: "#a08061", coat: "#8a8a7a", coatShade: "#67675b", accent: "#5a5a50", legs: "#3a3430", boots: "#221a14" },
   "rider": { hair: "#2a1e18", hairLight: "#5f5651", skin: "#d8a882", skinShade: "#ac8668", coat: "#7a5232", coatShade: "#5b3d25", accent: "#3a6a3a", legs: "#3a3430", boots: "#221a14", style: "cap", cap: "#5a3a22" },
