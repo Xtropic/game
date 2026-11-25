@@ -194,7 +194,7 @@ export class GuideScene implements Scene {
     this.card.addChild(this.button(last ? (this.queue.length > 1 ? "Next topic  ▶" : "Got it") : "Next  ▶", W - 28, by - 8, true, () => this.next(), fs - 1));
     if (this.page > 0) this.card.addChild(this.button("◀  Back", W - 28 - (last ? 140 : 120) - 20, by - 8, false, () => this.back(), fs - 1));
     const foot = new Text({ text: `${keyFor("confirm")}: next   ·   ${keyFor("cancel")}: skip   ·   Kept in the Guide (${keyFor("guide")})`, style: serif(fs - 4, "#a89a80", false, W - 300) });
-    foot.x = 28; foot.y = by + 2; this.card.addChild(foot);
+    foot.x = 28; foot.y = by + 2; if (!small) this.card.addChild(foot); else foot.destroy();
     this.view.addChild(this.card);
   }
 
@@ -217,7 +217,7 @@ export class GuideScene implements Scene {
     for (const r of this.rows()) {
       if ("group" in r) { const g = new Text({ text: r.group.toUpperCase(), style: { ...serif(fs - 4, "#c8a860", true), letterSpacing: 2 } }); g.x = x0 + 18; g.y = y + 4; this.view.addChild(g); y += g.height + 8; continue; }
       const idx = i++, on = idx === this.sel, fresh = !this.f[`guide.read.${r.t.id}`];
-      const label = new Text({ text: r.t.title, style: serif(fs, on ? "#fff4dc" : "#d8ccb4", on, listW - 40) });
+      const label = new Text({ text: r.t.title, style: serif(fs, on ? "#fff4dc" : "#d8ccb4", on, listW - (fresh && !on ? 62 : 24)) });
       const rowH = label.height + 8;
       if (y + rowH > bottom) break;
       const bg = new Graphics().roundRect(x0 + 12, y, listW, rowH, 6).fill({ color: on ? SEL : 0x000000, alpha: on ? 1 : 0.001 });
