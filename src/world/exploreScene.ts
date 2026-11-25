@@ -40,6 +40,8 @@ import { DialogueBox } from "../ui/dialogueBox";
 import { Atmosphere } from "./atmosphere";
 import { World3D, type Around, type Fig } from "../three/world3d";
 import { BasePanel } from "../ui/basePanel";
+import { TrainingScene } from "../ui/trainingScene";
+import { train } from "../kith/training";
 import { ShopPanel } from "../ui/shopPanel";
 import { TourneyPanel } from "../ui/tourneyPanel";
 import { champions, roundBattle, type Tourney } from "../kith/tourney";
@@ -475,7 +477,8 @@ export class ExploreScene implements Scene, StoryHost {
     this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
       armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
       addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.baseWork(),
-      company: () => this.joinedIds(), inParty: () => partyOf(this.flags), setTravelling: (id) => this.setTravelling(id), partyRoom: () => Math.min(MAX_TRAVEL, rankOf(this.flags).party) }, this.screen.w, this.screen.h);
+      company: () => this.joinedIds(), inParty: () => partyOf(this.flags), setTravelling: (id) => this.setTravelling(id), partyRoom: () => Math.min(MAX_TRAVEL, rankOf(this.flags).party),
+      attend: (k, d, done) => this.game.scenes.push(new TrainingScene(d, k, (score) => { const o = train(this.flags, k, d, score, true, this.rng); this.save("auto"); setTimeout(() => done(o), 0); return o; }, this.rng)) }, this.screen.w, this.screen.h);
   }
 
   /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */

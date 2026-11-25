@@ -55,6 +55,10 @@ export interface Kith {
   sired?: boolean;
   /** The legend whose blood it carries: a legend's heir, or a foal of an heir. */
   blood?: string;
+  /** 0..100: drills and hard work tire it, rest brings it back (training.ts). Missing: fresh. */
+  energy?: number;
+  /** 0..100: how it feels in itself; low spirits shrink what drills teach (training.ts). Missing: content. */
+  spirits?: number;
 }
 
 // ---- Coats: colour and pattern genes ---------------------------------------------------------------------

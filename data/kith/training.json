@@ -1,0 +1,34 @@
+{
+ "note": "Kith training at Thornwick (src/kith/training.ts). One drill per attribute. A drill set for a kith runs every day it has the energy; the player can attend it in person and play it (src/ui/trainingScene.ts), which is the only way to reach Great or Perfect. 'pens' is the pens level it needs; 'energy' what a session costs; 'trait' the technique a first Perfect teaches; 'mood' the music track; 'backdrop' the stage.",
+ "drills": [
+  { "id": "sledge", "name": "Heave the stone sledge", "game": "heave", "attr": "might", "side": "grit", "pens": 0, "energy": 30, "trait": "iron-hoof", "mood": "drill", "backdrop": "yard",
+    "text": "A sledge of quarry stone on a rope across the yard. Brannoc's old way: heave on the swing, never against it.",
+    "how": "A needle swings across the gauge. Press when it's in the gold to heave. Gold is a strong pull, the edges a weak one. Miss and the kith loses its footing." },
+  { "id": "carry", "name": "The long carry", "game": "carry", "attr": "grit", "side": "nerve", "pens": 0, "energy": 35, "trait": "long-wind", "mood": "road", "backdrop": "road",
+    "text": "Panniers of wet sand down the Thornwick road and back, at the drover's pace and no faster.",
+    "how": "Hold to push the pace up, let go to ease off. Keep the marker inside the drover's band as it moves. Pushing too long tires it." },
+  { "id": "ledges", "name": "The ledge run", "game": "ledges", "attr": "finesse", "side": "wits", "pens": 1, "energy": 30, "trait": "light-step", "mood": "drill", "backdrop": "scree",
+    "text": "Down the scree below the bathhouse, three tracks wide, with loose rock coming down from above.",
+    "how": "Up and Down change track. Press to leap a gap. Fallen rock and gaps come at you faster as it goes." },
+  { "id": "drums", "name": "Drums and smoke", "game": "drums", "attr": "nerve", "side": "heart", "pens": 1, "energy": 25, "trait": "brave", "mood": "tension", "backdrop": "night-trail",
+    "text": "A drum beats, smoke pots go off, a sheet snaps on a line. The kith has to hold where it stands.",
+    "how": "Each fright shoves its nerve one way. Left and Right steady it back to the middle. Keep the needle in the calm band." },
+  { "id": "cups", "name": "Scent cups", "game": "cups", "attr": "wits", "side": "finesse", "pens": 0, "energy": 15, "trait": "watchful", "mood": "tender", "backdrop": "forest",
+    "text": "A dried cloudberry under one of the cups. The cups move. The kith has to follow it, and so do you.",
+    "how": "Watch the cup with the berry. When they stop, Left and Right choose, press to lift. Each round they move faster." },
+  { "id": "call", "name": "Call and answer", "game": "call", "attr": "heart", "side": "presence", "pens": 1, "energy": 15, "trait": "song-touched", "mood": "hope", "backdrop": "meadow",
+    "text": "Rhea hums a phrase of the foal song across the field. The kith learns to come to it, and to answer.",
+    "how": "Listen and watch the notes, then hum them back in order with the arrow keys. Each phrase is one note longer." },
+  { "id": "show", "name": "The show ring", "game": "show", "attr": "presence", "side": "nerve", "pens": 2, "energy": 20, "trait": "proud", "mood": "town", "backdrop": "yard",
+    "text": "Round the ring before the whole post: stand, turn, head up, step out, all on the drum.",
+    "how": "Cues slide to the line on the beat. Press the matching arrow as each one crosses it." }
+ ],
+ "grades": [
+  { "id": "poor", "name": "Poor", "min": 0, "points": 0, "spirits": -6 },
+  { "id": "fair", "name": "Fair", "min": 0.3, "points": 0, "spirits": -2 },
+  { "id": "good", "name": "Good", "min": 0.55, "points": 1, "spirits": 3 },
+  { "id": "great", "name": "Great", "min": 0.8, "points": 2, "spirits": 8 },
+  { "id": "perfect", "name": "Perfect", "min": 0.95, "points": 2, "spirits": 12 }
+ ],
+ "care": { "restEnergy": 45, "workEnergy": 20, "spiritsRest": 55, "drift": 0.15, "timeBond": 3, "timeSpirits": 14, "sickRisk": 0.25, "sickBelow": 50, "keeperSees": 1.05 }
+}

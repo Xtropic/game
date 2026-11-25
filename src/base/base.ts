@@ -16,6 +16,7 @@ import { ITEMS } from "../gear/items";
 import { jobSkill, type Attrs, type Job } from "../cast/attributes";
 import { raiseDay } from "../kith/upbringing";
 import { addKithXp, type Kith } from "../kith/kith";
+import { trainingDay } from "../kith/training";
 import type { Flags } from "../story/story";
 
 export interface Level { name: string; coin: number; supplies: number; work: number; gives: string; }
@@ -78,8 +79,11 @@ const levelBoost = (lv: number): number => 1 + 0.5 * lv;
 export function baseDay(inp: DayInput): DayOutput {
   const f = inp.flags, lines: string[] = [], drill: Record<string, number> = {};
   let coin = inp.coin;
-  f["base.day"] = day(f) + 1;
   const by = (job: Job) => inp.workers.filter((w) => jobOf(f, w.id) === job);
+  // the day that's ending: kith with a standing drill train under the keeper, then the night restores them
+  const keeper0 = by("kith").sort((a, b2) => jobSkill(b2.attrs, "kith") - jobSkill(a.attrs, "kith"))[0];
+  lines.push(...trainingDay(f, inp.kith, (id) => penPlan(f, id, levelOf(f, "pens")).work, levelOf(f, "pens"), keeper0 ? jobSkill(keeper0.attrs, "kith") : 0, inp.rng));
+  f["base.day"] = day(f) + 1;
   const skill = (job: Job) => by(job).reduce((s, w) => s + jobSkill(w.attrs, job), 0);
   // cooks lift every other job: up to +40% at the long hall
   const fed = 1 + Math.min(0.4, skill("cook") * 0.08 * (1 + levelOf(f, "kitchen")));

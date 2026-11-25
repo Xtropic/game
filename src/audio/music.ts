@@ -245,6 +245,15 @@ const TRACKS: Record<string, Track> = {
     if (i === 0 || i === 4) v("bass", c[0] - 12, t, e * 2, 0.22, o);
     if (i === 2 || i === 6) v("tick", 0, t, e, 0.04, o);
     if (n % 128 >= 64) { const nt = FOAL_AT[b * 8 + i]; if (nt) v("bell", nt[0] + 12, t, e, 0.05, o); } } },
+  /** Training in the yard: driving, purposeful, a little cocky. Steady drums under a bright pluck riff; the foal
+   *  song comes in on the bell in the second half, as the kith starts to get it. */
+  drill: { bpm: 118, vol: 0.5, play(n, t, o, e) { const b = bar(n, 8), i = n % 8, c = [[50, 57, 62, 66], [55, 59, 62, 67], [52, 57, 60, 64], [57, 61, 64, 69]][b % 4];
+    if (i === 0 || i === 3 || i === 4) v("drum", 0, t, e, i === 0 ? 0.32 : 0.2, o);
+    if (i === 2 || i === 6) v("metal", 0, t, e * 0.5, 0.05, o);
+    v("tick", 0, t, e, i % 2 ? 0.035 : 0.02, o);
+    v("bass", c[0] - 12 + ([0, 0, 7, 0, 12, 0, 7, 5][i]), t, e * 0.9, 0.2, o);
+    if (i % 2 === 0) v("pluck", c[[1, 2, 3, 2][(i / 2) % 4]] + 12, t, e * 1.6, 0.1, o);
+    if (n % 128 >= 64) { const nt = FOAL_AT[b * 8 + i]; if (nt) v("bell", nt[0] + 12, t, nt[1] * e, 0.05, o); } } },
   // ---- moods: what a scene should make the player feel, whatever the place ----
   // tender: close, warm, quiet. The foal song an octave up on soft bells over a held major chord.
   tender: { bpm: 58, vol: 0.7, play(n, t, o, e) { const b = bar(n, 8), i = n % 8, c = [[50, 57, 62, 66], [47, 54, 59, 62], [43, 50, 55, 59], [45, 52, 57, 61]][b % 4];
@@ -309,6 +318,14 @@ export const sfx = {
     [74, 78, 81, 86].forEach((m, i) => audio.voice("bell", m, tt + i * 0.06, 0.6, 0.06, out));
   },
   bump(): void { const a = audio.ctx; if (a) audio.voice("step", 300, a.currentTime, 0.05, 0.08, audio.sfxBus); },
+  /** A miss in a training drill: a dull low thud and a falling pluck. */
+  miss(): void { const a = audio.ctx; if (!a) return; const t = a.currentTime; audio.voice("drum", 0, t, 0.2, 0.25, audio.sfxBus); audio.voice("pluck", 57, t + 0.03, 0.2, 0.06, audio.sfxBus); audio.voice("pluck", 52, t + 0.12, 0.3, 0.05, audio.sfxBus); },
+  /** A clean hit in a training drill: a bright bell over a drum, pitched up the scale as a streak grows. */
+  good(streak = 0): void { const a = audio.ctx; if (!a) return; const t = a.currentTime, m = [74, 76, 78, 81, 83, 86][Math.min(5, streak)]; audio.voice("drum", 0, t, 0.15, 0.3, audio.sfxBus); audio.voice("bell", m, t, 0.3, 0.08, audio.sfxBus); },
+  /** A drum beat for rhythm drills. */
+  beat(accent = false): void { const a = audio.ctx; if (a) audio.voice("drum", 0, a.currentTime, 0.12, accent ? 0.35 : 0.18, audio.sfxBus); },
+  /** A drill counting in: three ticks and a bell. */
+  count(last = false): void { const a = audio.ctx; if (a) audio.voice(last ? "bell" : "tick", last ? 81 : 0, a.currentTime, 0.25, last ? 0.09 : 0.2, audio.sfxBus); },
 };
 
 export const TRACK_NAMES = (): string[] => Object.keys(TRACKS);

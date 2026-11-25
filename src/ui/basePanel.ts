@@ -4,6 +4,8 @@
 //   People    everyone staying at Thornwick and their job; Enter cycles the job (their best is marked)
 //   Forge     each keepsake weapon and what reforging it costs; Enter reforges (Masterwork asks which way)
 //   Pens      kith staying at Thornwick: Enter steps through feed, pen and work for each
+//   Train     kith care and drills: spend time with a kith, attend a drill in person (a mini game, ui/trainingScene),
+//             or set it as the kith's daily drill for the keeper to run
 //   Make      what the workshop and the infirmary make each day
 //   Roads     kith expeditions: send a kith staying here off after one goal (a rare thing, or a technique)
 // Keys as in the menu: Left/Right change page, Up/Down move, Enter picks, Esc steps back or closes. All tappable.
@@ -18,6 +20,7 @@ import { SOURCES, readKith } from "../kith/upbringing";
 import { sfx } from "../audio/music";
 import { EXPEDITIONS, away, awayIds, cannotSend, odds, send } from "../kith/expedition";
 import { reachable } from "../command/diplomacy";
+import { DRILLS, cannotTrain, drillOf, drilledToday, energyOf, energyWord, hadTimeToday, keeperWarning, setDrill, spendTime, spiritsOf, spiritsWord, type Drill, type Outcome } from "../kith/training";
 import {
   PENS, ALL_JOBS, BUILDINGS, BUILDING_IDS, JOB_NAMES, RECIPES, bestJob, buildingFor, canRaise, forgeLevel, jobOf, levelOf, penChoices, penPlan,
   penSlots, recipesAt, setPenPlan, startRaise, supplies,
@@ -45,17 +48,20 @@ export interface BaseHost {
   setTravelling(id: string): string;
   /** How many may travel with Rhea at her rank (Ash not counted). */
   partyRoom(): number;
+  /** Rhea attends a kith's drill in person: the drill's mini game plays, then `done` gets what came of it. */
+  attend(k: Kith, d: Drill, done: (o: Outcome) => void): void;
 }
 
-const TABS = ["Party", "Works", "People", "Forge", "Pens", "Make", "Roads"] as const;
+const TABS = ["Party", "Works", "People", "Forge", "Pens", "Train", "Make", "Roads"] as const;
 /** What each page is called on screen, and what it is for, in plain words. */
-const TAB_NAMES: Record<(typeof TABS)[number], string> = { Party: "Party", Works: "Buildings", People: "Jobs", Forge: "Forge", Pens: "Kith pens", Make: "Workshop", Roads: "Expeditions" };
+const TAB_NAMES: Record<(typeof TABS)[number], string> = { Party: "Party", Works: "Buildings", People: "Jobs", Forge: "Forge", Pens: "Kith pens", Train: "Training", Make: "Workshop", Roads: "Expeditions" };
 const TAB_HELP: Record<(typeof TABS)[number], string> = {
   Party: "Choose who travels with Rhea. Everyone you leave behind waits at Thornwick, where you can give them a job.",
   Works: "Build and improve Thornwick's buildings. Each one opens new jobs and new things to make.",
   People: "Give work to the people staying at Thornwick. The work gets done each day that passes.",
   Forge: "Spend coin to reforge keepsake weapons so they hit harder.",
   Pens: "Decide how the kith staying at Thornwick are fed, penned and worked, and breed them.",
+  Train: "Look after the kith staying here and train them. Attend a drill yourself to play it, or set a daily drill for the keeper.",
   Make: "Choose what the workshop and the infirmary make each day from supplies.",
   Roads: "Send a kith staying at Thornwick off alone to find something rare or learn a new move.",
 };
@@ -71,7 +77,7 @@ export class BasePanel {
   private tab = 0;
   private i = 0;
   private part = 0; // pens: which of feed/pen/work; forge: branch choice
-  private sub: "list" | "part" | "branch" | "road" = "list";
+  private sub: "list" | "part" | "branch" | "road" | "train" = "list";
   private mate = 0; // pens: index among the other kith here
   private msg = "";
   private w = 800;
@@ -107,6 +113,11 @@ export class BasePanel {
       else if (this.part === 3 && (left || right || ok)) { const n = Math.max(1, this.others().length); this.mate = (this.mate + (left ? n - 1 : 1)) % n; }
       else if (this.part < 3 && (left || right || ok)) this.cyclePen(right || ok ? 1 : -1);
       else if (back) this.sub = "list";
+    } else if (this.sub === "train") {
+      const n = DRILLS.length + 1;
+      if (up) this.part = (this.part + n - 1) % n; else if (down) this.part = (this.part + 1) % n;
+      else if (ok) this.trainRow(false); else if ((left || right) && this.part > 0) this.trainRow(true);
+      else if (back) this.sub = "list";
     } else if (this.sub === "road") {
       const n = Math.max(1, this.host.kithHere().length);
       if (up || left) this.part = (this.part + n - 1) % n; else if (down || right) this.part = (this.part + 1) % n;
@@ -133,6 +144,7 @@ export class BasePanel {
       case "People": return this.host.staying().length;
       case "Forge": return this.host.armed().length;
       case "Pens": return this.host.kithHere().length;
+      case "Train": return this.host.kithHere().length;
       case "Roads": return EXPEDITIONS.length;
       default: return this.makeRows().length;
     }
@@ -175,6 +187,7 @@ export class BasePanel {
         return;
       }
       case "Pens": if (this.host.kithHere()[this.i]) { this.sub = "part"; this.part = 0; } return;
+      case "Train": if (this.host.kithHere()[this.i]) { this.sub = "train"; this.part = 0; } return;
       case "Roads": {
         if (!this.host.kithHere().length) { this.msg = "No kith are staying at Thornwick to send."; sfx.bump(); return; }
         this.sub = "road"; this.part = 0; return;
@@ -213,6 +226,27 @@ export class BasePanel {
     if (no) { this.msg = no; sfx.bump(); return; }
     send(this.f, k, e); this.sub = "list"; this.part = 0; sfx.pickup();
     this.msg = `${k.name} sets off: ${e.name.toLowerCase()}. Back in ${e.days} day${e.days > 1 ? "s" : ""}.`;
+  }
+
+  /** The best kith keeper's skill at Thornwick (0 with nobody on the job). */
+  private keeperSkill(): number {
+    return Math.max(0, ...this.host.staying().filter((id) => jobOf(this.f, id) === "kith").map((id) => jobSkill(this.attrs(id), "kith")));
+  }
+  /** A row on the Training page: 0 spends time with the kith; a drill row attends it (Enter) or sets it as the daily drill (Left/Right). */
+  private trainRow(daily: boolean): void {
+    const g = this.host.game, id = this.host.kithHere()[this.i], k = id ? g.kith[id] : undefined; if (!k) return;
+    if (this.part === 0) { const r = spendTime(this.f, k); this.msg = r.line; if (r.ok) sfx.heal(); else sfx.bump(); return; }
+    const d = DRILLS[this.part - 1], lv = levelOf(this.f, "pens");
+    if (daily) {
+      if (d.pens > lv) { this.msg = cannotTrain(this.f, k, d, lv) ?? ""; sfx.bump(); return; }
+      const now = drillOf(this.f, k.id)?.id === d.id; setDrill(this.f, k.id, now ? null : d.id); sfx.bump();
+      this.msg = now ? `${k.name} has no daily drill now.` : `${k.name}'s daily drill: ${d.name.toLowerCase()}. The keeper runs it each day it has the energy.`;
+      return;
+    }
+    const no = cannotTrain(this.f, k, d, lv);
+    if (no) { this.msg = no; sfx.bump(); return; }
+    sfx.choose();
+    this.host.attend(k, d, (o) => { this.msg = o.lines.join(" "); if (this.open) this.draw(); });
   }
 
   private canBreedHere(): boolean { return levelOf(this.f, "pens") >= PENS.breedAt && this.host.kithHere().length >= 2; }
@@ -296,6 +330,7 @@ export class BasePanel {
       case "People": this.drawPeople(body, listW, fs); break;
       case "Forge": this.drawForge(body, listW, fs); break;
       case "Pens": this.drawPens(body, listW, fs); break;
+      case "Train": this.drawTrain(body, listW, fs); break;
       case "Roads": this.drawRoads(body, listW, fs); break;
       default: this.drawMake(body, listW, fs);
     }
@@ -427,6 +462,46 @@ export class BasePanel {
       y += fs + 20;
     }
     this.text(this.sub === "part" ? "Up and Down choose, Left and Right change. Esc when done." : "Enter to change how it's raised, or to breed.", x, y + 4, fs - 2, "#9a8e78");
+  }
+
+  private drawTrain(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
+    const g = this.host.game, f = this.f, ids = this.host.kithHere(), lv = levelOf(f, "pens");
+    this.list(ids.map((id) => { const k = g.kith[id], d = drillOf(f, id); return { label: k.name, sub: `${energyWord(energyOf(k))} · ${spiritsWord(spiritsOf(k))}${d ? ` · daily: ${d.attr}` : ""}` }; }), b, listW, fs, "No kith are staying at Thornwick. Leave a kith here (Party page) to look after and train it.");
+    const id = ids[this.i]; if (!id) return;
+    const k = g.kith[id], x = b.x + listW + 18, w = b.w - listW - 18;
+    let y = b.y;
+    y += this.text(`${k.name} · level ${k.level} · bond ${Math.round(k.bond)}`, x, y, fs + 4, "#fff4dc", true, w).height + 6;
+    const bw = Math.min(150, (w - 40) / 2);
+    this.text("Energy", x, y, fs - 2, "#a89a80"); this.bar(x + 56, y + 5, bw, energyOf(k) / 100, energyOf(k) < 30 ? 0xd06a5a : 0x8ad07a);
+    this.text(energyWord(energyOf(k)), x + 62 + bw, y, fs - 2, "#d8ccb4");
+    y += fs + 4;
+    this.text("Spirits", x, y, fs - 2, "#a89a80"); this.bar(x + 56, y + 5, bw, spiritsOf(k) / 100, spiritsOf(k) < 30 ? 0xd06a5a : 0xe0c070);
+    this.text(spiritsWord(spiritsOf(k)), x + 62 + bw, y, fs - 2, "#d8ccb4");
+    y += fs + 8;
+    const warn = keeperWarning(k, this.keeperSkill());
+    if (warn) y += this.text(warn, x, y, fs - 2, "#f2b090", false, w).height + 4;
+    if (k.traits.includes("bone-sickness")) y += this.text(`${k.name} has the bone sickness: gentle drills only.`, x, y, fs - 2, "#f2b090", false, w).height + 4;
+    const rows = [{ label: hadTimeToday(f, id) ? "Spent time together today" : "Spend time with it", sub: "Brush it, walk it, play. Bond and spirits. Once a day." },
+      ...DRILLS.map((d) => {
+        const no = cannotTrain(f, k, d, lv), daily = drillOf(f, id)?.id === d.id, star = f[`perfect.${d.id}.${id}`] ? " ★" : "";
+        return { label: `${d.name}${star}`, sub: d.pens > lv ? no ?? "" : `${d.attr} · costs ${d.energy} energy${daily ? " · daily drill" : ""}${drilledToday(f, id) ? " · trained today" : ""}`, d, daily, dim: d.pens > lv };
+      })];
+    const rh = Math.max(fs * 2 + 8, Math.min(fs * 2 + 14, (b.y + b.h - y - fs - 10) / rows.length - 3));
+    rows.forEach((r, i) => {
+      const on = this.sub === "train" && this.part === i, dbw = 76;
+      if (y + rh > b.y + b.h - fs - 6) return;
+      this.hit(x, y, w - (i ? dbw + 6 : 0), rh, () => { this.sub = "train"; this.part = i; this.trainRow(false); }, on);
+      this.text(r.label, x + 10, y + 3, fs - 1, "dim" in r && r.dim ? "#7a6e58" : on ? "#fff4dc" : "#e8dcc0", on);
+      this.text(r.sub, x + 10, y + fs + 4, fs - 3, "#a89a80", false, w - dbw - 30);
+      if (i) {
+        const lit = "daily" in r && r.daily;
+        this.view.addChild(new Graphics().roundRect(x + w - dbw, y + 4, dbw, rh - 8, 5).fill({ color: lit ? 0x3a4a1c : 0x1c1610, alpha: 0.95 }).roundRect(x + w - dbw, y + 4, dbw, rh - 8, 5).stroke({ color: lit ? 0xb8e0a0 : 0x4a3c28, width: 1 }));
+        this.hit(x + w - dbw, y + 4, dbw, rh - 8, () => { this.sub = "train"; this.part = i; this.trainRow(true); });
+        const t = this.text(lit ? "Daily ✔" : "Daily", x + w - dbw, y + rh / 2 - fs / 2 - 1, fs - 3, lit ? "#cfe8b0" : "#a89a80"); t.x = x + w - dbw + (dbw - t.width) / 2;
+      }
+      y += rh + 3;
+    });
+    this.text(this.sub === "train" ? `${keyFor("confirm")}: attend (play it) · Left/Right: set as daily drill · Esc: back` : `${keyFor("confirm")} to look after and train ${k.name}.`, x, b.y + b.h - fs, fs - 3, "#9a8e78", false, w);
   }
 
   private drawRoads(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
