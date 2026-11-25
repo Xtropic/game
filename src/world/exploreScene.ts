@@ -2,6 +2,7 @@
 // HD on top. What happens here comes from the story data: who is where, what they say, what stepping on a door
 // or singing near a kith does. The scene only moves people about and shows things; StoryRunner decides.
 import { keyFor, padState } from "../core/input";
+import { device, say } from "../core/device";
 import { Container, Graphics, Sprite, Text, type Texture } from "pixi.js";
 import { sfx, trackFor } from "../audio/music";
 import { CompanyPanel, JoinCards, joinerFor } from "../ui/joinCard";
@@ -92,8 +93,8 @@ interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 /** Where the story written so far runs out: one quiet line, then a new game. No acts, no chapter cards. */
 export function ledger(id: string, _f: Record<string, unknown>): string[] {
   const end = ENDINGS[id];
-  if (end) return [end.title, "", end.line, "", "The end.", "", `Press ${keyFor("confirm")} to begin again`];
-  return ["The story goes on from here.", "This is as far as it has been written.", "", `Press ${keyFor("confirm")} to begin again`];
+  if (end) return [end.title, "", end.line, "", "The end.", "", say(`Press ${keyFor("confirm")} to begin again`, "Tap to begin again")];
+  return ["The story goes on from here.", "This is as far as it has been written.", "", say(`Press ${keyFor("confirm")} to begin again`, "Tap to begin again")];
 }
 
 /** The five ways the story ends (data/story/act4.json "end" steps): a title and one line for the closing card. */
@@ -172,7 +173,7 @@ export class ExploreScene implements Scene, StoryHost {
   private settle = false;
   private screen = { w: 0, h: 0 };
   /** Whole-number zoom; the world map is shown one step further out, so more of the country is in view. */
-  private zoomFor(w: number, h: number): number { const z = Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H))); return this.map?.file.world ? Math.max(1, z - 1) : z; }
+  private zoomFor(w: number, h: number): number { const z = h > w ? Math.max(1, Math.round(w / 190)) : Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H))); return this.map?.file.world ? Math.max(1, z - 1) : z; }
   private regionNow: string | null = null;
   private untilEncounter = 0;
   private fog = new Graphics();
@@ -228,6 +229,7 @@ export class ExploreScene implements Scene, StoryHost {
     // full-screen overlays (the fade cover, the vignette, wounds) must never swallow taps meant for the dialogue box
     for (const o of [this.cover, this.atmos.vignette, this.wounds, this.caption, this.banner, this.ledgerMark, this.ledgerSign, this.toastLabel, this.objective, this.placeLabel]) o.eventMode = "none";
     this.dialog.view.eventMode = "static";
+    this.company.onTap = () => this.toggleCompany(); this.notes.onTap = () => this.toggleNotes();
     this.dialog.view.on("pointertap", (e) => this.tapDialog(e.global.x, e.global.y));
     const s = this.start ?? {};
     const sp = this.story.start;
@@ -693,6 +695,7 @@ export class ExploreScene implements Scene, StoryHost {
     const t = new Text({ text: ledger(id, this.flags).join("\n"), style: { fontFamily: "Georgia, serif", fontSize: 18, fill: "#efe6d2", align: "center", lineHeight: 28, wordWrap: true, wordWrapWidth: Math.min(700, this.game.width - 40) } });
     t.anchor.set(0.5); t.x = this.game.width / 2; t.y = this.game.height / 2;
     this.cover.alpha = 0.92; this.ended = t; this.hud.addChild(t);
+    this.cover.eventMode = "static"; this.cover.once("pointertap", () => { if (this.ended) this.carryOn(); });
     this.flags.ended = id;
     this.save("auto");
   }
@@ -702,7 +705,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Starts a new run of the story from the top. */
   restart(): void {
-    this.ended?.destroy(); this.ended = null; this.cover.alpha = 0;
+    this.ended?.destroy(); this.ended = null; this.cover.alpha = 0; this.cover.eventMode = "none"; this.cover.removeAllListeners("pointertap");
     for (const f of this.followers) f.sprite.destroy(); this.followers = [];
     this.beginStory();
     const s = this.start!;
@@ -1100,24 +1103,25 @@ export class ExploreScene implements Scene, StoryHost {
     // Thornwick's ledger: a sign over Dorrit's crates, bobbing, so nobody has to hunt for it
     this.ledgerSign.text = ""; this.ledgerMark.clear();
     const owns = baseOpen(this.flags) && this.hero() === "rhea";
-    this.ledgerButton.visible = owns && this.game.scenes.top === this && !this.menu.open && !this.base.open;
+    this.ledgerButton.visible = owns && this.game.scenes.top === this && !this.menu.open && !this.base.open && !this.dialog.open;
     if (this.ledgerButton.visible) {
       const fresh = !this.flags.ledgerSeen, pulse = fresh ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 5) : 0;
       this.ledgerNew.visible = fresh;
-      const lbl = `\u{1F4D6}  Ledger: party & base  [${keyFor("ledger")}]`;
+      const lbl = device.taps ? "\u{1F4D6}  Ledger: party & base" : `\u{1F4D6}  Ledger: party & base  [${keyFor("ledger")}]`;
       if (this.ledgerButtonLabel.text !== lbl) { this.ledgerButtonLabel.text = lbl; this.ledgerButtonBg.clear().roundRect(0, 0, this.ledgerButtonLabel.width + 28, 40, 10).fill(0xf0c060).stroke({ color: 0x6a4410, width: 3 }); this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerButton.x = this.screen.w - this.ledgerButtonBg.width - 16; }
       this.ledgerButton.scale.set(1 + pulse * 0.06);
       this.ledgerButtonBg.tint = fresh ? (pulse > 0.5 ? 0xffffff : 0xffe8b0) : 0xffffff;
     }
     // the Guide button, by the menu: a gold badge with the count of pages not read yet
-    const unread = unreadCount(this.flags), gl = unread ? `\u{1F4DC} Guide [${keyFor("guide")}]  ${unread} new` : `\u{1F4DC} Guide [${keyFor("guide")}]`;
+    const unread = unreadCount(this.flags), gk = device.taps ? "" : ` [${keyFor("guide")}]`, gl = unread ? `\u{1F4DC} Guide${gk}  ${unread} new` : `\u{1F4DC} Guide${gk}`;
     if (gl !== this.guideShown) {
       this.guideShown = gl; this.guideButtonLabel.text = gl;
       this.guideButtonLabel.style.fill = unread ? "#2a1a08" : "#f2e3c4";
       this.guideButtonBg.clear().roundRect(0, 0, this.guideButtonLabel.width + 24, this.guideButtonLabel.height + 12, 8).fill(unread ? 0xf0c060 : 0x1a140e).stroke({ color: unread ? 0x6a4410 : 0xe0c070, width: 2 });
       this.guideButton.x = this.menuButton.x - this.guideButtonBg.width - 14; this.guideButton.y = this.screen.h - this.guideButtonBg.height - 10;
     }
-    this.guideButton.visible = this.game.scenes.top === this && !this.menu.open && !this.ended;
+    this.guideButton.visible = this.game.scenes.top === this && !this.menu.open && !this.ended && !this.dialog.open;
+    this.menuButton.visible = !this.dialog.open;
     const gp = unread ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 4) : 0;
     this.guideButtonBg.tint = unread ? (gp > 0.5 ? 0xffffff : 0xffe0a0) : 0xffffff; this.guideButton.alpha = unread ? 1 : 0.85;
     const lc = this.ledgerCell();

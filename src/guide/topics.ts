@@ -4,7 +4,8 @@
 // {confirm}, {space}, {cancel}, {menu}, {notes}, {ledger}, {company}, {guide}, {timing}, {auto}, {run} are
 // replaced with the key (or pad button) for that action when the page is drawn.
 
-export interface GuidePage { head: string; text: string; }
+/** touch / touchHead: the same page for a phone or tablet, where there are no keys. */
+export interface GuidePage { head: string; text: string; touch?: string; touchHead?: string; }
 export interface GuideTopic { id: string; group: string; title: string; pages: GuidePage[]; }
 
 export const GROUPS = ["Basics", "Battles", "Your company", "Thornwick", "Kith", "Command"] as const;
@@ -12,8 +13,10 @@ export const GROUPS = ["Basics", "Battles", "Your company", "Thornwick", "Kith",
 export const TOPICS: GuideTopic[] = [
   // ---------------------------------------------------------------- Basics
   { id: "basics", group: "Basics", title: "Getting around", pages: [
-    { head: "Walking and talking", text: "Walk with the arrow keys or WASD. Hold {run} to run (Settings can make running the default). Walk up to someone or something and press {confirm} to talk or look. The objective line on screen always says what you're working towards now." },
-    { head: "Keys worth knowing", text: "{menu}: the menu (party, gear, items, Thornwick, command, settings, saves, and this Guide).\n{guide}: this Guide, from anywhere, even mid-fight.\n{notes}: your notes, every word the story has explained so far.\n{company}: everyone who has joined you.\n{ledger}: Thornwick's ledger, once you hold it.\nN: sound on and off." },
+    { head: "Walking and talking", text: "Walk with the arrow keys or WASD. Hold {run} to run (Settings can make running the default). Walk up to someone or something and press {confirm} to talk or look. The objective line on screen always says what you're working towards now.",
+      touch: "Tilt the phone to walk, like rolling a marble: lean the top away to go up, an edge down to go that way, further to run. Tap Level to set how you like to hold it. With tilt off (the button at the bottom left, or Settings), drag anywhere on the left half of the screen instead. Walk up to someone or something and tap A to talk or look. Run switches running on and off. Tap anywhere to move a conversation on. The objective line at the top always says what you're working towards now. Turning the phone on its side shows more of the world." },
+    { head: "Keys worth knowing", text: "{menu}: the menu (party, gear, items, Thornwick, command, settings, saves, and this Guide).\n{guide}: this Guide, from anywhere, even mid-fight.\n{notes}: your notes, every word the story has explained so far.\n{company}: everyone who has joined you.\n{ledger}: Thornwick's ledger, once you hold it.\nN: sound on and off.",
+      touchHead: "Buttons worth knowing", touch: "Menu (bottom right): party, gear, items, Thornwick, command, settings, saves, and this Guide.\nGuide: this Guide, from anywhere.\nLedger: Thornwick's ledger, once you hold it.\nB: back out of anything.\nSing: Rhea's foal song, where it helps.\nMenu > Settings: sound, voices, tilt, text speed.\nIn lists, tap a row to choose it and tap it again to use it. Long pages scroll with a drag." },
     { head: "Saving", text: "The game saves itself whenever you change map, after every fight and after anything that changes your company. Menu > Save also has three slots of your own, and can load the last autosave." },
     { head: "Choices", text: "Some choices change the story for good: who lives, who stays with you, what people remember about you. Nothing marks which ones, and none of them can be taken back, so choose what Rhea would choose. A save slot is the only way to go back." },
   ] },
@@ -122,7 +125,7 @@ export const TOPICS: GuideTopic[] = [
   { id: "army", group: "Command", title: "Army battles", pages: [
     { head: "Companies and officers", text: "Each company is led by an officer from your company. Their attributes decide the company's size (presence), its morale (nerve), its charge (might), its use of ground and flanks (wits), its volleys (finesse) and how long it lasts (grit). Its kind sets its speed and reach: foot, pikes, bows or riders." },
     { head: "The war council", text: "Before the battle, the council chooses who leads which company (tap a company to change it) and picks a stratagem: something that changes the ground, the plan or where you start. Your officers say what they think. Higher ranks pick more stratagems. You also see what's known of the enemy's plan: your sharpest officer's wits against their commander's." },
-    { head: "Orders", text: "Click a company of yours (blue), then the ground to move there, or a red company to attack it. Orders take time to arrive: longer the further a company is from your own, and the slower its officer's wits. {space} pauses and you can give orders while paused. Tab picks the next company, T or + and - change speed, H holds a company where it is." },
+    { head: "Orders", touch: "Tap a company of yours (blue), then the ground to move there, or a red company to attack it. Orders take time to arrive: longer the further a company is from your own, and the slower its officer's wits. Pause stops the clock and you can give orders while paused. Next company picks the next one, Speed changes how fast time runs, Hold keeps a company where it is.", text: "Click a company of yours (blue), then the ground to move there, or a red company to attack it. Orders take time to arrive: longer the further a company is from your own, and the slower its officer's wits. {space} pauses and you can give orders while paused. Tab picks the next company, T or + and - change speed, H holds a company where it is." },
     { head: "Fighting and morale", text: "Battles are won by breaking the other side's nerve, not by killing everyone. Losses, being hit in the flank or rear, and friends running drain a company's morale; at nothing it breaks and runs. A blow to the flank or rear counts double. Woods and walls shelter, high ground helps. Pikes stop riders; riders smash anyone caught in the open; bows shoot anyone in range." },
     { head: "Winning", text: "Each battle says what it takes: hold out until dark, or break them before the daylight runs out. The faint red arrows on the field are what you know of the enemy's plan." },
   ] },

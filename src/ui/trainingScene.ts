@@ -9,6 +9,7 @@
 //   call    Heart     Rhea hums a phrase on four notes; hum it back with the arrows
 //   show    Presence  cues slide to the line on the drum: press the matching arrow as each crosses
 // Keys: arrows / WASD, Enter or Space to press (held for the carry). Every control has an on-screen button.
+import { device } from "../core/device";
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -574,7 +575,8 @@ export class TrainingScene implements Scene {
       btn("Done", pad, y + 6, 150, 40, () => this.confirm());
       return;
     }
-    const y = top; txt(this.d.how, pad, y, fs - 2, "#a89a80", false, w - pad * 2);
+    const y = top; txt(this.d.how, pad, y, fs - 2, "#a89a80", false, w - pad * 2 - (device.touch ? 90 : 0));
+    if (device.touch) btn("Stop", w - pad - 80, y, 80, 36, () => { if (this.phase === "play") this.end(); }); // Esc on a keyboard: what was done so far counts
     // touch row: the buttons this drill uses
     const bs = this.mini.buttons, bh = Math.max(40, Math.min(64, this.H - y - 40)), by = this.H - bh - 8, bw = Math.min(130, Math.floor((w - pad * 2 - (bs.length - 1) * 8) / bs.length));
     const x0 = Math.round((w - (bs.length * bw + (bs.length - 1) * 8)) / 2);

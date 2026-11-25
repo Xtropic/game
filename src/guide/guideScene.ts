@@ -3,10 +3,12 @@
 //           (the scene stack only updates the top scene), one page at a time. Several new topics queue up.
 //   browse  G (or Menu > Guide) from anywhere: every topic met so far, grouped, to read again at leisure.
 // Topics are unlocked by flags guide.<id>; guide.read.<id> marks one as read (no "New" badge).
-import { Container, Graphics, Text, type FederatedWheelEvent } from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { keyFor } from "../core/input";
+import { device } from "../core/device";
+import { DragScroll } from "../ui/scroll";
 import { settings } from "../core/settings";
 import { sfx } from "../audio/music";
 import { GROUPS, TOPICS, topic, type GuideTopic } from "./topics";
@@ -17,7 +19,13 @@ const serif = (size: number, fill: string, bold = false, wrap = 0) => ({ fontFam
 
 /** Puts the real keys into a page's text. */
 export function keys(text: string): string {
-  return text.replace(/\{(\w+)\}/g, (_, a: string) => keyFor(a));
+  if (device.taps) text = text // a phone or tablet: say taps where a keyboard has keys
+    .replace(/choose a move with Up and Down and press \{confirm\}/g, "tap a move")
+    .replace(/Up and Down choose, \{confirm\} buys/g, "Tap one to choose it, tap it again to buy")
+    .replace(/Press \{space\} \(or tap\)/g, "Tap").replace(/press \{space\} \(or tap\)/g, "tap")
+    .replace(/Press \{confirm\}/g, "Tap").replace(/press \{confirm\}/g, "tap").replace(/with \{confirm\}/g, "with a tap");
+  // a placeholder that starts a sentence starts with a capital ("the Guide button" -> "The Guide button")
+  return text.replace(/\{(\w+)\}/g, (_, a: string, at: number) => { const k = keyFor(a); return at === 0 || /(^|[.!?:]\s|\n)$/.test(text.slice(Math.max(0, at - 2), at)) ? k[0].toUpperCase() + k.slice(1) : k; });
 }
 
 export const met = (f: Flags, id: string): boolean => !!f[`guide.${id}`];
@@ -67,8 +75,10 @@ export class GuideScene implements Scene {
   // browse
   private sel = 0;
   private focus: "list" | "text" = "list";
-  private scroll = 0; private maxScroll = 0;
-  private body: Container | null = null; private bodyTop = 0;
+  private maxScroll = 0;
+  /** Drag to scroll: the topic list and the page text each scroll on their own. */
+  private listScroll = new DragScroll(); private textScroll = new DragScroll();
+  private shownSel = -1;
 
   constructor(private f: Flags, private mode: Mode) {
     if (mode.kind === "card") this.queue = mode.ids.slice();
@@ -92,10 +102,9 @@ export class GuideScene implements Scene {
       this.sel = Math.max(0, at >= 0 ? at : unread);
     } else sfx.join();
     this.view.eventMode = "static";
-    this.view.on("wheel", (e: FederatedWheelEvent) => { if (this.mode.kind === "browse") { this.scrollBy(e.deltaY > 0 ? 60 : -60); } });
     this.draw();
   }
-  exit(): void { /* nothing held */ }
+  exit(): void { this.listScroll.destroy(); this.textScroll.destroy(); }
   resize(w: number, h: number): void { this.w = w; this.h = h; if (this.game) this.draw(); }
 
   // ---------------------------------------------------------------- input
@@ -116,8 +125,8 @@ export class GuideScene implements Scene {
     if (inp.wasPressed("cancel")) { if (this.focus === "text") { this.focus = "list"; this.draw(); } else this.close(); return; }
     if (inp.wasPressed("guide") || inp.wasPressed("menu")) { this.close(); return; }
     if (this.focus === "list") {
-      if (inp.wasPressed("up")) { this.sel = (this.sel + ps.length - 1) % Math.max(1, ps.length); this.scroll = 0; sfx.bump(); this.draw(); }
-      if (inp.wasPressed("down")) { this.sel = (this.sel + 1) % Math.max(1, ps.length); this.scroll = 0; sfx.bump(); this.draw(); }
+      if (inp.wasPressed("up")) { this.sel = (this.sel + ps.length - 1) % Math.max(1, ps.length); sfx.bump(); this.draw(); }
+      if (inp.wasPressed("down")) { this.sel = (this.sel + 1) % Math.max(1, ps.length); sfx.bump(); this.draw(); }
       if ((inp.wasPressed("confirm") || inp.wasPressed("right")) && this.maxScroll > 0) { this.focus = "text"; this.draw(); }
     } else {
       if (inp.wasPressed("up")) this.scrollBy(-80);
@@ -127,8 +136,7 @@ export class GuideScene implements Scene {
   }
 
   private scrollBy(d: number): void {
-    const was = this.scroll; this.scroll = Math.max(0, Math.min(this.maxScroll, this.scroll + d));
-    if (this.body && was !== this.scroll) this.body.y = this.bodyTop - this.scroll;
+    this.textScroll.to(this.textScroll.scroll + d);
   }
 
   private next(): void {
@@ -146,7 +154,7 @@ export class GuideScene implements Scene {
   private close(): void { if (this.game.scenes.top === this) this.game.scenes.pop(); }
 
   // ---------------------------------------------------------------- drawing
-  private clear(): void { this.view.removeChildren().forEach((c) => c.destroy({ children: true })); this.card = new Container(); this.glow = new Graphics(); this.body = null; }
+  private clear(): void { this.view.removeChildren().forEach((c) => c.destroy({ children: true })); this.card = new Container(); this.glow = new Graphics(); }
 
   private draw(): void {
     this.clear();
@@ -170,8 +178,8 @@ export class GuideScene implements Scene {
     const W = Math.min(760, this.w - 24);
     const pg = t.pages[this.page];
     // measure the body first, so the card fits its page
-    const head = new Text({ text: pg.head, style: serif(fs + 3, "#ffe39a", true, W - 64) });
-    const body = new Text({ text: keys(pg.text), style: serif(fs, "#fff4dc", false, W - 64) });
+    const head = new Text({ text: (device.taps && pg.touchHead ? pg.touchHead : pg.head), style: serif(fs + 3, "#ffe39a", true, W - 64) });
+    const body = new Text({ text: keys(device.taps && pg.touch ? pg.touch : pg.text), style: serif(fs, "#fff4dc", false, W - 64) });
     const H = Math.min(this.h - 24, 150 + head.height + body.height + 90);
     const x0 = Math.round((this.w - W) / 2), y0 = Math.round((this.h - H) / 2);
     this.card.pivot.set(W / 2, H / 2); this.card.x = x0 + W / 2; this.card.y = y0 + H / 2;
@@ -194,7 +202,7 @@ export class GuideScene implements Scene {
     this.card.addChild(this.button(last ? (this.queue.length > 1 ? "Next topic  ▶" : "Got it") : "Next  ▶", W - 28, by - 8, true, () => this.next(), fs - 1));
     if (this.page > 0) this.card.addChild(this.button("◀  Back", W - 28 - (last ? 140 : 120) - 20, by - 8, false, () => this.back(), fs - 1));
     const foot = new Text({ text: `${keyFor("confirm")}: next   ·   ${keyFor("cancel")}: skip   ·   Kept in the Guide (${keyFor("guide")})`, style: serif(fs - 4, "#a89a80", false, W - 300) });
-    foot.x = 28; foot.y = by + 2; if (!small) this.card.addChild(foot); else foot.destroy();
+    foot.x = 28; foot.y = by + 2; if (!small && !device.taps) this.card.addChild(foot); else foot.destroy();
     this.view.addChild(this.card);
   }
 
@@ -210,43 +218,49 @@ export class GuideScene implements Scene {
     this.sel = Math.min(this.sel, Math.max(0, ps.length - 1));
     const sel = ps[this.sel];
     if (sel) this.f[`guide.read.${sel.id}`] = 1;
-    const top = y0 + 58, listW = small ? Math.min(150, W * 0.36) : 240, bottom = y0 + H - 34;
+    const top = y0 + 58, bottom = y0 + H - 34, stack = W < 520 && this.h > this.w;
+    const listW = stack ? W - 24 : small ? Math.min(150, W * 0.36) : 240;
+    const listH = stack ? Math.min(Math.round((bottom - top) * 0.34), 230) : bottom - top;
     this.view.addChild(new Graphics().rect(x0 + 12, top - 6, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
-    // the list of topics
-    let y = top, i = 0;
+    if (this.sel !== this.shownSel) { this.textScroll.reset(); }
+    // the list of topics: all of them, scrolling with a drag when they don't fit
+    let y = top, i = 0, selY = top, selH = 0;
+    const listFrom = this.view.children.length;
     for (const r of this.rows()) {
       if ("group" in r) { const g = new Text({ text: r.group.toUpperCase(), style: { ...serif(fs - 4, "#c8a860", true), letterSpacing: 2 } }); g.x = x0 + 18; g.y = y + 4; this.view.addChild(g); y += g.height + 8; continue; }
       const idx = i++, on = idx === this.sel, fresh = !this.f[`guide.read.${r.t.id}`];
       const label = new Text({ text: r.t.title, style: serif(fs, on ? "#fff4dc" : "#d8ccb4", on, listW - (fresh && !on ? 62 : 24)) });
-      const rowH = label.height + 8;
-      if (y + rowH > bottom) break;
+      const rowH = Math.max(label.height + 8, device.touch ? 40 : 0);
+      if (on) { selY = y; selH = rowH; }
       const bg = new Graphics().roundRect(x0 + 12, y, listW, rowH, 6).fill({ color: on ? SEL : 0x000000, alpha: on ? 1 : 0.001 });
       if (on) bg.roundRect(x0 + 12, y, listW, rowH, 6).stroke({ color: this.focus === "list" ? GOLD : 0x6a5a40, width: 1.5 });
-      bg.eventMode = "static"; bg.cursor = "pointer"; bg.on("pointertap", () => { this.sel = idx; this.focus = "list"; this.scroll = 0; sfx.bump(); this.draw(); });
-      label.x = x0 + 24; label.y = y + 4; label.eventMode = "none";
+      bg.eventMode = "static"; bg.cursor = "pointer"; bg.on("pointertap", () => { if (this.listScroll.dragged) return; this.sel = idx; this.focus = "list"; sfx.bump(); this.draw(); });
+      label.x = x0 + 24; label.y = y + (rowH - label.height) / 2; label.eventMode = "none";
       this.view.addChild(bg, label);
       if (fresh && !on) { const nb = new Text({ text: "NEW", style: serif(fs - 5, "#2a1a08", true) }); const nbg = new Graphics().roundRect(x0 + 12 + listW - nb.width - 16, y + (rowH - nb.height - 4) / 2, nb.width + 10, nb.height + 4, 4).fill(0xf0c060); nb.x = x0 + 12 + listW - nb.width - 11; nb.y = y + (rowH - nb.height) / 2; this.view.addChild(nbg, nb); }
       y += rowH + 2;
     }
     const left = TOPICS.length - ps.length;
-    if (left > 0 && y + 40 < bottom) { const more = new Text({ text: `${left} more page${left > 1 ? "s" : ""} open as you meet new things.`, style: serif(fs - 3, "#8a7e68", false, listW - 8) }); more.x = x0 + 18; more.y = y + 8; this.view.addChild(more); }
+    if (left > 0) { const more = new Text({ text: `${left} more page${left > 1 ? "s" : ""} open as you meet new things.`, style: serif(fs - 3, "#8a7e68", false, listW - 8) }); more.x = x0 + 18; more.y = y + 8; this.view.addChild(more); }
+    this.listScroll.wrap(this.view, listFrom, { x: x0 + 8, y: top - 2, w: listW + 8, h: listH + 2 });
+    if (this.sel !== this.shownSel) this.listScroll.show(selY, selH);
+    this.shownSel = this.sel;
     // the chosen topic, all its pages, scrolling
-    const tx = x0 + 12 + listW + 22, tw = x0 + W - 18 - tx, th = bottom - top;
-    this.view.addChild(new Graphics().rect(tx - 12, top, 1, th).fill({ color: GOLD, alpha: 0.3 }));
+    const tx = stack ? x0 + 20 : x0 + 12 + listW + 22, tw = x0 + W - 18 - tx, ttop = stack ? top + listH + 14 : top, th = bottom - ttop;
+    if (stack) this.view.addChild(new Graphics().rect(x0 + 12, ttop - 7, W - 24, 1).fill({ color: GOLD, alpha: 0.3 }));
+    else this.view.addChild(new Graphics().rect(tx - 12, top, 1, th).fill({ color: GOLD, alpha: 0.3 }));
     if (sel) {
-      const body = new Container(); let by = 0;
-      const tt = new Text({ text: sel.title, style: serif(fs + 8, "#fff4dc", true, tw) }); body.addChild(tt); by += tt.height + 12;
+      const from = this.view.children.length; let by = ttop;
+      const add = (t: Text) => { t.x = tx; t.y = by; this.view.addChild(t); return t; };
+      by += add(new Text({ text: sel.title, style: serif(fs + 8, "#fff4dc", true, tw) })).height + 12;
       for (const pg of sel.pages) {
-        const hd = new Text({ text: pg.head, style: serif(fs + 1, "#ffe39a", true, tw) }); hd.y = by; by += hd.height + 4;
-        const tx2 = new Text({ text: keys(pg.text), style: serif(fs, "#e8dcc0", false, tw) }); tx2.y = by; by += tx2.height + 16;
-        body.addChild(hd, tx2);
+        by += add(new Text({ text: (device.taps && pg.touchHead ? pg.touchHead : pg.head), style: serif(fs + 1, "#ffe39a", true, tw) })).height + 4;
+        by += add(new Text({ text: keys(device.taps && pg.touch ? pg.touch : pg.text), style: serif(fs, "#e8dcc0", false, tw) })).height + 16;
       }
-      const mask = new Graphics().rect(tx, top, tw + 4, th).fill(0xffffff);
-      body.x = tx; this.bodyTop = top; this.maxScroll = Math.max(0, by - th);
-      this.scroll = Math.min(this.scroll, this.maxScroll); body.y = top - this.scroll;
-      body.mask = mask; this.view.addChild(mask, body); this.body = body;
+      this.textScroll.wrap(this.view, from, { x: tx - 4, y: ttop, w: tw + 12, h: th });
+      this.maxScroll = this.textScroll.max;
     } else this.maxScroll = 0;
-    const hint = new Text({ text: `Up/Down: choose${this.maxScroll > 0 ? `   ·   ${this.focus === "list" ? `${keyFor("confirm")} or Right: read on` : "Up/Down: scroll   ·   Left: back to the list"}` : ""}   ·   ${keyFor("cancel")} or ${keyFor("guide")}: close`, style: serif(fs - 3, "#a89a80", false, W - 36) });
+    const hint = new Text({ text: device.taps ? `Tap a topic${this.maxScroll > 0 ? "   ·   Drag the page to read on" : ""}` : `Up/Down: choose${this.maxScroll > 0 ? `   ·   ${this.focus === "list" ? `${keyFor("confirm")} or Right: read on` : "Up/Down: scroll   ·   Left: back to the list"}` : ""}   ·   ${keyFor("cancel")} or ${keyFor("guide")}: close`, style: serif(fs - 3, "#a89a80", false, W - 36) });
     hint.x = x0 + 18; hint.y = y0 + H - 26; this.view.addChild(hint);
   }
 }

@@ -25,8 +25,15 @@ const NAMES: Record<string, [string, string]> = {
   confirm: ["Enter", "A"], space: ["Space", "A"], cancel: ["Esc", "B"], timing: ["T", "LT"], auto: ["B", "View"], company: ["R", "Y"],
   notes: ["J", "LB"], ledger: ["L", "RB"], menu: ["Tab", "Menu"], sing: ["Q", "X"], hold: ["H", "Y"], run: ["Shift", "RT"], guide: ["G", "Menu > Guide"],
 };
+/** On a touch screen: the on-screen button (or the gesture) for an action. */
+const TAPS: Record<string, string> = {
+  confirm: "A", space: "tap", cancel: "B", timing: "the Auto timing button", auto: "the Auto battle button", company: "Menu > Party",
+  notes: "Menu", ledger: "the Ledger button", menu: "the Menu button", sing: "Sing", hold: "Hold", run: "Run", guide: "the Guide button",
+};
+/** Set by the device module: true while the player is using a touch screen and no pad. */
+export const touchState = { taps: false };
 /** The key or pad button to name in a prompt for an action. */
-export const keyFor = (a: keyof typeof NAMES | string): string => (NAMES[a] ?? [a, a])[padState.used ? 1 : 0];
+export const keyFor = (a: keyof typeof NAMES | string): string => (touchState.taps && !padState.used && TAPS[a] ? TAPS[a] : (NAMES[a] ?? [a, a])[padState.used ? 1 : 0]);
 
 export class Input {
   private held = new Set<Action>();

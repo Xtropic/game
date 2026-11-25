@@ -2,6 +2,7 @@
 //   Up      parry high          Down    parry low
 //   Left    step aside (thrust) Right / Space / Enter   strike into him
 // Every third exchange there's a pause to speak (each word once). Rules in duel.ts. All answers are tappable.
+import { device } from "../core/device";
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -179,7 +180,7 @@ export class DuelScene implements Scene {
       textFX(g, TELL[tell], fx + wob, cy, col, 9);
       if (this.spotted && this.t < this.lead * 0.55) textFX(g, "his weight's wrong", fx, cy + 8, "#e8d8ff", 5);
       ringFX(g, 130, 60, 5, "#ffe39a", true); ringFX(g, 130, 60, 5 + (rem / this.lead) * 24, "#ffe39a");
-      if (s.round < 2) textFX(g, "Answer before the ring closes: ↑ high · ↓ low · ← aside from a thrust · → strike   ·   G: guide", CW / 2, CH - 7, "#f2e3c4", 5);
+      if (s.round < 2) textFX(g, device.taps ? "Answer with a button below before the ring closes" : "Answer before the ring closes: ↑ high · ↓ low · ← aside from a thrust · → strike   ·   G: guide", CW / 2, CH - 7, "#f2e3c4", 5);
     }
     for (const f of this.fx) {
       const p = f.t / 0.8;

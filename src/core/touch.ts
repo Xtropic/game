@@ -68,12 +68,26 @@ export class TouchControls {
     this.runBtn = this.button(pad, "Run", null, { right: "6px", bottom: "122px", size: 46, color: "#5a4a2a", small: true }, () => { this.input.runToggle = !this.input.runToggle; this.paint(); });
     // tilt toggle and level, top left under the goal text
     const top = document.createElement("div");
-    Object.assign(top.style, { position: "absolute", left: "max(10px, env(safe-area-inset-left))", bottom: "max(14px, env(safe-area-inset-bottom))", display: "flex", gap: "8px", pointerEvents: "none" });
+    Object.assign(top.style, { position: "absolute", left: "max(10px, env(safe-area-inset-left))", bottom: "max(14px, env(safe-area-inset-bottom))", display: "flex", flexWrap: "wrap", gap: "8px", pointerEvents: "none", maxWidth: "60vw" });
+    // a narrow screen: up off the bottom row, which holds the Guide and Menu buttons
+    const place = () => { top.style.bottom = innerWidth < 600 ? "max(62px, calc(env(safe-area-inset-bottom) + 52px))" : "max(14px, env(safe-area-inset-bottom))"; };
+    place(); addEventListener("resize", place);
     r.appendChild(top); this.top = top;
     this.tiltBtn = this.pill(top, "", () => {
       if (settings.get("tilt") && !this.tiltSeen && !this.tiltFailed) { this.startTilt(); return; } // "tap to start" (iOS asks here)
       settings.set("tilt", !settings.get("tilt")); if (settings.get("tilt")) this.startTilt(); this.paint();
     });
+    // full screen, where the browser allows it (not inside some embedded pages): hides the address bar
+    const d = document as Document & { webkitFullscreenEnabled?: boolean };
+    if (d.fullscreenEnabled || d.webkitFullscreenEnabled) {
+      const fs = this.pill(top, "Full screen", () => {
+        const el = document.documentElement as HTMLElement & { webkitRequestFullscreen?: () => void };
+        if (document.fullscreenElement) void document.exitFullscreen?.().catch(() => {});
+        else if (el.requestFullscreen) void el.requestFullscreen({ navigationUI: "hide" }).catch(() => this.say("This page can't go full screen here."));
+        else el.webkitRequestFullscreen?.();
+      });
+      document.addEventListener("fullscreenchange", () => { fs.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen"; });
+    }
     this.levelBtn = this.pill(top, "Level", () => { this.base = this.tiltNow ? [...this.tiltNow] : null; this.say("Level set: hold the phone like this to stand still."); });
     this.dot = document.createElement("div");
     Object.assign(this.dot.style, { position: "absolute", width: "14px", height: "14px", marginLeft: "-7px", marginTop: "-7px", borderRadius: "7px", background: "#f0c060", border: "2px solid #2a1a08", display: "none" });
@@ -123,7 +137,7 @@ export class TouchControls {
     let x = 0, y = 0, run = false;
     const walk = this.walking();
     // the pad shows only while walking: dialogue, menus and battles are tapped directly
-    if (walk !== this.shown) { this.shown = walk; this.pad!.style.display = walk ? "block" : "none"; this.top!.style.display = walk ? "flex" : "none"; }
+    if (walk !== this.shown) { this.shown = walk; this.pad!.style.display = walk ? "block" : "none"; this.top!.style.display = walk ? "flex" : "none"; if (!walk && this.note) this.note.style.opacity = "0"; }
     if (walk && this.tiltOn() && this.tiltNow && this.base) {
       const dx = this.tiltNow[0] - this.base[0], dy = this.tiltNow[1] - this.base[1];
       x = Math.abs(dx) > DEAD ? Math.sign(dx) : 0; y = Math.abs(dy) > DEAD ? Math.sign(dy) : 0;
@@ -184,7 +198,7 @@ export class TouchControls {
   private pill(parent: HTMLElement, label: string, tap: () => void): HTMLButtonElement {
     const b = document.createElement("button");
     b.textContent = label;
-    Object.assign(b.style, { pointerEvents: "auto", touchAction: "none", padding: "7px 12px", borderRadius: "16px", background: "rgba(20,16,12,0.85)", color: "#f0c060", border: "1px solid #e0c070", font: "bold 13px Georgia, serif" });
+    Object.assign(b.style, { pointerEvents: "auto", touchAction: "none", padding: "9px 14px", minHeight: "36px", borderRadius: "18px", background: "rgba(20,16,12,0.85)", color: "#f0c060", border: "1px solid #e0c070", font: "bold 13px Georgia, serif" });
     b.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation(); });
     b.addEventListener("pointerup", (e) => { e.preventDefault(); e.stopPropagation(); tap(); this.paint(); });
     parent.appendChild(b); return b;

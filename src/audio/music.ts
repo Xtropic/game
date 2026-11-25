@@ -32,7 +32,7 @@ class Engine {
 
   /** Starts the engine (call from a key press, click or touch). Safe to call again. */
   start(): void {
-    if (this.ctx) { if (this.ctx.state === "suspended") void this.ctx.resume(); return; }
+    if (this.ctx) { if (this.ctx.state !== "running" && !this.hiddenPause) void this.ctx.resume().catch(() => {}); return; }
     const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AC) return;
     try {
@@ -48,6 +48,16 @@ class Engine {
       setInterval(() => this.schedule(), 35);
       const want = this.cur; this.cur = null; this.track(want);
     } catch { this.ctx = null; }
+  }
+
+  /** True once sound can actually be heard (a phone may keep it suspended until a proper tap). */
+  get running(): boolean { return this.ctx?.state === "running"; }
+  private hiddenPause = false;
+  /** Rests the engine while the page is hidden (phone locked, another app) and resumes it on return. */
+  pauseFor(hidden: boolean): void {
+    const a = this.ctx; if (!a) return;
+    if (hidden && a.state === "running") { this.hiddenPause = true; void a.suspend(); }
+    else if (!hidden && this.hiddenPause) { this.hiddenPause = false; void a.resume(); }
   }
 
   setOn(on: boolean): void {
@@ -343,6 +353,10 @@ export function trackFor(map: string, music: string | undefined, sceneMood?: str
 export function attachSound(target: Window): void {
   const wake = (): void => audio.start();
   target.addEventListener("keydown", (e) => { wake(); if (e.code === "KeyN" && !e.repeat) audio.setOn(!audio.on); });
-  target.addEventListener("pointerdown", wake);
+  // Phones only count the END of a touch as a press that may start sound (Chrome on Android ignores touchstart
+  // and pointerdown for this), so every one of these tries again until the sound is actually running.
+  for (const ev of ["pointerdown", "pointerup", "touchend", "click"]) target.addEventListener(ev, wake, { passive: true, capture: true });
   target.addEventListener("touchstart", wake, { passive: true });
+  // a phone that locks or switches apps: rest the sound, and bring it back on return
+  document.addEventListener("visibilitychange", () => audio.pauseFor(document.hidden));
 }

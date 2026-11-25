@@ -13,8 +13,10 @@ import { fromOldWorld } from "./world/oldWorld";
 import { TRACK_NAMES, attachSound, audio } from "./audio/music";
 import { settings, type Settings } from "./core/settings";
 import { TouchControls } from "./core/touch";
+import { device } from "./core/device";
 
 async function boot(): Promise<void> {
+  device.attach(window);
   const game = new Game();
   await game.init(document.getElementById("game")!);
   await Promise.all([game.voices.load(), loadPortraits(), loadBattleArt()]);
@@ -27,6 +29,7 @@ async function boot(): Promise<void> {
   if (TouchControls.wanted() || location.search.includes("touch")) { game.touch = new TouchControls(game.input, () => scene.canWalk()); game.touch.attach(); }
   // sound: starts on the first press; N switches music, effects and voices on and off together
   attachSound(window);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) game.voices.stop(); });
   game.voices.muted = !audio.on;
   // settings from the menu: levels, voices, always run
   const apply = (s: Settings) => { audio.setLevels(s.music, s.effects); game.voices.volume = s.voices; if (s.voices <= 0) game.voices.stop(); game.input.runToggle = s.alwaysRun; };
