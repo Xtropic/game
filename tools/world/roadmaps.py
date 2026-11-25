@@ -111,6 +111,51 @@ A.box(1, 10, 5, 14, "I"); A.rect(2, 11, 4, 13, "p"); A.put(5, 12, "d"); A.put(2,
 A.put(14, 0, "e")
 ARCHIVE = town("college-archive", "The College archive", "caves", A, (14, 1), rest=False)
 
+# ================================================================ leg 2: the Coast, Port Ashby
+# ---------------- Reedhythe: the smugglers' landing in the western reeds ----------------
+# 26 x 14. Stilt huts over the water, a landing stage, Mother Saul's hut, the coast road out (south-east).
+R = G(26, 14, "q")
+R.rect(0, 0, 25, 3, "~"); R.rect(3, 4, 21, 10, ","); R.rect(9, 3, 11, 3, "p"); R.rect(10, 0, 10, 2, "p")   # the landing stage
+house(R, 4, 5, 8, 7, (6,)); house(R, 14, 5, 19, 7, (16,))
+R.put(11, 8, "F"); R.rect(4, 9, 5, 9, "x"); R.rect(18, 9, 19, 9, "C")
+R.rect(12, 10, 13, 13, ":"); R.rect(12, 13, 13, 13, "e")
+REED = town("town-reedhythe", "Reedhythe", "dusk", R, (12, 12))
+
+# ---------------- Port Ashby: the harbour ----------------
+# 32 x 18. The harbour (north) with the mole running out into it, the brig at anchor off the mole's end,
+# the harbourmaster's office (north-east), the tavern row (west), the market (middle), the gate (bottom).
+H = G(32, 18, ".")
+H.rect(0, 0, 31, 5, "~"); H.rect(0, 6, 31, 6, "p")
+H.rect(15, 1, 16, 5, "p"); H.rect(15, 1, 16, 1, "e")                 # the mole, and the boat at its end
+H.rect(24, 1, 29, 2, "x")                                            # a moored lighter
+house(H, 23, 8, 30, 11, (26,))                                       # the harbourmaster's office
+house(H, 1, 8, 9, 11, (3, 7))                                        # the tavern row: the Lantern and the Gull
+house(H, 1, 13, 6, 16, (4,))
+H.rect(12, 10, 13, 10, "S"); H.rect(17, 10, 18, 10, "S"); H.rect(12, 13, 13, 13, "S"); H.put(15, 12, "w")
+H.rect(20, 14, 21, 14, "x"); H.rect(28, 14, 29, 15, "H")
+H.rect(0, 17, 31, 17, "#"); H.rect(15, 17, 16, 17, "e")
+ASHBY = town("town-ashby", "Port Ashby", "town", H, (15, 16))
+
+# ---------------- The Lantern: the card tavern ----------------
+# 24 x 12. Three card tables under lanterns, the bar, the stair up (closed), the door out (bottom).
+L = G(24, 12, "p")
+L.rect(0, 0, 23, 0, "I"); L.rect(0, 11, 23, 11, "I"); L.rect(0, 0, 0, 11, "I"); L.rect(23, 0, 23, 11, "I")
+L.rect(2, 1, 9, 1, "k"); L.rect(2, 2, 9, 2, "b")                    # the bar
+L.rect(4, 6, 5, 7, "b"); L.rect(11, 6, 12, 7, "b"); L.rect(18, 4, 19, 5, "b")   # the card tables
+L.rect(14, 1, 16, 1, "x"); L.put(21, 9, "F")
+L.rect(11, 11, 12, 11, "e")
+LANTERN = town("ashby-tavern", "The Lantern, Port Ashby", "dusk", L, (11, 10))
+
+# ---------------- The brig, at anchor ----------------
+# 26 x 12. The deck (top half) with the mast and hatch, the hold below (bottom half) where the children are.
+B = G(26, 12, "~")
+B.rect(2, 1, 23, 5, "p"); B.rect(2, 1, 23, 1, "x"); B.put(12, 3, "R"); B.rect(18, 4, 19, 4, "x")
+B.rect(2, 6, 23, 6, "I")
+B.rect(2, 7, 23, 10, "_"); B.rect(3, 8, 4, 9, "B"); B.rect(20, 8, 21, 9, "B"); B.rect(9, 10, 16, 10, "x")
+B.put(7, 6, "d")                                                     # the hatch down
+B.put(0, 3, "e"); B.rect(1, 3, 1, 3, "p")                            # the boat alongside, back to the mole
+BRIG = town("ashby-brig", "The Guild brig Patience", "night", B, (1, 3), rest=False)
+
 if __name__ == "__main__":
     for m in MAPS:
         print(m["id"]); print("\n".join(m["rows"]))

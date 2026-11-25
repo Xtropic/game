@@ -8,7 +8,11 @@
   "haldaneGate",
   "hearing",
   "perrineSquare",
-  "theVote"
+  "theVote",
+  "gully",
+  "brigWon",
+  "harbourPrice",
+  "corranCell"
  ],
  "moods": {
   "scenes": {
@@ -39,7 +43,27 @@
    "kitVouch": "camp",
    "fairGate": "camp",
    "wardDone": "camp",
-   "libraryDoor": "camp"
+   "libraryDoor": "camp",
+   "saul": "camp",
+   "roadOpen": "camp",
+   "ashbyArrive": "camp",
+   "clerkAshby": "camp",
+   "harbourOffice": "camp",
+   "moleEnd": "camp",
+   "cardsRules": "camp",
+   "pike": "camp",
+   "meg": "camp",
+   "annet": "camp",
+   "annetWon": "camp",
+   "gully": "camp",
+   "mole": "camp",
+   "brigWon": "camp",
+   "harbourPrice": "camp",
+   "corranAutumnRoad": "camp",
+   "corranPool": "camp",
+   "corranMire": "camp",
+   "corranCell": "camp",
+   "backToRoad1": "camp"
   },
   "stages": {
    "ah5": "night"
@@ -58,7 +82,17 @@
   "gil": "Gil",
   "perrine": "Perrine",
   "bargeman": "Guild bargemaster",
-  "linnet": "Linnet"
+  "linnet": "Linnet",
+  "saul": "Mother Saul",
+  "clerk": "Harbour clerk",
+  "pike": "Old Pike",
+  "meg": "Sister Meg",
+  "annet": "Annet",
+  "gully": "Gully Sorne",
+  "fairweather": "Fairweather",
+  "posy": "Posy",
+  "dorrit": "Dorrit",
+  "oren": "Oren Tull"
  },
  "objectives": {
   "ah0": "The council in Thornwick chapel.",
@@ -69,7 +103,15 @@
   "ah5": "Haldane is waiting at the College gate. Go to the College tonight.",
   "ah6": "The College hall. The hearing sits at noon.",
   "ah7": "The square. The vote is at sunset.",
-  "ah8": "Finch went down the coast road to Port Ashby. Follow him south."
+  "ah8": "Finch went down the coast road to Port Ashby. Smugglers hold it: their landing is Reedhythe, in the western reeds.",
+  "ah9": "Port Ashby, on the coast. Find the harbourmaster's office.",
+  "ah10": "The harbourmaster only sees people he's played. Win at Lantern Cards in the Lantern, on the tavern row.",
+  "ah11": "The harbourmaster will see you. His office faces the harbour.",
+  "ah12a": "Meet Gully at the end of the mole, at midnight.",
+  "ah12": "The Guild brig Patience.",
+  "ah13": "Gully is waiting in his office.",
+  "ah14": "North, to Lorne, through the Drevka clans' lands. The drove road leaves the vale to the north.",
+  "ai1": "Autumn, while Rhea is away."
  },
  "actors": [
   {
@@ -391,6 +433,181 @@
      "run": "archiveGuards"
     }
    ]
+  },
+  {
+   "id": "saul",
+   "map": "town-reedhythe",
+   "x": 8,
+   "y": 8,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "run": "saul"
+    }
+   ]
+  },
+  {
+   "id": "reed-nephew",
+   "map": "town-reedhythe",
+   "x": 13,
+   "y": 8,
+   "look": "smuggler",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "One of Mother Saul's nephews, whittling. He doesn't look up. He doesn't need to."
+    }
+   ]
+  },
+  {
+   "id": "reed-nephew2",
+   "map": "town-reedhythe",
+   "x": 9,
+   "y": 10,
+   "look": "smuggler",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "Another nephew, mending a net that has never caught a fish."
+    }
+   ]
+  },
+  {
+   "id": "pike",
+   "map": "ashby-tavern",
+   "x": 6,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "run": "pike"
+    }
+   ]
+  },
+  {
+   "id": "meg",
+   "map": "ashby-tavern",
+   "x": 13,
+   "y": 7,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "run": "meg"
+    }
+   ]
+  },
+  {
+   "id": "annet",
+   "map": "ashby-tavern",
+   "x": 20,
+   "y": 5,
+   "look": "annet",
+   "when": {
+    "stagePrefix": "ah",
+    "not": "recruited.annet"
+   },
+   "talk": [
+    {
+     "run": "annet"
+    }
+   ]
+  },
+  {
+   "id": "tav-keeper",
+   "map": "ashby-tavern",
+   "x": 6,
+   "y": 3,
+   "look": "innkeeper",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The Lantern's keeper, polishing a glass that was clean an hour ago. \"Cards are at the tables. Rum's here. Trouble's outside.\""
+    }
+   ]
+  },
+  {
+   "id": "ash-fishwife",
+   "map": "town-ashby",
+   "x": 18,
+   "y": 12,
+   "look": "kr-mother",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A fishwife with a basket of herring. \"Guild ships, Crown ships, Ember ships. They all eat fish. Ashby doesn't ask.\""
+    }
+   ]
+  },
+  {
+   "id": "ash-docker",
+   "map": "town-ashby",
+   "x": 10,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah",
+    "not": "brigTaken"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A docker coiling rope. \"The Patience? She's been loading for a week. Apprentices, they say. Funny sort of apprentices. They cry.\""
+    }
+   ]
+  },
+  {
+   "id": "ash-docker2",
+   "map": "town-ashby",
+   "x": 10,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "ah",
+    "flag": "brigTaken"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A docker coiling rope. \"Someone took the Patience's whole cargo off her in the night. Not a soul in Ashby saw anything. Not a soul.\""
+    }
+   ]
+  },
+  {
+   "id": "ash-sailor",
+   "map": "town-ashby",
+   "x": 22,
+   "y": 7,
+   "look": "smuggler",
+   "when": {
+    "stagePrefix": "ah"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A sailor from somewhere hot, watching the harbour. \"Lorne's waters ice up at the first frost. After that, nobody sails north till spring.\""
+    }
+   ]
   }
  ],
  "steps": [
@@ -551,6 +768,114 @@
       "map": "land-west",
       "x": 14,
       "y": 21,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-west",
+   "at": [
+    10,
+    32
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-reedhythe",
+      "x": 12,
+      "y": 12,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-reedhythe",
+   "at": [
+    12,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-west",
+      "x": 10,
+      "y": 33,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-reedhythe",
+   "at": [
+    13,
+    13
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-west",
+      "x": 10,
+      "y": 33,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-coast",
+   "at": [
+    20,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ashby",
+      "x": 15,
+      "y": 16,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    15,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-coast",
+      "x": 20,
+      "y": 18,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    16,
+    17
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-coast",
+      "x": 20,
+      "y": 18,
       "facing": "down"
      }
     }
@@ -856,6 +1181,127 @@
    "when": {
     "stage": "ah6"
    }
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    3,
+    11
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "ashby-tavern",
+      "x": 11,
+      "y": 10,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    7,
+    11
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "ashby-tavern",
+      "x": 11,
+      "y": 10,
+      "facing": "up"
+     }
+    }
+   ]
+  },
+  {
+   "map": "ashby-tavern",
+   "at": [
+    11,
+    11
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ashby",
+      "x": 3,
+      "y": 12,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "ashby-tavern",
+   "at": [
+    12,
+    11
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ashby",
+      "x": 3,
+      "y": 12,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    26,
+    11
+   ],
+   "do": [
+    {
+     "run": "harbourOffice"
+    }
+   ]
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    15,
+    1
+   ],
+   "do": [
+    {
+     "run": "moleEnd"
+    }
+   ]
+  },
+  {
+   "map": "town-ashby",
+   "at": [
+    16,
+    1
+   ],
+   "do": [
+    {
+     "run": "moleEnd"
+    }
+   ]
+  },
+  {
+   "map": "ashby-brig",
+   "at": [
+    0,
+    3
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-ashby",
+      "x": 15,
+      "y": 2,
+      "facing": "down"
+     }
+    }
+   ]
   }
  ],
  "zones": [
@@ -927,6 +1373,23 @@
    "do": [
     {
      "run": "archiveGuards"
+    }
+   ]
+  },
+  {
+   "map": "town-ashby",
+   "area": [
+    12,
+    13,
+    19,
+    16
+   ],
+   "when": {
+    "stage": "ah9"
+   },
+   "do": [
+    {
+     "run": "ashbyArrive"
     }
    ]
   }
@@ -2464,6 +2927,1300 @@
    },
    {
     "toast": "Finch went south to Port Ashby, with a chest he wouldn't let anyone carry."
+   }
+  ],
+  "saul": [
+   {
+    "if": {
+     "flag": "open.west-coast"
+    },
+    "then": [
+     {
+      "say": "saul",
+      "text": "\"The road's yours, envoy. Mind the tide at Gullstair.\""
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ah8"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Mother Saul runs Reedhythe from a chair on her hut's porch, with a pipe and a ledger and four nephews who don't say much."
+       },
+       {
+        "say": "saul",
+        "text": "\"The coast road's ours. Has been since my grandmother. Anyone who uses it pays, or swims.\""
+       },
+       {
+        "say": "saul",
+        "text": "\"The Guild's boy paid. In silver, and politely. He also said the Commons would come this way after him, and that the Guild would pay better for the Commons envoy than the Commons would pay for the road.\""
+       },
+       {
+        "if": {
+         "flag": "recruited.fairweather"
+        },
+        "then": [
+         {
+          "say": "fairweather",
+          "text": "\"Saul. You owe me for the Kerrow lock, the winter it froze.\""
+         },
+         {
+          "say": "saul",
+          "text": "\"Fairweather. I'd hoped you were dead. ... Fine. One debt for one road. And tell your captain the Guild's boy wasn't just polite. He was sad. I've never had a sad one pay me before.\""
+         },
+         {
+          "run": "roadOpen"
+         }
+        ],
+        "else": [
+         {
+          "choose": "Saul's nephews are standing up, one by one.",
+          "options": [
+           {
+            "label": "\"Then let's see what the Guild's money buys.\"",
+            "hint": "Fight for the road.",
+            "do": [
+             {
+              "battle": "road-smugglers",
+              "win": [
+               {
+                "say": "",
+                "text": "The nephews sit down again, more slowly than they stood up. Mother Saul hasn't moved from her chair."
+               },
+               {
+                "say": "saul",
+                "text": "\"Fine. The road's yours. I was only ever going to sell you to the highest bidder, and you've just bid with them.\""
+               },
+               {
+                "run": "roadOpen"
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "label": "\"What would the road cost, if the Commons paid?\"",
+            "hint": "Pay the way smugglers like to be paid.",
+            "do": [
+             {
+              "say": "saul",
+              "text": "\"Not coin. Your word. When the Commons owns the canals, Reedhythe keeps the coast road, and nobody comes asking what goes up and down it.\""
+             },
+             {
+              "set": {
+               "saulPromise": true
+              }
+             },
+             {
+              "say": "",
+              "text": "Rhea gives it. It's an easy promise to make, and she knows exactly what it will cost someone, one day."
+             },
+             {
+              "run": "roadOpen"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "else": [
+       {
+        "say": "saul",
+        "text": "\"Reedhythe. We don't sell anything you'd want.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "roadOpen": [
+   {
+    "set": {
+     "open.west-coast": true
+    }
+   },
+   {
+    "stage": "ah9"
+   },
+   {
+    "toast": "The coast road to Port Ashby is open."
+   }
+  ],
+  "ashbyArrive": [
+   {
+    "if": {
+     "stage": "ah9"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "Port Ashby smells of tar and fish and money. Ships from places Rhea has only seen on maps ride in the harbour, and the quay is louder than Millbridge on market day."
+     },
+     {
+      "say": "",
+      "text": "Out at the end of the stone mole, a brig rides at anchor, black-hulled, with the Guild's lamp painted on her bow."
+     }
+    ]
+   }
+  ],
+  "clerkAshby": [
+   {
+    "if": {
+     "stage": [
+      "ah9",
+      "ah10"
+     ]
+    },
+    "then": [
+     {
+      "say": "clerk",
+      "text": "\"Master Sorne doesn't see envoys. He doesn't see the Guild, he doesn't see the Crown, and he won't see the Commons.\""
+     },
+     {
+      "say": "clerk",
+      "text": "\"He sees people he's played at cards. It's how he knows what they are. Win at the Lantern, across the way, and he'll send for you. Lose, and you can wait with the rest.\""
+     },
+     {
+      "stage": "ah10"
+     }
+    ],
+    "else": [
+     {
+      "say": "clerk",
+      "text": "\"Master Sorne is expecting you. Through there.\""
+     }
+    ]
+   }
+  ],
+  "harbourOffice": [
+   {
+    "if": {
+     "stage": [
+      "ah9",
+      "ah10"
+     ]
+    },
+    "then": [
+     {
+      "run": "clerkAshby"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": [
+        "ah11",
+        "ah12a",
+        "ah13"
+       ]
+      },
+      "then": [
+       {
+        "run": "gully"
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The harbourmaster's office. The clerk is busy, and the door to the inner room is shut."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "moleEnd": [
+   {
+    "if": {
+     "stage": "ah12a"
+    },
+    "then": [
+     {
+      "run": "mole"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "flag": "brigTaken"
+      },
+      "then": [
+       {
+        "say": "",
+        "text": "Where the Patience rode at anchor, there's only grey water and a few gulls."
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "The end of the mole. Out in the harbour, the brig Patience rides at anchor, black-hulled, with the Guild's lamp painted on her bow."
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "cardsRules": [
+   {
+    "say": "",
+    "text": "Lantern Cards. Five cards each, and the lantern card face down in the middle. Raise, call or fold. Everyone in Ostrel plays it, and everyone in Ashby plays it for money."
+   },
+   {
+    "say": "",
+    "text": "The trick isn't the cards. It's the player. Watch them, not the table."
+   }
+  ],
+  "pike": [
+   {
+    "if": {
+     "flag": "cards.pike"
+    },
+    "then": [
+     {
+      "say": "pike",
+      "text": "\"Go and beat Meg. Nobody beats Meg.\""
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "not": "cardsSeen"
+      },
+      "then": [
+       {
+        "set": {
+         "cardsSeen": true
+        }
+       },
+       {
+        "run": "cardsRules"
+       }
+      ]
+     },
+     {
+      "say": "",
+      "text": "Old Pike, a dockhand with arms like hawsers, chewing tar gum. He chews steadily as he deals."
+     },
+     {
+      "choose": "Pike looks at his cards, chewing, chewing.",
+      "options": [
+       {
+        "label": "\"Raise.\"",
+        "hint": "He's still chewing.",
+        "do": [
+         {
+          "say": "",
+          "text": "He chews a little faster, and folds. A man with a good hand stops chewing; Pike's never stopped."
+         },
+         {
+          "choose": "The second hand. Pike's jaw stops dead. He taps the lantern card twice.",
+          "options": [
+           {
+            "label": "\"Fold.\"",
+            "hint": "He's stopped chewing.",
+            "do": [
+             {
+              "say": "",
+              "text": "You fold. He turns over three lanterns, sighs, and starts chewing again. \"Who told you?\""
+             },
+             {
+              "set": {
+               "cards.pike": true
+              }
+             },
+             {
+              "say": "pike",
+              "text": "\"All right. You can watch. Go and try Meg; she'll eat you.\""
+             },
+             {
+              "toast": "Pike beaten. Two champions to go."
+             }
+            ]
+           },
+           {
+            "label": "\"Raise.\"",
+            "hint": "Bluff him.",
+            "do": [
+             {
+              "say": "",
+              "text": "He raises you back and takes the pot with three lanterns."
+             },
+             {
+              "say": "",
+              "text": "Pike rakes in the pot. \"Again?\""
+             }
+            ]
+           },
+           {
+            "label": "\"Call.\"",
+            "hint": "See it through.",
+            "do": [
+             {
+              "say": "",
+              "text": "He wins with three lanterns."
+             },
+             {
+              "say": "",
+              "text": "Pike rakes in the pot. \"Again?\""
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "label": "\"Fold.\"",
+        "hint": "Play safe.",
+        "do": [
+         {
+          "say": "",
+          "text": "You fold. He turns over nothing, and grins, chewing."
+         },
+         {
+          "say": "",
+          "text": "Pike rakes in the pot. \"Again?\""
+         }
+        ]
+       },
+       {
+        "label": "\"Call.\"",
+        "hint": "See what he has.",
+        "do": [
+         {
+          "say": "",
+          "text": "He calls you back, and wins with a pair of drays."
+         },
+         {
+          "say": "",
+          "text": "Pike rakes in the pot. \"Again?\""
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "meg": [
+   {
+    "if": {
+     "flag": "cards.meg"
+    },
+    "then": [
+     {
+      "say": "meg",
+      "text": "\"He'd have liked you, my Tam. He liked anyone who could keep their mouth shut.\""
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "not": "cards.pike"
+      },
+      "then": [
+       {
+        "say": "meg",
+        "text": "\"Pike first, dear. There's an order to things.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Sister Meg, a net-widow in black, with a glass of rum and a great deal to say about her late husband's boat."
+       },
+       {
+        "choose": "Meg is quiet for once, counting her cards twice.",
+        "options": [
+         {
+          "label": "\"Fold.\"",
+          "hint": "She's gone quiet.",
+          "do": [
+           {
+            "say": "",
+            "text": "You fold. She turns over a full hand of crowns, and says nothing at all, which is how you know you were right."
+           },
+           {
+            "choose": "Meg tells you about her late husband's boat: the paint, the tar, the time it nearly sank off Gullstair, at length.",
+            "options": [
+             {
+              "label": "\"Raise.\"",
+              "hint": "She's talking again.",
+              "do": [
+               {
+                "say": "",
+                "text": "Halfway through the story about the tar, she folds. She had nothing. She always talks when she has nothing."
+               },
+               {
+                "set": {
+                 "cards.meg": true
+                }
+               },
+               {
+                "say": "meg",
+                "text": "\"Well, dear. Annet's at the far table. Annet doesn't talk, and she doesn't chew. Annet watches you.\""
+               },
+               {
+                "toast": "Meg beaten. One champion to go."
+               }
+              ]
+             },
+             {
+              "label": "\"Fold.\"",
+              "hint": "Wait for a better hand.",
+              "do": [
+               {
+                "say": "",
+                "text": "You fold, and she shows you two odd cards and a lot of nothing."
+               },
+               {
+                "say": "",
+                "text": "Meg pats your hand. \"Again, dear?\""
+               }
+              ]
+             },
+             {
+              "label": "\"Call.\"",
+              "hint": "See what she has.",
+              "do": [
+               {
+                "say": "",
+                "text": "She folds before you can, chattering. She takes nothing; you take little."
+               },
+               {
+                "say": "",
+                "text": "Meg pats your hand. \"Again, dear?\""
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "label": "\"Raise.\"",
+          "hint": "Push her.",
+          "do": [
+           {
+            "say": "",
+            "text": "She raises you back without a word, and wins."
+           },
+           {
+            "say": "",
+            "text": "Meg pats your hand. \"Again, dear?\""
+           }
+          ]
+         },
+         {
+          "label": "\"Call.\"",
+          "hint": "See it.",
+          "do": [
+           {
+            "say": "",
+            "text": "She wins, without a word."
+           },
+           {
+            "say": "",
+            "text": "Meg pats your hand. \"Again, dear?\""
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "annet": [
+   {
+    "if": {
+     "flag": "cards.annet"
+    },
+    "then": [
+     {
+      "say": "annet",
+      "text": "\"Sorne's sent for you. Go on.\""
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "not": "cards.meg"
+      },
+      "then": [
+       {
+        "say": "annet",
+        "text": "\"I only play people who've beaten Meg.\""
+       }
+      ],
+      "else": [
+       {
+        "say": "",
+        "text": "Annet, at the far table, a young woman with a still face who deals without looking at the cards and looks only at you."
+       },
+       {
+        "say": "annet",
+        "text": "\"I don't have a tell. You do. Let's see if you know what it is.\""
+       },
+       {
+        "choose": "Annet waits for you to look at your cards.",
+        "options": [
+         {
+          "label": "Look, and raise at once",
+          "hint": "Give her nothing to read.",
+          "do": [
+           {
+            "say": "",
+            "text": "You don't give yourself time to think, so you don't give her anything to read. Her eyes narrow, just slightly."
+           },
+           {
+            "choose": "The second hand. Annet turns the lantern card face up, which nobody does, and watches you look at it.",
+            "options": [
+             {
+              "label": "\"Call.\"",
+              "hint": "Don't look at it.",
+              "do": [
+               {
+                "say": "",
+                "text": "You call, without looking at the lantern card again. She lays down her cards. You win by one. She smiles for the first time."
+               },
+               {
+                "run": "annetWon"
+               }
+              ]
+             },
+             {
+              "label": "\"Raise.\"",
+              "hint": "It helps your hand.",
+              "do": [
+               {
+                "say": "",
+                "text": "Your eyes went to the lantern card before you raised. She calls, and wins."
+               },
+               {
+                "say": "",
+                "text": "Annet gathers the cards. \"You looked. Again?\""
+               }
+              ]
+             },
+             {
+              "label": "\"Fold.\"",
+              "hint": "It helps hers.",
+              "do": [
+               {
+                "say": "",
+                "text": "You fold, and she shows you nothing worth folding to."
+               },
+               {
+                "say": "",
+                "text": "Annet gathers the cards. \"You looked. Again?\""
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "label": "Look, think it over, then raise",
+          "hint": "Take your time.",
+          "do": [
+           {
+            "say": "",
+            "text": "You take your time. She takes your money. \"You hesitate when you're strong. Again?\""
+           }
+          ]
+         },
+         {
+          "label": "Let Kit deal",
+          "hint": "Kit has quick fingers.",
+          "when": {
+           "flag": "party.kit"
+          },
+          "do": [
+           {
+            "set": {
+             "cardsCheated": true
+            }
+           },
+           {
+            "say": "",
+            "text": "Kit deals. Rhea's hand is extraordinary. So is the next. Annet watches Kit's hands for a long time, and then lays her cards down, face up, and pushes the pot across."
+           },
+           {
+            "say": "annet",
+            "text": "\"Good hands. Your friend's. Sorne will see you; he only said you had to win.\""
+           },
+           {
+            "set": {
+             "cards.annet": true
+            }
+           },
+           {
+            "stage": "ah11"
+           },
+           {
+            "toast": "The Lantern's champions are beaten. The harbourmaster will see you."
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "annetWon": [
+   {
+    "set": {
+     "cards.annet": true
+    }
+   },
+   {
+    "stage": "ah11"
+   },
+   {
+    "say": "annet",
+    "text": "\"Nobody's read me in two years. I'll tell Sorne. And when you go, I'm coming. I want to know how you did it.\""
+   },
+   {
+    "set": {
+     "recruited.annet": true
+    }
+   },
+   {
+    "toast": "The Lantern's champions are beaten. The harbourmaster will see you."
+   }
+  ],
+  "gully": [
+   {
+    "if": {
+     "stage": "ah11"
+    },
+    "then": [
+     {
+      "say": "",
+      "text": "The harbourmaster's office is all windows, facing the harbour. Gully Sorne is a wiry man near forty, with a crooked nose, a gold tooth, and a hatchery number tattooed on the inside of his wrist, where a cuff would hide it. He isn't hiding it."
+     },
+     {
+      "say": "gully",
+      "text": "\"Sit. You played Annet. That tells me more than any letter Kane could write.\""
+     },
+     {
+      "say": "gully",
+      "text": "\"The Guild's boy came through a month ago. He had a chest he wouldn't put down, and he sailed north on the first ship out. I don't know what was in it. I don't ask what's in things. I'm the harbourmaster.\""
+     },
+     {
+      "say": "rhea",
+      "text": "\"You're from a hatchery.\""
+     },
+     {
+      "say": "gully",
+      "text": "\"Corvel's. I went out through the drain at nine and stowed away on a fish boat. Thirty years. I stopped asking what's in things the day I got here, and Ashby made me harbourmaster for it.\""
+     },
+     {
+      "say": "gully",
+      "text": "\"Then I'll show you something I stopped asking about. Tonight, at the end of the mole. Come alone, or as alone as you can.\""
+     },
+     {
+      "stage": "ah12a"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "stage": "ah13"
+      },
+      "then": [
+       {
+        "run": "harbourPrice"
+       }
+      ],
+      "else": [
+       {
+        "say": "gully",
+        "text": "\"Midnight. The end of the mole.\""
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "mole": [
+   {
+    "if": {
+     "stage": "ah12a"
+    },
+    "then": [
+     {
+      "set": {
+       "light": "night"
+      }
+     },
+     {
+      "say": "",
+      "text": "Midnight at the end of the mole. The brig Patience rides at anchor fifty yards out, her lamps lit. A lighter is being rowed out to her from the Guild warehouse, low in the water."
+     },
+     {
+      "say": "",
+      "text": "Not crates. Children. Twenty or thirty of them, sitting in rows in the lighter with their knees up, and a Warden at each end."
+     },
+     {
+      "say": "gully",
+      "text": "\"Indentured apprentices, for the Ember Courts and the islands. Every month, the Houses sell the indentures they can't use any more. The ones who cough. The slow ones. The ones who ask questions.\""
+     },
+     {
+      "say": "gully",
+      "text": "\"Thirty years I've stamped those papers, because a harbourmaster stamps papers. The tide turns in an hour. I've got a boat.\""
+     },
+     {
+      "stage": "ah12"
+     },
+     {
+      "goto": {
+       "map": "ashby-brig",
+       "x": 1,
+       "y": 3,
+       "facing": "right"
+      }
+     },
+     {
+      "say": "",
+      "text": "The Patience's deck. Warden marines at the rail, and the bosun with a lantern, counting heads as the children come up the side."
+     },
+     {
+      "battle": "road-brig",
+      "win": [
+       {
+        "run": "brigWon"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "brigWon": [
+   {
+    "say": "",
+    "text": "The last marine goes over the rail into the harbour. In the hold, thirty-four children sit very still on the bare planks, the way hatchery children sit when they don't know yet what kind of trouble it is."
+   },
+   {
+    "if": {
+     "flag": "recruited.posy"
+    },
+    "then": [
+     {
+      "say": "posy",
+      "text": "\"You're not going anywhere hot. You're going up a mountain. There's a warm pool. I'll show you.\""
+     }
+    ],
+    "else": [
+     {
+      "say": "rhea",
+      "text": "\"You're going up a mountain, to a place called Thornwick. There's a warm pool. Nobody there will put a number on you.\""
+     }
+    ]
+   },
+   {
+    "say": "",
+    "text": "Gully goes through the bosun's cabin while Rhea counts the children twice. He comes out with the brig's manifest and a sealed packet, and his face has changed."
+   },
+   {
+    "say": "gully",
+    "text": "\"The Patience carried your brother's chest north last month, to Holm. They kept a copy of what was in it, because the Guild keeps a copy of everything. Read it.\""
+   },
+   {
+    "say": "",
+    "text": "A letter from the Houses to the King of Lorne, in a clerk's hand, signed with the standing loftbuck."
+   },
+   {
+    "say": "",
+    "text": "If Lorne closes its passes to the Commons and sends its army south over them in the autumn, then, when the Commons falls, the Houses will see that Lorne has the Drevka high grazing, from Kestrel Fort to the Storm Roost, for ever."
+   },
+   {
+    "say": "rhea",
+    "text": "\"The clans' grazing. That isn't the Houses' to give.\""
+   },
+   {
+    "say": "gully",
+    "text": "\"It will be, if the Commons falls. That's how the Guild buys things. With what it'll own afterwards.\""
+   },
+   {
+    "set": {
+     "lorneOffer": true,
+     "brigTaken": true
+    }
+   },
+   {
+    "stage": "ah13"
+   },
+   {
+    "fade": "Morning. The harbourmaster's office."
+   },
+   {
+    "set": {
+     "light": "day"
+    }
+   },
+   {
+    "goto": {
+     "map": "town-ashby",
+     "x": 26,
+     "y": 12,
+     "facing": "up"
+    }
+   },
+   {
+    "run": "harbourPrice"
+   }
+  ],
+  "harbourPrice": [
+   {
+    "say": "gully",
+    "text": "\"Now the hard part. The harbour council has been told what you did to a Guild ship in their harbour. They want to know what the Commons means to do about Ashby.\""
+   },
+   {
+    "say": "gully",
+    "text": "\"Ashby carries everything. Moss up, tins down, children out. It doesn't care who wins, so long as the ships keep coming. Promise the harbour its trade after the war, all of it, no questions, and the council looks the other way about the Patience.\""
+   },
+   {
+    "say": "gully",
+    "text": "\"Or close the harbour. Put the Commons' boats across the mouth and starve the Guild's sea trade. The council will fight you for it, and I'll be on the other side, because I'm the harbourmaster.\""
+   },
+   {
+    "choose": "Gully waits, with his cuff turned back.",
+    "options": [
+     {
+      "label": "\"The harbour keeps its trade. All of it.\"",
+      "hint": "Ashby's trade is ugly. It's also Ashby's.",
+      "do": [
+       {
+        "set": {
+         "road.ashby": "promise",
+         "nation.ashby": "pact",
+         "deed.ashby": true,
+         "recruited.gully": true,
+         "recruited.rue": true
+        }
+       },
+       {
+        "add": {
+         "standing.ashby": 30
+        }
+       },
+       {
+        "say": "gully",
+        "text": "\"Then the council will call it a misunderstanding about a ship's papers. And I'm coming with you, because I want to see the drain I went out by, one more time, with the Commons on the other side of it.\""
+       },
+       {
+        "say": "",
+        "text": "Rue, the harbour's marine captain, a tall woman with a boarding axe, signs the Commons' book after Gully, without being asked. \"Ashby keeps its word when it's paid,\" she says. \"You've paid.\""
+       },
+       {
+        "say": "",
+        "text": "Rhea knows what Ashby's trade is. She knows what will go down the coast road and out on the tide, one day, under a Commons flag, because she said so. She signs anyway."
+       },
+       {
+        "toast": "A pact with Port Ashby. Gully Sorne and Rue join the Commons."
+       }
+      ]
+     },
+     {
+      "label": "\"Then we close it.\"",
+      "hint": "Starve the Guild's ships. Ashby will hate the Commons for it.",
+      "do": [
+       {
+        "set": {
+         "road.ashby": "blockade"
+        }
+       },
+       {
+        "add": {
+         "standing.ashby": -40
+        }
+       },
+       {
+        "say": "gully",
+        "text": "\"Then I'm sorry. I mean it.\""
+       },
+       {
+        "army": "ashby-mole",
+        "win": [
+         {
+          "say": "",
+          "text": "By evening, the Commons' fishing boats hold the harbour mouth, chained gunwale to gunwale. Nothing comes in. Nothing goes out. The Guild's sea trade stops."
+         },
+         {
+          "set": {
+           "ashbyBlockaded": true
+          }
+         },
+         {
+          "toast": "Port Ashby's harbour is closed to the Guild."
+         }
+        ],
+        "lose": [
+         {
+          "say": "",
+          "text": "The harbour marines drive the Commons boats back out past the mole. The Patience sails without her apprentices, but the next ship won't."
+         },
+         {
+          "set": {
+           "ashbyBlockaded": false
+          }
+         },
+         {
+          "toast": "Thrown out of Ashby's harbour."
+         }
+        ]
+       },
+       {
+        "say": "",
+        "text": "Gully watches from his windows. He doesn't come out."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "stage": "ah14"
+   },
+   {
+    "run": "corranAutumnRoad"
+   }
+  ],
+  "corranAutumnRoad": [
+   {
+    "if": {
+     "eq": {
+      "corranFate": "thornwick"
+     }
+    },
+    "then": [
+     {
+      "run": "corranPool"
+     }
+    ],
+    "else": [
+     {
+      "if": {
+       "eq": {
+        "corranFate": "left"
+       }
+      },
+      "then": [
+       {
+        "run": "corranMire"
+       }
+      ],
+      "else": [
+       {
+        "run": "corranCell"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "run": "backToRoad1"
+   }
+  ],
+  "corranPool": [
+   {
+    "fade": "Thornwick. Autumn, while she is away."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ai1"
+   },
+   {
+    "say": "",
+    "text": "The Mire children are afraid of water. Most of them were never let near any that wasn't for the moss trays. So Corran stands in the warm pool to his waist every afternoon, and waits."
+   },
+   {
+    "say": "",
+    "text": "By the second week, the brave ones sit on the edge with their feet in. By the fourth, Wren is swimming, badly and loudly, and the others go in because Wren is."
+   },
+   {
+    "say": "",
+    "text": "A pedlar comes up the road at the end of the month, with a pack of needles and thread. When Dorrit has gone back inside, he puts a tin on the gate post, next to Corran's hand, and goes away without asking for anything."
+   },
+   {
+    "choose": "A Guild tin, on the gate post. Nobody else saw.",
+    "options": [
+     {
+      "label": "Throw it in the spring",
+      "hint": "Gone.",
+      "do": [
+       {
+        "set": {
+         "pedlarTin": "drowned"
+        }
+       },
+       {
+        "add": {
+         "hold": 3
+        }
+       },
+       {
+        "say": "",
+        "text": "He throws it underarm into the deep end of the warm pool, where the water comes up from the rock. It sinks without a sound. That night he can't sleep, and he knows exactly why."
+       }
+      ]
+     },
+     {
+      "label": "Give it to Dorrit",
+      "hint": "Someone should know.",
+      "do": [
+       {
+        "set": {
+         "pedlarTin": "dorrit"
+        }
+       },
+       {
+        "add": {
+         "hold": 5
+        }
+       },
+       {
+        "say": "dorrit",
+        "text": "\"Somebody wants you back, then. ... I'll lock it with the powder. Nobody's touched the powder in a year either.\""
+       },
+       {
+        "say": "",
+        "text": "She doesn't make anything of it. That's the kindest thing anyone at Thornwick has done for him."
+       }
+      ]
+     },
+     {
+      "label": "Keep it",
+      "hint": "Just in case.",
+      "do": [
+       {
+        "set": {
+         "pedlarTin": "kept"
+        }
+       },
+       {
+        "add": {
+         "hold": -6
+        }
+       },
+       {
+        "say": "",
+        "text": "He puts it inside his shirt. It's only in case. He tells himself it's only in case, every night, for a long time."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranMire": [
+   {
+    "fade": "House Mire. Autumn."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ai1"
+   },
+   {
+    "say": "",
+    "text": "When the Commons emptied Mire's brood room into Wren's drain, the House kept what was left. Forty children who were too small or too sick to walk, and the orderly who wouldn't leave them."
+   },
+   {
+    "say": "",
+    "text": "He carries water. He changes the moss. He sits up with the ones who cough. Nobody in the House remembers he was ever a Warden. Nobody remembers he was ever anything."
+   },
+   {
+    "say": "",
+    "text": "At the end of the month, the House steward comes to the sick room with the indenture book and starts reading names, for the carts to Ashby."
+   },
+   {
+    "choose": "The steward has the book open. Three of the names are children asleep in front of him.",
+    "options": [
+     {
+      "label": "\"Those three died in the night. I've already burned the bedding.\"",
+      "hint": "Lie.",
+      "by": "corran",
+      "do": [
+       {
+        "set": {
+         "mireLie": true
+        }
+       },
+       {
+        "add": {
+         "hold": 4
+        }
+       },
+       {
+        "say": "",
+        "text": "The steward looks at the sleeping children, and at him, and crosses out three names. He doesn't know why he does it. Neither does Corran."
+       },
+       {
+        "say": "",
+        "text": "The carts go to Ashby without them."
+       }
+      ]
+     },
+     {
+      "label": "Say nothing",
+      "hint": "It isn't his book.",
+      "do": [
+       {
+        "add": {
+         "hold": -3
+        }
+       },
+       {
+        "say": "",
+        "text": "The carts take them in the morning. He carries the smallest one down himself, because she asks him to."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "corranCell": [
+   {
+    "fade": "Millbridge. The gaol under the reeve's house. Autumn."
+   },
+   {
+    "set": {
+     "hero": "corran",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ai1"
+   },
+   {
+    "say": "",
+    "text": "Midsummer came and went, and nobody came down the steps with a rope. The town couldn't agree. The reeve said there should be a proper day for it; the eleven families said there should be no day at all; and then the harvest came, and everyone was busy."
+   },
+   {
+    "say": "",
+    "text": "Oren Tull brings his supper every night. Bread, cheese, an apple. He puts it through the bars and sits on the bottom step and doesn't speak. Oren's wife was one of the eleven."
+   },
+   {
+    "say": "",
+    "text": "On the last night of the month, he speaks."
+   },
+   {
+    "say": "oren",
+    "text": "\"She was sick for four days. I used to think the worst thing was that she knew it was coming. It wasn't. The worst thing was that she forgave everyone, in the end. Even the ones she didn't know about.\""
+   },
+   {
+    "choose": "Oren is sitting on the bottom step, waiting.",
+    "options": [
+     {
+      "label": "\"Don't forgive me. Please.\"",
+      "hint": "He hasn't earned it.",
+      "by": "corran",
+      "do": [
+       {
+        "set": {
+         "orenTalk": "unforgiven"
+        }
+       },
+       {
+        "add": {
+         "hold": 3
+        }
+       },
+       {
+        "say": "oren",
+        "text": "\"I wasn't going to.\""
+       },
+       {
+        "say": "",
+        "text": "But he comes back the next night, and the next."
+       }
+      ]
+     },
+     {
+      "label": "\"Tell me about her.\"",
+      "hint": "Listen.",
+      "by": "corran",
+      "do": [
+       {
+        "set": {
+         "orenTalk": "told"
+        }
+       },
+       {
+        "add": {
+         "hold": 5
+        }
+       },
+       {
+        "say": "",
+        "text": "Oren tells him. It takes until the candle is out. Neither of them says anything about forgiveness at all."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "set": {
+     "hero": "rhea"
+    }
+   }
+  ],
+  "backToRoad1": [
+   {
+    "fade": "Port Ashby. The first frost."
+   },
+   {
+    "set": {
+     "hero": "rhea",
+     "light": "day"
+    }
+   },
+   {
+    "stage": "ah14"
+   },
+   {
+    "goto": {
+     "map": "town-ashby",
+     "x": 15,
+     "y": 16,
+     "facing": "up"
+    }
+   },
+   {
+    "say": "",
+    "text": "North, then. Ashby's captains won't cross Lorne's waters after the first frost; the ice comes down the coast. If she's to reach Holm before the King signs, it's overland: back up through the vale and over the clans' high grazing."
+   },
+   {
+    "toast": "North, through the Drevka clans' lands, to Lorne. The drove road leaves the vale to the north."
    }
   ]
  }

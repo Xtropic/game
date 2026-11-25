@@ -12,10 +12,13 @@ OUT = os.path.join(ROOT, "data/story/road.json")
 TW = "thornwick"
 FAIR, SQ, QUAY, TAN, PEAT, COL, ARC = "hollin-fair", "town-hollin", "hollin-quay", "hollin-tannery", "town-peatmoor", "town-college", "college-archive"
 WEST = "land-west"
+REED, ASH, TAV, BRIG = "town-reedhythe", "town-ashby", "ashby-tavern", "ashby-brig"
 
 cast = {"gateward": "Hollin's gate-ward", "speaker": "The Speaker of the square", "ansel": "Ansel", "orla": "Orla", "davy": "Davy",
         "netmaker": "Bryn", "provost": "Provost Amory", "weaver": "Hanne", "kit": "Kit", "gil": "Gil", "perrine": "Perrine",
-        "bargeman": "Guild bargemaster", "linnet": "Linnet"}
+        "bargeman": "Guild bargemaster", "linnet": "Linnet",
+        "saul": "Mother Saul", "clerk": "Harbour clerk", "pike": "Old Pike", "meg": "Sister Meg", "annet": "Annet", "gully": "Gully Sorne",
+        "fairweather": "Fairweather", "posy": "Posy", "dorrit": "Dorrit", "oren": "Oren Tull"}
 
 objectives = {
     "ah0": "The council in Thornwick chapel.",
@@ -26,7 +29,15 @@ objectives = {
     "ah5": "Haldane is waiting at the College gate. Go to the College tonight.",
     "ah6": "The College hall. The hearing sits at noon.",
     "ah7": "The square. The vote is at sunset.",
-    "ah8": "Finch went down the coast road to Port Ashby. Follow him south.",
+    "ah8": "Finch went down the coast road to Port Ashby. Smugglers hold it: their landing is Reedhythe, in the western reeds.",
+    "ah9": "Port Ashby, on the coast. Find the harbourmaster's office.",
+    "ah10": "The harbourmaster only sees people he's played. Win at Lantern Cards in the Lantern, on the tavern row.",
+    "ah11": "The harbourmaster will see you. His office faces the harbour.",
+    "ah12a": "Meet Gully at the end of the mole, at midnight.",
+    "ah12": "The Guild brig Patience.",
+    "ah13": "Gully is waiting in his office.",
+    "ah14": "North, to Lorne, through the Drevka clans' lands. The drove road leaves the vale to the north.",
+    "ai1": "Autumn, while Rhea is away.",
 }
 
 S = {}
@@ -391,6 +402,260 @@ S["whereNextWest"] = [
     toast("Finch went south to Port Ashby, with a chest he wouldn't let anyone carry."),
 ]
 
+# ================================================================== leg 2: Port Ashby
+# ---- the coast road: Reedhythe's smugglers
+S["saul"] = [
+    iff({"flag": "open.west-coast"}, [say("saul", R("The road's yours, envoy. Mind the tide at Gullstair."))], [
+        iff({"stage": "ah8"}, [
+            n("Mother Saul runs Reedhythe from a chair on her hut's porch, with a pipe and a ledger and four nephews who don't say much."),
+            say("saul", R("The coast road's ours. Has been since my grandmother. Anyone who uses it pays, or swims.")),
+            say("saul", R("The Guild's boy paid. In silver, and politely. He also said the Commons would come this way after him, and that the Guild would pay better for the Commons envoy than the Commons would pay for the road.")),
+            iff({"flag": "recruited.fairweather"}, [
+                say("fairweather", R("Saul. You owe me for the Kerrow lock, the winter it froze.")),
+                say("saul", R("Fairweather. I'd hoped you were dead. ... Fine. One debt for one road. And tell your captain the Guild's boy wasn't just polite. He was sad. I've never had a sad one pay me before.")),
+                run("roadOpen"),
+            ], [
+                choose("Saul's nephews are standing up, one by one.",
+                       opt(R("Then let's see what the Guild's money buys."), [{"battle": "road-smugglers", "win": [
+                           n("The nephews sit down again, more slowly than they stood up. Mother Saul hasn't moved from her chair."),
+                           say("saul", R("Fine. The road's yours. I was only ever going to sell you to the highest bidder, and you've just bid with them.")),
+                           run("roadOpen")]}], hint="Fight for the road."),
+                       opt(R("What would the road cost, if the Commons paid?"), [
+                           say("saul", R("Not coin. Your word. When the Commons owns the canals, Reedhythe keeps the coast road, and nobody comes asking what goes up and down it.")),
+                           setf({"saulPromise": True}),
+                           n("Rhea gives it. It's an easy promise to make, and she knows exactly what it will cost someone, one day."),
+                           run("roadOpen")], hint="Pay the way smugglers like to be paid.")),
+            ]),
+        ], [say("saul", R("Reedhythe. We don't sell anything you'd want."))]),
+    ]),
+]
+S["roadOpen"] = [
+    setf({"open.west-coast": True}), stage("ah9"),
+    toast("The coast road to Port Ashby is open."),
+]
+
+# ---- Ashby: the harbourmaster
+S["ashbyArrive"] = [
+    iff({"stage": "ah9"}, [
+        n("Port Ashby smells of tar and fish and money. Ships from places Rhea has only seen on maps ride in the harbour, and the quay is louder than Millbridge on market day."),
+        n("Out at the end of the stone mole, a brig rides at anchor, black-hulled, with the Guild's lamp painted on her bow."),
+    ]),
+]
+S["clerkAshby"] = [
+    iff({"stage": ["ah9", "ah10"]}, [
+        say("clerk", R("Master Sorne doesn't see envoys. He doesn't see the Guild, he doesn't see the Crown, and he won't see the Commons.")),
+        say("clerk", R("He sees people he's played at cards. It's how he knows what they are. Win at the Lantern, across the way, and he'll send for you. Lose, and you can wait with the rest.")),
+        stage("ah10"),
+    ], [say("clerk", R("Master Sorne is expecting you. Through there."))]),
+]
+
+S["harbourOffice"] = [
+    iff({"stage": ["ah9", "ah10"]}, [run("clerkAshby")], [
+        iff({"stage": ["ah11", "ah12a", "ah13"]}, [run("gully")], [n("The harbourmaster's office. The clerk is busy, and the door to the inner room is shut.")])]),
+]
+S["moleEnd"] = [
+    iff({"stage": "ah12a"}, [run("mole")], [
+        iff({"flag": "brigTaken"}, [n("Where the Patience rode at anchor, there's only grey water and a few gulls.")],
+            [n("The end of the mole. Out in the harbour, the brig Patience rides at anchor, black-hulled, with the Guild's lamp painted on her bow.")])]),
+]
+
+# ---- Lantern Cards: three champions, each with a tell to read
+def hand(prompt, right, wrong, win, lose):
+    """One hand: the right answer plays on; a wrong one loses the hand."""
+    return choose(prompt, opt(right[0], [n(right[1]), *win], hint=right[2]),
+                  *[opt(w[0], [n(w[1]), *lose], hint=w[2]) for w in wrong])
+S["cardsRules"] = [
+    n("Lantern Cards. Five cards each, and the lantern card face down in the middle. Raise, call or fold. Everyone in Ostrel plays it, and everyone in Ashby plays it for money."),
+    n("The trick isn't the cards. It's the player. Watch them, not the table."),
+]
+S["pike"] = [
+    iff({"flag": "cards.pike"}, [say("pike", R("Go and beat Meg. Nobody beats Meg."))], [
+        iff({"not": "cardsSeen"}, [setf({"cardsSeen": True}), run("cardsRules")]),
+        n("Old Pike, a dockhand with arms like hawsers, chewing tar gum. He chews steadily as he deals."),
+        hand("Pike looks at his cards, chewing, chewing.",
+             (R("Raise."), "He chews a little faster, and folds. A man with a good hand stops chewing; Pike's never stopped.", "He's still chewing."),
+             [(R("Fold."), "You fold. He turns over nothing, and grins, chewing.", "Play safe."), (R("Call."), "He calls you back, and wins with a pair of drays.", "See what he has.")],
+             [hand("The second hand. Pike's jaw stops dead. He taps the lantern card twice.",
+                   (R("Fold."), "You fold. He turns over three lanterns, sighs, and starts chewing again. \"Who told you?\"", "He's stopped chewing."),
+                   [(R("Raise."), "He raises you back and takes the pot with three lanterns.", "Bluff him."), (R("Call."), "He wins with three lanterns.", "See it through.")],
+                   [setf({"cards.pike": True}), say("pike", R("All right. You can watch. Go and try Meg; she'll eat you.")), toast("Pike beaten. Two champions to go.")],
+                   [n("Pike rakes in the pot. \"Again?\"")])],
+             [n("Pike rakes in the pot. \"Again?\"")]),
+    ]),
+]
+S["meg"] = [
+    iff({"flag": "cards.meg"}, [say("meg", R("He'd have liked you, my Tam. He liked anyone who could keep their mouth shut."))], [
+        iff({"not": "cards.pike"}, [say("meg", R("Pike first, dear. There's an order to things."))], [
+            n("Sister Meg, a net-widow in black, with a glass of rum and a great deal to say about her late husband's boat."),
+            hand("Meg is quiet for once, counting her cards twice.",
+                 (R("Fold."), "You fold. She turns over a full hand of crowns, and says nothing at all, which is how you know you were right.", "She's gone quiet."),
+                 [(R("Raise."), "She raises you back without a word, and wins.", "Push her."), (R("Call."), "She wins, without a word.", "See it.")],
+                 [hand("Meg tells you about her late husband's boat: the paint, the tar, the time it nearly sank off Gullstair, at length.",
+                       (R("Raise."), "Halfway through the story about the tar, she folds. She had nothing. She always talks when she has nothing.", "She's talking again."),
+                       [(R("Fold."), "You fold, and she shows you two odd cards and a lot of nothing.", "Wait for a better hand."), (R("Call."), "She folds before you can, chattering. She takes nothing; you take little.", "See what she has.")],
+                       [setf({"cards.meg": True}), say("meg", R("Well, dear. Annet's at the far table. Annet doesn't talk, and she doesn't chew. Annet watches you.")), toast("Meg beaten. One champion to go.")],
+                       [n("Meg pats your hand. \"Again, dear?\"")])],
+                 [n("Meg pats your hand. \"Again, dear?\"")]),
+        ]),
+    ]),
+]
+S["annet"] = [
+    iff({"flag": "cards.annet"}, [say("annet", R("Sorne's sent for you. Go on."))], [
+        iff({"not": "cards.meg"}, [say("annet", R("I only play people who've beaten Meg."))], [
+            n("Annet, at the far table, a young woman with a still face who deals without looking at the cards and looks only at you."),
+            say("annet", R("I don't have a tell. You do. Let's see if you know what it is.")),
+            choose("Annet waits for you to look at your cards.",
+                   opt("Look, and raise at once", [
+                       n("You don't give yourself time to think, so you don't give her anything to read. Her eyes narrow, just slightly."),
+                       hand("The second hand. Annet turns the lantern card face up, which nobody does, and watches you look at it.",
+                            (R("Call."), "You call, without looking at the lantern card again. She lays down her cards. You win by one. She smiles for the first time.", "Don't look at it."),
+                            [(R("Raise."), "Your eyes went to the lantern card before you raised. She calls, and wins.", "It helps your hand."), (R("Fold."), "You fold, and she shows you nothing worth folding to.", "It helps hers.")],
+                            [run("annetWon")], [n("Annet gathers the cards. \"You looked. Again?\"")]),
+                   ], hint="Give her nothing to read."),
+                   opt("Look, think it over, then raise", [n("You take your time. She takes your money. \"You hesitate when you're strong. Again?\"")], hint="Take your time."),
+                   opt("Let Kit deal", [
+                       setf({"cardsCheated": True}),
+                       n("Kit deals. Rhea's hand is extraordinary. So is the next. Annet watches Kit's hands for a long time, and then lays her cards down, face up, and pushes the pot across."),
+                       say("annet", R("Good hands. Your friend's. Sorne will see you; he only said you had to win.")),
+                       setf({"cards.annet": True}), stage("ah11"), toast("The Lantern's champions are beaten. The harbourmaster will see you."),
+                   ], hint="Kit has quick fingers.", when={"flag": "party.kit"})),
+        ]),
+    ]),
+]
+S["annetWon"] = [
+    setf({"cards.annet": True}), stage("ah11"),
+    say("annet", R("Nobody's read me in two years. I'll tell Sorne. And when you go, I'm coming. I want to know how you did it.")),
+    setf({"recruited.annet": True}),
+    toast("The Lantern's champions are beaten. The harbourmaster will see you."),
+]
+
+S["gully"] = [
+    iff({"stage": "ah11"}, [
+        n("The harbourmaster's office is all windows, facing the harbour. Gully Sorne is a wiry man near forty, with a crooked nose, a gold tooth, and a hatchery number tattooed on the inside of his wrist, where a cuff would hide it. He isn't hiding it."),
+        say("gully", R("Sit. You played Annet. That tells me more than any letter Kane could write.")),
+        say("gully", R("The Guild's boy came through a month ago. He had a chest he wouldn't put down, and he sailed north on the first ship out. I don't know what was in it. I don't ask what's in things. I'm the harbourmaster.")),
+        say("rhea", R("You're from a hatchery.")),
+        say("gully", R("Corvel's. I went out through the drain at nine and stowed away on a fish boat. Thirty years. I stopped asking what's in things the day I got here, and Ashby made me harbourmaster for it.")),
+        say("gully", R("Then I'll show you something I stopped asking about. Tonight, at the end of the mole. Come alone, or as alone as you can.")),
+        stage("ah12a"),
+    ], [iff({"stage": "ah13"}, [run("harbourPrice")], [say("gully", R("Midnight. The end of the mole."))])]),
+]
+S["mole"] = [
+    iff({"stage": "ah12a"}, [
+        setf({"light": "night"}),
+        n("Midnight at the end of the mole. The brig Patience rides at anchor fifty yards out, her lamps lit. A lighter is being rowed out to her from the Guild warehouse, low in the water."),
+        n("Not crates. Children. Twenty or thirty of them, sitting in rows in the lighter with their knees up, and a Warden at each end."),
+        say("gully", R("Indentured apprentices, for the Ember Courts and the islands. Every month, the Houses sell the indentures they can't use any more. The ones who cough. The slow ones. The ones who ask questions.")),
+        say("gully", R("Thirty years I've stamped those papers, because a harbourmaster stamps papers. The tide turns in an hour. I've got a boat.")),
+        stage("ah12"),
+        goto(BRIG, 1, 3, "right"),
+        n("The Patience's deck. Warden marines at the rail, and the bosun with a lantern, counting heads as the children come up the side."),
+        {"battle": "road-brig", "win": [run("brigWon")]},
+    ]),
+]
+S["brigWon"] = [
+    n("The last marine goes over the rail into the harbour. In the hold, thirty-four children sit very still on the bare planks, the way hatchery children sit when they don't know yet what kind of trouble it is."),
+    iff({"flag": "recruited.posy"}, [say("posy", R("You're not going anywhere hot. You're going up a mountain. There's a warm pool. I'll show you."))],
+        [say("rhea", R("You're going up a mountain, to a place called Thornwick. There's a warm pool. Nobody there will put a number on you."))]),
+    n("Gully goes through the bosun's cabin while Rhea counts the children twice. He comes out with the brig's manifest and a sealed packet, and his face has changed."),
+    say("gully", R("The Patience carried your brother's chest north last month, to Holm. They kept a copy of what was in it, because the Guild keeps a copy of everything. Read it.")),
+    n("A letter from the Houses to the King of Lorne, in a clerk's hand, signed with the standing loftbuck."),
+    n("If Lorne closes its passes to the Commons and sends its army south over them in the autumn, then, when the Commons falls, the Houses will see that Lorne has the Drevka high grazing, from Kestrel Fort to the Storm Roost, for ever."),
+    say("rhea", R("The clans' grazing. That isn't the Houses' to give.")),
+    say("gully", R("It will be, if the Commons falls. That's how the Guild buys things. With what it'll own afterwards.")),
+    setf({"lorneOffer": True, "brigTaken": True}),
+    stage("ah13"),
+    fade("Morning. The harbourmaster's office."), setf({"light": "day"}), goto(ASH, 26, 12, "up"),
+    run("harbourPrice"),
+]
+S["harbourPrice"] = [
+    say("gully", R("Now the hard part. The harbour council has been told what you did to a Guild ship in their harbour. They want to know what the Commons means to do about Ashby.")),
+    say("gully", R("Ashby carries everything. Moss up, tins down, children out. It doesn't care who wins, so long as the ships keep coming. Promise the harbour its trade after the war, all of it, no questions, and the council looks the other way about the Patience.")),
+    say("gully", R("Or close the harbour. Put the Commons' boats across the mouth and starve the Guild's sea trade. The council will fight you for it, and I'll be on the other side, because I'm the harbourmaster.")),
+    choose("Gully waits, with his cuff turned back.",
+           opt(R("The harbour keeps its trade. All of it."), [
+               setf({"road.ashby": "promise", "nation.ashby": "pact", "deed.ashby": True, "recruited.gully": True, "recruited.rue": True}), add({"standing.ashby": 30}),
+               say("gully", R("Then the council will call it a misunderstanding about a ship's papers. And I'm coming with you, because I want to see the drain I went out by, one more time, with the Commons on the other side of it.")),
+               n("Rue, the harbour's marine captain, a tall woman with a boarding axe, signs the Commons' book after Gully, without being asked. \"Ashby keeps its word when it's paid,\" she says. \"You've paid.\""),
+               n("Rhea knows what Ashby's trade is. She knows what will go down the coast road and out on the tide, one day, under a Commons flag, because she said so. She signs anyway."),
+               toast("A pact with Port Ashby. Gully Sorne and Rue join the Commons."),
+           ], hint="Ashby's trade is ugly. It's also Ashby's."),
+           opt(R("Then we close it."), [
+               setf({"road.ashby": "blockade"}), add({"standing.ashby": -40}),
+               say("gully", R("Then I'm sorry. I mean it.")),
+               {"army": "ashby-mole", "win": [
+                   n("By evening, the Commons' fishing boats hold the harbour mouth, chained gunwale to gunwale. Nothing comes in. Nothing goes out. The Guild's sea trade stops."),
+                   setf({"ashbyBlockaded": True}),
+                   toast("Port Ashby's harbour is closed to the Guild."),
+               ], "lose": [
+                   n("The harbour marines drive the Commons boats back out past the mole. The Patience sails without her apprentices, but the next ship won't."),
+                   setf({"ashbyBlockaded": False}),
+                   toast("Thrown out of Ashby's harbour."),
+               ]},
+               n("Gully watches from his windows. He doesn't come out."),
+           ], hint="Starve the Guild's ships. Ashby will hate the Commons for it.")),
+    stage("ah14"),
+    run("corranAutumnRoad"),
+]
+
+# ================================================================== Corran's autumn (the first interlude)
+S["corranAutumnRoad"] = [
+    iff({"eq": {"corranFate": "thornwick"}}, [run("corranPool")], [
+        iff({"eq": {"corranFate": "left"}}, [run("corranMire")], [run("corranCell")])]),
+    run("backToRoad1"),
+]
+S["corranPool"] = [
+    fade("Thornwick. Autumn, while she is away."),
+    setf({"hero": "corran", "light": "day"}), stage("ai1"),
+    n("The Mire children are afraid of water. Most of them were never let near any that wasn't for the moss trays. So Corran stands in the warm pool to his waist every afternoon, and waits."),
+    n("By the second week, the brave ones sit on the edge with their feet in. By the fourth, Wren is swimming, badly and loudly, and the others go in because Wren is."),
+    n("A pedlar comes up the road at the end of the month, with a pack of needles and thread. When Dorrit has gone back inside, he puts a tin on the gate post, next to Corran's hand, and goes away without asking for anything."),
+    choose("A Guild tin, on the gate post. Nobody else saw.",
+           opt("Throw it in the spring", [setf({"pedlarTin": "drowned"}), add({"hold": 3}),
+               n("He throws it underarm into the deep end of the warm pool, where the water comes up from the rock. It sinks without a sound. That night he can't sleep, and he knows exactly why.")], hint="Gone."),
+           opt("Give it to Dorrit", [setf({"pedlarTin": "dorrit"}), add({"hold": 5}),
+               say("dorrit", R("Somebody wants you back, then. ... I'll lock it with the powder. Nobody's touched the powder in a year either.")),
+               n("She doesn't make anything of it. That's the kindest thing anyone at Thornwick has done for him.")], hint="Someone should know."),
+           opt("Keep it", [setf({"pedlarTin": "kept"}), add({"hold": -6}),
+               n("He puts it inside his shirt. It's only in case. He tells himself it's only in case, every night, for a long time.")], hint="Just in case.")),
+    setf({"hero": "rhea"}),
+]
+S["corranMire"] = [
+    fade("House Mire. Autumn."),
+    setf({"hero": "corran", "light": "day"}), stage("ai1"),
+    n("When the Commons emptied Mire's brood room into Wren's drain, the House kept what was left. Forty children who were too small or too sick to walk, and the orderly who wouldn't leave them."),
+    n("He carries water. He changes the moss. He sits up with the ones who cough. Nobody in the House remembers he was ever a Warden. Nobody remembers he was ever anything."),
+    n("At the end of the month, the House steward comes to the sick room with the indenture book and starts reading names, for the carts to Ashby."),
+    choose("The steward has the book open. Three of the names are children asleep in front of him.",
+           opt(R("Those three died in the night. I've already burned the bedding."), [setf({"mireLie": True}), add({"hold": 4}),
+               n("The steward looks at the sleeping children, and at him, and crosses out three names. He doesn't know why he does it. Neither does Corran."),
+               n("The carts go to Ashby without them.")], by="corran", hint="Lie."),
+           opt("Say nothing", [add({"hold": -3}),
+               n("The carts take them in the morning. He carries the smallest one down himself, because she asks him to.")], hint="It isn't his book.")),
+    setf({"hero": "rhea"}),
+]
+S["corranCell"] = [
+    fade("Millbridge. The gaol under the reeve's house. Autumn."),
+    setf({"hero": "corran", "light": "day"}), stage("ai1"),
+    n("Midsummer came and went, and nobody came down the steps with a rope. The town couldn't agree. The reeve said there should be a proper day for it; the eleven families said there should be no day at all; and then the harvest came, and everyone was busy."),
+    n("Oren Tull brings his supper every night. Bread, cheese, an apple. He puts it through the bars and sits on the bottom step and doesn't speak. Oren's wife was one of the eleven."),
+    n("On the last night of the month, he speaks."),
+    say("oren", R("She was sick for four days. I used to think the worst thing was that she knew it was coming. It wasn't. The worst thing was that she forgave everyone, in the end. Even the ones she didn't know about.")),
+    choose("Oren is sitting on the bottom step, waiting.",
+           opt(R("Don't forgive me. Please."), [setf({"orenTalk": "unforgiven"}), add({"hold": 3}),
+               say("oren", R("I wasn't going to.")),
+               n("But he comes back the next night, and the next.")], by="corran", hint="He hasn't earned it."),
+           opt(R("Tell me about her."), [setf({"orenTalk": "told"}), add({"hold": 5}),
+               n("Oren tells him. It takes until the candle is out. Neither of them says anything about forgiveness at all.")], by="corran", hint="Listen.")),
+    setf({"hero": "rhea"}),
+]
+S["backToRoad1"] = [
+    fade("Port Ashby. The first frost."),
+    setf({"hero": "rhea", "light": "day"}), stage("ah14"), goto(ASH, 15, 16, "up"),
+    n("North, then. Ashby's captains won't cross Lorne's waters after the first frost; the ice comes down the coast. If she's to reach Holm before the King signs, it's overland: back up through the vale and over the clans' high grazing."),
+    toast("North, through the Drevka clans' lands, to Lorne. The drove road leaves the vale to the north."),
+]
+
 # ================================================================== actors, steps, looks
 def actor(id, map, x, y, look, talk, when=None, **kw):
     a = {"id": id, "map": map, "x": x, "y": y, "look": look}
@@ -423,6 +688,18 @@ actors = [
     actor("provost", COL, 13, 3, "factor", [run("hearing")], stages("ah6")),
     actor("col-student", COL, 17, 12, "vil3", [n("A student in a gown too big for him. \"They say the Commons envoy's going to be heard in the hall. Nobody's been heard in the hall since my grandfather's time. They just read things out.\"")], ROAD),
     actor("porter", ARC, 12, 7, "warden2", [run("archiveGuards")], {"stage": "ah5", "not": "archiveFought"}),
+    # Reedhythe and Port Ashby
+    actor("saul", REED, 8, 8, "vil7", [run("saul")], ROAD),
+    actor("reed-nephew", REED, 13, 8, "smuggler", [n("One of Mother Saul's nephews, whittling. He doesn't look up. He doesn't need to.")], ROAD),
+    actor("reed-nephew2", REED, 9, 10, "smuggler", [n("Another nephew, mending a net that has never caught a fish.")], ROAD),
+    actor("pike", TAV, 6, 7, "vil4", [run("pike")], ROAD),
+    actor("meg", TAV, 13, 7, "vil2", [run("meg")], ROAD),
+    actor("annet", TAV, 20, 5, "annet", [run("annet")], {"stagePrefix": "ah", "not": "recruited.annet"}),
+    actor("tav-keeper", TAV, 6, 3, "innkeeper", [n("The Lantern's keeper, polishing a glass that was clean an hour ago. \"Cards are at the tables. Rum's here. Trouble's outside.\"")], ROAD),
+    actor("ash-fishwife", ASH, 18, 12, "kr-mother", [n("A fishwife with a basket of herring. \"Guild ships, Crown ships, Ember ships. They all eat fish. Ashby doesn't ask.\"")], ROAD),
+    actor("ash-docker", ASH, 10, 7, "vil4", [n("A docker coiling rope. \"The Patience? She's been loading for a week. Apprentices, they say. Funny sort of apprentices. They cry.\"")], {"stagePrefix": "ah", "not": "brigTaken"}),
+    actor("ash-docker2", ASH, 10, 7, "vil4", [n("A docker coiling rope. \"Someone took the Patience's whole cargo off her in the night. Not a soul in Ashby saw anything. Not a soul.\"")], {"stagePrefix": "ah", "flag": "brigTaken"}),
+    actor("ash-sailor", ASH, 22, 7, "smuggler", [n("A sailor from somewhere hot, watching the harbour. \"Lorne's waters ice up at the first frost. After that, nobody sails north till spring.\"")], ROAD),
 ]
 
 def step(map, at, do, when=None):
@@ -430,16 +707,18 @@ def step(map, at, do, when=None):
     if when: s["when"] = when
     return s
 
-# where each West place lets out onto the land map, and back
-PLACES = {"hollin": (FAIR, (13, 12)), "college": (COL, (13, 14)), "peatmoor": (PEAT, (8, 12))}
-LAND = {p["id"]: (p["x"], p["y"]) for p in json.load(open(os.path.join(ROOT, "data/maps/land-west.json")))["places"]}
+# where each place lets out onto its land map, and back
+PLACES = {("west", "hollin"): (FAIR, (13, 12)), ("west", "college"): (COL, (13, 14)), ("west", "peatmoor"): (PEAT, (8, 12)),
+          ("west", "reedhythe"): (REED, (12, 12)), ("coast", "ashby"): (ASH, (15, 16))}
+LANDS = {l: {p["id"]: (p["x"], p["y"]) for p in json.load(open(os.path.join(ROOT, f"data/maps/land-{l}.json")))["places"]} for l in {k[0] for k in PLACES}}
+LAND = LANDS["west"]
 steps = []
-for pid, (mid, (sx, sy)) in PLACES.items():
-    lx, ly = LAND[pid]
-    steps.append(step(WEST, (lx, ly), [goto(mid, sx, sy, "up")], {"stagePrefix": "a"}))
+for (land, pid), (mid, (sx, sy)) in PLACES.items():
+    lx, ly = LANDS[land][pid]
+    steps.append(step(f"land-{land}", (lx, ly), [goto(mid, sx, sy, "up")], {"stagePrefix": "a"}))
     rows = json.load(open(os.path.join(ROOT, f"data/maps/{mid}.json")))["rows"]
     for x, ch in enumerate(rows[-1]):
-        if ch == "e": steps.append(step(mid, (x, len(rows) - 1), [goto(WEST, lx, ly + 1, "down")]))
+        if ch == "e": steps.append(step(mid, (x, len(rows) - 1), [goto(f"land-{land}", lx, ly + 1, "down")]))
 steps += [
     step(FAIR, (13, 13), [goto(WEST, LAND["hollin"][0], LAND["hollin"][1] + 1, "down")]),
     *[step(FAIR, (x, 1), [run("fairGate")]) for x in (13, 14)],
@@ -453,12 +732,19 @@ steps += [
     step(ARC, (14, 0), [goto(COL, 23, 12, "down")]),
     step(ARC, (25, 3), [run("provostPress")], {"not": "provostLetters"}),
     *[step(COL, (x, 6), [run("hearing")], {"stage": "ah6"}) for x in (13, 14)],
+    # Port Ashby
+    *[step(ASH, (x, 11), [goto(TAV, 11, 10, "up")]) for x in (3, 7)],
+    *[step(TAV, (x, 11), [goto(ASH, 3, 12, "down")]) for x in (11, 12)],
+    step(ASH, (26, 11), [run("harbourOffice")]),
+    *[step(ASH, (x, 1), [run("moleEnd")]) for x in (15, 16)],
+    step(BRIG, (0, 3), [goto(ASH, 15, 2, "down")]),
 ]
 zones = [
     {"map": FAIR, "area": [11, 9, 16, 11], "when": {"stage": "ah1"}, "do": [run("fairArrive")]},
     {"map": QUAY, "area": [17, 2, 24, 4], "when": {"flag": "quayAsked", "not": "ward.fishers"}, "do": [run("barge")]},
     {"map": PEAT, "area": [16, 5, 18, 7], "when": {"flag": "fensAsked", "not": "ward.fens"}, "do": [run("reedHide")]},
     {"map": ARC, "area": [1, 7, 28, 8], "when": {"stage": "ah5", "not": "archiveFought"}, "do": [run("archiveGuards")]},
+    {"map": ASH, "area": [12, 13, 19, 16], "when": {"stage": "ah9"}, "do": [run("ashbyArrive")]},
 ]
 looks = [
     {"map": FAIR, "tile": "hay", "do": [n("Straw targets, stuck so full of knife holes that they're held together with string.")]},
@@ -509,6 +795,23 @@ BATTLES = {
                   unit("ap2", "College porter", "warden2", "front", [196, 118], cast="warden", level=17, skills=["wstrike"]),
                   unit("ac1", "College reedcat", "reedcat:#9a8a6a", "front", [160, 132], hp=54, kith=True, level=17, skills=["maul", "pounce"], species="market-reedcat"),
                   unit("ac2", "College reedcat", "reedcat:#8a7a5a", "back", [226, 104], hp=54, kith=True, level=17, skills=["pounce"], species="market-reedcat")]},
+    "road-smugglers": {
+        "id": "road-smugglers", "name": "Mother Saul's nephews", "backdrop": "meadow", "party": True,
+        "intro": ["Four of Mother Saul's nephews, with boathooks and a fowling bow.", "Saul watches from her porch, smoking."],
+        "won": "The nephews sit down again", "lost": "Pushed into the reeds",
+        "units": [unit("sm1", "Saul's nephew", "smuggler", "front", [170, 94], cast="warden", level=17, skills=["wstrike"]),
+                  unit("sm2", "Saul's nephew", "smuggler", "front", [196, 116], cast="warden", level=17, skills=["wstrike"]),
+                  unit("sm3", "Saul's nephew", "smuggler", "front", [162, 132], cast="warden", level=16, skills=["wstrike"]),
+                  unit("sm4", "Fowler", "smuggler", "back", [230, 100], cast="archer", level=17, skills=["bow"])]},
+    "road-brig": {
+        "id": "road-brig", "name": "The Patience's marines", "backdrop": "road", "party": True,
+        "intro": ["Warden marines on the brig's deck, with cutlasses and a crossbow, and the bosun with his lantern.", "The children are coming up the side behind you."],
+        "won": "The Patience is taken", "lost": "Driven back to the rail",
+        "units": [unit("mb1", "Warden marine", "warden", "front", [170, 94], cast="warden", level=18, skills=["wstrike"]),
+                  unit("mb2", "Warden marine", "warden", "front", [196, 116], cast="warden", level=18, skills=["wstrike"]),
+                  unit("mb3", "Warden marine", "warden", "front", [162, 132], cast="warden", level=18, skills=["wstrike"]),
+                  unit("mba", "Marine crossbow", "archer", "back", [230, 100], cast="archer", level=18, skills=["bow"]),
+                  unit("mbb", "The bosun", "cartwarden", "back", [222, 128], cast="warden", level=19, skills=["wstrike"])]},
 }
 
 def duel(name, backdrop, intro, foe, words, won, lost, must=True):
@@ -531,7 +834,7 @@ DUELS = {
 }
 
 # ================================================================== voices and music
-voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote"]
+voiced = ["roadStart", "speaker", "gilCaught", "haldaneGate", "hearing", "perrineSquare", "theVote", "gully", "brigWon", "harbourPrice", "corranCell"]
 moods = {
     "scenes": {"roadStart": "camp", "fairArrive": "hope", "kit": "hope", "kitBeaten": "hope", "speaker": "tension", "ansel": "camp",
                "reedHide": "night", "gilCaught": "tender", "orla": "dread", "cellar": "night", "cellarWon": "hope", "bryn": "camp", "barge": "tension",

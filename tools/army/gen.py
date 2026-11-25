@@ -104,6 +104,19 @@ def spindle(g):
     for y in range(9, H): g[y][19] = ":"; g[y][20] = ":"
 
 
+def harbour(g):
+    """Port Ashby's harbour mouth: our boats chained across the top, the water, the mole down the middle, the quay below."""
+    W, H = len(g[0]), len(g)
+    fill_in(g, 0, 0, W - 1, 2, "y")                       # the chained boats and the harbour mouth we hold
+    fill_in(g, 0, 3, W - 1, 14, "~")                      # the harbour
+    fill_in(g, 18, 3, 21, 14, ":")                        # the mole, the one dry way out to us
+    fill_in(g, 2, 3, 7, 14, "=")                          # the shallows along the west steps, waist deep at low tide
+    fill_in(g, 32, 3, 37, 14, "=")                        # and along the east shingle
+    fill_in(g, 0, 15, W - 1, 15, ":")                     # the quay
+    fill_in(g, 0, 19, 12, H - 1, "#"); fill_in(g, 27, 19, W - 1, H - 1, "#")   # warehouses
+    fill_in(g, 13, 19, 26, H - 1, ".")
+
+
 BATTLES = {
     "thornwick-raid": dict(
         name="The Wardens at Thornwick", hold=180,
@@ -309,6 +322,44 @@ BATTLES = {
                  effect=dict(terrain=[[29, 7, "~"], [30, 7, "~"], [29, 8, "~"], [30, 8, "~"]])),
         ],
         won="The foundry yards fall", lost="Thrown back at the cut",
+    ),
+    "ashby-mole": dict(
+        name="Ashby's harbour mouth", hold=200,
+        intro=["The Commons' boats are chained across Port Ashby's harbour mouth, and the harbour council wants them gone.",
+               "Ashby's marines are coming out along the mole and wading the shallows at both ends. Rue leads them.",
+               "Hold the harbour mouth until the tide turns, or break them."],
+        terrain=field(40, 24, harbour),
+        commander=dict(name="Rue, captain of Ashby's marines", cast="warden", level=21),
+        ours=[
+            dict(id="hq", name="Your company", kind="foot", at=[20, 1]),
+            dict(id="boats", name="The boat crews", kind="foot", at=[8, 1.5]),
+            dict(id="pikes", name="Pikes", kind="pike", at=[19.5, 2.5]),
+            dict(id="bows-w", name="West bows", kind="bow", at=[12, 1]),
+            dict(id="bows-e", name="East bows", kind="bow", at=[30, 1]),
+        ],
+        theirs=[
+            dict(id="m-foot1", name="Ashby marines", kind="foot", at=[19.5, 16.5], officer="warden", level=19),
+            dict(id="m-foot2", name="Ashby marines", kind="foot", at=[5, 16.5], officer="warden", level=19),
+            dict(id="m-foot3", name="Ashby marines", kind="foot", at=[35, 16.5], officer="warden", level=19),
+            dict(id="m-xbow", name="Harbour crossbows", kind="bow", at=[15, 17], officer="archer", level=19),
+            dict(id="m-guild", name="Guild marines", kind="foot", at=[20, 21], officer="warden", level=20),
+        ],
+        plan=[
+            dict(at=3, note="The marines come up the mole; two more companies wade the shallows at either end; crossbows line the quay.", orders=[
+                dict(company="m-foot1", via=[19.5, 12], to=[19.5, 3]), dict(company="m-foot2", via=[4.5, 11], to=[6, 2]),
+                dict(company="m-foot3", via=[34.5, 11], to=[33, 2]), dict(company="m-xbow", to=[19.5, 14])]),
+            dict(when="half", note="When it falters, the Guild's own marines come up the mole behind them.", orders=[
+                dict(company="m-guild", via=[19.5, 12], to=[19.5, 3])]),
+        ],
+        stratagems=[
+            dict(id="fireboat", name="A fire boat down the mole", text="An old lighter full of tar, lit and pushed along the mole's side. Whoever is on the mole when it goes up will not stay there.",
+                 opinions={"artisan": "\"Tar, a candle, and a long pole. I've done worse for a wedding.\"", "guardian": "\"Fire on water goes where the wind says. Mind the wind.\""},
+                 effect=dict(enemyMorale=12)),
+            dict(id="tide", name="Wait for the tide", text="Fight at high water: the shallows are too deep to wade, and everything they send has to come up the mole.",
+                 opinions={"scholar": "\"Ashby's tide table is on every tavern wall.\"", "commander": "\"One road in is one fight.\""},
+                 effect=dict(terrain=[[x, y, "~"] for x in list(range(2, 8)) + list(range(32, 38)) for y in range(3, 15)])),
+        ],
+        won="The harbour mouth holds", lost="Thrown out of the harbour",
     ),
     "spindle-gate": dict(
         name="The Spindle gate", attack=True,

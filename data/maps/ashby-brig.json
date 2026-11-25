@@ -1,0 +1,38 @@
+{
+ "id": "ashby-brig",
+ "name": "The Guild brig Patience",
+ "music": "night",
+ "legend": {
+  "d": "door",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "p": "plank",
+  "R": "rock",
+  "I": "iwall",
+  "B": "bed",
+  "_": "wetfloor"
+ },
+ "rows": [
+  "~~~~~~~~~~~~~~~~~~~~~~~~~~",
+  "~~xxxxxxxxxxxxxxxxxxxxxx~~",
+  "~~pppppppppppppppppppppp~~",
+  "epppppppppppRppppppppppp~~",
+  "~~ppppppppppppppppxxpppp~~",
+  "~~pppppppppppppppppppppp~~",
+  "~~IIIIIdIIIIIIIIIIIIIIII~~",
+  "~~______________________~~",
+  "~~_BB_______________BB__~~",
+  "~~_BB_______________BB__~~",
+  "~~_______xxxxxxxx_______~~",
+  "~~~~~~~~~~~~~~~~~~~~~~~~~~"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 3
+  }
+ ]
+}

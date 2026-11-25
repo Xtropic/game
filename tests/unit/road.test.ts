@@ -64,4 +64,26 @@ describe("the Long Road: the West", () => {
     expect(f["road.college"]).toBe("refused"); // the Provost's letters carry the hearing either way
     expect(log.some((l) => l.startsWith("weaver:"))).toBe(true); // Weirbank's dead are answered for in the hall
   });
+
+  it("the Coast: Saul's road, Lantern Cards, the brig, and the harbour's price, then Corran's autumn", () => {
+    const t = start({ stage: "ah8", "party.kit": true }, [1, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const { f, r, log } = t;
+    r.run([{ run: "saul" }]); expect(f["open.west-coast"]).toBe(true); expect(f.saulPromise).toBe(true); expect(f.stage).toBe("ah9");
+    expect(wayOpen("west-coast", f)).toBe(true);
+    r.run([{ run: "ashbyArrive" }, { run: "harbourOffice" }]); expect(f.stage).toBe("ah10");
+    r.run([{ run: "pike" }, { run: "meg" }, { run: "annet" }]); expect(f["cards.annet"]).toBe(true); expect(f["recruited.annet"]).toBe(true); expect(f.stage).toBe("ah11");
+    r.run([{ run: "harbourOffice" }]); expect(f.stage).toBe("ah12a");
+    r.run([{ run: "moleEnd" }]); expect(log).toContain("battle road-brig"); expect(f.lorneOffer).toBe(true);
+    expect(f["road.ashby"]).toBe("promise"); expect(f["recruited.gully"]).toBe(true);
+    expect(f.hero).toBe("rhea"); expect(f.pedlarTin).toBe("drowned"); expect(f.stage).toBe("ah14");
+    expect(r.busy).toBe(false);
+  });
+
+  it("the Coast, the hard way: blockade, and Corran in Millbridge's gaol", () => {
+    const t = start({ stage: "ah11", corranFate: "millbridge" }, [1, 1]);
+    const { f, r, log } = t;
+    r.run([{ run: "harbourOffice" }, { run: "moleEnd" }]);
+    expect(f["road.ashby"]).toBe("blockade"); expect(log).toContain("army ashby-mole"); expect(f.ashbyBlockaded).toBe(true);
+    expect(f.orenTalk).toBe("told"); expect(f.stage).toBe("ah14");
+  });
 });

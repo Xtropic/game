@@ -1,0 +1,37 @@
+{
+ "id": "ashby-tavern",
+ "name": "The Lantern, Port Ashby",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  "x": "crate",
+  "e": "exit",
+  "F": "campfire",
+  "p": "plank",
+  "b": "table",
+  "I": "iwall",
+  "k": "shelf"
+ },
+ "rows": [
+  "IIIIIIIIIIIIIIIIIIIIIIII",
+  "IpkkkkkkkkppppxxxppppppI",
+  "IpbbbbbbbbpppppppppppppI",
+  "IppppppppppppppppppppppI",
+  "IpppppppppppppppppbbpppI",
+  "IpppppppppppppppppbbpppI",
+  "IpppbbpppppbbppppppppppI",
+  "IpppbbpppppbbppppppppppI",
+  "IppppppppppppppppppppppI",
+  "IppppppppppppppppppppFpI",
+  "IppppppppppppppppppppppI",
+  "IIIIIIIIIIIeeIIIIIIIIIII"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 10
+  }
+ ]
+}
