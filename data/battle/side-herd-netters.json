@@ -1,0 +1,81 @@
+{
+ "id": "side-herd-netters",
+ "name": "The netters on the plateau",
+ "backdrop": "meadow",
+ "party": true,
+ "intro": [
+  "Guild netters with hooks and chains among the herd's calves, and a war hound to hold them.",
+  "The herd is milling. If it stampedes, nobody walks away."
+ ],
+ "won": "The netters scatter off the plateau",
+ "lost": "The netters drag the calves away",
+ "units": [
+  {
+   "id": "hn1",
+   "name": "Guild netter",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "level": 20,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "hn2",
+   "name": "Guild netter",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "level": 20,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    198,
+    118
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "hn3",
+   "name": "Stable buyer's man",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    222,
+    104
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "hn4",
+   "name": "War hound",
+   "look": "reedcat:#5a5a62",
+   "side": "foe",
+   "row": "front",
+   "level": 20,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "kith": true,
+   "hp": 70,
+   "species": "warden-reedcat"
+  }
+ ]
+}

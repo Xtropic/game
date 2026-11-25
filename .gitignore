@@ -4,3 +4,4 @@ dist
 test-results
 tools/voice/lines.json
 tools/voice/refs/.done/
+__pycache__/

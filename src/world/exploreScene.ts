@@ -730,6 +730,7 @@ export class ExploreScene implements Scene, StoryHost {
       health: this.health(),
       pack: Object.fromEntries(Object.keys(ITEMS).filter((k) => ITEMS[k].battle).map((k) => [k, Number(this.game.flags[`have.${k}`] ?? 0)])),
       escape: typeof which !== "string", // chance meetings on the road; never a fight the story needs
+      songBoost: this.flags.spireSongs ? 1.35 : 1,
       onDone: (r, s) => {
         for (const [k, n] of Object.entries(s.used)) this.game.flags[`have.${k}`] = Math.max(0, Number(this.game.flags[`have.${k}`] ?? 0) - n);
         this.setHealth(afterBattle(s));

@@ -93,6 +93,8 @@ export interface BattleState {
   /** Foes quick enough to strike before the party this round, and whether they are doing so now. */
   early: string[];
   firstStrike: boolean;
+  /** How much further the foal song reaches (the Spire Folk's old verses: 1.35). */
+  songBoost?: number;
   /** Ended without a win: the party got away, or let much weaker foes go. */
   escaped?: "fled" | "released";
 }
@@ -384,12 +386,12 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
       const hits = grades.filter(isGood).length, perfects = grades.filter((x) => x === "perfect").length;
       addFocus(s, u, 8 * hits);
       if (t.side === u.side) {
-        t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u))), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
+        t.steady = true; const n = Math.min(Math.round((4 + hits * 3) * party.care(statsOf(u)) * (s.songBoost ?? 1)), t.maxHp - t.hp); t.hp += n; addBond(s, 10 + perfects * 10, ev);
         ev.push({ t: "steady", by: u.id, target: t.id, amt: n }); s.log.push(`${u.name} sings. ${t.name} steadies.`);
       } else {
         const reach = songReach(t.temperament, t.hp / t.maxHp);
         if (reach === 0) { ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left: false }); s.log.push(`The ${t.name.toLowerCase()} tosses its head. It won't listen while it thinks it's winning.`); break; }
-        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)) * reach)); t.soothe += perfects; addBond(s, perfects * 8, ev);
+        t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)) * reach * (s.songBoost ?? 1))); t.soothe += perfects; addBond(s, perfects * 8, ev);
         const left = t.calm >= 100;
         if (left) { t.intent = null; t.gone = true; t.calmed = true; s.resolve = Math.max(0, s.resolve - 15); }
         ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left });
