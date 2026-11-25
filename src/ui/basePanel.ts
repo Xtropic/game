@@ -16,7 +16,7 @@ import { attrsAt, jobSkill, type Attrs, type Job } from "../cast/attributes";
 import { KEEPSAKES, TIERS, canReforge, keepsake, reforge, weaponName, type Loadout } from "../gear/weapons";
 import { ITEMS } from "../gear/items";
 import { teach } from "../guide/guideScene";
-import { SPECIES, breedLitter, canBreed, foalToKith, type Kith } from "../kith/kith";
+import { SPECIES, breedLitter, canBreed, familiesOf, foalToKith, type Kith } from "../kith/kith";
 import { SOURCES, readKith } from "../kith/upbringing";
 import { sfx } from "../audio/music";
 import { EXPEDITIONS, away, awayIds, cannotSend, odds, send } from "../kith/expedition";
@@ -261,11 +261,13 @@ export class BasePanel {
     const foals = breedLitter(a, b, { rng: () => this.host.rng(), place: "thornwick", wing: levelOf(this.f, "pens") });
     if (!foals.length) { this.msg = "They won't take to each other."; return; }
     this.f["base.bred.day"] = Number(this.f["base.day"] ?? 0);
-    const n = Object.keys(g.kith).length;
+    const n = Object.keys(g.kith).length, had = new Set(Object.values(g.kith).map((x) => x.species));
+    const fresh = !had.has(foals[0].species) && SPECIES[foals[0].species]?.kind === "hybrid"; // a cross nobody in the company has raised yet
     foals.forEach((fo, i) => { const sp = SPECIES[fo.species]?.name ?? fo.species, k = foalToKith(fo, `foal-${fo.species}-${n + i + 1}`, `${sp} foal`); this.host.addFoal(k); });
     const sp = SPECIES[foals[0].species]?.name ?? foals[0].species;
-    this.msg = `${foals.length > 1 ? "Twins" : "A foal"}: ${sp.toLowerCase()}${foals[0].unseen ? " (never seen before!)" : foals[0].throwback ? " (a throwback)" : ""}. ${foals.length > 1 ? "They join" : "It joins"} the company.`;
-    sfx.pickup(); this.sub = "list";
+    this.msg = `${foals.length > 1 ? "Twins" : "A foal"}: ${sp.toLowerCase()}${foals[0].unseen ? " (never seen before!)" : fresh ? " (a new kind of kith, a cross of both families!)" : foals[0].throwback ? " (a throwback)" : ""}. ${foals.length > 1 ? "They join" : "It joins"} the company.`;
+    if (foals[0].unseen || fresh) sfx.join(); else sfx.pickup();
+    this.sub = "list";
   }
 
   private cyclePen(d: number): void {
@@ -460,6 +462,10 @@ export class BasePanel {
       const c = m ? canBreed(k, m) : { ok: false, why: "" };
       this.text(`◂ ${m ? `${m.name} (${SPECIES[m.species]?.name ?? m.species})` : "nobody"} ▸   ${c.ok ? "" : c.why ?? ""}`, x + 10, y + fs + 4, fs, onM ? "#fff4dc" : "#e8dcc0", onM, w - 20);
       y += rh + 4;
+      if (m && c.ok) { // say what kind of foal this pair makes: their own kind, or a cross that is neither
+        const fa = familiesOf(k.species), fb = familiesOf(m.species), cross = !fa.some((x) => fb.includes(x));
+        y += this.text(cross ? "Different families: their foal will be a cross, a new kind of kith that is neither parent." : "Same family: their foal will be one of their own kind.", x + 10, y, fs - 2, cross ? "#b8e0a0" : "#a89a80", cross, w - 20).height + 6;
+      }
       const onB = this.sub === "part" && this.part === 4;
       this.hit(x, y, w, fs + 16, () => { this.sub = "part"; this.part = 4; this.breedNow(); }, onB);
       this.text(c.ok ? "Breed them (one litter a day)" : "Breed them (not this pair)", x + 10, y + 6, fs, c.ok ? (onB ? "#fff4dc" : "#e0c070") : "#8a7e68", onB);

@@ -217,7 +217,9 @@ export class ExploreScene implements Scene, StoryHost {
     this.ledgerButton.eventMode = "static"; this.ledgerButton.cursor = "pointer"; this.ledgerButton.visible = false;
     this.ledgerButton.on("pointertap", () => { if (this.free()) this.openLedger(); });
     this.placeLabel.anchor.set(0.5, 1); this.ledgerSign.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
-    this.hud.eventMode = "static";
+    // passive, not static: a static parent makes every label inside it count as a hit, so a tap on a button's own words
+    // (a ledger row, a menu item, the Daily button) went to the HUD and did nothing; the buttons themselves are static
+    this.hud.eventMode = "passive";
     // full-screen overlays (the fade cover, the vignette, wounds) must never swallow taps meant for the dialogue box
     for (const o of [this.cover, this.atmos.vignette, this.wounds, this.caption, this.banner, this.ledgerMark, this.ledgerSign, this.toastLabel, this.objective, this.placeLabel]) o.eventMode = "none";
     this.dialog.view.eventMode = "static";
