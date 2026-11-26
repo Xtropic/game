@@ -1,6 +1,7 @@
 // The game's authored content: every map, and the story that plays across them.
 import type { MapFile } from "./map";
 import { mergeStories, type Story } from "../story/story";
+import { weaveCutscenes } from "../cutscene/hooks";
 import prologue from "../../data/story/prologue.json";
 import act1 from "../../data/story/act1.json";
 import act2 from "../../data/story/act2.json";
@@ -17,6 +18,8 @@ const files = import.meta.glob<MapFile>("../../data/maps/*.json", { eager: true,
 export const MAPS: Record<string, MapFile> = Object.fromEntries(Object.values(files).map((m) => [m.id, m]));
 /** The whole story so far, prologue first. */
 export const STORY = mergeStories([prologue as unknown as Story, act1 as unknown as Story, act2 as unknown as Story, towns as unknown as Story, act3 as unknown as Story, road as unknown as Story, act4 as unknown as Story, wild as unknown as Story, muster as unknown as Story, recruits as unknown as Story, side as unknown as Story]);
+// the cut scenes slip into the scripts at their moments (src/cutscene/hooks.ts); the story files stay as written
+weaveCutscenes(STORY);
 
 import regionData from "../../data/kith/regions.json";
 export interface RegionInfo { name: string; kind: "nation" | "hidden" | "wild"; biome: string; }
