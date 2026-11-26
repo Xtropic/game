@@ -672,15 +672,18 @@ export class BattleScene implements Scene {
     while (this.partyText.length < rows.length + 1) { const t = new Text({ text: "", style: { fontFamily: HUD_FONT, fontSize: 15, fill: "#e8dcc2" } }); this.hud.addChild(t); this.partyText.push(t); }
     let bw = this.barW, bx = this.narrow ? 80 : 96;
     if (this.touchHud) { const pa = this.partyAt ?? this.touchParty; p.x = pa.x; p.y = pa.y; this.party.x = pa.x; this.party.y = pa.y; bx = 84; bw = Math.max(50, Math.min(140, pa.w - bx - 4)); }
+    // a big party squeezes its rows so the list (and the Call row) stays clear of the hint line
+    const room = this.touchHud ? 26 * 7 : this.hint.y - this.party.y - 2, step = Math.max(17, Math.min(26, Math.floor(room / (rows.length + 1))));
+    for (const t of this.partyText) t.style.fontSize = step < 22 ? 13 : 15;
     rows.forEach((a, i) => {
-      const t = this.partyText[i], yy = i * 26, on = a === u;
+      const t = this.partyText[i], yy = i * step, on = a === u;
       t.text = `${a.name}${a.gone ? " (away)" : ""}`; t.style.fill = on ? "#ffe39a" : alive(a) ? "#e8dcc2" : "#7a7060"; t.x = this.party.x; t.y = this.party.y + yy;
       p.roundRect(bx, yy + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (a.hp > 0) p.roundRect(bx, yy + 5, (bw * a.hp) / a.maxHp, 9, 4).fill({ color: a.hp / a.maxHp < 0.3 ? 0xd06a5a : 0x7fb069 });
       // focus: a thin bar under the health; gold when the finisher is ready
       if (!a.bonded) { const f = (s.focus[a.id] ?? 0) / FOCUS_FULL; p.roundRect(bx, yy + 16, bw, 3, 1.5).fill({ color: 0x2a201a }); if (f > 0) p.roundRect(bx, yy + 16, bw * f, 3, 1.5).fill({ color: f >= 1 ? 0xffd060 : 0x8ab0d0 }); }
     });
-    const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
-    p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
+    const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * step;
+    p.roundRect(bx, rows.length * step + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * step + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
     this.hint.visible = !this.touchHud;
     this.hint.text = `${this.narrow && !padState.used ? "Tap" : keyFor("timing")}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow && !padState.used ? "" : `${keyFor("auto")}: `}auto battle ${this.autoBattle ? "on" : "off"}${this.narrow && !padState.used ? "" : `   ·   ${keyFor("guide")}: guide`}`;
   }

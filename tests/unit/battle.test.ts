@@ -5,6 +5,7 @@ import { initiativeOf, intentRead, statsOf } from "../../src/battle/rules";
 import { NEUTRAL, party } from "../../src/cast/attributes";
 import { ART_COST, FOCUS_FULL, alive, artStat } from "../../src/battle/rules";
 import { KEEPSAKES } from "../../src/gear/weapons";
+import { partyUnits } from "../../src/battle/encounters";
 import { FAMILIES } from "../../src/kith/kith";
 
 const book: SkillBook = SKILLS;
@@ -299,5 +300,31 @@ describe("leaving a fight", () => {
     const rhea = turnOf(s, "rhea") && unit(s, "rhea"), tam = unit(s, "tam"); tam.hp = 1;
     const h = autoChoice(s, book, rhea)!;
     if (skillsFor(s, rhea, book).some((k) => book[k].kind === "heal")) { expect(book[h.skill].kind).toBe("heal"); expect(h.target).toBe("tam"); }
+  });
+});
+
+describe("foes scaled to the party (muster)", () => {
+  const withParty = (id: string, who: string[]) => {
+    const b = BATTLES[id] as BattleDef;
+    return createBattle({ ...b, units: [...partyUnits("rhea", who.map((x) => ({ id: x, name: x }))), ...b.units.filter((u) => u.side !== "ally")] } as BattleDef, book, seeded(1));
+  };
+  it("leaves a fight alone for Rhea and one companion (Ash fights off Rhea's turns)", () => {
+    const s = withParty("road-gaol", ["ash", "tamsin"]), b = BATTLES["road-gaol"] as BattleDef;
+    const foes = s.units.filter((u) => u.side === "foe");
+    expect(foes.length).toBe(b.units.filter((u) => u.side === "foe").length);
+    expect(foes.every((f) => f.weapon === 1)).toBe(true); expect(s.nerve).toBe(1);
+  });
+  it("a bigger party meets more of the rank and file, hardier and harder-hitting, slower to break", () => {
+    const small = withParty("road-gaol", ["ash", "tamsin"]), big = withParty("road-gaol", ["ash", "tamsin", "brannoc", "ferris", "ketti"]);
+    const foes = big.units.filter((u) => u.side === "foe"), was = small.units.filter((u) => u.side === "foe");
+    expect(foes.length).toBe(was.length + 1);
+    expect(foes.at(-1)!.name).toBe("Gaoler"); // a copy of the rank and file, never of a one-off
+    expect(new Set(foes.map((f) => f.id)).size).toBe(foes.length);
+    expect(foes[0].maxHp).toBeGreaterThan(was[0].maxHp); expect(foes[0].weapon).toBeGreaterThan(1);
+    expect(big.nerve!).toBeLessThan(1);
+  });
+  it("never copies a lone boss: the Old Mother only grows harder", () => {
+    const s = withParty("thornwick-cistern", ["ash", "tamsin", "brannoc", "ferris", "ketti", "oakes"]);
+    expect(s.units.filter((u) => u.side === "foe" && u.name === "The Old Mother").length).toBe(1);
   });
 });

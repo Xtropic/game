@@ -81,6 +81,8 @@ export interface BattleState {
   round: number;
   bond: number; // 0..100; full means the Call is ready
   resolve: number; // foes' nerve, 0..100
+  /** How hard each blow shakes that nerve: below 1 when the foes have mustered against a bigger party (muster). */
+  nerve?: number;
   routed: boolean; // won by breaking their nerve, with foes still standing
   log: string[];
   /** What each unit did, for what a kith learns from the fight: strike, cover, struck, call. */
@@ -143,11 +145,41 @@ export function createBattle(def: BattleDef, book: SkillBook, rng: Rng, levels: 
     const hp = Math.max(1, Math.round(max * left));
     return { ...u, species: u.species ?? owned?.species, hp, maxHp: max, level, stats, weapon: kit ? weaponPower(kit) : 1, gearTiming: kit ? gearTiming(kit) : 1, stunned: false, guardedBy: null, covered: false, calm: 0, calmed: false, soothe: 0, gone: false, steady: false, intent: null };
   });
+  const nerve = muster(units);
   foeKits(units, book);
-  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, routed: false, log: [...def.intro], deeds: {}, focus: {}, pack: Object.fromEntries(Object.entries(pack).filter(([k, n]) => n > 0 && book[k]?.kind === "craft")), used: {}, early: [], firstStrike: false };
+  const s: BattleState = { def, units, phase: "ally", turn: 0, round: 1, bond: 0, resolve: 100, nerve, routed: false, log: [...def.intro], deeds: {}, focus: {}, pack: Object.fromEntries(Object.entries(pack).filter(([k, n]) => n > 0 && book[k]?.kind === "craft")), used: {}, early: [], firstStrike: false };
   planIntents(s, book, rng);
   startRound(s);
   return s;
+}
+
+/** Fights are written for Rhea and one companion taking turns (Ash fights off Rhea's turns). Every extra fighter in
+ *  the party makes the other side bigger (Mathew 2026-11-26: "tougher foes, scaled to party size"): one more of the
+ *  rank and file for every two extra fighters, if the foes have any rank and file to spare, and every foe a little
+ *  harder and harder-hitting, so the whole side weighs as much against the bigger party as it did against two. */
+export const MUSTER = { base: 2, hp: 0.6, hit: 1.0, maxExtra: 2 };
+const SPARE_SPOTS: [number, number][] = [[206, 130], [246, 92], [182, 128], [252, 116], [158, 110], [230, 82]];
+export function muster(units: Unit[]): number {
+  const foes = units.filter((u) => u.side === "foe"), takers = units.filter((u) => u.side === "ally" && !u.bonded).length;
+  if (!foes.length || takers <= MUSTER.base) return 1;
+  const named = (n: string) => foes.filter((f) => f.name === n).length;
+  // the rank and file: anyone there's more than one of, or in a wild pack the least of them (never a pack's leader)
+  const least = Math.min(...foes.map((f) => f.level));
+  const rank = foes.filter((f) => named(f.name) > 1 || (foes.every((x) => x.kith) && f.level === least && !/^the /i.test(f.name))).sort((a, b) => a.level - b.level || a.maxHp - b.maxHp);
+  const extra = rank.length ? Math.min(MUSTER.maxExtra, Math.floor((takers - MUSTER.base) / 2)) : 0;
+  const taken = foes.map((f) => f.at);
+  for (let i = 0; i < extra; i++) {
+    const at = SPARE_SPOTS.map((p) => ({ p, d: Math.min(...taken.map((t) => Math.hypot(t[0] - p[0], t[1] - p[1]))) })).sort((a, b) => b.d - a.d)[0].p;
+    const src = rank[i % rank.length];
+    const c: Unit = { ...src, id: `${src.id}-m${i + 1}`, at, row: at[0] >= 236 ? "back" : src.row, skills: [...src.skills] };
+    taken.push(at); units.push(c); foes.push(c);
+  }
+  // what's left after the extra men is made up in hardiness and, more, in how hard they hit: long fights drag
+  const r = takers / MUSTER.base, few = (foes.length - extra) / foes.length;
+  const hard = Math.max(1, few * Math.pow(r, MUSTER.hp)), hit = Math.max(1, Math.pow(r, MUSTER.hit) * (extra ? 0.85 : 1));
+  for (const f of foes) { f.maxHp = Math.round(f.maxHp * hard); f.hp = f.maxHp; f.weapon *= hit; }
+  // a bigger, harder side takes more to break: its nerve wears down in step with its numbers and hardiness
+  return few / hard;
 }
 
 /** Seasoned foes know more than one trick. A foe written with a single basic move picks up others by level: soldiers
@@ -329,7 +361,7 @@ function hit(s: BattleState, by: Unit, target: Unit, amt: number, tags: string[]
   t.hp = Math.max(0, t.hp - amt);
   deed(s, by.id, "strike"); deed(s, t.id, redirected === "cover" ? "cover" : "struck");
   ev.push({ t: "hit", by: by.id, target: t.id, amt, tags, redirected, was: redirected ? target.id : undefined });
-  if (t.side === "foe") s.resolve = Math.max(0, s.resolve - amt * 1.05 * party.shake(statsOf(by)) - (t.hp === 0 ? 15 : 0));
+  if (t.side === "foe") s.resolve = Math.max(0, s.resolve - (amt * 1.05 * party.shake(statsOf(by)) + (t.hp === 0 ? 15 : 0)) * (s.nerve ?? 1));
   s.log.push(`${by.name} hits ${t.name} for ${amt}.${t.hp === 0 ? ` ${t.name} goes down.` : ""}`);
   if (t.hp === 0 && t.bonded) { t.gone = true; ev.push({ t: "bolt", id: t.id }); s.log.push(`${t.name} bolts back up the trail. He'll find you after.`); }
   else if (t.hp === 0) { t.intent = null; ev.push({ t: "down", id: t.id }); }
@@ -373,7 +405,7 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
         if (kin) { ev.push({ t: "follow", by: kin.id, target: landed.id }); const f = damage(book, kin, "follow", landed, "none", rng); hit(s, kin, landed, f.amt, ["Follow-up", ...f.tags], ev, rng); }
       } else {
         const brace = braceMult(g) * (g === "perfect" || g === "good" ? party.brace(statsOf(t)) : 1);
-        hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * brace * party.power(statsOf(u), statsOf(t), sk.kind === "ranged" ? "ranged" : "melee"))), [], ev, rng);
+        hit(s, u, t, Math.max(1, Math.round(roll(rng, sk.dmg ?? [1, 1]) * brace * u.weapon * party.power(statsOf(u), statsOf(t), sk.kind === "ranged" ? "ranged" : "melee"))), [], ev, rng);
         addBond(s, g === "perfect" ? 20 : g === "good" ? 8 : 0, ev);
         addFocus(s, t, focusFor(g, 25, 12));
       }
@@ -393,7 +425,7 @@ function perform(s: BattleState, book: SkillBook, u: Unit, k: string, t: Unit, g
         if (reach === 0) { ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left: false }); s.log.push(`The ${t.name.toLowerCase()} tosses its head. It won't listen while it thinks it's winning.`); break; }
         t.calm = Math.min(100, t.calm + Math.round((18 + hits * 14 + perfects * 6) * party.care(statsOf(u)) * reach * (s.songBoost ?? 1))); t.soothe += perfects; addBond(s, perfects * 8, ev);
         const left = t.calm >= 100;
-        if (left) { t.intent = null; t.gone = true; t.calmed = true; s.resolve = Math.max(0, s.resolve - 15); }
+        if (left) { t.intent = null; t.gone = true; t.calmed = true; s.resolve = Math.max(0, s.resolve - 15 * (s.nerve ?? 1)); }
         ev.push({ t: "calm", by: u.id, target: t.id, calm: t.calm, left });
         s.log.push(left ? (t.species ? `The ${t.name.toLowerCase()} stops, listening. It backs off to the edge of the field, and stays there.` : `The ${t.name.toLowerCase()} stops, listening. It slinks away into the dark.`) : `${u.name} sings. The ${t.name.toLowerCase()}'s ears go back, then forward.`);
       }
