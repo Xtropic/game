@@ -12,6 +12,8 @@
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
 import { keyFor, padState, type Input } from "../core/input";
+import { device, say } from "../core/device";
+import { DragScroll, type Rect } from "./scroll";
 import { attrsAt, jobSkill, type Attrs, type Job } from "../cast/attributes";
 import { KEEPSAKES, TIERS, canReforge, keepsake, reforge, weaponName, type Loadout } from "../gear/weapons";
 import { ITEMS } from "../gear/items";
@@ -83,13 +85,20 @@ export class BasePanel {
   private msg = "";
   private w = 800;
   private h = 600;
+  /** The page body scrolls with a drag when it's taller than the screen. */
+  private scroller = new DragScroll();
+  private lastPage = -1;
+  /** On a narrow upright screen the list sits in a band above the page instead of beside it. */
+  private band: Rect | null = null;
+  /** How tall the band's list wants to be, by page (it shrinks to fit a short list). */
+  private bandNeed: Record<string, number> = {}; private listNeed = 0; private bandMax = 0; private refitting = false;
 
   constructor() { this.view.visible = false; }
 
   show(host: BaseHost, w: number, h: number): void {
     this.host = host; this.w = w; this.h = h; this.open = true; this.view.visible = true; this.i = 0; this.sub = "list"; this.msg = ""; sfx.bump(); this.draw();
   }
-  close(): void { this.open = false; this.view.visible = false; this.view.removeChildren().forEach((c) => c.destroy({ children: true })); }
+  close(): void { this.open = false; this.view.visible = false; this.view.removeChildren().forEach((c) => c.destroy({ children: true })); this.scroller.off(); }
   resize(w: number, h: number): void { this.w = w; this.h = h; if (this.open) this.draw(); }
 
   private get f() { return this.host.game.flags; }
@@ -285,30 +294,54 @@ export class BasePanel {
   private hit(x: number, y: number, w: number, h: number, on: () => void, selected = false): void {
     const g = new Graphics().roundRect(x, y, w, h, 5).fill({ color: selected ? SEL : 0, alpha: selected ? 0.95 : 0.001 });
     if (selected) g.roundRect(x, y, w, h, 5).stroke({ color: GOLD, width: 1 });
-    g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", () => { this.msg = ""; on(); if (this.open) this.draw(); });
+    g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", () => { if (this.scroller.dragged) return; this.msg = ""; on(); if (this.open) this.draw(); });
     this.view.addChild(g);
   }
   private bar(x: number, y: number, w: number, frac: number, color: number): void {
     this.view.addChild(new Graphics().roundRect(x, y, w, 8, 4).fill(0x2a201a).roundRect(x, y, Math.max(0, Math.min(1, frac)) * w, 8, 4).fill(color));
   }
   private list(items: { label: string; sub?: string }[], b: { x: number; y: number; w: number; h: number }, listW: number, fs: number, empty: string): void {
-    if (!items.length) { this.text(empty, b.x + 4, b.y + 6, fs, "#a89a80", false, b.w - 8); return; }
-    const rowH = fs * 2 + 18, max = Math.max(1, Math.floor(b.h / rowH)), from = Math.max(0, Math.min(this.i - max + 1, items.length - max));
+    const band = this.band;
+    if (band) { b = band; listW = band.w; }
+    const start = this.view.children.length;
+    if (!items.length) { this.listNeed = this.text(empty, b.x + 4, b.y + 6, fs, "#a89a80", false, b.w - 8).height + 14; this.tagBand(start); return; }
+    const rowH = band ? device.row : Math.max(fs * 2 + 18, device.touch ? device.row : 0);
+    const max = Math.max(1, Math.floor(b.h / rowH)), from = Math.max(0, Math.min(this.i - max + 1, items.length - max));
+    const paged = items.length > max && device.touch, arrowW = paged ? 40 : 0;
+    this.listNeed = Math.max(2, items.length) * rowH + 4;
     items.slice(from, from + max).forEach((r, k) => {
       const idx = from + k, y = b.y + k * rowH, on = idx === this.i;
-      this.hit(b.x, y, listW, rowH - 4, () => { if (this.i === idx) this.choose(); else { this.i = idx; this.sub = "list"; } }, on);
-      this.text(r.label, b.x + 10, y + 6, fs + 1, on ? "#fff4dc" : "#e8dcc0", on);
-      if (r.sub) this.text(r.sub, b.x + 10, y + 8 + fs + 2, fs - 2, "#a89a80");
+      this.hit(b.x, y, listW - arrowW, rowH - 4, () => { if (this.i === idx) this.choose(); else { this.i = idx; this.sub = "list"; } }, on);
+      if (band) {
+        const l = this.text(r.label, b.x + 10, y + (rowH - 4 - fs - 1) / 2 - 1, fs + 1, on ? "#fff4dc" : "#e8dcc0", on);
+        if (r.sub) { const st = this.text(r.sub, l.x + l.width + 10, y + (rowH - 4 - fs + 2) / 2, fs - 2, "#a89a80"); const room = b.x + listW - arrowW - 6 - st.x; if (st.width > room) st.text = room > 30 ? st.text.slice(0, Math.max(0, Math.floor((room / st.width) * st.text.length) - 1)) + "…" : ""; }
+      } else {
+        this.text(r.label, b.x + 10, y + 6, fs + 1, on ? "#fff4dc" : "#e8dcc0", on);
+        if (r.sub) this.text(r.sub, b.x + 10, y + 8 + fs + 2, fs - 2, "#a89a80");
+      }
     });
+    if (paged) { // a long list pages with arrows on a touch screen
+      const ax = b.x + listW - arrowW + 2, ah = Math.min(max, items.length) * rowH / 2 - 4;
+      const arrow = (label: string, y: number, can: boolean, go: () => void) => {
+        const g = new Graphics().roundRect(ax, y, arrowW - 4, ah, 6).fill({ color: 0x2a2016, alpha: can ? 0.95 : 0.4 }).roundRect(ax, y, arrowW - 4, ah, 6).stroke({ color: GOLD, width: 1, alpha: can ? 1 : 0.3 });
+        if (can) { g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", () => { if (this.scroller.dragged) return; go(); this.sub = "list"; this.draw(); }); }
+        const t = new Text({ text: label, style: serif(16, can ? "#f0c060" : "#5a4e38", true) }); t.anchor.set(0.5); t.x = ax + (arrowW - 4) / 2; t.y = y + ah / 2; t.eventMode = "none";
+        this.view.addChild(g, t);
+      };
+      arrow("▲", b.y, from > 0, () => { this.i = Math.max(0, from - max); });
+      arrow("▼", b.y + ah + 4, from + max < items.length, () => { this.i = Math.min(items.length - 1, from + 2 * max - 1); });
+    }
+    this.tagBand(start);
   }
+  private tagBand(start: number): void { if (this.band) for (const c of this.view.children.slice(start)) c.label = "band"; }
 
   private draw(): void {
     // the first look at a page that runs on its own rules gets its "How it works" card (over the ledger)
     const teachTab: Partial<Record<(typeof TABS)[number], string>> = { Forge: "gear", Pens: "pens", Train: "training", Roads: "roads" };
     const lesson = teachTab[TABS[this.tab]]; if (lesson) teach(this.host.game, lesson);
     this.view.removeChildren().forEach((c) => c.destroy({ children: true }));
-    const w = this.w, h = this.h, W = Math.min(940, w - 16), H = Math.min(620, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
-    const small = W < 620, fs = small ? 13 : 15, g = this.host.game;
+    const w = this.w, h = this.h, tall = h > w, W = Math.min(940, w - 16), H = Math.min(tall ? 1100 : 620, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
+    const small = W < 620, touch = device.touch, fs = small ? (touch ? 14 : 13) : 15, g = this.host.game;
     const dim = new Graphics().rect(0, 0, w, h).fill({ color: 0, alpha: 0.6 }); dim.eventMode = "static"; this.view.addChild(dim);
     this.view.addChild(new Graphics().roundRect(x0, y0, W, H, 10).fill({ color: INK, alpha: 0.97 }).roundRect(x0, y0, W, H, 10).stroke({ color: GOLD, width: 2 }));
     // title: what this is
@@ -321,15 +354,29 @@ export class BasePanel {
       this.hit(tx, ty, tw - 6, 34, () => { this.tab = i; this.i = 0; this.sub = "list"; });
       const label = new Text({ text: TAB_NAMES[t], style: serif(small ? 13 : 16, on ? "#fff4dc" : "#c8b898", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = ty + 17; this.view.addChild(label);
     });
-    const help = this.text(`${TAB_HELP[TABS[this.tab]]}  (${keyFor("guide")}: how it all works)`, x0 + 16, y0 + 44 + rowsH + 8, fs, "#fff4dc", false, W - 32);
+    const short = h < 520;
+    const help = this.text(`${TAB_HELP[TABS[this.tab]]}  (${device.taps ? "The Guide explains" : `${keyFor("guide")}:`} how it all works)`, x0 + 16, y0 + 44 + rowsH + 8, fs, "#fff4dc", false, W - 32);
     // what Thornwick holds
     const building = this.f["base.build"];
     const status = `Coin ${g.coin}   ·   Supplies ${supplies(this.f)}   ·   Day ${Number(this.f["base.day"] ?? 0)}${building ? `   ·   Building: ${BUILDINGS[String(building)].name} (${Number(this.f["base.work"] ?? 0)} / ${BUILDINGS[String(building)].levels[levelOf(this.f, String(building)) + 1]?.work ?? 0})` : ""}`;
-    const st = this.text(status, x0 + 16, help.y + help.height + 6, fs - 2, "#e0c070", true, W - 32);
+    const squeeze = short && touch; help.visible = !squeeze; // a short phone screen: the Guide has the words; the page needs the room
+    const st = this.text(status, x0 + 16, squeeze ? help.y - 2 : help.y + help.height + 6, fs - 2, "#e0c070", true, W - 32);
     const top = st.y + st.height + 12;
     this.view.addChild(new Graphics().rect(x0 + 12, top - 6, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
-    const body = { x: x0 + 14, y: top, w: W - 28, h: y0 + H - 46 - top };
-    const listW = Math.round(small ? Math.min(160, body.w * 0.42) : Math.min(260, body.w * 0.33));
+    const footH = touch ? (short ? (this.msg ? 30 : 10) : 64) : 46;
+    let body = { x: x0 + 14, y: top, w: W - 28, h: y0 + H - footH - top };
+    let listW = Math.round(small ? Math.min(160, body.w * 0.42) : Math.min(260, body.w * 0.33));
+    if (this.tab !== this.lastPage) { this.lastPage = this.tab; this.scroller.reset(); }
+    this.band = null;
+    if (body.w < 480 && tall) { // narrow and upright: the list in a band on top, the page under it across the whole width
+      const bandMax = Math.min(Math.round(body.h * 0.3), device.row * 4 + 8); this.bandMax = bandMax; const bandH = Math.min(bandMax, this.bandNeed[String(this.tab)] ?? bandMax);
+      this.band = { x: body.x, y: body.y, w: body.w, h: bandH };
+      this.view.addChild(new Graphics().rect(body.x, body.y + bandH + 4, body.w, 1).fill({ color: GOLD, alpha: 0.3 }));
+      body = { x: body.x, y: body.y + bandH + 12, w: body.w, h: body.h - bandH - 12 };
+      listW = -18;
+    }
+    this.listNeed = 0;
+    const from = this.view.children.length;
     switch (TABS[this.tab]) {
       case "Party": this.drawParty(body, listW, fs); break;
       case "Works": this.drawWorks(body, listW, fs); break;
@@ -340,14 +387,23 @@ export class BasePanel {
       case "Roads": this.drawRoads(body, listW, fs); break;
       default: this.drawMake(body, listW, fs);
     }
-    const fy = y0 + H - 42;
+    const listKids = this.view.children.filter((c) => c.label === "band");
+    for (const k of listKids) this.view.removeChild(k);
+    this.scroller.wrap(this.view, from, { x: body.x - 4, y: body.y - 4, w: body.w + 8, h: body.h + 6 });
+    for (const k of listKids) this.view.addChild(k);
+    const fy = y0 + H - footH + 4;
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
     if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#cfe8b0", false, W - 32);
-    const keys = this.text(padState.used ? "LB/RB or D-pad Left/Right: page · Up/Down: move · A: choose · B: close" : small ? "Tap a page, tap a row" : "Left/Right: change page · Up/Down: move · Enter: choose · Esc: close", 0, fy + 22, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
+    const keys = this.text(padState.used ? "LB/RB or D-pad Left/Right: page · Up/Down: move · A: choose · B: close" : touch ? "Tap a row to choose it, again to use it · Drag to scroll" : small ? "Tap a page, tap a row" : "Left/Right: change page · Up/Down: move · Enter: choose · Esc: close", 0, fy + (touch ? 32 : 22), device.small(12), "#8a7e68"); keys.x = x0 + W - keys.width - 16;
+    if (touch && (keys.x < x0 + 16 || short)) keys.visible = false;
     const close = new Container(); close.x = x0 + W - (small ? 70 : 96); close.y = y0 + 8;
     if (!small) { sub.y = y0 + 16; sub.x = close.x - sub.width - 14; } else sub.visible = false;
-    const cbg = new Graphics().roundRect(0, 0, small ? 58 : 82, 28, 6).fill(0x3a2c18).stroke({ color: GOLD, width: 1 }); const ct = new Text({ text: "Close ✕", style: serif(13, "#f0c060", true) }); ct.x = ((small ? 58 : 82) - ct.width) / 2; ct.y = 6;
+    const cbw = small ? (touch ? 76 : 58) : 82, cbh = touch ? 34 : 28;
+    if (touch) close.x = x0 + W - cbw - 12;
+    const cbg = new Graphics().roundRect(0, 0, cbw, cbh, 6).fill(0x3a2c18).stroke({ color: GOLD, width: 1 }); const ct = new Text({ text: "Close ✕", style: serif(13, "#f0c060", true) }); ct.x = (cbw - ct.width) / 2; ct.y = (cbh - ct.height) / 2;
     close.addChild(cbg, ct); close.eventMode = "static"; close.cursor = "pointer"; close.on("pointertap", () => this.close()); this.view.addChild(close);
+    // the band shrinks to fit a short list (or grows back for a longer one): draw once more at the right size
+    if (this.band && this.listNeed > 0 && !this.refitting) { const want = Math.min(this.bandMax, this.listNeed); if (Math.abs(want - this.band.h) > 4) { this.bandNeed[String(this.tab)] = want; this.refitting = true; this.draw(); this.refitting = false; } }
   }
 
   private drawParty(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
@@ -365,7 +421,7 @@ export class BasePanel {
     const btnW = Math.min(w, 300), label = this.travels(id) ? "Leave at Thornwick" : "Take along";
     this.view.addChild(new Graphics().roundRect(x, y, btnW, fs + 22, 8).fill(this.travels(id) ? 0x4a2a1a : 0x2c4a1c).stroke({ color: GOLD, width: 2 }));
     this.hit(x, y, btnW, fs + 22, () => this.choose());
-    const t = this.text(`${label}  (${keyFor("confirm")})`, x, y + 10, fs + 1, "#fff4dc", true); t.x = x + (btnW - t.width) / 2;
+    const t = this.text(device.taps ? label : `${label}  (${keyFor("confirm")})`, x, y + 10, fs + 1, "#fff4dc", true); t.x = x + (btnW - t.width) / 2;
     y += fs + 34;
     this.text("Party changes take effect straight away when the party is with Rhea; otherwise the next time she sets out.", x, y, fs - 2, "#9a8e78", false, w);
   }
@@ -386,7 +442,7 @@ export class BasePanel {
       y += this.text(next.gives, x, y, fs - 1, "#d8ccb4", false, w).height + 4;
       y += this.text(`Costs ${next.coin} coin and ${next.supplies} supplies, then ${next.work} days of building work.`, x, y, fs - 1, "#d8ccb4", false, w).height + 8;
       const c = canRaise(f, g.coin, id);
-      this.text(c.ok ? "Enter to start building it." : c.why ?? "", x, y, fs - 1, c.ok ? "#cfe8b0" : "#e8b8a0", false, w);
+      this.text(c.ok ? say("Enter to start building it.", "Tap it again to start building it.") : c.why ?? "", x, y, fs - 1, c.ok ? "#cfe8b0" : "#e8b8a0", false, w);
     } else this.text("Built as far as it goes.", x, y, fs - 1, "#bfae8e");
   }
 
@@ -397,7 +453,7 @@ export class BasePanel {
     const a = this.attrs(id), x = b.x + listW + 18, w = b.w - listW - 18, best = bestJob(a), now = jobOf(f, id);
     let y = b.y;
     y += this.text(this.name(id), x, y, fs + 5, "#fff4dc", true).height + 4;
-    y += this.text(`Doing: ${now ? JOB_NAMES[now] : "Resting"}. Best at: ${JOB_NAMES[best]}. Enter to change.`, x, y, fs - 1, "#d8ccb4", false, w).height + 10;
+    y += this.text(`Doing: ${now ? JOB_NAMES[now] : "Resting"}. Best at: ${JOB_NAMES[best]}.${say(" Enter to change.", " Tap again to change.")}`, x, y, fs - 1, "#d8ccb4", false, w).height + 10;
     const jobs = [...ALL_JOBS].sort((p, q) => jobSkill(a, q) - jobSkill(a, p));
     const top = Math.max(...jobs.map((j) => jobSkill(a, j)));
     for (const j of jobs) {
@@ -432,7 +488,7 @@ export class BasePanel {
         this.text(br.name, x + 10, y + 4, fs, on ? "#fff4dc" : "#e8dcc0", on); this.text(br.note, x + 10, y + fs + 6, fs - 2, "#a89a80", false, w - 20);
         y += rh + 4;
       });
-    } else this.text(c.ok || c.why === "Choose which way the weapon goes." ? "Enter to reforge." : c.why ?? "", x, y, fs - 1, c.ok ? "#cfe8b0" : "#e8b8a0", false, w);
+    } else this.text(c.ok || c.why === "Choose which way the weapon goes." ? say("Enter to reforge.", "Tap again to reforge.") : c.why ?? "", x, y, fs - 1, c.ok ? "#cfe8b0" : "#e8b8a0", false, w);
   }
 
   private drawPens(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
@@ -471,7 +527,7 @@ export class BasePanel {
       this.text(c.ok ? "Breed them (one litter a day)" : "Breed them (not this pair)", x + 10, y + 6, fs, c.ok ? (onB ? "#fff4dc" : "#e0c070") : "#8a7e68", onB);
       y += fs + 20;
     }
-    this.text(this.sub === "part" ? "Up and Down choose, Left and Right change. Esc when done." : "Enter to change how it's raised, or to breed.", x, y + 4, fs - 2, "#9a8e78");
+    this.text(device.taps ? "Tap a line to change it." : this.sub === "part" ? "Up and Down choose, Left and Right change. Esc when done." : "Enter to change how it's raised, or to breed.", x, y + 4, fs - 2, "#9a8e78");
   }
 
   private drawTrain(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
@@ -511,7 +567,7 @@ export class BasePanel {
       }
       y += rh + 3;
     });
-    this.text(this.sub === "train" ? `${keyFor("confirm")}: attend (play it) · Left/Right: set as daily drill · Esc: back` : `${keyFor("confirm")} to look after and train ${k.name}.`, x, b.y + b.h - fs, fs - 3, "#9a8e78", false, w);
+    this.text(device.taps ? "Tap a drill to play it, or Daily to make it the daily drill." : this.sub === "train" ? `${keyFor("confirm")}: attend (play it) · Left/Right: set as daily drill · Esc: back` : `${keyFor("confirm")} to look after and train ${k.name}.`, x, b.y + b.h - fs, fs - 3, "#9a8e78", false, w);
   }
 
   private drawRoads(b: { x: number; y: number; w: number; h: number }, listW: number, fs: number): void {
@@ -527,8 +583,8 @@ export class BasePanel {
     const gone = awayIds(f);
     if (gone.length) { y += this.text(`On the road now: ${gone.map((id) => { const a = away(f, id); return `${g.kith[id]?.name ?? id} (${a?.exp.name.toLowerCase()}, ${a?.left} day${a?.left === 1 ? "" : "s"} left)`; }).join("; ")}.`, x, y, fs - 2, "#a8c0d8", false, w).height + 8; }
     const here = this.host.kithHere();
-    if (this.sub !== "road") { this.text(here.length ? "Enter to choose which kith goes." : "No kith staying at Thornwick to send.", x, y, fs - 2, "#9a8e78", false, w); return; }
-    this.text("Who goes? (Enter sends, Esc back)", x, y, fs - 1, "#e0c070", true); y += fs + 8;
+    if (this.sub !== "road") { this.text(here.length ? say("Enter to choose which kith goes.", "Tap it again to choose which kith goes.") : "No kith staying at Thornwick to send.", x, y, fs - 2, "#9a8e78", false, w); return; }
+    this.text(say("Who goes? (Enter sends, Esc back)", "Who goes? Tap one to send it."), x, y, fs - 1, "#e0c070", true); y += fs + 8;
     here.forEach((id, i) => {
       const k = g.kith[id], on = i === this.part, rh = fs + 14, no = cannotSend(f, k, e, reachable(f, e.land));
       if (y + rh > b.y + b.h) return;
@@ -548,6 +604,6 @@ export class BasePanel {
     y += this.text(r.recipe ? ITEMS[r.recipe].name : BUILDINGS[r.where].name, x, y, fs + 5, "#fff4dc", true).height + 6;
     y += this.text(r.recipe ? ITEMS[r.recipe].text : BUILDINGS[r.where].note, x, y, fs, "#d8ccb4", false, w).height + 8;
     const who = BUILDINGS[r.where].jobs.map((j) => JOB_NAMES[j].toLowerCase()).join(" or ");
-    this.text(r.recipe ? `Enter to set the ${BUILDINGS[r.where].name.toLowerCase()} to making these. People on ${who} make them each day from supplies.` : `Enter here to stop it making anything.`, x, y, fs - 1, "#bfae8e", false, w);
+    this.text(r.recipe ? `${say("Enter", "Tap again")} to set the ${BUILDINGS[r.where].name.toLowerCase()} to making these. People on ${who} make them each day from supplies.` : say("Enter here to stop it making anything.", "Tap again to stop it making anything."), x, y, fs - 1, "#bfae8e", false, w);
   }
 }

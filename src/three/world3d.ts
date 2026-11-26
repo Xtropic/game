@@ -192,15 +192,16 @@ export class World3D {
   }
 
   constructor(host: HTMLElement) {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
-    this.renderer.shadowMap.enabled = true; this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // phones and tablets start a step lower (sharp enough on a small screen, and kinder to the battery)
+    this.quality = quality();
+    this.renderer = new THREE.WebGLRenderer({ antialias: this.quality === 2, powerPreference: "high-performance" });
+    this.renderer.shadowMap.enabled = true; this.renderer.shadowMap.type = this.quality === 2 ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.canvas = this.renderer.domElement;
     Object.assign(this.canvas.style, { position: "absolute", inset: "0", width: "100%", height: "100%", display: "block" });
     host.insertBefore(this.canvas, host.firstChild);
     this.scene.add(this.level, this.figs);
-    this.sun.castShadow = true; this.sun.shadow.mapSize.set(2048, 2048); this.sun.shadow.bias = -0.0008; this.sun.shadow.normalBias = 0.02;
+    this.sun.castShadow = true; this.sun.shadow.mapSize.set(this.quality === 2 ? 2048 : 1024, this.quality === 2 ? 2048 : 1024); this.sun.shadow.bias = -0.0008; this.sun.shadow.normalBias = 0.02;
     Object.assign(this.sun.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 90 });
     this.scene.add(this.sun, this.sun.target, this.hemi, this.lantern);
     for (let i = 0; i < 8; i++) { const l = new THREE.PointLight(0xffa850, 0, 6, 1.6); this.pool.push(l); this.scene.add(l); }
@@ -212,9 +213,36 @@ export class World3D {
     this.tiltH.uniforms.r.value = this.tiltV.uniforms.r.value = 0.55;
     this.composer.addPass(this.tiltH); this.composer.addPass(this.tiltV); this.composer.addPass(new OutputPass());
     addEventListener("wheel", (e) => { this.zoomMul = Math.max(0.55, Math.min(1.8, this.zoomMul * (e.deltaY > 0 ? 1.08 : 1 / 1.08))); }, { passive: true });
+    // two fingers pinch to zoom on a touch screen
+    const fingers = new Map<number, [number, number]>(); let pinch = 0, pinchZoom = 1;
+    const spread = () => { const [a, b] = [...fingers.values()]; return Math.hypot(a[0] - b[0], a[1] - b[1]); };
+    addEventListener("pointerdown", (e) => { if (e.pointerType !== "touch") return; fingers.set(e.pointerId, [e.clientX, e.clientY]); if (fingers.size === 2) { pinch = spread(); pinchZoom = this.zoomMul; } }, { capture: true, passive: true });
+    addEventListener("pointermove", (e) => { if (!fingers.has(e.pointerId)) return; fingers.set(e.pointerId, [e.clientX, e.clientY]); if (fingers.size === 2 && pinch > 20 && this.canvas.style.visibility !== "hidden") this.zoomMul = Math.max(0.55, Math.min(1.8, pinchZoom * (pinch / Math.max(20, spread())))); }, { capture: true, passive: true });
+    const lift = (e: PointerEvent) => { fingers.delete(e.pointerId); if (fingers.size < 2) pinch = 0; };
+    addEventListener("pointerup", lift, { capture: true, passive: true }); addEventListener("pointercancel", lift, { capture: true, passive: true });
+    this.applyQuality();
     // hide when no one draws (a battle or another screen is on top)
     const watch = () => { this.canvas.style.visibility = performance.now() - this.lastFrame < 250 ? "visible" : "hidden"; requestAnimationFrame(watch); };
     requestAnimationFrame(watch);
+  }
+
+  /** 2 full (bloom, soft shadows, tilt-shift, sharp), 1 phone (lighter shadows, lower resolution), 0 lowest
+   *  (no glow or tilt-shift, plain shadows, lowest resolution). A slow device steps itself down. */
+  private quality: 0 | 1 | 2 = 2;
+  private slow = 0; private frames = 0;
+  private applyQuality(): void {
+    const q = this.quality, dpr = devicePixelRatio || 1;
+    this.renderer.setPixelRatio(Math.min(dpr, q === 2 ? 1.75 : q === 1 ? 1.25 : 1));
+    this.bloom.enabled = q >= 1; this.tiltH.enabled = this.tiltV.enabled = q >= 1;
+    this.renderer.shadowMap.enabled = q >= 1; this.sun.castShadow = q >= 1;
+    if (this.width) this.resize(this.width, this.height);
+  }
+  /** Watches how long frames take; a device that can't keep up gets a lighter look (once per step, never back up). */
+  private pace(dt: number): void {
+    if (this.quality === 0 || dt <= 0 || dt > 0.5) return;
+    this.frames++;
+    this.slow = this.slow * 0.97 + (dt > 1 / 32 ? 1 : 0) * 0.03;
+    if (this.frames > 180 && this.slow > 0.6) { this.quality = (this.quality - 1) as 0 | 1; this.frames = 0; this.slow = 0; this.applyQuality(); try { localStorage.setItem("lull.q3d", String(this.quality)); } catch { /* fine */ } }
   }
 
   resize(w: number, h: number): void {
@@ -863,7 +891,9 @@ export class World3D {
     const target = new THREE.Vector3(u, gy, v);
     if (!this.focusSet) { this.focus.copy(target); this.focusSet = true; } else this.focus.lerp(target, Math.min(1, dt * 5));
     const id = this.map.file.id, small = INDOORS.has(id) && !UNDER.has(id);
-    const dist = (this.world ? 42 : small ? 21 : 31) * this.zoomMul, pitch = this.world ? 0.95 : 0.86;
+    // an upright phone sees a narrow strip: stand back a little so the sides of the scene still show
+    const upright = this.height > this.width ? Math.min(1.3, Math.sqrt(this.height / this.width)) : 1;
+    const dist = (this.world ? 42 : small ? 21 : 31) * this.zoomMul * upright, pitch = this.world ? 0.95 : 0.86;
     this.camera.position.set(this.focus.x, this.focus.y + Math.sin(pitch) * dist, this.focus.z + Math.cos(pitch) * dist);
     this.camera.lookAt(this.focus.x, this.focus.y + 0.5, this.focus.z);
     const fog = this.scene.fog as THREE.Fog; fog.near = dist + (this.mood.sky ? 8 : 5); fog.far = dist + (this.mood.sky ? 70 : 40);
@@ -895,5 +925,13 @@ export class World3D {
       for (const m of h.mats) { const want = behind ? 0.3 : 1; if (m.opacity !== want) { m.transparent = behind; m.opacity = want; m.depthWrite = !behind; m.needsUpdate = true; } }
     }
     this.composer.render(dt);
+    this.pace(dt);
   }
+}
+
+/** The 3D look to start with: what this device settled on last time, else a step down on phones and tablets. */
+function quality(): 0 | 1 | 2 {
+  try { const q = Number(localStorage.getItem("lull.q3d")); if (q === 0 || q === 1) return q; } catch { /* fine */ }
+  const touch = (navigator.maxTouchPoints ?? 0) > 0 && matchMedia?.("(pointer: coarse)").matches;
+  return touch ? 1 : 2;
 }

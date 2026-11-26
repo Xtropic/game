@@ -1,5 +1,6 @@
 // The entry table at a kith tournament (data/kith/tournaments.json): the event, its rounds, and which of your
 // kith may go in. Up/Down move, Enter picks a kith (or takes the team into the ring on the last row), Esc closes.
+import { device } from "../core/device";
 import { Container, Graphics, Text } from "pixi.js";
 import type { Game } from "../core/game";
 import { keyFor, type Input } from "../core/input";
@@ -72,8 +73,8 @@ export class TourneyPanel {
 
   private draw(): void {
     this.view.removeChildren().forEach((c) => c.destroy({ children: true }));
-    const w = this.w, h = this.h, W = Math.min(760, w - 16), H = Math.min(560, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
-    const small = W < 560, fs = small ? 13 : 15, t = this.t, g = this.game, f = g.flags;
+    const w = this.w, h = this.h, W = Math.min(760, w - 16), H = Math.min(h > w ? 900 : 560, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
+    const small = W < 560, fs = small ? (device.touch ? 14 : 13) : 15, t = this.t, g = this.game, f = g.flags;
     const dim = new Graphics().rect(0, 0, w, h).fill({ color: 0, alpha: 0.6 }); dim.eventMode = "static"; this.view.addChild(dim);
     this.view.addChild(new Graphics().roundRect(x0, y0, W, H, 10).fill({ color: INK, alpha: 0.97 }).roundRect(x0, y0, W, H, 10).stroke({ color: GOLD, width: 2 }));
     this.text(t.name, x0 + 16, y0 + 12, fs + 6, "#fff4dc", true);
@@ -81,7 +82,7 @@ export class TourneyPanel {
     let y = y0 + 16 + fs + 14;
     y += this.text(t.blurb, x0 + 16, y, fs - 1, "#d8ccb4", false, W - 32).height + 6;
     y += this.text(`For ${rankName(t.needs) === "Unranked" ? "kith with no rank yet" : `${rankName(t.needs)}-ranked kith`}. Winners become ${rankName(t.gives)}. Up to ${t.size} go in together. Entry ${t.fee} coin. ${t.rounds.length} rounds. Purse ${f[`won.tourney.${t.id}`] ? Math.round(t.prize.coin / 3) : t.prize.coin} coin${f[`won.tourney.${t.id}`] ? " (you've won it before)" : " and a prize"}.`, x0 + 16, y, fs - 2, "#e0c070", false, W - 32).height + 12;
-    const able = this.able(), rowH = fs + 20, x = x0 + 14, lw = W - 28;
+    const able = this.able(), rowH = Math.max(fs + 20, device.touch ? 44 : 0), x = x0 + 14, lw = W - 28;
     if (!able.length) y += this.text(`None of your kith can enter: this event is for ${rankName(t.needs) === "Unranked" ? "kith with no rank yet" : `${rankName(t.needs)}-ranked kith`}.`, x + 4, y, fs - 1, "#e8b8a0", false, lw).height + 8;
     able.forEach((k, i) => {
       const on = i === this.i, inTeam = this.team.includes(k.id);
@@ -93,9 +94,15 @@ export class TourneyPanel {
     const go = able.length, on = this.i === go;
     this.row(x, y + 6, lw, rowH, on, () => { this.i = go; this.pick(go); if (this.open) this.draw(); });
     this.text(this.team.length ? `Into the ring with ${this.team.map((id) => g.kith[id]?.name).join(" and ")} (${t.fee} coin)` : "Into the ring (choose kith first)", x + 10, y + 13, fs, on ? "#fff4dc" : "#e0c070", true);
-    const fy = y0 + H - 42;
+    const fy = y0 + H - (device.taps ? 48 : 42);
     this.view.addChild(new Graphics().rect(x0 + 12, fy - 4, W - 24, 1).fill({ color: GOLD, alpha: 0.4 }));
-    if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#e8b8a0", false, W - 32);
+    if (this.msg) this.text(this.msg, x0 + 16, fy, fs, "#e8b8a0", false, W - (device.taps ? 140 : 32));
+    if (device.taps) {
+      const cb = new Graphics().roundRect(x0 + W - 112, fy + 6, 96, 34, 7).fill(0x2a2016).roundRect(x0 + W - 112, fy + 6, 96, 34, 7).stroke({ color: GOLD, width: 1 });
+      cb.eventMode = "static"; cb.cursor = "pointer"; cb.on("pointertap", () => this.close()); this.view.addChild(cb);
+      const ct = this.text("Close  ✕", 0, 0, 14, "#f0c060", true); ct.x = x0 + W - 112 + (96 - ct.width) / 2; ct.y = fy + 6 + (34 - ct.height) / 2; ct.eventMode = "none";
+      return;
+    }
     const keys = this.text(small ? `${keyFor("cancel")} closes` : `Up/Down choose · ${keyFor("confirm")} picks · ${keyFor("cancel")} closes`, 0, fy + 20, 12, "#8a7e68"); keys.x = x0 + W - keys.width - 16;
     const closeBtn = this.text("Close", x0 + 16, fy + 20, 12, "#e0c070", true); closeBtn.eventMode = "static"; closeBtn.cursor = "pointer"; closeBtn.on("pointertap", () => this.close());
   }

@@ -2,6 +2,8 @@
 // then the field in real time. Click one of your companies, then the ground to move or one of theirs to attack.
 // Space pauses, Tab picks the next company, T changes speed, H tells the chosen company to hold.
 import { padState } from "../core/input";
+import { device } from "../core/device";
+import { DragScroll } from "../ui/scroll";
 import { Container, Graphics, Text, type FederatedPointerEvent } from "pixi.js";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
@@ -36,6 +38,8 @@ export class ArmyScene implements Scene {
   private speed = 1;
   private logShown = "";
   private hudDirty = true;
+  /** The war council scrolls with a drag on a small screen. */
+  private councilScroll = new DragScroll();
   private keys = (e: KeyboardEvent) => { if (this.phase !== "field" || this.game.scenes.top !== this) return; if (e.key === "+" || e.key === "=") this.setSpeed(Math.min(3, this.speed + 1)); else if (e.key === "-") this.setSpeed(Math.max(1, this.speed - 1)); else if (e.key === "h" || e.key === "H") this.hold(); };
 
   /** How many stratagems the council may pick (by rank). */
@@ -55,7 +59,7 @@ export class ArmyScene implements Scene {
     window.addEventListener("keydown", this.keys);
     this.s = this.build();
   }
-  exit(): void { window.removeEventListener("keydown", this.keys); }
+  exit(): void { window.removeEventListener("keydown", this.keys); this.councilScroll.destroy(); }
 
   private officers(): Record<string, { attrs: Attrs } | undefined> {
     const by = new Map([this.hero, ...this.pool].map((o) => [o.id, o]));
@@ -224,50 +228,56 @@ export class ArmyScene implements Scene {
     const txt = (t: string, x: number, y: number, size = fs, fill = "#d8cdb6", bold = false, wrap = pw) => { const o = new Text({ text: t, style: { ...serif(size, fill, bold), wordWrap: true, wordWrapWidth: wrap, lineHeight: Math.round(size * 1.3) } }); o.x = x; o.y = y; this.hud.addChild(o); return o; };
     const btn = (label: string, x: number, y: number, bw: number, bh: number, on: () => void, lit = false) => {
       const b = new Graphics().roundRect(x, y, bw, bh, 7).fill({ color: lit ? 0x3a2c18 : 0x1c1610, alpha: 0.95 }).roundRect(x, y, bw, bh, 7).stroke({ color: 0xe0c070, width: lit ? 2 : 1 });
-      b.eventMode = "static"; b.cursor = "pointer"; b.on("pointertap", (e) => { e.stopPropagation(); on(); this.hudDirty = true; }); this.hud.addChild(b);
+      b.eventMode = "static"; b.cursor = "pointer"; b.on("pointertap", (e) => { e.stopPropagation(); if (this.councilScroll.dragged) return; on(); this.hudDirty = true; }); this.hud.addChild(b);
       const t = new Text({ text: label, style: { ...serif(fs, "#f2e3c4", true), align: "center", wordWrap: true, wordWrapWidth: bw - 10 } }); t.anchor.set(0.5); t.x = x + bw / 2; t.y = y + bh / 2; this.hud.addChild(t);
     };
     const panel = (x: number, y: number, pw2: number, ph: number) => this.hud.addChild(new Graphics().roundRect(x, y, pw2, ph, 10).fill({ color: 0x14100c, alpha: 0.94 }).roundRect(x, y, pw2, ph, 10).stroke({ color: 0xe0c070, width: 2 }));
 
     if (this.phase === "intro") {
-      const bw = Math.min(640, w - 32), bx = (w - bw) / 2, by = h / 2 - 90;
-      panel(bx, by, bw, 180);
+      const bw = Math.min(640, w - 32), bx = (w - bw) / 2, bh0 = device.touch ? 40 : 34;
+      const body = new Text({ text: this.def.intro[this.introAt], style: { ...serif(fs, "#d8cdb6"), wordWrap: true, wordWrapWidth: bw - 36, lineHeight: Math.round(fs * 1.3) } });
+      const ph = Math.min(h - 16, 50 + body.height + 20 + bh0 + 14), by = Math.max(8, h / 2 - ph / 2);
+      panel(bx, by, bw, ph);
       txt(this.def.name, bx + 18, by + 14, fs + 6, "#fff4dc", true, bw - 36);
-      txt(this.def.intro[this.introAt], bx + 18, by + 50, fs, "#d8cdb6", false, bw - 36);
-      btn("Go on", bx + bw - 130, by + 132, 112, 34, () => this.next());
+      body.x = bx + 18; body.y = by + 50; this.hud.addChild(body);
+      btn("Go on", bx + bw - 130, by + ph - bh0 - 12, 112, bh0, () => this.next());
       return;
     }
     if (this.phase === "council") {
-      const bw = Math.min(900, w - 16), bh = Math.min(h - 16, 600), bx = (w - bw) / 2, by = (h - bh) / 2;
+      const bw = Math.min(900, w - 16), bh = Math.min(h - 16, h > w ? 1100 : 600), bx = (w - bw) / 2, by = (h - bh) / 2;
+      const one = bw < 640, rowH = Math.max(fs + 18, device.touch ? 40 : 0); // a narrow screen: one column, scrolling
       panel(bx, by, bw, bh);
       txt("War council", bx + 18, by + 12, fs + 6, "#fff4dc", true);
-      const col = Math.min(400, bw * 0.48);
+      const col = one ? bw - 36 : Math.min(400, bw * 0.48);
+      const from = this.hud.children.length;
       let y = by + 50;
       txt("Who leads what (tap to change)", bx + 18, y, fs - 1, "#e0c070", true); y += fs + 10;
       for (const cd of this.def.ours) {
         const co = s.cos.find((q) => q.id === cd.id)!, who = this.officerOf[cd.id];
-        btn(`${cd.name} (${KINDS[cd.kind].name}): ${cd.id === this.def.ours[0].id ? this.hero.name : cd.id.startsWith("ally-") ? "their own captain" : this.nameOf(who)}  ·  ${co.men} strong`, bx + 18, y, col, fs + 18, () => this.cycleOfficer(cd.id));
-        y += fs + 24;
+        btn(`${cd.name} (${KINDS[cd.kind].name}): ${cd.id === this.def.ours[0].id ? this.hero.name : cd.id.startsWith("ally-") ? "their own captain" : this.nameOf(who)}  ·  ${co.men} strong`, bx + 18, y, col, rowH, () => this.cycleOfficer(cd.id));
+        y += rowH + 6;
       }
       y += 6;
       txt("What we know of their plan", bx + 18, y, fs - 1, "#e0c070", true); y += fs + 8;
       const notes = s.intel === 2 ? this.def.plan.map((p) => `• ${p.note}`) : s.intel === 1 ? [`• ${this.def.plan[0].note}`, "• More than that, nobody can tell. Someone sharper might read it."] : ["Nothing. Their captain is cleverer than anyone you have. A sharper officer would see more."];
-      txt(notes.join("\n"), bx + 18, y, fs - 1, "#d8cdb6", false, col);
+      y += txt(notes.join("\n"), bx + 18, y, fs - 1, "#d8cdb6", false, col).height + 14;
       // stratagems
-      const sx = bx + col + 40, sw = bw - col - 58; let sy = by + 50;
+      const sx = one ? bx + 18 : bx + col + 40, sw = one ? col : bw - col - 58; let sy = one ? y : by + 50;
       txt(this.picks > 1 ? `Stratagems (pick ${this.picks})` : "Stratagem (pick one)", sx, sy, fs - 1, "#e0c070", true); sy += fs + 10;
       for (const st of this.def.stratagems) {
         const on = this.stratagem.includes(st.id);
-        btn(st.name, sx, sy, sw, fs + 18, () => { this.pickStratagem(st.id); this.s = this.build(); this.drawGround(); }, on); sy += fs + 22;
+        btn(st.name, sx, sy, sw, rowH, () => { this.pickStratagem(st.id); this.s = this.build(); this.drawGround(); }, on); sy += rowH + 4;
         if (on) {
           sy += txt(st.text, sx + 6, sy, fs - 1, "#d8cdb6", false, sw - 12).height + 6;
           for (const o of this.opinions(st.id)) sy += txt(o, sx + 6, sy, fs - 2, "#bfae8e", false, sw - 12).height + 4;
           sy += 6;
         }
       }
-      btn("To the field", bx + bw - 170, by + bh - 52, 150, 38, () => this.toField(), true);
+      this.councilScroll.wrap(this.hud, from, { x: bx + 6, y: by + 46, w: bw - 12, h: bh - 46 - 60 });
+      btn("To the field", bx + bw - 170, by + bh - 52, 150, device.touch ? 42 : 38, () => this.toField(), true);
       return;
     }
+    this.councilScroll.off();
     // the field
     if (wide) panel(px - 8, 4, pw + 16, h - 8);
     let y = py;
@@ -278,12 +288,12 @@ export class ArmyScene implements Scene {
     if (sel) {
       y += txt(`${sel.name}: ${KINDS[sel.kind].name}, led by ${sel.id === this.def.ours[0].id ? this.hero.name : this.nameOf(this.officerOf[sel.id])}`, px, y, fs, "#fff4dc", true).height + 2;
       y += txt(`${Math.round(sel.men)} of ${sel.max} on their feet · nerve ${Math.max(0, Math.round(sel.morale))} · orders reach them in ${orderDelay(s, sel).toFixed(1)}s${sel.hidden ? " · hidden" : ""}${sel.flanked > 0 ? " · FLANKED" : ""}`, px, y, fs - 2, "#bfae8e").height + 8;
-    } else y += txt("Click one of your companies (blue) to give it orders.", px, y, fs - 1, "#bfae8e").height + 8;
+    } else y += txt(`${device.taps ? "Tap" : "Click"} one of your companies (blue) to give it orders.`, px, y, fs - 1, "#bfae8e").height + 8;
     if (this.logShown) y += txt(this.logShown, px, y, fs - 1, "#cfe8b0").height + 8;
-    const bw = wide ? (pw - 8) / 2 : Math.min(140, (pw - 18) / 4), bh = 34;
+    const bw = wide ? (pw - 8) / 2 : Math.min(140, (pw - 18) / 4), bh = device.touch ? 40 : 34;
     const row = (items: [string, () => void, boolean?][]) => { items.forEach(([l, f, lit], i) => btn(l, px + (wide ? (i % 2) * (bw + 8) : i * (bw + 6)), y + (wide ? Math.floor(i / 2) * (bh + 6) : 0), bw, bh, f, lit)); y += (wide ? Math.ceil(items.length / 2) : 1) * (bh + 6); };
     row([[this.paused ? "Resume" : "Pause", () => { this.paused = !this.paused; }, this.paused], [`Speed x${this.speed}`, () => this.setSpeed(this.speed % 3 + 1)], ["Hold", () => this.hold()], ["Next company", () => { const o = live(s, "ours"); const i = o.findIndex((c) => c.id === this.sel); this.sel = o[(i + 1) % o.length]?.id ?? null; }]]);
-    if (wide && y < h - 120) txt(padState.used ? "Right stick points, A on ground to move, on a red company to attack. A (no pointer) pauses, Menu next, LT speed, Y hold." : "Click ground to move, a red company to attack. Space pauses, Tab next, T speed, H hold, G guide. The faint red arrows are what you know of their plan.", px, y + 6, fs - 3, "#8a7e68");
+    if (wide && y < h - 120) txt(device.taps ? "Tap ground to move, a red company to attack. The faint red arrows are what you know of their plan." : padState.used ? "Right stick points, A on ground to move, on a red company to attack. A (no pointer) pauses, Menu next, LT speed, Y hold." : "Click ground to move, a red company to attack. Space pauses, Tab next, T speed, H hold, G guide. The faint red arrows are what you know of their plan.", px, y + 6, fs - 3, "#8a7e68");
     if (this.phase === "over") {
       const bw2 = Math.min(520, w - 32), bx = (this.ox + (this.def.terrain[0].length * this.cell) / 2) - bw2 / 2, by2 = h / 2 - 70;
       panel(Math.max(8, bx), by2, bw2, 140);

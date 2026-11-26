@@ -2,6 +2,7 @@
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
 import { keyFor, padState } from "../core/input";
+import { device } from "../core/device";
 import type { Loadout } from "../gear/weapons";
 import { sfx } from "../audio/music";
 import { openGuide, teach } from "../guide/guideScene";
@@ -91,6 +92,12 @@ export class BattleScene implements Scene {
   private hudRect = { x: 0, y: 0, w: 0, h: 0 };
   private narrow = false;
   private barW = 110;
+  /** Touch screens: commands are framed buttons big enough for a thumb, and there are buttons for what keys do. */
+  private touchHud = false;
+  private cmdBgs: Graphics[] = [];
+  private touchBar = new Container();
+  /** Where the party's health goes on a touch screen: beside the stage when there's room, else in the panel. */
+  private partyAt: { x: number; y: number; w: number } | null = null;
 
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
@@ -108,7 +115,7 @@ export class BattleScene implements Scene {
     this.game = game;
     this.backFill.eventMode = "static"; // also stops taps reaching the map underneath
     this.view.addChild(this.backFill, this.stageSprite, this.hud);
-    this.hud.addChild(this.panel, this.cmdTitle, this.cmdNote, this.logText, this.party, this.hint);
+    this.hud.addChild(this.panel, this.cmdTitle, this.cmdNote, this.logText, this.party, this.hint, this.touchBar);
     this.hint.eventMode = "static"; this.hint.cursor = "pointer"; this.hint.on("pointertap", (e: FederatedPointerEvent) => { const lx = e.global.x - this.hint.x; if (lx > this.hint.width / 2) this.toggleAutoBattle(); else this.toggleAuto(); });
     this.stageSprite.eventMode = "static";
     this.stageSprite.on("pointerdown", (e: FederatedPointerEvent) => this.tapStage(e.global.x, e.global.y));
@@ -128,12 +135,13 @@ export class BattleScene implements Scene {
 
   // ---------------- layout ----------------
   resize(w: number, h: number): void {
-    let hudH = Math.round(Math.max(150, Math.min(210, h * 0.27)));
+    this.touchHud = device.touch;
+    let hudH = this.touchHud && w > h ? Math.round(Math.max(124, Math.min(170, h * 0.3))) : Math.round(Math.max(150, Math.min(210, h * 0.27)));
     const ah = h - hudH;
     this.sw = Math.min(w, (ah * 16) / 9); this.sh = (this.sw * 9) / 16;
     this.sx = Math.round((w - this.sw) / 2); this.sy = Math.round(Math.max(0, (ah - this.sh) / 2));
     if (h > w * 1.2) { // tall phone: stage near the top, the HUD takes the rest of the screen
-      this.sy = Math.round(Math.min(h * 0.12, 90)); hudH = Math.max(hudH, Math.round(h - this.sy - this.sh - 8));
+      this.sy = Math.round(Math.min(h * (this.touchHud ? 0.06 : 0.12), this.touchHud ? 50 : 90)); hudH = Math.max(hudH, Math.round(h - this.sy - this.sh - 8));
     }
     const res = Math.min(2, window.devicePixelRatio || 1);
     const pw = Math.min(1800, Math.round(this.sw * res)), ph = Math.round((pw * 9) / 16);
@@ -161,6 +169,13 @@ export class BattleScene implements Scene {
     this.party.x = narrow ? x + Math.round(w * 0.5) : x + w - col3 - 20; this.party.y = y + (narrow ? 44 : 14);
     this.barW = narrow ? Math.max(50, Math.min(110, w * 0.5 - 100)) : 110;
     this.hint.x = x + w - 20; this.hint.y = y + h - 24; this.hint.anchor.set(1, 0);
+    this.partyAt = null;
+    if (this.touchHud) {
+      this.logText.visible = false;
+      const gutter = this.sx - 8, tall = this.game.height > this.game.width * 1.2;
+      if (!tall && gutter >= 150) this.partyAt = { x: this.sx + this.sw + 10, y: 12, w: Math.min(220, gutter - 4) }; // beside the stage, right
+      this.cmdNote.style.wordWrapWidth = w - 40;
+    }
   }
 
   // ---------------- positions ----------------
@@ -617,7 +632,7 @@ export class BattleScene implements Scene {
       const col = q.mode === "brace" ? "#9ad0ff" : q.mode === "note" ? "#ffe6a8" : "#ffe39a";
       ringFX(g, x, cy, 6, col, true);
       ringFX(g, x, cy, 6 + (rem / q.lead) * 22, col);
-      if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? `Brace! Press ${keyFor("space")} or tap as the ring closes` : `Press ${keyFor("space")} or tap as the ring closes`, CW / 2, CH - 8, "#f2e3c4", 5.5);
+      if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? (device.taps ? "Brace! Tap as the ring closes" : `Brace! Press ${keyFor("space")} or tap as the ring closes`) : device.taps ? "Tap as the ring closes" : `Press ${keyFor("space")} or tap as the ring closes`, CW / 2, CH - 8, "#f2e3c4", 5.5);
     }
     // meters along the top
     textFX(g, "CALL", 14, 7, s.bond >= 100 ? "#ffd890" : "#d8c8a0", 5); barFX(g, 24, 6, 44, s.bond / 100, s.bond >= 100 && ((T * 4) | 0) % 2 ? "#ffe0a0" : "#e0905a", 2);
@@ -647,14 +662,16 @@ export class BattleScene implements Scene {
       const per = Math.max(3, Math.floor((this.hudRect.h - 76) / 24)), col = Math.floor(i / per);
       t.x = x + 20 + col * (this.narrow ? 150 : 180); t.y = y + 42 + (i % per) * 24;
     });
-    this.cmdNote.text = this.mode === "over" ? (s.phase === "won" || s.escaped ? `Press ${keyFor("confirm")} or tap to go on` : `Press ${keyFor("confirm")} or tap to try again`) : ks.length ? this.entry(ks[this.cursor]).note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
+    if (this.touchHud) this.touchCommands();
+    this.cmdNote.text = this.mode === "over" ? (device.taps ? (s.phase === "won" || s.escaped ? "Tap to go on" : "Tap to try again") : s.phase === "won" || s.escaped ? `Press ${keyFor("confirm")} or tap to go on` : `Press ${keyFor("confirm")} or tap to try again`) : ks.length ? this.entry(ks[this.cursor]).note + (this.mode === "target" && !this.touchHud ? "   ·   Esc to go back" : "") : "";
     // log
     this.logText.text = s.log.slice(-4).join("\n");
     // party
     const p = this.party; p.clear();
     const rows = s.units.filter((a) => a.side === "ally");
     while (this.partyText.length < rows.length + 1) { const t = new Text({ text: "", style: { fontFamily: HUD_FONT, fontSize: 15, fill: "#e8dcc2" } }); this.hud.addChild(t); this.partyText.push(t); }
-    const bw = this.barW, bx = this.narrow ? 80 : 96;
+    let bw = this.barW, bx = this.narrow ? 80 : 96;
+    if (this.touchHud) { const pa = this.partyAt ?? this.touchParty; p.x = pa.x; p.y = pa.y; this.party.x = pa.x; this.party.y = pa.y; bx = 84; bw = Math.max(50, Math.min(140, pa.w - bx - 4)); }
     rows.forEach((a, i) => {
       const t = this.partyText[i], yy = i * 26, on = a === u;
       t.text = `${a.name}${a.gone ? " (away)" : ""}`; t.style.fill = on ? "#ffe39a" : alive(a) ? "#e8dcc2" : "#7a7060"; t.x = this.party.x; t.y = this.party.y + yy;
@@ -664,7 +681,65 @@ export class BattleScene implements Scene {
     });
     const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
     p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
+    this.hint.visible = !this.touchHud;
     this.hint.text = `${this.narrow && !padState.used ? "Tap" : keyFor("timing")}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow && !padState.used ? "" : `${keyFor("auto")}: `}auto battle ${this.autoBattle ? "on" : "off"}${this.narrow && !padState.used ? "" : `   ·   ${keyFor("guide")}: guide`}`;
+  }
+
+  /** Where the party list goes in the panel on a touch screen (set by touchCommands). */
+  private touchParty = { x: 0, y: 0, w: 200 };
+
+  /** Touch screens: each command is a framed button (two columns upright, a row across on its side), with buttons
+   *  for Back, auto timing and auto battle, which a keyboard does with keys. */
+  private touchCommands(): void {
+    const { x, y, w, h } = this.hudRect, tall = this.game.height > this.game.width * 1.2;
+    while (this.cmdBgs.length < this.cmdItems.length) {
+      const i = this.cmdBgs.length, g = new Graphics();
+      g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", () => this.cmdItems[i].emit("pointertap", undefined as never));
+      this.hud.addChildAt(g, this.hud.getChildIndex(this.cmdItems[i])); this.cmdBgs.push(g);
+    }
+    const bh = 42, gap = 8, fs = 17;
+    let cx = x + 14, cy = y + (tall ? 40 : 46);
+    const right = this.partyAt ? x + w - 14 : tall ? x + w - 14 : x + w - 224;
+    const colW = tall ? Math.floor((w - 28 - gap) / 2) : 0;
+    this.cmdItems.forEach((t, i) => {
+      const g = this.cmdBgs[i]; g.clear();
+      if (!t.visible) { g.visible = false; return; }
+      g.visible = true; t.style.fontSize = fs; t.eventMode = "none";
+      t.text = t.text.replace(/^(▸ | {3})/, "");
+      const on = i === this.cursor, bw = tall ? colW : Math.max(104, Math.ceil(t.width) + 30);
+      if (tall) { cx = x + 14 + (i % 2) * (colW + gap); cy = y + 40 + Math.floor(i / 2) * (bh + gap); }
+      else if (cx + bw > right && cx > x + 14) { cx = x + 14; cy += bh + gap; }
+      g.roundRect(cx, cy, bw, bh, 8).fill({ color: on ? 0x4a3418 : 0x1c1610, alpha: 0.96 }).roundRect(cx, cy, bw, bh, 8).stroke({ color: on ? 0xffd890 : 0x8a6a40, width: on ? 2 : 1 });
+      t.x = cx + (bw - t.width) / 2; t.y = cy + (bh - t.height) / 2;
+      if (!tall) cx += bw + gap;
+    });
+    const shown = this.cmdItems.filter((t) => t.visible).length;
+    const lastY = shown ? (tall ? y + 40 + Math.ceil(shown / 2) * (bh + gap) : cy + bh + 4) : y + 46;
+    // the note under the buttons (upright) or after the title (on its side)
+    this.cmdNote.style.fontSize = 14; this.cmdNote.style.wordWrapWidth = w - 28;
+    // touch buttons: Back while choosing a target, and the two auto switches
+    this.touchBar.removeChildren().forEach((c) => c.destroy({ children: true }));
+    const pill = (label: string, px: number, py: number, lit: boolean, on: () => void): number => {
+      const t = new Text({ text: label, style: { fontFamily: HUD_FONT, fontSize: 14, fill: lit ? "#2a1a08" : "#e8dcc2", fontWeight: "700" } });
+      const pw = t.width + 24, ph = 34, g = new Graphics().roundRect(px - pw, py, pw, ph, 17).fill({ color: lit ? 0xf0c060 : 0x2a2016, alpha: 0.95 }).roundRect(px - pw, py, pw, ph, 17).stroke({ color: 0xe0c070, width: 1 });
+      g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", on); t.x = px - pw + 12; t.y = py + (ph - t.height) / 2; t.eventMode = "none";
+      this.touchBar.addChild(g, t); return pw;
+    };
+    let px = x + w - 12;
+    const py = tall ? y + h - 46 : y + 6;
+    px -= pill(`Auto battle ${this.autoBattle ? "on" : "off"}`, px, py, this.autoBattle, () => this.toggleAutoBattle()) + 8;
+    px -= pill(`Auto timing ${this.autoTiming ? "on" : "off"}`, px, py, this.autoTiming, () => this.toggleAuto()) + 8;
+    if (this.mode === "target") pill("◀ Back", px, py, false, () => { if (this.mode === "target") this.mode = "menu"; });
+    if (tall) {
+      this.cmdNote.x = x + 16; this.cmdNote.y = lastY + 2;
+      this.touchParty = { x: x + 16, y: lastY + 10 + (this.cmdNote.text ? this.cmdNote.height + 6 : 0), w: Math.min(360, w - 32) };
+      // an upright phone has room under the party for what just happened
+      const rows = this.s.units.filter((a) => a.side === "ally").length + 1, logY = this.touchParty.y + rows * 26 + 14;
+      this.logText.visible = logY + 60 < py; this.logText.x = x + 16; this.logText.y = logY; this.logText.style.wordWrapWidth = w - 32;
+    } else {
+      this.cmdNote.x = x + 16; this.cmdNote.y = Math.min(y + h - 22, lastY);
+      this.touchParty = { x: x + w - 214, y: y + 46, w: 200 };
+    }
   }
 
   /** Read-only view for tests and debugging. */

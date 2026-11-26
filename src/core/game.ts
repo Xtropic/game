@@ -3,6 +3,7 @@ import { Input } from "./input";
 import { Gamepads } from "./gamepad";
 import type { TouchControls } from "./touch";
 import { SceneStack } from "./scene";
+import { device } from "./device";
 import { SaveStore, browserKV } from "./save";
 import { Voices } from "../audio/voice";
 import { addXp, gains, person, type Attr, type Progress } from "../cast/attributes";
@@ -73,7 +74,7 @@ export class Game {
   get height(): number { return this.app.screen.height; }
 
   async init(host: HTMLElement): Promise<void> {
-    await this.app.init({ resizeTo: host, background: "#0c0f12", backgroundAlpha: 0, antialias: true, autoDensity: true, resolution: Math.min(3, window.devicePixelRatio || 1), roundPixels: true });
+    await this.app.init({ resizeTo: host, background: "#0c0f12", backgroundAlpha: 0, antialias: true, autoDensity: true, resolution: Math.min(device.touch ? 2 : 3, window.devicePixelRatio || 1), roundPixels: true });
     host.appendChild(this.app.canvas);
     Object.assign(this.app.canvas.style, { position: "absolute", inset: "0" }); // over the 3D world's canvas
     this.app.stage.addChild(this.stage);
