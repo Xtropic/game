@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { StoryRunner, holds, type Flags, type StoryHost } from "../../src/story/story";
 import { STORY } from "../../src/world/content";
+import { allies } from "../../src/command/diplomacy";
 
 /** A host that answers instantly. Choices come from `picks` in order; battles are won. */
 function play(script: string, flags: Flags, picks: number[] = []) {
@@ -57,7 +58,7 @@ describe("the hidden nations' storylines", () => {
   it("the Salt House: the burners come either way, and the children get their story", () => {
     const f: Flags = { stage: "ah12", hero: "rhea", saltDone: true, saltRecords: "published" };
     expect(play("side.saltBurners", f)).toContain("battle side-salt-burners");
-    expect(f.saltBurn).toBe("repeal");
+    expect(f.saltBurn).toBe("published");
     play("side.saltBurners", f, [0]); expect(f.saltStory).toBe("true");
     const g: Flags = { stage: "ah12", hero: "rhea", saltDone: true, saltRecords: "kept" };
     play("side.saltBurners", g); expect(g.saltBurn).toBe("kept");
@@ -70,6 +71,7 @@ describe("the hidden nations' storylines", () => {
     expect(play("side.herdPoachers", f)).toContain("kith matriarch");
     const g: Flags = { stage: "ah26", hero: "rhea", herdDone: "stopped" };
     play("side.herdPoachers", g, [1]); expect(g.herdCavalry).toBe(true);
+    expect(allies(g).some((a) => a.nation === "herd")).toBe(true); expect(allies(f).some((a) => a.nation === "herd")).toBe(false);
     expect(play("side.herdPoachers", g).some((l) => l.startsWith("kith"))).toBe(false);
   });
 });
@@ -88,9 +90,21 @@ describe("the breeder's road", () => {
     play("side.heskFoal", f); expect(f["br.flawed"]).toBeFalsy(); // one strain isn't enough
     play("side.nightGrazer", f, [1]); expect(f["br.night"]).toBeFalsy(); // singing doesn't work on it
     play("side.nightGrazer", f, [0]); expect(f["br.strains"]).toBe(2);
+    play("side.heskFoal", f); expect(f["br.strainsDone"]).toBe(true); expect(f["br.flawed"]).toBeFalsy(); // a season has to pass
+    play("side.heskFoal", f); expect(f["br.flawed"]).toBeFalsy();
+    f["wait.br"] = 0;
     play("side.heskFoal", f, [0]);
     expect(f["br.flawed"]).toBe("raised"); expect(f["nofight.br-patience"]).toBe(true); expect(f["br.lineDone"]).toBe("flawed");
-    expect(shows("side-foaling-pen", f)).toBe(false);
+    expect(shows("side-foaling-pen", f)).toBe(true); // Hesk stays at his pens, for the drove's news
+    f.pimDone = "won"; expect(play("side.heskFoal", f)).toContain("kith foal-song-buck");
+  });
+
+  it("Hesk stands in one place: never two of him at Thornwick at once", () => {
+    const hesks = STORY.actors.filter((a) => a.map === "thornwick" && a.look === "hesk");
+    for (const stage of ["ab8", "ad3", "ah3", "ah30"]) {
+      const f: Flags = { stage, hero: "rhea", "recruited.hesk": true };
+      expect(hesks.filter((a) => holds(a.when, { flags: f, map: "thornwick" })).length).toBe(1);
+    }
   });
 
   it("the line takes the Larkfold Mother's name only if Pim was beaten at the drove", () => {

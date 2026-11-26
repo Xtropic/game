@@ -598,52 +598,10 @@
    "id": "side-foaling-pen",
    "map": "thornwick",
    "x": 22,
-   "y": 9,
+   "y": 10,
    "look": "hesk",
    "when": {
     "stage": [
-     "ab8",
-     "ab9",
-     "ab10",
-     "ab11",
-     "ab12",
-     "ab13",
-     "ab14",
-     "ab15",
-     "ab16",
-     "ab17",
-     "ab18",
-     "ab19",
-     "ab20",
-     "ab21",
-     "ab22",
-     "ab23",
-     "ab24",
-     "ab25",
-     "ab26",
-     "ad1",
-     "ad2",
-     "ad3",
-     "ad4",
-     "ad5",
-     "ad6",
-     "ad6b",
-     "ad7",
-     "ad8",
-     "ad9",
-     "ad10",
-     "ad11",
-     "ad12",
-     "ad13",
-     "ad14",
-     "ad15",
-     "ad16",
-     "ad16l",
-     "ad17",
-     "ad18",
-     "ad19",
-     "ad19b",
-     "ad20",
      "ah0",
      "ah1",
      "ah2",
@@ -701,8 +659,7 @@
      "af11"
     ],
     "hero": "rhea",
-    "flag": "recruited.hesk",
-    "not": "br.lineDone"
+    "flag": "recruited.hesk"
    },
    "talk": [
     {
@@ -2877,7 +2834,7 @@
      },
      {
       "say": "dellan",
-      "text": "\"My mother wants us to stay. My husband would. Bel would; she's already got a bird. And Thornwick's breeding pens are half mine now. Pim's lines, Hesk's lines. They'd fall apart in a season without someone on them.\""
+      "text": "\"My mother wants us to stay. My husband would. Bel would; she's already got a bird. And Thornwick's breeding pens are half mine now. Hesk's old, and his lines would fall apart in a season without someone on them.\""
      },
      {
       "say": "dellan",
@@ -3248,12 +3205,44 @@
      },
      {
       "if": {
-       "flag": "road.lorne"
+       "eq": {
+        "road.lorne": "won"
+       }
       },
       "then": [
        {
         "say": "harl",
-        "text": "\"You've been to Holm. You've stood in front of the King of Lorne. If there's anyone they'd listen to.\""
+        "text": "\"You got a ringed man off the rope in a Holm court. Their own court. If there's anyone they'd listen to, it's you.\""
+       }
+      ],
+      "else": [
+       {
+        "if": {
+         "eq": {
+          "road.lorne": "lost"
+         }
+        },
+        "then": [
+         {
+          "say": "harl",
+          "text": "\"You know what they do. You stood in Holm and watched them do it to your own man.\""
+         }
+        ],
+        "else": [
+         {
+          "if": {
+           "eq": {
+            "road.lorne": "breakout"
+           }
+          },
+          "then": [
+           {
+            "say": "harl",
+            "text": "\"And Lorne's already at war with you, captain, since Holm. They'd hang you on the same quay as us.\""
+           }
+          ]
+         }
+        ]
        }
       ]
      },
@@ -3262,7 +3251,7 @@
       "text": "The marines have stopped on the harbour steps. Their officer, a heavy grey man in an admiral's coat, is looking at the town as if it smells."
      },
      {
-      "choose": "The admiral is waiting for the mayor of Osk. Harl is looking at Rhea.",
+      "choose": "The admiral is waiting for Osk's answer. Harl, who is Osk's mayor, is looking at Rhea.",
       "options": [
        {
         "label": "Walk the admiral through Osk",
@@ -3293,7 +3282,7 @@
          },
          {
           "say": "admiral",
-          "text": "\"My brother wore lulls. After the Sound. Four years. The Admiralty hanged him for it, on the Holm quay, under the Pain Acts, and I stood in my dress coat and watched.\""
+          "text": "\"My brother wore lulls. After the Sound. Four years. The Admiralty hanged him for it, on the Holm quay, under the ring law, and I stood in my dress coat and watched.\""
          },
          {
           "say": "",
@@ -3466,23 +3455,23 @@
         "then": [
          {
           "say": "",
-          "text": "The Ashby pages go round the country all that winter. The Pain Acts, word for word, set beside the Guild's own draft of them in the Salt House ledger, in the Guild's own clerk's hand. Two hundred years old. The same commas."
+          "text": "The Ashby pages go round the country all that winter: the Guild's first pairings, two hundred years old, in the Guild's own clerk's hand. Which kith they bred, which ones they let go into the marsh when they wouldn't tame, and what they were trying to make."
          },
          {
           "say": "",
-          "text": "In the spring the Crown's court reads them aloud. Nobody in Kingsmere can say, after that, that the Pain Acts were the Crown's idea."
+          "text": "The Houses call it forgery. Nobody south of Corvane believes them. The pages are pinned up in every Commons mess hall, and read aloud in the inns to people who can't read."
          },
          {
           "say": "",
-          "text": "And nobody in Ostrel will ever say the Salt House's name again without saying Guild in the same breath. The panners' salt sells for half in every market south of Corvane. Ysolde says it's cheap at the price."
+          "text": "And nobody in Ostrel will ever say the Salt House's name again without saying Guild in the same breath. The panners' salt sells for half in every market. Ysolde says it's cheap at the price."
          },
          {
           "set": {
-           "saltBurn": "repeal"
+           "saltBurn": "published"
           }
          },
          {
-          "toast": "The Salt House records are read in the Crown's court. The Pain Acts are finished. The Salt House pays for it."
+          "toast": "The Salt House records are read all over Ostrel. The Salt House pays for it."
          }
         ],
         "else": [
@@ -3719,7 +3708,7 @@
        },
        {
         "say": "",
-        "text": "The matriarch is grazing on her own, the size of a cottage, with the scars of three hundred winters' fights on her hide. She lifts her head when they come."
+        "text": "The matriarch is grazing on her own, the size of a cottage, with the scars of forty winters' fights on her hide. She lifts her head when they come."
        },
        {
         "say": "tavi",
@@ -3819,7 +3808,7 @@
          },
          {
           "say": "",
-          "text": "By the end of it the foal follows her round the pen like a dog, and Rhea is falling asleep at Kane's briefings. Hesk tells her that's how it's meant to go."
+          "text": "By the end of it the foal follows her round the pen like a dog, and Rhea is falling asleep over her supper. Hesk tells her that's how it's meant to go."
          },
          {
           "set": {
@@ -4049,28 +4038,52 @@
       },
       "then": [
        {
+        "if": {
+         "flag": "br.salt"
+        },
+        "then": [
+         {
+          "say": "hesk",
+          "text": "\"Two new bloods in my pens, and one of them came out of a salt marsh. My old master would've thrown me out of the stud for less. Good. Good.\""
+         }
+        ],
+        "else": [
+         {
+          "say": "hesk",
+          "text": "\"Two new bloods in my pens, and neither of them was ever in a stud book. My old master would've thrown me out for less. Good. Good.\""
+         }
+        ]
+       },
+       {
         "say": "hesk",
-        "text": "\"Two new bloods in my pens, and one of them came out of a salt marsh. My old master would've thrown me out of the stud for less. Good. Good.\""
+        "text": "\"Now we wait. Breeding's slow. Give me a season with them, and then come and see what we've made.\""
        },
        {
         "set": {
-         "br.strainsDone": true
+         "br.strainsDone": true,
+         "wait.br": 6
         }
        },
        {
+        "toast": "Hesk is pairing the new bloods. Come back to Thornwick in a while."
+       }
+      ],
+      "else": [
+       {
         "if": {
-         "flag": "br.strainsDone"
+         "not": "wait.br"
         },
         "then": [
          {
           "run": "side.flawedLine"
          }
+        ],
+        "else": [
+         {
+          "say": "hesk",
+          "text": "\"Not yet, Caddow. You can't hurry a doe. Go and do your war.\""
+         }
         ]
-       }
-      ],
-      "else": [
-       {
-        "run": "side.flawedLine"
        }
       ]
      }
@@ -4330,7 +4343,7 @@
     "then": [
      {
       "say": "",
-      "text": "A year's breeding, and the best pairing Thornwick has made: Thimble's line crossed onto the new blood. Two foals. One is perfect. The other stands wrong from the first hour, with its hind legs bowed and too-soft at the hocks."
+      "text": "A season's breeding, and the best pairing Thornwick has made: Thimble's line crossed onto the new blood. Two foals. One is perfect. The other stands wrong from the first hour, with its hind legs bowed and too-soft at the hocks."
      },
      {
       "say": "",
@@ -4369,7 +4382,7 @@
          },
          {
           "say": "",
-          "text": "And every kith in the pens, from Ash to the Matriarch, will let it lean. It's the only kith at Thornwick the others never quarrel over. When the children are frightened at night, they go and sleep in its straw."
+          "text": "And every kith in the pens, from Ash to the oldest ironback, will let it lean. It's the only kith at Thornwick the others never quarrel over. When the children are frightened at night, they go and sleep in its straw."
          },
          {
           "kith": {
@@ -4577,7 +4590,7 @@
              },
              {
               "say": "",
-              "text": "Her mother sends a slice of it to Thornwick that winter, wrapped in moss, with a drawing of a woman falling over."
+              "text": "Her mother sends a slice of it after Rhea that winter, wrapped in moss, with a drawing of a woman falling over."
              },
              {
               "set": {
@@ -4799,7 +4812,7 @@
             "do": [
              {
               "say": "",
-              "text": "She takes it to the highest terrace at Thornwick, after dark, and ties it to a mistwing's leg, and lets the bird go straight up into the dark, toward the moon, until she can't see it."
+              "text": "She takes it to the highest terrace she can find, after dark, and ties it to a mistwing's leg, and lets the bird go straight up into the dark, toward the moon, until she can't see it."
              },
              {
               "say": "",
@@ -4853,7 +4866,7 @@
       "else": [
        {
         "say": "innkeeper",
-        "text": "\"Dripstone and Highmoss, captain. They've been waiting since the spring.\""
+        "text": "\"Dripstone and Highmoss. They've been waiting since the spring.\""
        }
       ]
      }
@@ -5004,7 +5017,7 @@
       "else": [
        {
         "say": "gully",
-        "text": "\"The Lantern champion of three ports. They'll be singing about you in the Lantern till the ice comes.\""
+        "text": "\"The Lantern champion of three towns. They'll be singing about you in the Lantern till the ice comes.\""
        }
       ]
      }
@@ -5204,7 +5217,7 @@
       "then": [
        {
         "say": "",
-        "text": "Three champions, three ports. The stake under the green lamp at the Lantern is Rhea's: a purse, and a Guild cartographer's chart of the whole south coast, with every reef and every smugglers' landing marked."
+        "text": "Three champions, three towns. The stake under the green lamp at the Lantern is Rhea's: a purse, and a Guild cartographer's chart of the whole south coast, with every reef and every smugglers' landing marked."
        },
        {
         "set": {
@@ -5360,7 +5373,7 @@
          },
          {
           "say": "",
-          "text": "The old woman writes it on her chart in tiny letters, beside the three gold dots: THE MOTHER, THE GIRL AND THE LITTLE ONE. NAMED BY THE LARKFOLD FOLK. CHARTED BY THE CAPTAIN OF THE CLOUD."
+          "text": "The old woman writes it on her chart in tiny letters, beside the three gold dots: THE MOTHER, THE GIRL AND THE LITTLE ONE. NAMED BY THE LARKFOLD FOLK. CHARTED BY RHEA OF LARKFOLD."
          },
          {
           "set": {
@@ -5439,7 +5452,7 @@
          },
          {
           "say": "smuggler",
-          "text": "\"You're in it now, captain. Under F. For favour. Don't collect on it; it's worth more if you don't.\""
+          "text": "\"You're in it now. Under F. For favour. Don't collect on it; it's worth more if you don't.\""
          },
          {
           "set": {
@@ -5489,7 +5502,7 @@
       "then": [
        {
         "say": "smuggler",
-        "text": "\"Under F, captain. Still uncollected.\""
+        "text": "\"Under F. Still uncollected.\""
        }
       ],
       "else": [

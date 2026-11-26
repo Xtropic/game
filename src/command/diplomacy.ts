@@ -192,5 +192,8 @@ export function priceAt(f: Flags, shop: string, price: number): number {
 
 /** Allied companies from pacts, strongest first, for an army battle. */
 export function allies(f: Flags): { nation: string; name: string; kind: CompanyDef["kind"]; level: number }[] {
-  return NATIONS.filter((n) => fate(f, n) === "pact" && n.perk?.company).map((n) => ({ nation: n.id, ...n.perk!.company! })).sort((a, b) => b.level - a.level);
+  const list = NATIONS.filter((n) => fate(f, n) === "pact" && n.perk?.company).map((n) => ({ nation: n.id, ...n.perk!.company! }));
+  // the Herd's six calves, bought off the netters (side.herdPoachers), grown into a riding company
+  if (f.herdCavalry) list.push({ nation: "herd", name: "Ironback riders", kind: "horse", level: 22 });
+  return list.sort((a, b) => b.level - a.level);
 }

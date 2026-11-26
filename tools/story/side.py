@@ -66,7 +66,7 @@ S["dellanHome"] = [
         say("amaru", R("Twenty-three years I've sung that line to the cloud, so you'd hear it. You heard it.")),
         n("They sit by the fire until it's dark. Nobody asks Rhea to leave, so she doesn't."),
         n("In the morning Dellan finds her at the edge of the ridge."),
-        say("dellan", R("My mother wants us to stay. My husband would. Bel would; she's already got a bird. And Thornwick's breeding pens are half mine now. Pim's lines, Hesk's lines. They'd fall apart in a season without someone on them.")),
+        say("dellan", R("My mother wants us to stay. My husband would. Bel would; she's already got a bird. And Thornwick's breeding pens are half mine now. Hesk's old, and his lines would fall apart in a season without someone on them.")),
         say("dellan", R("You're my captain. Tell me which, and I'll do it, and I won't have to have chosen.")),
         choose("Dellan is waiting. Behind her, on the white stones, her mother is plaiting Bel's hair.",
                opt(R("Stay. Thornwick will manage. You've been gone twenty-three years."), [
@@ -163,11 +163,15 @@ S["oskSails"] = [
     iff({"not": "oskFate"}, [
         n("A frigate in Osk's bay, under Lorne's ensign, with her guns run out. Her boats are on the beach. Marines in blue are walking up the ash-swept steps with a list."),
         say("harl", R("They found us. A Lorne whaler saw our fires in the winter and told the Admiralty. Lorne hangs ringed men, captain, you know that. Every one of us on that list ran from Lorne once, or from somewhere Lorne has a treaty with.")),
-        iff({"flag": "road.lorne"}, [
-            say("harl", R("You've been to Holm. You've stood in front of the King of Lorne. If there's anyone they'd listen to.")),
-        ]),
+        iff({"eq": {"road.lorne": "won"}}, [
+            say("harl", R("You got a ringed man off the rope in a Holm court. Their own court. If there's anyone they'd listen to, it's you.")),
+        ], [iff({"eq": {"road.lorne": "lost"}}, [
+            say("harl", R("You know what they do. You stood in Holm and watched them do it to your own man.")),
+        ], [iff({"eq": {"road.lorne": "breakout"}}, [
+            say("harl", R("And Lorne's already at war with you, captain, since Holm. They'd hang you on the same quay as us.")),
+        ])])]),
         n("The marines have stopped on the harbour steps. Their officer, a heavy grey man in an admiral's coat, is looking at the town as if it smells."),
-        choose("The admiral is waiting for the mayor of Osk. Harl is looking at Rhea.",
+        choose("The admiral is waiting for Osk's answer. Harl, who is Osk's mayor, is looking at Rhea.",
                opt("Walk the admiral through Osk", [
                    say("rhea", R("Admiral. Before you read your list, walk round the town with me. One hour. Then do what you like.")),
                    say("admiral", R("Brisk. Admiral of the North Squadron. I don't take walks with rebels, madam. ...One hour.")),
@@ -175,7 +179,7 @@ S["oskSails"] = [
                    n("The school is the worst of it for him. Fifteen children reciting their tables, and a teacher with the whole of her neck white with rings, and a lull scar on the back of each hand where she used to set them."),
                    n("Then the harbour, where Osk's fishermen are hauling nets, collars down, rings in the sun. A man with eleven rings mending a sail. A woman with twenty carrying her baby."),
                    say("admiral", R("They told me Osk was a nest. Pirates. Men too far gone on the lull to work. That's what the Admiralty's papers say.")),
-                   say("admiral", R("My brother wore lulls. After the Sound. Four years. The Admiralty hanged him for it, on the Holm quay, under the Pain Acts, and I stood in my dress coat and watched.")),
+                   say("admiral", R("My brother wore lulls. After the Sound. Four years. The Admiralty hanged him for it, on the Holm quay, under the ring law, and I stood in my dress coat and watched.")),
                    n("He folds the list and puts it in his coat."),
                    say("admiral", R("Osk is on my charts now, captain. I can't take it off them. But I can write what I saw beside it, and I will. If the King reads it, there may be a day when this place doesn't need hiding.")),
                    setf({"oskFate": "shown"}), add({"lorneTrust": 10}),
@@ -220,11 +224,11 @@ S["saltBurners"] = [
         {"battle": "side-salt-burners", "win": [
             n("The torches go into the brine pans and go out with a hiss. The riders go back down the causeway with nothing burned but their own sleeves."),
             iff({"eq": {"saltRecords": "published"}}, [
-                n("The Ashby pages go round the country all that winter. The Pain Acts, word for word, set beside the Guild's own draft of them in the Salt House ledger, in the Guild's own clerk's hand. Two hundred years old. The same commas."),
-                n("In the spring the Crown's court reads them aloud. Nobody in Kingsmere can say, after that, that the Pain Acts were the Crown's idea."),
-                n("And nobody in Ostrel will ever say the Salt House's name again without saying Guild in the same breath. The panners' salt sells for half in every market south of Corvane. Ysolde says it's cheap at the price."),
-                setf({"saltBurn": "repeal"}),
-                toast("The Salt House records are read in the Crown's court. The Pain Acts are finished. The Salt House pays for it."),
+                n("The Ashby pages go round the country all that winter: the Guild's first pairings, two hundred years old, in the Guild's own clerk's hand. Which kith they bred, which ones they let go into the marsh when they wouldn't tame, and what they were trying to make."),
+                n("The Houses call it forgery. Nobody south of Corvane believes them. The pages are pinned up in every Commons mess hall, and read aloud in the inns to people who can't read."),
+                n("And nobody in Ostrel will ever say the Salt House's name again without saying Guild in the same breath. The panners' salt sells for half in every market. Ysolde says it's cheap at the price."),
+                setf({"saltBurn": "published"}),
+                toast("The Salt House records are read all over Ostrel. The Salt House pays for it."),
             ], [
                 n("Ysolde's ledgers are safe at Thornwick, shut, in oilcloth, in the dry room under the chapel. The Salt House is still the Salt House: a name nobody remembers, and salt that sells."),
                 n("When the time comes to use them, if it comes, they'll be there."),
@@ -288,7 +292,7 @@ S["matriarch"] = [
     iff({"eq": {"herdPoach": "freed"}}, [
         iff({"not": "kith.matriarch"}, [
             n("At dusk Tavi comes for Rhea and takes her out onto the plateau, among the herd, on foot. Nobody walks among the herd on foot."),
-            n("The matriarch is grazing on her own, the size of a cottage, with the scars of three hundred winters' fights on her hide. She lifts her head when they come."),
+            n("The matriarch is grazing on her own, the size of a cottage, with the scars of forty winters' fights on her hide. She lifts her head when they come."),
             say("tavi", R("She's old. She knows it. Every matriarch picks the one she'll leave with, at the end, and goes with them, and the herd goes to her eldest daughter. She's never picked anyone not of the Herd. Not in the songs.")),
             n("Rhea sings. The Spire way, if she knows it; her mother's way if she doesn't. The matriarch walks to her across the grass, and stops, and lowers her great head until it's level with Rhea's, and breathes on her."),
             say("tavi", R("Well. That's that, then. Look after her. She'll look after you; she's never lost a fight in her life.")),
@@ -316,7 +320,7 @@ S["heskFoal"] = [
         choose("Thornwick's pen boys are watching from the rail. One of them is already yawning.",
                opt("Do the night feeds herself", [
                    fade("A month of nights. Up at midnight, at three, at dawn, with a skin of warm milk and a lamp."),
-                   n("By the end of it the foal follows her round the pen like a dog, and Rhea is falling asleep at Kane's briefings. Hesk tells her that's how it's meant to go."),
+                   n("By the end of it the foal follows her round the pen like a dog, and Rhea is falling asleep over her supper. Hesk tells her that's how it's meant to go."),
                    setf({"br.nights": "rhea"}),
                ], hint="It'll know her. She'll be tired."),
                opt("Put the pen boys on a rota", [
@@ -335,7 +339,8 @@ S["heskFoal"] = [
     ], [iff({"flag": "br.strainsAsked"}, [run("rareStrainsBack")], [
         iff({"flag": "br.show"}, [run("rareStrains")], [say("hesk", R("There's a kith fair at Hollin every harvest. Take Thimble when you're that way. Watch the judges. You'll learn more in an hour than I could teach you in a year."))])])]),
 ]
-actor("foaling-pen", TW, 22, 9, "hesk", "side.heskFoal", when(ACT2_ON, flag="recruited.hesk", **{"not": "br.lineDone"}))
+# Hesk's own spot by the pens (act2/act3 stand him at 22,10 until the Road), so it's placed directly, not via rc.spot.
+actors.append({"id": "side-foaling-pen", "map": TW, "x": 22, "y": 10, "look": "hesk", "when": when(ROAD_ON, flag="recruited.hesk"), "talk": [run("side.heskFoal")]})
 
 S["hollinShow"] = [
     iff({"not": "br.show"}, [
@@ -372,10 +377,12 @@ S["rareStrains"] = [
 S["rareStrainsBack"] = [
     iff({"atLeast": {"br.strains": 2}}, [
         iff({"not": "br.strainsDone"}, [
-            say("hesk", R("Two new bloods in my pens, and one of them came out of a salt marsh. My old master would've thrown me out of the stud for less. Good. Good.")),
-            setf({"br.strainsDone": True}),
-            iff({"flag": "br.strainsDone"}, [run("flawedLine")]),
-        ], [run("flawedLine")]),
+            iff({"flag": "br.salt"}, [say("hesk", R("Two new bloods in my pens, and one of them came out of a salt marsh. My old master would've thrown me out of the stud for less. Good. Good."))],
+                [say("hesk", R("Two new bloods in my pens, and neither of them was ever in a stud book. My old master would've thrown me out for less. Good. Good."))]),
+            say("hesk", R("Now we wait. Breeding's slow. Give me a season with them, and then come and see what we've made.")),
+            setf({"br.strainsDone": True, "wait.br": 6}),
+            toast("Hesk is pairing the new bloods. Come back to Thornwick in a while."),
+        ], [iff({"not": "wait.br"}, [run("flawedLine")], [say("hesk", R("Not yet, Caddow. You can't hurry a doe. Go and do your war."))])]),
     ], [say("hesk", R("Two of the three, Caddow. The spire, the salt or the night. I'm not getting any younger."))]),
 ]
 S["spirecrestGift"] = [
@@ -430,7 +437,7 @@ actor("gorge-beck", "town-kerrow", 22, 4, "loftbuck", "side.nightGrazer", when(R
 
 S["flawedLine"] = [
     iff({"not": "br.flawed"}, [
-        n("A year's breeding, and the best pairing Thornwick has made: Thimble's line crossed onto the new blood. Two foals. One is perfect. The other stands wrong from the first hour, with its hind legs bowed and too-soft at the hocks."),
+        n("A season's breeding, and the best pairing Thornwick has made: Thimble's line crossed onto the new blood. Two foals. One is perfect. The other stands wrong from the first hour, with its hind legs bowed and too-soft at the hocks."),
         n("Hesk crouches by it a long time, feeling its legs. When he stands up, he's grey."),
         say("hesk", R("Bone sickness. Born with it. It's in the blood, and the blood's from me: I gave you my old Crown line for Thimble's dam.")),
         say("hesk", R("I bred war ironbacks for the Crown, Caddow. Thirty years. The best in Ostrel. When the Crown sold its studs, the Guild bought my lines, and the Wardens rode them. They rode them at Hask. My ironbacks carried the men who hanged the square at Hask, and my line carried this in it, every generation, and spread it to every Guild stable in the south.")),
@@ -440,7 +447,7 @@ S["flawedLine"] = [
         choose("The foal is trying to stand again.",
                opt("Raise it", [
                    n("She raises it. It walks, after a fashion, by the spring. It can't carry, can't run, can't fight. It hurts in the cold and leans on whoever is nearest."),
-                   n("And every kith in the pens, from Ash to the Matriarch, will let it lean. It's the only kith at Thornwick the others never quarrel over. When the children are frightened at night, they go and sleep in its straw."),
+                   n("And every kith in the pens, from Ash to the oldest ironback, will let it lean. It's the only kith at Thornwick the others never quarrel over. When the children are frightened at night, they go and sleep in its straw."),
                    kith("loftbuck", 1, "br-patience", "Patience", "gentle"), setf({"br.flawed": "raised", "nofight.br-patience": True}),
                    toast("Patience will never fight. Thornwick's kith are calmer for having her."),
                ], hint="A life that hurts, and that matters."),
@@ -480,7 +487,7 @@ S["cheeseRun"] = [
                           opt("Catch it", [n("She catches it. It knocks her flat. The whole of Highmoss cheers, and the girl sits down on the terrace and cries."), setf({"nov.cheese": "won"}), pay(-15),
                                            toast("The cheese is Rhea's. Highmoss will be talking about it for years.")], hint="Win."),
                           opt("Let it go past to the girl", [n("Rhea stumbles, very convincingly. The wheel goes past her to the girl, who gets her arms round it and is flattened, and gets up holding it over her head like a crown."),
-                                                             n("Her mother sends a slice of it to Thornwick that winter, wrapped in moss, with a drawing of a woman falling over."),
+                                                             n("Her mother sends a slice of it after Rhea that winter, wrapped in moss, with a drawing of a woman falling over."),
                                                              setf({"nov.cheese": "gave"}), add({"have.salve": 1})], hint="Lose, well.")),
                ], hint="The clans will be furious.")),
     ], [say("hm-boy", R("Next year I'll be big enough. You watch."))]),
@@ -531,7 +538,7 @@ S["mistPost"] = [
             n("The moon letter is still in the bottom of the bag."),
             choose("What does Rhea do with Ben's letter?",
                    opt("Send it up with a mistwing, at night", [
-                       n("She takes it to the highest terrace at Thornwick, after dark, and ties it to a mistwing's leg, and lets the bird go straight up into the dark, toward the moon, until she can't see it."),
+                       n("She takes it to the highest terrace she can find, after dark, and ties it to a mistwing's leg, and lets the bird go straight up into the dark, toward the moon, until she can't see it."),
                        n("The bird comes back in the morning without the letter. Nobody ever finds out where it went. When Rhea tells Ben, he nods as if that's the most obvious thing in the world, and goes home to write the next one."),
                        setf({"nov.post.moon": "sent"}),
                    ], hint="Answer it."),
@@ -542,7 +549,7 @@ S["mistPost"] = [
                    ], hint="Kind, and a lie.")),
             pay(-20), toast("The Mistwing Post is delivered. 20 coin from the postmistress."),
         ], [say("innkeeper", R("Ben's started writing to the sun now. I've told him it's further."))]),
-    ], [say("innkeeper", R("Dripstone and Highmoss, captain. They've been waiting since the spring."))])]),
+    ], [say("innkeeper", R("Dripstone and Highmoss. They've been waiting since the spring."))])]),
 ]
 S["postDrop"] = [n("Rhea hands over the letters from the Millbridge bag. The old woman at the door reads the first one standing on her step, and laughs, and then sits down on her step."), add({"nov.post": 1})]
 actor("post-wharf", "millbridge--wharf", 8, 6, "innkeeper", "side.mistPost", when(ACT1_ON, **{"not": "nov.post.moon"}))
@@ -575,7 +582,7 @@ S["cards"] = [
                opt("Call her", [run("cardsPipe")], hint="She's bluffing."),
                opt("Fold", [n("Rhea folds. Mother Gorse shows a hand of nothing and laughs till she coughs."), run("cardsPipe2")], hint="She's got them.")),
     ], [iff({"not": "nov.cards.done"}, [say("gully", R("Two more champions. Hollin's, in the fair tent, and Corvane's, in the counting house cellar. Beat all three and the stake's yours."))],
-            [say("gully", R("The Lantern champion of three ports. They'll be singing about you in the Lantern till the ice comes."))])]),
+            [say("gully", R("The Lantern champion of three towns. They'll be singing about you in the Lantern till the ice comes."))])]),
 ]
 S["cardsPipe"] = [n("She was bluffing. Mother Gorse takes her pipe out of her mouth and looks at it, as if it had betrayed her. Two sucks on the pipe: nothing in her hand. Three: everything."),
                   n("Next hand she sucks on it three times. Rhea folds. Next hand, twice. Rhea calls."), setf({"nov.cards.ashby": True}), add({"nov.cards": 1}),
@@ -603,7 +610,7 @@ S["cardsCorvane"] = [
     ], [n("The clerk nods at Rhea over his ledger.")]),
 ]
 S["cardsCheck"] = [iff({"atLeast": {"nov.cards": 3}}, [iff({"not": "nov.cards.done"}, [
-    n("Three champions, three ports. The stake under the green lamp at the Lantern is Rhea's: a purse, and a Guild cartographer's chart of the whole south coast, with every reef and every smugglers' landing marked."),
+    n("Three champions, three towns. The stake under the green lamp at the Lantern is Rhea's: a purse, and a Guild cartographer's chart of the whole south coast, with every reef and every smugglers' landing marked."),
     setf({"nov.cards.done": True}), pay(-60), toast("Lantern champion of three ports: 60 coin, and a smugglers' chart of the south coast."),
 ])])]
 actor("cards-lantern", "ashby-tavern", 12, 5, "gully", "side.cards", when(ROAD_ON, **{"not": "nov.cards.done"}))
@@ -643,7 +650,7 @@ S["stargazer"] = [
                opt("Three: one bright, one paler, one hardly there", [
                    say("ds-keeper", R("Three. I've waited thirty years to know if there were three. My mother said there were three. Larkfold folk called them something, she said, and I never found out what.")),
                    say("rhea", R("The mother, the girl and the little one. My mother used to show me from the drying-house roof.")),
-                   n("The old woman writes it on her chart in tiny letters, beside the three gold dots: THE MOTHER, THE GIRL AND THE LITTLE ONE. NAMED BY THE LARKFOLD FOLK. CHARTED BY THE CAPTAIN OF THE CLOUD."),
+                   n("The old woman writes it on her chart in tiny letters, beside the three gold dots: THE MOTHER, THE GIRL AND THE LITTLE ONE. NAMED BY THE LARKFOLD FOLK. CHARTED BY RHEA OF LARKFOLD."),
                    setf({"nov.stars": True}), toast("Three stars charted over the cloud sea, with their Larkfold names."),
                ], hint="Exactly as she saw them.")),
     ], [say("ds-keeper", R("The mother, the girl and the little one. I look for them every night now, even when I can't stay up."))]),
@@ -664,7 +671,7 @@ S["smuggler"] = [
         choose("Gaunt is holding his hand out for the book.",
                opt("Give it back", [
                    n("He takes it and tucks it into his coat, and gives her a canal man's nod: two fingers to the cap."),
-                   say("smuggler", R("You're in it now, captain. Under F. For favour. Don't collect on it; it's worth more if you don't.")),
+                   say("smuggler", R("You're in it now. Under F. For favour. Don't collect on it; it's worth more if you don't.")),
                    setf({"nov.ledger": "returned", "canalFavour": True}), add({"have.firepot": 1}),
                    toast("Gaunt owes the Commons a favour. He leaves a fire pot in Rhea's pack, \"for the toll men\"."),
                ], hint="It's his."),
@@ -673,7 +680,7 @@ S["smuggler"] = [
                    n("The quartermaster finds no use for a book of forgiven debts, and loses it within the month. Half the canal hears what happened. The canal is quieter to the Commons after that."),
                    setf({"nov.ledger": "taken"}),
                ], hint="Names and places on the canal.")),
-    ], [iff({"eq": {"nov.ledger": "returned"}}, [say("smuggler", R("Under F, captain. Still uncollected."))], [say("smuggler", R("Nothing to buy today."))])]),
+    ], [iff({"eq": {"nov.ledger": "returned"}}, [say("smuggler", R("Under F. Still uncollected."))], [say("smuggler", R("Nothing to buy today."))])]),
 ]
 actor("ledger-reeds", "town-lockkeepers-deep", 4, 10, "folk", "side.smugglerBook", when(MILL_ON, **{"not": "nov.ledger"}))
 actor("gaunt-weir", "town-weirbank", 16, 6, "smuggler", "side.smuggler", when(MILL_ON, flag="nov.ledger", **{"not": "canalFavour"}))

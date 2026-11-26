@@ -58,4 +58,11 @@ describe("Thornwick", () => {
     const r = raidOver(f, 100, false); expect(r.coin).toBe(75); expect(f.supplies).toBe(20); expect(raidDue(f)).toBe(false);
     expect(raidCheck(f, "ad11", () => 0)).toBeUndefined(); // not again so soon
   });
+
+  it("story countdowns (wait.*) run down one a day and stop at nothing", () => {
+    const f: Record<string, unknown> = { "wait.br": 2, other: 2 };
+    baseDay({ flags: f as never, coin: 0, workers: [], kith: [], rng: seeded(1) }); expect(f["wait.br"]).toBe(1);
+    baseDay({ flags: f as never, coin: 0, workers: [], kith: [], rng: seeded(1) }); expect(f["wait.br"]).toBe(0);
+    baseDay({ flags: f as never, coin: 0, workers: [], kith: [], rng: seeded(1) }); expect(f["wait.br"]).toBe(0); expect(f.other).toBe(2);
+  });
 });

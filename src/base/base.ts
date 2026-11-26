@@ -84,6 +84,8 @@ export function baseDay(inp: DayInput): DayOutput {
   const keeper0 = by("kith").sort((a, b2) => jobSkill(b2.attrs, "kith") - jobSkill(a.attrs, "kith"))[0];
   lines.push(...trainingDay(f, inp.kith, (id) => penPlan(f, id, levelOf(f, "pens")).work, levelOf(f, "pens"), keeper0 ? jobSkill(keeper0.attrs, "kith") : 0, inp.rng));
   f["base.day"] = day(f) + 1;
+  // story countdowns ("wait.<id>": days left) run down one a day, so a scene can ask for time to have passed
+  for (const k of Object.keys(f)) if (k.startsWith("wait.") && num(f, k) > 0) f[k] = num(f, k) - 1;
   const skill = (job: Job) => by(job).reduce((s, w) => s + jobSkill(w.attrs, job), 0);
   // cooks lift every other job: up to +40% at the long hall
   const fed = 1 + Math.min(0.4, skill("cook") * 0.08 * (1 + levelOf(f, "kitchen")));
