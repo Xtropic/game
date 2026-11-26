@@ -61,6 +61,8 @@ import { withWorks, worksKey } from "../base/look";
 import { baseDay, baseOpen, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
 import { keepsake } from "../gear/weapons";
 import { settings } from "../core/settings";
+import { CutsceneScene } from "../cutscene/cutsceneScene";
+import { CUTSCENES } from "../cutscene/scenes";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
@@ -449,6 +451,15 @@ export class ExploreScene implements Scene, StoryHost {
     this.dialog.show({ who, name, text });
   }
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
+  /** Plays a cut scene over the world (unless they're switched off, or automated tests are driving without ?cut). */
+  cutscene(id: string, done: () => void): void {
+    const def = CUTSCENES[id];
+    const off = !settings.get("cutscenes") || (navigator.webdriver && !location.search.includes("cut"));
+    if (!def || off) { done(); return; }
+    this.flags[`seen.cut.${id}`] = true;
+    const sc = new CutsceneScene(def, () => { if (this.game.scenes.top === sc) this.game.scenes.pop(); setTimeout(done, 0); });
+    this.game.scenes.push(sc);
+  }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
   toast(t: string): void {

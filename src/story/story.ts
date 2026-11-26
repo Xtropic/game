@@ -57,7 +57,9 @@ export type Step =
   /** An army battle (data/army/battles.json): the war council, then the field. */
   | { army: string; win?: Step[]; lose?: Step[] }
   /** Spends coin from the purse: then runs if there was enough (and it's spent), else runs if there wasn't. A negative amount is coin paid to the company. */
-  | { pay: number; then: Step[]; else?: Step[] };
+  | { pay: number; then: Step[]; else?: Step[] }
+  /** A short cinematic scene (src/cutscene/scenes.ts). Usually woven in at load from src/cutscene/hooks.ts. */
+  | { cut: string };
 
 export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
@@ -133,6 +135,8 @@ export interface StoryHost {
   army?(id: string, done: (won: boolean) => void): void;
   /** Takes coin from the purse if there's enough; true if it was paid. */
   pay?(coin: number): boolean;
+  /** Plays a cut scene over the world; done when it ends or is skipped. */
+  cutscene?(id: string, done: () => void): void;
 }
 
 export class StoryRunner {
@@ -202,6 +206,7 @@ export class StoryRunner {
     if ("tourney" in st) { this.host.openPage?.(`tourney:${st.tourney}`); return; }
     if ("loseKith" in st) { this.host.loseKith?.(st.loseKith); f[`lost.${st.loseKith}`] = true; this.host.changed(); return; }
     if ("kith" in st) { this.host.addKith?.(st.kith); f[`kith.${st.kith.id}`] = true; this.host.changed(); return; }
+    if ("cut" in st) { if (!this.host.cutscene) return; this.block(); this.host.cutscene(st.cut, this.resume); return; }
     if ("set" in st || "add" in st) {
       for (const [k, v] of Object.entries(st.set ?? {})) f[k] = v;
       for (const [k, v] of Object.entries(st.add ?? {})) { const n = (typeof f[k] === "number" ? (f[k] as number) : 0) + v; f[k] = BOUNDED.has(k) ? Math.max(0, Math.min(100, n)) : n; }

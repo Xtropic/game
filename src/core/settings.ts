@@ -25,9 +25,13 @@ export interface Settings {
   tilt: boolean;
   /** Show a "How it works" card the first time each system turns up (the Guide keeps them either way). */
   tutorials: boolean;
+  /** Short cinematic scenes at the story's big moments (each can be skipped). */
+  cutscenes: boolean;
+  /** A flash of the fighter and the move's name when a finisher, kith art or Call lands. */
+  moveCutIns: boolean;
 }
 
-export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false, world3d: true, tilt: true, tutorials: true };
+export const DEFAULTS: Settings = { music: 0.8, effects: 0.8, voices: 1, textSpeed: 1, battleSpeed: 1, autoTiming: false, autoBattle: false, alwaysRun: false, world3d: true, tilt: true, tutorials: true, cutscenes: true, moveCutIns: true };
 export const TEXT_SPEEDS = [0.6, 1, 1.6, 3];
 export const BATTLE_SPEEDS = [1, 1.5, 2];
 
@@ -53,6 +57,8 @@ export function parseSettings(raw: string | null, oldAuto: string | null = null)
     world3d: typeof o.world3d === "boolean" ? o.world3d : DEFAULTS.world3d,
     tilt: typeof o.tilt === "boolean" ? o.tilt : DEFAULTS.tilt,
     tutorials: typeof o.tutorials === "boolean" ? o.tutorials : DEFAULTS.tutorials,
+    cutscenes: typeof o.cutscenes === "boolean" ? o.cutscenes : DEFAULTS.cutscenes,
+    moveCutIns: typeof o.moveCutIns === "boolean" ? o.moveCutIns : DEFAULTS.moveCutIns,
   };
 }
 

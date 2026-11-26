@@ -18,6 +18,8 @@ import {
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
   autoChoice, canRelease, fleeChance, release, tryFlee } from "./rules";
 import { paintedHeight, paintedLook } from "./painted";
+import { IMPACT_LENGTH, cutInColour, cutInLength, drawCutIn, drawImpact, type CutIn } from "../cutscene/cutin";
+import { portraitCut } from "../cutscene/kit";
 import {
   CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
@@ -317,6 +319,7 @@ export class BattleScene implements Scene {
       yield* run(grades); yield 0.5;
     } else if (sk.kind === "finisher" || sk.kind === "craft") {
       // a moment of stillness, a flash of the move's name, then the blow or the throw
+      if (sk.kind === "finisher") { const [tx0, ty0] = this.pos(t), [ux0] = this.pos(u); this.look((ux0 + tx0) / 2, ty0 - 18, 1.3); yield* this.cutIn(u, k); }
       const [ux, uy] = this.pos(u);
       v.pose = sk.kind === "craft" || sk.proj ? "aim" : "cast";
       this.addFx({ kind: "ring", x: ux, y: uy, dur: 0.5 });
@@ -327,41 +330,77 @@ export class BattleScene implements Scene {
         this.addFx({ kind: "proj", proj: sk.proj ?? "pot", x: ux + dir * 6, y: uy - 30, x2: tx, y2: ty - 18, dur: 0.5 });
         const g = yield* this.timed(tid, 0.5, "hit");
         if (sk.kind === "craft" && sk.proj === "pot") this.addFx({ kind: sk.stun ? "smoke" : "spark", x: tx, y: ty - 10, dur: 0.8, big: true });
-        yield* run([g]); v.pose = "idle"; yield 0.4;
+        if (sk.kind === "finisher") yield* this.punch(tx, ty - 18, cutInColour(k));
+        yield* run([g]); v.pose = "idle"; yield 0.4; this.look(CW / 2, CH / 2, 1);
       } else {
         const [tx, ty] = this.pos(t);
         yield* this.moveTo(u.id, tx - dir * 17, ty + 1, 0.28);
         v.pose = "lunge";
         const g = yield* this.timed(tid, 0.42, "hit");
         const [hx, hy] = this.pos(t); this.addFx({ kind: "slash", x: hx, y: hy, dir, dur: 0.32, big: true });
+        yield* this.punch(hx, hy - 18, cutInColour(k));
         if (g === "perfect") yield 0.12;
-        yield* run([g]); yield 0.3; yield* this.goHome(u.id);
+        yield* run([g]); yield 0.3; this.look(CW / 2, CH / 2, 1); yield* this.goHome(u.id);
       }
     } else if (sk.kind === "art") {
       const kin = kithOf(this.s, u)!;
+      { const [tx0, ty0] = this.pos(t); this.look(tx0 - 14, ty0 - 16, 1.3); yield* this.cutIn(u, k); }
       v.pose = "cast"; const [ux, uy] = this.pos(u); this.addFx({ kind: "note", x: ux + 5, y: uy - 46, x2: this.pos(kin)[0], y2: this.pos(kin)[1] - 24, dur: 0.7 });
       this.addFx({ kind: "grade", x: ux, y: this.top(u) - 6, text: sk.name, col: "#ffd890", dur: 1, size: 7.5 });
       yield 0.38; v.pose = "idle";
       const [fx0, fy0] = this.pos(t); yield* this.moveTo(kin.id, fx0 - 30, fy0 + 4, 0.34);
       const g = yield* this.timed(tid, 0.42, "hit");
+      { const [hx, hy] = this.pos(t); yield* this.punch(hx, hy - 14, cutInColour(k)); }
       this.charging = kin.id;
       yield* run([g]);
       this.charging = null;
-      yield 0.3; yield* this.goHome(kin.id);
+      yield 0.3; this.look(CW / 2, CH / 2, 1); yield* this.goHome(kin.id);
     } else if (sk.kind === "call") {
       const kin = kithOf(this.s, u)!, first = targetsFor(this.s, this.book, u, "call")[0];
+      { const [tx0, ty0] = this.pos(first); this.look(tx0 - 14, ty0 - 16, 1.25); yield* this.cutIn(u, k); }
       v.pose = "cast"; const [ux, uy] = this.pos(u); this.addFx({ kind: "note", x: ux + 5, y: uy - 46, x2: this.pos(kin)[0], y2: this.pos(kin)[1] - 24, dur: 0.7 });
       this.addFx({ kind: "grade", x: ux, y: this.top(u) - 6, text: "Ash!", col: "#ffd890", dur: 0.9, size: 8 });
       yield 0.38; v.pose = "idle";
       const [fx0, fy0] = this.pos(first); yield* this.moveTo(kin.id, fx0 - 30, fy0 + 4, 0.36);
       const g = yield* this.timed(first.id, 0.42, "hit");
+      { const [hx, hy] = this.pos(first); yield* this.punch(hx, hy - 14, cutInColour("call")); }
       this.charging = kin.id;
       yield* run([g]);
       this.charging = null;
-      yield 0.3; yield* this.goHome(kin.id);
+      yield 0.3; this.look(CW / 2, CH / 2, 1); yield* this.goHome(kin.id);
     }
   }
   private charging: string | null = null;
+
+  // ---------------- cut-ins, impact frames and the camera ----------------
+  private cut: { c: CutIn; t: number } | null = null;
+  private impact: { x: number; y: number; t: number; col: string } | null = null;
+  private cutsUsed = new Set<string>();
+  private cam = { x: CW / 2, y: CH / 2, z: 1 };
+  private camGoal = { x: CW / 2, y: CH / 2, z: 1 };
+  private static cutInsOn(): boolean { return settings.get("moveCutIns") && !(navigator.webdriver && !location.search.includes("cut")); }
+  /** The fight holds its breath: the fighter's face (or their kith) and the move's name tear across the stage. */
+  private *cutIn(u: Unit, k: string): Co {
+    if (!BattleScene.cutInsOn()) return;
+    const sk = this.book[k], key = `${u.id}|${k}`, full = !this.cutsUsed.has(key) && !this.autoBattle;
+    this.cutsUsed.add(key);
+    const kin = sk.kind === "art" || sk.kind === "call" ? kithOf(this.s, u) : undefined;
+    const face = !kin && u.cast && portraitCut(u.cast) ? u.cast : undefined;
+    const fig = kin ? paintedLook(kin.look, kin.species) ?? kin.look : face ? undefined : paintedLook(u.look, u.species) ?? u.look;
+    const c: CutIn = { face, fig, name: k === "call" ? `${kin?.name ?? "Ash"}!` : sk.name, by: kin ? `${u.name} and ${kin.name}` : u.name, col: cutInColour(k), dir: u.side === "ally" ? 1 : -1, full };
+    this.cut = { c, t: 0 };
+    sfx.swing(); if (full) setTimeout(() => sfx.door(), 90);
+    while (this.cut && this.cut.t < cutInLength(c)) yield 0;
+    this.cut = null;
+  }
+  /** Leans the camera in on a point (stage units); z 1 is the whole stage. */
+  private look(x: number, y: number, z: number): void { this.camGoal = { x, y, z: BattleScene.cutInsOn() ? z : 1 }; }
+  /** The blow lands: a beat of ink, the burst, the stage shaking, and a hair of stillness. */
+  private *punch(x: number, y: number, col: string): Co {
+    if (!BattleScene.cutInsOn()) return;
+    this.impact = { x, y, t: 0, col }; this.shake = 5; sfx.hit();
+    yield 0.09;
+  }
 
   private *foeMove(f: Unit): Co {
     const mv = foeMove(this.s, this.book, f.id, this.rng), v = this.vis.get(f.id)!, dir = this.dirOf(f);
@@ -519,6 +558,10 @@ export class BattleScene implements Scene {
     this.dt = dt; this.time += dt;
     if (inp.wasPressed("timing")) this.toggleAuto();
     if (inp.wasPressed("auto")) this.toggleAutoBattle();
+    // a cut-in runs on real time; a press cuts it short
+    if (this.cut) { this.cut.t += dt; if (inp.wasPressed("confirm")) this.cut.t = 99; }
+    if (this.impact) { this.impact.t += dt; if (this.impact.t > IMPACT_LENGTH) this.impact = null; }
+    { const c = this.cam, gl = this.camGoal, a = Math.min(1, dt * 7); c.x += (gl.x - c.x) * a; c.y += (gl.y - c.y) * a; c.z += (gl.z - c.z) * a; }
     // timing window
     if (this.qte) {
       const q = this.qte; q.t += dt;
@@ -573,6 +616,7 @@ export class BattleScene implements Scene {
     if (!this.tex) return;
     const g = this.g, k = this.k; setScale(k);
     g.setTransform(1, 0, 0, 1, 0, 0);
+    if (this.cam.z > 1.002) { const c = this.cam, z = c.z, cx = Math.max(CW / 2 / z, Math.min(CW - CW / 2 / z, c.x)), cy = Math.max(CH / 2 / z, Math.min(CH - CH / 2 / z, c.y)); g.setTransform(z, 0, 0, z, (CW / 2 - cx * z) * k, (CH / 2 - cy * z) * k); }
     g.drawImage(this.bg, 0, 0);
     if (this.shake > 0.05) g.translate((Math.random() - 0.5) * this.shake * k, (Math.random() - 0.5) * this.shake * k * 0.6);
     const s = this.s, T = this.time;
@@ -634,11 +678,14 @@ export class BattleScene implements Scene {
       ringFX(g, x, cy, 6 + (rem / q.lead) * 22, col);
       if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? (device.taps ? "Brace! Tap as the ring closes" : `Brace! Press ${keyFor("space")} or tap as the ring closes`) : device.taps ? "Tap as the ring closes" : `Press ${keyFor("space")} or tap as the ring closes`, CW / 2, CH - 8, "#f2e3c4", 5.5);
     }
-    // meters along the top
+    // meters along the top (and everything after) sit still while the camera leans in
+    g.setTransform(1, 0, 0, 1, 0, 0);
     textFX(g, "CALL", 14, 7, s.bond >= 100 ? "#ffd890" : "#d8c8a0", 5); barFX(g, 24, 6, 44, s.bond / 100, s.bond >= 100 && ((T * 4) | 0) % 2 ? "#ffe0a0" : "#e0905a", 2);
     if (s.phase !== "won") { textFX(g, "NERVE", 198, 7, "#d8c8a0", 5); barFX(g, 210, 6, 40, s.resolve / 100, "#d06a5a", 2); }
     if (this.banner) { const b = this.banner, a = this.mode === "over" ? Math.min(1, b.t * 3) : b.t < 0.2 ? b.t * 5 : b.t > 1.8 ? Math.max(0, (2.2 - b.t) * 2.5) : 1; textFX(g, b.text, CW / 2, this.mode === "over" ? CH / 2 - 10 : 22, b.good ? "#ffe39a" : "#f2e3c4", this.mode === "over" ? 12 : 8, a); }
     g.setTransform(1, 0, 0, 1, 0, 0);
+    if (this.impact) { const c = this.cam, z = c.z, cx = Math.max(CW / 2 / z, Math.min(CW - CW / 2 / z, c.x)), cy = Math.max(CH / 2 / z, Math.min(CH - CH / 2 / z, c.y)); drawImpact(g, this.cv.width, this.cv.height, ((this.impact.x - cx) * z + CW / 2) * k, ((this.impact.y - cy) * z + CH / 2) * k, this.impact.t, this.impact.col); }
+    if (this.cut) drawCutIn(g, this.cv.width, this.cv.height, this.cut.c, this.cut.t);
     this.tex.source.update();
     this.drawHud();
   }

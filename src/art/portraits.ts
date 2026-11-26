@@ -61,3 +61,6 @@ export function drawPortrait(g: CanvasRenderingContext2D, id: string, size: numb
   v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(8,6,4,.55)");
   g.fillStyle = v; g.fillRect(0, 0, size, size);
 }
+
+/** The painted portrait of `id` (closed mouth), if there is one: cut scenes and battle cut-ins use it. */
+export const portraitImage = (id: string): HTMLImageElement | undefined => painted[id]?.[0];
