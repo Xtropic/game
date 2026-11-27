@@ -7,6 +7,13 @@
 // see portraitKeys in build.ts); the most specific one that exists is shown, else the plain portrait.
 import { CAST, drawFig, setScale } from "../battle/art";
 import { EVEN, pickPortrait, portraitKeys, type Build } from "./build";
+import { recruit } from "../cast/recruits";
+
+/** Faces are kept for people who matter (Mathew 2026-11-27): the party, every recruit, recruited kith and the story's
+ * named principals and rulers. Townsfolk, soldiers, runners and other passing speakers talk with no portrait. */
+const OF_NOTE = new Set(["rhea", "ash", "maren", "rook", "halloran", "varro", "davin", "hessa", "tobin", "tam", "wren", "child",
+  "reeve", "provost", "speaker", "councillor", "king"]);
+export const ofNote = (id: string): boolean => OF_NOTE.has(id) || !!recruit(id) || id.startsWith("kith-");
 
 const BG: Record<string, [string, string]> = {
   rhea: ["#3a2a22", "#8a5a40"],
@@ -28,7 +35,7 @@ export async function loadPortraits(base = "portraits/"): Promise<void> {
   }));
 }
 
-export const hasPortrait = (id: string): boolean => id in CAST || id in painted;
+export const hasPortrait = (id: string): boolean => ofNote(id) && (id in CAST || id in painted);
 export const hasPainted = (id: string): boolean => id in painted;
 
 /** Draws the bust of `id` filling a size x size square. talk is 0..1 mouth opening; `b` is their build now. */
