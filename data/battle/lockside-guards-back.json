@@ -1,0 +1,48 @@
+{
+ "id": "lockside-guards-back",
+ "name": "Corvel's house guards",
+ "backdrop": "fire",
+ "party": true,
+ "intro": [
+  "In through the boiler-house gate, behind the guards. Half of them are still at the front door.",
+  "Keep them off the children."
+ ],
+ "won": "The brood house is open",
+ "lost": "Driven out of the brood house",
+ "units": [
+  {
+   "id": "lg1",
+   "name": "House guard",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 6,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "lrc",
+   "name": "Hatchery reedcat",
+   "look": "reedcat:#8a7a6a",
+   "side": "foe",
+   "row": "front",
+   "hp": 24,
+   "kith": true,
+   "level": 6,
+   "skills": [
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    162,
+    130
+   ]
+  }
+ ]
+}

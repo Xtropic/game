@@ -1,0 +1,65 @@
+{
+ "id": "recruit-trappers",
+ "name": "The trappers' ropes",
+ "backdrop": "scree",
+ "party": true,
+ "intro": [
+  "Guild trappers at the top of their ropes, with nets, and a hooded reedcat for sniffing out nests.",
+  "The stormcrest is on her eggs behind you."
+ ],
+ "won": "The trappers go back down their ropes",
+ "lost": "The trappers reach the nest",
+ "units": [
+  {
+   "id": "tr1",
+   "name": "Guild trapper",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 19,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "tr2",
+   "name": "Guild trapper",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 19,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    198,
+    118
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "tr3",
+   "name": "Nest-sniffer",
+   "look": "reedcat:#6a6a72",
+   "side": "foe",
+   "row": "front",
+   "level": 18,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "kith": true,
+   "hp": 56,
+   "species": "reedcat"
+  }
+ ]
+}

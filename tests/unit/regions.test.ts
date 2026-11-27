@@ -27,7 +27,7 @@ describe("regions", () => {
 
   it("each regional form lives in a real region, and the new species describe their looks", () => {
     for (const s of Object.values(SPECIES)) if (s.kind === "regional") expect(REGIONS[s.region!], s.id).toBeDefined();
-    expect(Object.values(SPECIES).filter((s) => s.look).length).toBe(121); // every species added this round, every hybrid and every heir describes its look
+    expect(Object.values(SPECIES).filter((s) => s.look).length).toBe(151); // every species added this round, every hybrid and every heir describes its look
   });
 });
 
@@ -83,7 +83,7 @@ describe("breeding variations", () => {
     expect(breed(pure(3), pure(3), { rng, place: "thornwick" })!.trueBred).toBe(true);
     expect(breed(pure(2), pure(2), { rng, place: "thornwick" })!.trueBred).toBe(false);
     expect(breed(pure(2), pure(2), { rng, place: "salt-house" })!.trueBred).toBe(true);
-    expect(breed(pure(3), make("loftbuck"), { rng }) ).toBeNull();
+    expect(breed(pure(3), make("loftbuck"), { rng })!.species).toBe("saltcrag");
   });
 
   it("new regional unseen kith need their region", () => {

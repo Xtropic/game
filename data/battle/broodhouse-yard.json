@@ -1,0 +1,81 @@
+{
+ "id": "broodhouse-yard",
+ "name": "The Broodhouse guard",
+ "backdrop": "yard",
+ "party": true,
+ "intro": [
+  "The Broodhouse's own guard, out of the stores at a run, and a hatchery reedcat on a chain.",
+  "The inner gate is behind them."
+ ],
+ "won": "The outer yard is clear",
+ "lost": "Driven back to the street gate",
+ "units": [
+  {
+   "id": "by1",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 22,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "by2",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 22,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "byc",
+   "name": "Hatchery reedcat",
+   "look": "reedcat:#6a5a4a",
+   "side": "foe",
+   "row": "front",
+   "hp": 60,
+   "kith": true,
+   "level": 22,
+   "skills": [
+    "maul",
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    162,
+    130
+   ]
+  },
+  {
+   "id": "bya",
+   "name": "Warden crossbow",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 22,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

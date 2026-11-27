@@ -1,0 +1,78 @@
+{
+ "id": "mire-guards",
+ "name": "House Mire's guards",
+ "backdrop": "yard",
+ "party": true,
+ "intro": [
+  "Two of House Mire's guards and a Warden crossbowman, at the brood room door.",
+  "Varro can't hold the gate for long. Be quick."
+ ],
+ "won": "The brood room is open",
+ "lost": "Pushed back into the yard",
+ "units": [
+  {
+   "id": "mg1",
+   "name": "House guard",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 7,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "mg2",
+   "name": "House guard",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 7,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "mw",
+   "name": "Warden",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 7,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    160,
+    128
+   ]
+  },
+  {
+   "id": "mab",
+   "name": "Warden crossbow",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 7,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

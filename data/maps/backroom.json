@@ -1,0 +1,30 @@
+{
+ "id": "backroom",
+ "name": "A back room on the Spindle canal",
+ "music": "lull",
+ "legend": {
+  "#": "iwall",
+  "_": "plank",
+  "k": "shelf",
+  "x": "crate",
+  "t": "table",
+  "e": "exit"
+ },
+ "rows": [
+  "############",
+  "#_kkk___xxx#",
+  "#__________#",
+  "#____tt____#",
+  "#_________x#",
+  "#__________#",
+  "#####e######"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 5,
+   "y": 5
+  }
+ ]
+}

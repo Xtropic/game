@@ -1,0 +1,43 @@
+{
+ "id": "town-tallyhill",
+ "name": "Tally Hill toll house",
+ "music": "road",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "H": "hay",
+  "x": "crate",
+  "f": "fence",
+  "e": "exit",
+  "T": "tree"
+ },
+ "rows": [
+  "TTTTTTTTTTTTeeTTTTTTTTTTTT",
+  "T,,,,,,,,,,,::,,,,,,,,,,,T",
+  "T,,,,,,,,,,,::,,,,,,,,,,,T",
+  "T,,rrrrrrr,,::,,,rrrrrrr,T",
+  "T,,rrrrrrr,,::,,,rrrrrrr,T",
+  "T,,rrrrrrr,,::,,,rrrrrrr,T",
+  "T,,hhhdhhhff::ff,hhhdhhh,T",
+  "T,,,,,,,,,,,::,,,,,,,,,,,T",
+  "T,,,,,,,,,,,::,,,,,,,,,,,T",
+  "T,,xx,,,,,,,::,,,,fffff,,T",
+  "T,,xx,,,w,,,::,,,,,HHH,,,T",
+  "T,,,,,,,,,,,::,,,,,HHH,,,T",
+  "T,,,,,,,,,,,::,,,,,,,,,,,T",
+  "T,,,,,,,,,,,ee,,,,,,,,,,,T"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  }
+ ]
+}

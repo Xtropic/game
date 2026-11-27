@@ -1,5 +1,5 @@
 // Input: maps keys and touch buttons to game actions, so scenes never read raw keys.
-export type Action = "up" | "down" | "left" | "right" | "confirm" | "cancel" | "run" | "menu" | "timing" | "sing" | "company" | "notes";
+export type Action = "up" | "down" | "left" | "right" | "confirm" | "cancel" | "run" | "menu" | "timing" | "auto" | "sing" | "company" | "notes" | "ledger" | "guide";
 
 export const DEFAULT_KEYS: Record<string, Action> = {
   ArrowUp: "up", KeyW: "up",
@@ -11,10 +11,29 @@ export const DEFAULT_KEYS: Record<string, Action> = {
   ShiftLeft: "run", ShiftRight: "run",
   Tab: "menu", KeyM: "menu",
   KeyT: "timing",
+  KeyB: "auto",
   KeyQ: "sing",
   KeyR: "company",
   KeyJ: "notes",
+  KeyL: "ledger",
+  KeyG: "guide", F1: "guide",
 };
+
+/** Set once a game pad has been used, so on-screen prompts name pad buttons instead of keys. */
+export const padState = { used: false };
+const NAMES: Record<string, [string, string]> = {
+  confirm: ["Enter", "A"], space: ["Space", "A"], cancel: ["Esc", "B"], timing: ["T", "LT"], auto: ["B", "View"], company: ["R", "Y"],
+  notes: ["J", "LB"], ledger: ["L", "RB"], menu: ["Tab", "Menu"], sing: ["Q", "X"], hold: ["H", "Y"], run: ["Shift", "RT"], guide: ["G", "Menu > Guide"],
+};
+/** On a touch screen: the on-screen button (or the gesture) for an action. */
+const TAPS: Record<string, string> = {
+  confirm: "A", space: "tap", cancel: "B", timing: "the Auto timing button", auto: "the Auto battle button", company: "Menu > Party",
+  notes: "Menu", ledger: "the Ledger button", menu: "the Menu button", sing: "Sing", hold: "Hold", run: "Run", guide: "the Guide button",
+};
+/** Set by the device module: true while the player is using a touch screen and no pad. */
+export const touchState = { taps: false };
+/** The key or pad button to name in a prompt for an action. */
+export const keyFor = (a: keyof typeof NAMES | string): string => (touchState.taps && !padState.used && TAPS[a] ? TAPS[a] : (NAMES[a] ?? [a, a])[padState.used ? 1 : 0]);
 
 export class Input {
   private held = new Set<Action>();
@@ -42,6 +61,8 @@ export class Input {
 
   press(a: Action): void { if (!this.held.has(a)) this.queued.add(a); this.held.add(a); }
   release(a: Action): void { this.held.delete(a); }
+  /** A held button repeating (a pad's direction held down in a list): counts as a fresh press, stays held. */
+  repeat(a: Action): void { this.queued.add(a); this.held.add(a); }
 
   /** Call once at the start of each fixed update. */
   beginFrame(): void { this.pressedThisFrame = this.queued; this.queued = new Set(); }

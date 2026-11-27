@@ -1,0 +1,62 @@
+<title>The Lull voice cast</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: a casting book, one card per voice, grouped by the land each character comes from */
+:root {
+  --bg: #f3f1ec; --panel: #fbfaf7; --fg: #23261f; --muted: #646a5d; --line: #dcd8cd;
+  --accent: #3f6b4e; --accent-fg: #ffffff; --old: #8a6d3b;
+  --display: "Cormorant Garamond", Georgia, serif; --text: "Source Sans 3", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #171a16; --panel: #20241f; --fg: #e9e7df; --muted: #a3a99b; --line: #343a32;
+  --accent: #7fb08f; --accent-fg: #10160f; --old: #d2b27a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #171a16; --panel: #20241f; --fg: #e9e7df; --muted: #a3a99b; --line: #343a32;
+  --accent: #7fb08f; --accent-fg: #10160f; --old: #d2b27a; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 16px/1.5 var(--text); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header h1 { font: 600 clamp(2rem, 5vw, 3rem)/1.1 var(--display); margin: 0 0 8px; text-wrap: balance; }
+header p { color: var(--muted); max-width: 65ch; margin: 0 0 6px; }
+section { margin-top: 40px; }
+h2 { font: 600 1.6rem/1.2 var(--display); margin: 0 0 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; }
+h2 .acc { font: 600 .72rem var(--text); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+.card { display: grid; grid-template-columns: 92px 1fr; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+.pic img, .mono { width: 92px; height: 92px; border-radius: 6px; object-fit: cover; display: block; }
+.mono { display: grid; place-items: center; font: 600 2.4rem var(--display); color: var(--muted); background: var(--bg); }
+.body { min-width: 0; }
+h3 { font: 600 1.05rem/1.25 var(--text); margin: 0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.n { font-weight: 400; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.what { margin: 2px 0 4px; color: var(--muted); font-size: .9rem; }
+.also { font-style: italic; }
+.voice { margin: 0 0 6px; font-size: .88rem; }
+blockquote { margin: 0 0 10px; font: italic 500 1.02rem/1.35 var(--display); color: var(--fg); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+button.play { font: 600 .85rem var(--text); border-radius: 999px; padding: 6px 14px; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); }
+button.play.old { background: transparent; color: var(--old); border-color: var(--old); }
+button.play[aria-pressed="true"]::before { content: "■ "; }
+button.play:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+@media (max-width: 420px) { .card { grid-template-columns: 64px 1fr; } .pic img, .mono { width: 64px; height: 64px; } }
+</style>
+<div class="wrap">
+<header>
+  <h1>The Lull voice cast</h1>
+  <p><!--COUNT--> speaking characters, each with one voice used for every line they say. Each voice is matched to the character's age, build, temperament and home land: people from the same place share an accent, so Larkfold sounds like Larkfold and the Guild sounds like Vantry.</p>
+  <p>The boys Finch and Tam are voiced by young women, as animated films do: the voice model cannot make a convincing child. Elders speak slower and with an uneven waver.</p>
+  <p>Play <b>New voice</b> to hear the character reading one of their own lines. <b>Before</b> is the voice they had until now, for comparison.</p>
+</header>
+<!--SECTIONS-->
+</div>
+<script>
+let current = null, currentBtn = null;
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button.play"); if (!b) return;
+  if (currentBtn === b && current && !current.paused) { current.pause(); b.setAttribute("aria-pressed", "false"); return; }
+  if (current) { current.pause(); currentBtn?.setAttribute("aria-pressed", "false"); }
+  current = new Audio(b.dataset.src); currentBtn = b; b.setAttribute("aria-pressed", "true");
+  current.onended = () => b.setAttribute("aria-pressed", "false");
+  current.play().catch(() => b.setAttribute("aria-pressed", "false"));
+});
+</script>

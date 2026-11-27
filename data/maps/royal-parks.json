@@ -1,0 +1,46 @@
+{
+ "id": "royal-parks",
+ "name": "The royal parks",
+ "music": "hope",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "f": "fence",
+  "e": "exit",
+  "T": "tree",
+  "*": "flowers",
+  "g": "gate"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,,,,,,,T,,,,,,,,,,T,,,,,,,,T",
+  "T,,,T,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,,,,,,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,,,,,,,,,,,,,,T,,,,,,,,,,,,T",
+  "T,,,,T,,,rrrrrrr,,ffffffffff,T",
+  "T,,,,,,,,rrrrrrr,,f********f,e",
+  "T,,,,,,,,rrrrrrr,,f********f,e",
+  "T,,T,,,,,hhhdhhh,,f********f,T",
+  "T,,,,,,,,,,,:::::::::::::::::T",
+  "T,,,,,,,,,,,:,,,,,f********f,T",
+  "T,,,,,,,,,,,:,,,,,f********f,T",
+  "T,,,,,,T,,,,:,,,,,f********f,T",
+  "T,rrrr,,,,,,:,,,,,ffffggffff,T",
+  "T,hdhh,,,,,,:T,,,,,,,,,,,,,,,T",
+  "T,,,,,,,,,,,:,,,,,,,,,,,,,,,,T",
+  "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 28,
+   "y": 8
+  }
+ ]
+}

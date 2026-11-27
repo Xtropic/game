@@ -1,6 +1,9 @@
 import { Application, Container } from "pixi.js";
 import { Input } from "./input";
+import { Gamepads } from "./gamepad";
+import type { TouchControls } from "./touch";
 import { SceneStack } from "./scene";
+import { device } from "./device";
 import { SaveStore, browserKV } from "./save";
 import { Voices } from "../audio/voice";
 import { addXp, gains, person, type Attr, type Progress } from "../cast/attributes";
@@ -15,6 +18,9 @@ export const STEP = 1 / 60; // fixed logic step in seconds
 export class Game {
   readonly app = new Application();
   readonly input = new Input();
+  /** On-screen controls and tilt walking on phones and tablets (set at boot on touch screens). */
+  touch?: TouchControls;
+  readonly pads = new Gamepads(this.input, () => this.app.canvas as HTMLCanvasElement | undefined);
   readonly saves = new SaveStore(browserKV());
   readonly scenes = new SceneStack(this);
   readonly stage = new Container();
@@ -68,8 +74,9 @@ export class Game {
   get height(): number { return this.app.screen.height; }
 
   async init(host: HTMLElement): Promise<void> {
-    await this.app.init({ resizeTo: host, background: "#0c0f12", antialias: true, autoDensity: true, resolution: Math.min(3, window.devicePixelRatio || 1), roundPixels: true });
+    await this.app.init({ resizeTo: host, background: "#0c0f12", backgroundAlpha: 0, antialias: true, autoDensity: true, resolution: Math.min(device.touch ? 2 : 3, window.devicePixelRatio || 1), roundPixels: true });
     host.appendChild(this.app.canvas);
+    Object.assign(this.app.canvas.style, { position: "absolute", inset: "0" }); // over the 3D world's canvas
     this.app.stage.addChild(this.stage);
     this.input.attach(window);
     this.app.renderer.on("resize", (w: number, h: number) => this.scenes.resize(w, h));
@@ -78,6 +85,8 @@ export class Game {
 
   /** Advance by real elapsed seconds: fixed-step updates, then one render pass. */
   frame(elapsed: number): void {
+    this.pads.poll(Math.min(elapsed, 0.1));
+    this.touch?.poll();
     this.acc += Math.min(elapsed, 0.25);
     while (this.acc >= STEP) {
       this.input.beginFrame();

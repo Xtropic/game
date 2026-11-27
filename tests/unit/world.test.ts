@@ -156,6 +156,15 @@ describe("chance meetings", () => {
     expect(new Set(us.map((u) => u.at.join(","))).size).toBe(us.length);
   });
 
+  it("anyone picked for the party fights: by their keepsake weapon, and kith by their family", () => {
+    const us = partyUnits("rhea", [{ id: "rafe", name: "Rafe" }, { id: "linnet", name: "Linnet" }, { id: "burr", name: "Burr", kith: { species: "loftbuck", level: 3 } }]);
+    const by = (id: string) => us.find((u) => u.id === id)!;
+    expect(by("rafe").row).toBe("front"); expect(by("rafe").cast).toBe("rafe"); expect(by("rafe").skills).toContain("strike");
+    expect(by("linnet").row).toBe("back"); expect(by("linnet").skills).toContain("knife");
+    expect(by("burr").kith).toBe(true); expect(by("burr").skills).toEqual(["horns"]); expect(by("burr").look.startsWith("loftbuck:")).toBe(true);
+    expect(new Set(us.map((u) => u.at.join(","))).size).toBe(us.length);
+  });
+
   it("scenery follows the ground", () => {
     expect(sceneryFor("snow")).toBe("snow"); expect(sceneryFor("reeds")).toBe("marsh"); expect(sceneryFor("plains")).toBe("meadow");
   });
@@ -182,8 +191,8 @@ describe("the towns of the open lands", () => {
     }
   });
   it("the new towns have people, a way in and a way back out onto open ground", () => {
-    const towns = Object.keys(MAPS).filter((k) => k.startsWith("town-"));
-    expect(towns.length).toBe(8);
+    const towns = Object.keys(MAPS).filter((k) => k.startsWith("town-") && !k.includes("--"));
+    expect(towns.length).toBe(32); // 27, and five where recruits live (tools/world/recruitmaps.py)
     for (const t of towns) {
       expect(STORY.actors.filter((a) => a.map === t).length, t).toBeGreaterThanOrEqual(3);
       const out = STORY.steps.filter((s) => s.map === t).flatMap((s) => s.do).find((d) => "goto" in d) as { goto: { map: string; x: number; y: number } };

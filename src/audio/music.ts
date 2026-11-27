@@ -32,7 +32,7 @@ class Engine {
 
   /** Starts the engine (call from a key press, click or touch). Safe to call again. */
   start(): void {
-    if (this.ctx) { if (this.ctx.state === "suspended") void this.ctx.resume(); return; }
+    if (this.ctx) { if (this.ctx.state !== "running" && !this.hiddenPause) void this.ctx.resume().catch(() => {}); return; }
     const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AC) return;
     try {
@@ -48,6 +48,16 @@ class Engine {
       setInterval(() => this.schedule(), 35);
       const want = this.cur; this.cur = null; this.track(want);
     } catch { this.ctx = null; }
+  }
+
+  /** True once sound can actually be heard (a phone may keep it suspended until a proper tap). */
+  get running(): boolean { return this.ctx?.state === "running"; }
+  private hiddenPause = false;
+  /** Rests the engine while the page is hidden (phone locked, another app) and resumes it on return. */
+  pauseFor(hidden: boolean): void {
+    const a = this.ctx; if (!a) return;
+    if (hidden && a.state === "running") { this.hiddenPause = true; void a.suspend(); }
+    else if (!hidden && this.hiddenPause) { this.hiddenPause = false; void a.resume(); }
   }
 
   setOn(on: boolean): void {
@@ -205,6 +215,29 @@ const TRACKS: Record<string, Track> = {
     v("bass", roots[b] + [0, 0, 12, 0, 3, 0, 7, 5][i], t, e * 0.9, 0.28, o);
     if (i === 0 || i === 3 || i === 6) { const c = [CH[0], CH[0], CH[5], CH[6]][b]; v("pluck", c[2] + 12, t, e, 0.1, o); v("pluck", c[3] + 12, t, e, 0.08, o); }
     if (b === 3 && i === 0) v("flute", 74, t, e * 2, 0.1, o); if (b === 3 && i === 2) v("flute", 69, t, e * 2, 0.1, o); if (b === 3 && i === 4) v("flute", 77, t, e * 4, 0.1, o); } },
+  // ---- fights: a light one for chance meetings, a hard one for bosses, a duel and a war march ----
+  skirmish: { bpm: 126, vol: 0.5, play(n, t, o, e) { const i = n % 8, b = bar(n, 4), c = CH[[0, 2, 0, 6][b]];
+    if (i === 0 || i === 4) v("drum", 0, t, e, i === 0 ? 0.4 : 0.25, o);
+    if (i % 2 === 1) v("tick", 0, t, e, 0.035, o);
+    v("bass", c[0] - 12 + [0, 0, 7, 0, 0, 12, 7, 0][i], t, e * 0.8, 0.2, o);
+    v("pluck", c[[2, 3, 2, 1, 2, 3, 1, 3][i]] + 12, t, e, 0.07, o); } },
+  boss: { bpm: 112, vol: 0.6, play(n, t, o, e) { const i = n % 8, b = bar(n, 8), roots = [38, 38, 41, 36, 38, 34, 33, 36];
+    if (n % 32 === 0) { v("pad", roots[b], t, e * 32, 0.4, o); v("pad", roots[b] + 3, t, e * 32, 0.25, o); }
+    if (i === 0 || i === 2 || i === 3 || i === 6) v("drum", 0, t, e, i === 0 ? 0.6 : 0.38, o);
+    v("bass", roots[b] - 12 + [0, 0, 0, 1, 0, 0, 3, 1][i], t, e * 0.85, 0.32, o);
+    if (i === 4) v("metal", roots[b] + 24, t, e * 2, 0.05, o);
+    if (b >= 4 && i % 4 === 0) { const nt = FOAL_AT[((b - 4) * 8 + i) % 64]; if (nt) v("flute", nt[0] - 1, t, e * 3, 0.1, o); } } },
+  duel: { bpm: 96, vol: 0.55, play(n, t, o, e) { const i = n % 8, b = bar(n, 4);
+    if (n % 32 === 0) v("pad", 38, t, e * 32, 0.35, o);
+    if (i === 0) v("drum", 0, t, e, 0.5, o); if (i === 5) v("drum", 0, t, e, 0.22, o);
+    if (i === 0 || i === 3) v("bass", [38, 38, 36, 34][b] - 12, t, e * 2.5, 0.28, o);
+    if (i === 2 || i === 6) v("metal", 74 + (b % 2 ? 1 : 0), t, e, 0.04, o);
+    if (b === 3 && i === 0) v("flute", 69, t, e * 6, 0.09, o); } },
+  war: { bpm: 104, vol: 0.6, play(n, t, o, e) { const i = n % 8, b = bar(n, 8), c = [CH[0], CH[0], CH[5], CH[6], CH[0], CH[2], CH[5], CH[6]][b];
+    if (i === 0 || i === 2 || i === 4 || i === 5 || i === 6) v("drum", 0, t, e, i === 0 ? 0.55 : i === 4 ? 0.45 : 0.22, o);
+    if (i === 0) { v("bass", c[0] - 12, t, e * 4, 0.3, o); v("pad", c[0], t, e * 8, 0.3, o); v("pad", c[2], t, e * 8, 0.22, o); }
+    if (b >= 4) { const nt = FOAL_AT[(b - 4) * 8 + i]; if (nt) v("flute", nt[0], t, nt[1] * e * 0.9, 0.12, o); }
+    else if (i === 4) v("bell", c[3] + 12, t, e * 2, 0.05, o); } },
   ash: { bpm: 50, vol: 0.55, play(n, t, o, e) { const b = bar(n, 8), i = n % 8;
     if (n % 64 === 0) { v("pad", 38, t, e * 64, 0.55, o); v("pad", 45, t, e * 64, 0.35, o); }
     if (i === 0) v("crackle", 0, t, e * 8, 0.06, o);
@@ -245,6 +278,15 @@ const TRACKS: Record<string, Track> = {
     if (i === 0 || i === 4) v("bass", c[0] - 12, t, e * 2, 0.22, o);
     if (i === 2 || i === 6) v("tick", 0, t, e, 0.04, o);
     if (n % 128 >= 64) { const nt = FOAL_AT[b * 8 + i]; if (nt) v("bell", nt[0] + 12, t, e, 0.05, o); } } },
+  /** Training in the yard: driving, purposeful, a little cocky. Steady drums under a bright pluck riff; the foal
+   *  song comes in on the bell in the second half, as the kith starts to get it. */
+  drill: { bpm: 118, vol: 0.5, play(n, t, o, e) { const b = bar(n, 8), i = n % 8, c = [[50, 57, 62, 66], [55, 59, 62, 67], [52, 57, 60, 64], [57, 61, 64, 69]][b % 4];
+    if (i === 0 || i === 3 || i === 4) v("drum", 0, t, e, i === 0 ? 0.32 : 0.2, o);
+    if (i === 2 || i === 6) v("metal", 0, t, e * 0.5, 0.05, o);
+    v("tick", 0, t, e, i % 2 ? 0.035 : 0.02, o);
+    v("bass", c[0] - 12 + ([0, 0, 7, 0, 12, 0, 7, 5][i]), t, e * 0.9, 0.2, o);
+    if (i % 2 === 0) v("pluck", c[[1, 2, 3, 2][(i / 2) % 4]] + 12, t, e * 1.6, 0.1, o);
+    if (n % 128 >= 64) { const nt = FOAL_AT[b * 8 + i]; if (nt) v("bell", nt[0] + 12, t, nt[1] * e, 0.05, o); } } },
   // ---- moods: what a scene should make the player feel, whatever the place ----
   // tender: close, warm, quiet. The foal song an octave up on soft bells over a held major chord.
   tender: { bpm: 58, vol: 0.7, play(n, t, o, e) { const b = bar(n, 8), i = n % 8, c = [[50, 57, 62, 66], [47, 54, 59, 62], [43, 50, 55, 59], [45, 52, 57, 61]][b % 4];
@@ -309,6 +351,14 @@ export const sfx = {
     [74, 78, 81, 86].forEach((m, i) => audio.voice("bell", m, tt + i * 0.06, 0.6, 0.06, out));
   },
   bump(): void { const a = audio.ctx; if (a) audio.voice("step", 300, a.currentTime, 0.05, 0.08, audio.sfxBus); },
+  /** A miss in a training drill: a dull low thud and a falling pluck. */
+  miss(): void { const a = audio.ctx; if (!a) return; const t = a.currentTime; audio.voice("drum", 0, t, 0.2, 0.25, audio.sfxBus); audio.voice("pluck", 57, t + 0.03, 0.2, 0.06, audio.sfxBus); audio.voice("pluck", 52, t + 0.12, 0.3, 0.05, audio.sfxBus); },
+  /** A clean hit in a training drill: a bright bell over a drum, pitched up the scale as a streak grows. */
+  good(streak = 0): void { const a = audio.ctx; if (!a) return; const t = a.currentTime, m = [74, 76, 78, 81, 83, 86][Math.min(5, streak)]; audio.voice("drum", 0, t, 0.15, 0.3, audio.sfxBus); audio.voice("bell", m, t, 0.3, 0.08, audio.sfxBus); },
+  /** A drum beat for rhythm drills. */
+  beat(accent = false): void { const a = audio.ctx; if (a) audio.voice("drum", 0, a.currentTime, 0.12, accent ? 0.35 : 0.18, audio.sfxBus); },
+  /** A drill counting in: three ticks and a bell. */
+  count(last = false): void { const a = audio.ctx; if (a) audio.voice(last ? "bell" : "tick", last ? 81 : 0, a.currentTime, 0.25, last ? 0.09 : 0.2, audio.sfxBus); },
 };
 
 export const TRACK_NAMES = (): string[] => Object.keys(TRACKS);
@@ -326,6 +376,10 @@ export function trackFor(map: string, music: string | undefined, sceneMood?: str
 export function attachSound(target: Window): void {
   const wake = (): void => audio.start();
   target.addEventListener("keydown", (e) => { wake(); if (e.code === "KeyN" && !e.repeat) audio.setOn(!audio.on); });
-  target.addEventListener("pointerdown", wake);
+  // Phones only count the END of a touch as a press that may start sound (Chrome on Android ignores touchstart
+  // and pointerdown for this), so every one of these tries again until the sound is actually running.
+  for (const ev of ["pointerdown", "pointerup", "touchend", "click"]) target.addEventListener(ev, wake, { passive: true, capture: true });
   target.addEventListener("touchstart", wake, { passive: true });
+  // a phone that locks or switches apps: rest the sound, and bring it back on return
+  document.addEventListener("visibilitychange", () => audio.pauseFor(document.hidden));
 }

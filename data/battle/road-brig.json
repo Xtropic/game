@@ -1,0 +1,94 @@
+{
+ "id": "road-brig",
+ "name": "The Patience's marines",
+ "backdrop": "road",
+ "party": true,
+ "intro": [
+  "Warden marines on the brig's deck, with cutlasses and a crossbow, and the bosun with his lantern.",
+  "The children are coming up the side behind you."
+ ],
+ "won": "The Patience is taken",
+ "lost": "Driven back to the rail",
+ "units": [
+  {
+   "id": "mb1",
+   "name": "Warden marine",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 18,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "mb2",
+   "name": "Warden marine",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 18,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "mb3",
+   "name": "Warden marine",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 18,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    162,
+    132
+   ]
+  },
+  {
+   "id": "mba",
+   "name": "Marine crossbow",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 18,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  },
+  {
+   "id": "mbb",
+   "name": "The bosun",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "back",
+   "cast": "warden",
+   "level": 19,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    222,
+    128
+   ]
+  }
+ ]
+}

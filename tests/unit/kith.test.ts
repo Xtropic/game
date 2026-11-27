@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ATTRS } from "../../src/cast/attributes";
 import { seeded } from "../../src/battle/rules";
-import { FAMILIES, SPECIES, TRAITS, addKithXp, breed, canBreed, familiesOf, foalToKith, hybridFor, kithAttrs, movesAt, stageOf, unseenFor, wildKith, type Kith } from "../../src/kith/kith";
+import { FAMILIES, SPECIES, TRAITS, addKithXp, breed, canBreed, crossFor, familiesOf, foalToKith, hybridFor, kithAttrs, movesAt, stageOf, unseenFor, wildKith, type Kith } from "../../src/kith/kith";
 
 const make = (species: string, level = 25, over: Partial<Kith> = {}): Kith => ({
   id: `${species}-${level}`, name: species, species, level, xp: 0, potential: [3, 3, 3, 3, 3, 3, 3], trained: [0, 0, 0, 0, 0, 0, 0],
@@ -9,9 +9,9 @@ const make = (species: string, level = 25, over: Partial<Kith> = {}): Kith => ({
 });
 
 describe("kith species", () => {
-  it("has 36 base species in 12 families, 51 regional forms, 36 hybrids, 26 unseen and 6 legends, all well formed", () => {
+  it("has 36 base species in 12 families, 51 regional forms, 66 hybrids, 26 unseen and 6 legends, all well formed", () => {
     const all = Object.values(SPECIES), count = (k: string) => all.filter((s) => s.kind === k).length;
-    expect([count("base"), count("regional"), count("hybrid"), count("unseen"), count("legend")]).toEqual([36, 51, 36, 26, 6]); expect(count("heir")).toBe(6);
+    expect([count("base"), count("regional"), count("hybrid"), count("unseen"), count("legend")]).toEqual([36, 51, 66, 26, 6]); expect(count("heir")).toBe(6);
     expect(Object.keys(FAMILIES).length).toBe(12);
     for (const f of Object.keys(FAMILIES)) expect(all.filter((s) => s.kind === "base" && s.family === f).length, f).toBe(3);
     for (const s of all) {
@@ -22,11 +22,11 @@ describe("kith species", () => {
     expect(Object.keys(TRAITS).length).toBe(40);
   });
 
-  it("makes each of the 36 hybrids from exactly one pair of families", () => {
+  it("has a hybrid for every one of the 66 pairs of families", () => {
     const pairs = new Set(Object.values(SPECIES).filter((s) => s.kind === "hybrid").map((s) => [...s.parents!].sort().join("+")));
-    expect(pairs.size).toBe(36);
+    expect(pairs.size).toBe(66);
     expect(hybridFor("mistwing", "loftbuck")).toBe("glidebuck");
-    expect(hybridFor("loftbuck", "wadeskin")).toBeUndefined();
+    expect(hybridFor("loftbuck", "wadeskin")).toBe("fordbuck");
   });
 });
 
@@ -53,9 +53,9 @@ describe("kith growth", () => {
 });
 
 describe("kith breeding", () => {
-  it("only breeds grown, compatible pairs", () => {
+  it("breeds any two grown kith, across any families", () => {
     expect(canBreed(make("loftbuck"), make("loftbuck", 5)).ok).toBe(false);
-    expect(canBreed(make("loftbuck"), make("canal-wadeskin")).ok).toBe(false);
+    expect(canBreed(make("loftbuck"), make("canal-wadeskin")).ok).toBe(true);
     expect(canBreed(make("loftbuck"), make("terrace-doe")).ok).toBe(true);
     expect(canBreed(make("loftbuck"), make("mistwing")).ok).toBe(true);
     expect(canBreed(make("matriarch"), make("ironback")).ok).toBe(false);
@@ -65,6 +65,17 @@ describe("kith breeding", () => {
     expect(breed(make("loftbuck"), make("mistwing"), { rng: seeded(3) })!.species).toBe("glidebuck");
     const f = breed(make("loftbuck"), make("terrace-doe"), { rng: seeded(4) })!;
     expect(["loftbuck", "terrace-doe"]).toContain(f.species);
+    expect(breed(make("loftbuck"), make("canal-wadeskin"), { rng: seeded(5) })!.species).toBe("fordbuck");
+  });
+
+  it("crosses a hybrid with a third family into another new kith", () => {
+    const fams = (x: string) => familiesOf(x).sort().join("+");
+    for (let i = 0; i < 20; i++) {
+      const c = crossFor("glidebuck", "ironback", seeded(i))!;
+      expect(SPECIES[c].kind).toBe("hybrid");
+      expect([["ironback", "loftbuck"].sort().join("+"), ["ironback", "mistwing"].sort().join("+")]).toContain(fams(c));
+    }
+    expect(crossFor("glidebuck", "loftbuck")).toBeUndefined();
   });
 
   it("finds unseen kith only when their recipe is met", () => {

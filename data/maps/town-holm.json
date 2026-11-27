@@ -1,0 +1,47 @@
+{
+ "id": "town-holm",
+ "name": "Holm",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "x": "crate",
+  "e": "exit",
+  "b": "table",
+  "R": "rock"
+ },
+ "rows": [
+  "################################",
+  "#........rrrrrrrrrrrrrr........#",
+  "#........rrrrrrrrrrrrrr........#",
+  "#........rrrrrrrrrrrrrr........#",
+  "#........rrrrrrrrrrrrrr........#",
+  "#........hhhhhhddhhhhhh........#",
+  "#..............................#",
+  "#rrrrrrr................rrrrrrr#",
+  "#rrrrrrr.......R........rrrrrrr#",
+  "#rrrrrrr......bbbb......rrrrrrr#",
+  "#hhhdhhh......bbbb......hhhdhhh#",
+  "#..............................#",
+  "#rrrrr.........................#",
+  "#rrrrr.....w........SS.........#",
+  "#hhdhh..................xx.....#",
+  "#..............................#",
+  "#..............................#",
+  "###############ee###############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 15,
+   "y": 16
+  }
+ ]
+}

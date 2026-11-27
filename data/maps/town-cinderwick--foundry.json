@@ -1,0 +1,61 @@
+{
+ "id": "town-cinderwick--foundry",
+ "name": "Cinderwick, the Foundry Ward",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  ".": "cobble",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire",
+  "R": "rock"
+ },
+ "rows": [
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "hrrrrrr..rrrrrrr..rrrrrrrh",
+  "hhhhdhh..hhhdhhh..hhdhhhhh",
+  "h........................h",
+  "h..xx....RR.....F....CC..h",
+  "e........................h",
+  "h...........:............h",
+  "h~~~~~~~~~~~=~~~~~~~~~~~~h",
+  "h~~~~~~~~~~~=~~~~~~~~~~~~h",
+  "h.....xx....:.....HH.....h",
+  "h............F...........h",
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 5
+  },
+  {
+   "id": "town-cinderwick--foundry-sign0",
+   "kind": "sign",
+   "x": 9,
+   "y": 4,
+   "props": {
+    "text": "A slag heap, still warm. Children pick through it for bits of good iron."
+   }
+  },
+  {
+   "id": "town-cinderwick--foundry-sign1",
+   "kind": "sign",
+   "x": 16,
+   "y": 4,
+   "props": {
+    "text": "The puddling furnace. The heat comes off it like a hand pushing you back."
+   }
+  }
+ ]
+}

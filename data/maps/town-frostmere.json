@@ -1,0 +1,42 @@
+{
+ "id": "town-frostmere",
+ "name": "Frostmere",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "~": "water",
+  "e": "exit",
+  "F": "campfire",
+  "k": "shelf",
+  "_": "wetfloor",
+  "n": "snow"
+ },
+ "rows": [
+  "~~~~~~~~~~~~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~~~~~~~~~~~~~~~~~",
+  "~~~____________________~~~",
+  "~~~___~_____~_____~____~~~",
+  "~~~____________________~~~",
+  "~~~____________________~~~",
+  "nnnnnnnnnnnnnnnnnnnnnnnnnn",
+  "nnrrrrrnnrrrrrnnnrrrrrrnnn",
+  "nnrrrrrnnrrrrrnnnrrrrrrnnn",
+  "nnhhdhhnnhhdhhnnnhhdhhhnnn",
+  "nnnnnnnnnnnnnnnnnnnnnnnnnn",
+  "nnnnnnnFnnnnnnnkknnnnnnnnn",
+  "nnnnnnnnnnnn::nnnnnnnnnnnn",
+  "nnnnnnnnnnnneennnnnnnnnnnn"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  }
+ ]
+}

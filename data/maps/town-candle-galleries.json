@@ -1,0 +1,44 @@
+{
+ "id": "town-candle-galleries",
+ "name": "The Candle Galleries",
+ "music": "caves",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "S": "stall",
+  "x": "crate",
+  "e": "exit",
+  "R": "rock",
+  "o": "cave",
+  "b": "table"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRR",
+  "RRRoRRRRRRRRRRRRRRoRRR",
+  "RR,:,,,,,,,,,,,,,,:,RR",
+  "RR,:::::::::::::::::RR",
+  "RR,,,,bb,,,,,,bb,,,,RR",
+  "RR,xx,,,,,,,,,,,,,SSRR",
+  "RR,,,,,,,,:,,,,,,,,,RR",
+  "RR,,,,,,,,:,,,,,,,,,RR",
+  "RRRRRRRRRReRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 10,
+   "y": 7
+  },
+  {
+   "id": "candle-galleries-sign0",
+   "kind": "sign",
+   "x": 14,
+   "y": 4,
+   "props": {
+    "text": "A long table of cooling candles, hundreds of them, each stamped with a little lamp."
+   }
+  }
+ ]
+}

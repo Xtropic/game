@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { act, afterBattle, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
+import { act, afterBattle, autoChoice, canRelease, fleeChance, release, tryFlee, acting, createBattle, endRound, fighters, foeAct, foeMove, foeQueue, gradePress, seeded, skillsFor, targetsFor, unit, type BattleDef, type BattleState, type SkillBook } from "../../src/battle/rules";
 import { BATTLES, SKILLS } from "../../src/battle/data";
 import { initiativeOf, intentRead, statsOf } from "../../src/battle/rules";
 import { NEUTRAL, party } from "../../src/cast/attributes";
 import { ART_COST, FOCUS_FULL, alive, artStat } from "../../src/battle/rules";
 import { KEEPSAKES } from "../../src/gear/weapons";
+import { partyUnits } from "../../src/battle/encounters";
 import { FAMILIES } from "../../src/kith/kith";
 
 const book: SkillBook = SKILLS;
@@ -271,5 +272,59 @@ describe("heavy moves for those who aren't fighters", () => {
   it("every keepsake weapon type has a finisher, and every kith family an art", () => {
     for (const t of new Set(Object.values(KEEPSAKES).map((k) => k.type))) expect(book[`fin.${t}`], t).toBeDefined();
     for (const f of Object.keys(FAMILIES)) expect(book[`art.${f}`], f).toBeDefined();
+  });
+});
+
+describe("leaving a fight", () => {
+  it("running: a failed try hands the turn to the foes; a good one ends the fight", () => {
+    const s = fresh();
+    expect(fleeChance(s)).toBeGreaterThanOrEqual(0.25); expect(fleeChance(s)).toBeLessThanOrEqual(0.95);
+    expect(tryFlee(s, () => 0.99)).toBe(false); expect(s.phase).toBe("foe"); expect(s.escaped).toBeUndefined();
+    const t = fresh(); expect(tryFlee(t, () => 0)).toBe(true); expect(t.escaped).toBe("fled");
+  });
+
+  it("letting go: only when the foes are far weaker, and then they all leave", () => {
+    const s = fresh();
+    expect(canRelease(s)).toBe(false); // an even fight
+    for (const f of fighters(s, "foe")) { f.hp = 1; f.level = 1; }
+    for (const a of fighters(s, "ally")) a.level = 12;
+    expect(canRelease(s)).toBe(true);
+    release(s);
+    expect(fighters(s, "foe")).toHaveLength(0); expect(s.escaped).toBe("released");
+  });
+
+  it("auto battle picks a real move against a foe, and a heal when someone is badly hurt", () => {
+    const s = fresh(), u = acting(s)!;
+    const c = autoChoice(s, book, u)!;
+    expect(skillsFor(s, u, book)).toContain(c.skill); expect(unit(s, c.target).side).toBe("foe");
+    const rhea = turnOf(s, "rhea") && unit(s, "rhea"), tam = unit(s, "tam"); tam.hp = 1;
+    const h = autoChoice(s, book, rhea)!;
+    if (skillsFor(s, rhea, book).some((k) => book[k].kind === "heal")) { expect(book[h.skill].kind).toBe("heal"); expect(h.target).toBe("tam"); }
+  });
+});
+
+describe("foes scaled to the party (muster)", () => {
+  const withParty = (id: string, who: string[]) => {
+    const b = BATTLES[id] as BattleDef;
+    return createBattle({ ...b, units: [...partyUnits("rhea", who.map((x) => ({ id: x, name: x }))), ...b.units.filter((u) => u.side !== "ally")] } as BattleDef, book, seeded(1));
+  };
+  it("leaves a fight alone for Rhea and one companion (Ash fights off Rhea's turns)", () => {
+    const s = withParty("road-gaol", ["ash", "tamsin"]), b = BATTLES["road-gaol"] as BattleDef;
+    const foes = s.units.filter((u) => u.side === "foe");
+    expect(foes.length).toBe(b.units.filter((u) => u.side === "foe").length);
+    expect(foes.every((f) => f.weapon === 1)).toBe(true); expect(s.nerve).toBe(1);
+  });
+  it("a bigger party meets more of the rank and file, hardier and harder-hitting, slower to break", () => {
+    const small = withParty("road-gaol", ["ash", "tamsin"]), big = withParty("road-gaol", ["ash", "tamsin", "brannoc", "ferris", "ketti"]);
+    const foes = big.units.filter((u) => u.side === "foe"), was = small.units.filter((u) => u.side === "foe");
+    expect(foes.length).toBe(was.length + 1);
+    expect(foes.at(-1)!.name).toBe("Gaoler"); // a copy of the rank and file, never of a one-off
+    expect(new Set(foes.map((f) => f.id)).size).toBe(foes.length);
+    expect(foes[0].maxHp).toBeGreaterThan(was[0].maxHp); expect(foes[0].weapon).toBeGreaterThan(1);
+    expect(big.nerve!).toBeLessThan(1);
+  });
+  it("never copies a lone boss: the Old Mother only grows harder", () => {
+    const s = withParty("thornwick-cistern", ["ash", "tamsin", "brannoc", "ferris", "ketti", "oakes"]);
+    expect(s.units.filter((u) => u.side === "foe" && u.name === "The Old Mother").length).toBe(1);
   });
 });

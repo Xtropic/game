@@ -1,0 +1,52 @@
+{
+ "id": "thornwick-bathhouse",
+ "name": "The bathhouse loftbucks",
+ "backdrop": "meadow",
+ "party": true,
+ "intro": [
+  "A wild loftbuck buck and his yearling, cornered in the warm bathhouse they've wintered in for years.",
+  "They're not wicked, only frightened. The foal song can still calm them."
+ ],
+ "won": "The bathhouse is clear",
+ "lost": "Driven back out of the bathhouse",
+ "units": [
+  {
+   "id": "buck",
+   "name": "Wild loftbuck",
+   "look": "loftbuck:#a8988a",
+   "side": "foe",
+   "row": "front",
+   "hp": 34,
+   "level": 4,
+   "kith": true,
+   "skills": [
+    "horns"
+   ],
+   "at": [
+    168,
+    92
+   ],
+   "species": "loftbuck",
+   "temperament": "proud"
+  },
+  {
+   "id": "yearling",
+   "name": "Loftbuck yearling",
+   "look": "loftbuck:#c8b8a8",
+   "side": "foe",
+   "row": "front",
+   "hp": 22,
+   "level": 2,
+   "kith": true,
+   "skills": [
+    "horns"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "species": "loftbuck",
+   "temperament": "gentle"
+  }
+ ]
+}

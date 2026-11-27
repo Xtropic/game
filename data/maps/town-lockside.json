@@ -1,0 +1,50 @@
+{
+ "id": "town-lockside",
+ "name": "Lockside",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "T~~~~~~~~~~==~~~~~~~~~~T",
+  "T,,,,,,,,,,:,,,,,,,,,,,T",
+  "T,rrrr,,,,,:,,,,,rrrr,,T",
+  "T,hhdh,,,,,:,,,,,hdhh,,T",
+  "T,,,:::::::::::::::,,,,T",
+  "e,,,,,,,,,,:,,,,,,,xx,,e",
+  "T,,CC,,,,,,:,,,,F,,,,,,T",
+  "T,,,,,,,,,,:,,,,,,,,,,,T",
+  "TTTTTTTTTTTeTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 9
+  },
+  {
+   "id": "lockside-sign0",
+   "kind": "sign",
+   "x": 16,
+   "y": 8,
+   "props": {
+    "text": "A brazier where the lock-keepers warm their hands. Someone has scratched a tally of boats into the post: hundreds of them."
+   }
+  }
+ ]
+}

@@ -1,0 +1,349 @@
+{
+ "buildings": {
+  "stores": {
+   "name": "Stores",
+   "note": "Dorrit's ledger and the trade road. Traders here turn the section's surplus into coin; haulers bring in timber, stone and iron.",
+   "jobs": [
+    "trade",
+    "haul"
+   ],
+   "levels": [
+    {
+     "name": "Lean-to stores",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Trade and hauling, a little."
+    },
+    {
+     "name": "Storehouse",
+     "coin": 80,
+     "supplies": 20,
+     "work": 6,
+     "gives": "Trade and hauling bring in half as much again."
+    },
+    {
+     "name": "Market yard",
+     "coin": 220,
+     "supplies": 60,
+     "work": 12,
+     "gives": "Traders from the valley come up the road: double trade."
+    }
+   ]
+  },
+  "forge": {
+   "name": "Forge",
+   "note": "Where keepsake weapons are reforged. A better forge takes a weapon further; a better smith costs less coin.",
+   "jobs": [
+    "forge"
+   ],
+   "levels": [
+    {
+     "name": "No forge",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Nothing can be reforged."
+    },
+    {
+     "name": "Field forge",
+     "coin": 60,
+     "supplies": 25,
+     "work": 5,
+     "gives": "Weapons can be mended (tier 2)."
+    },
+    {
+     "name": "Smithy",
+     "coin": 180,
+     "supplies": 60,
+     "work": 10,
+     "gives": "Weapons can be tempered (tier 3)."
+    },
+    {
+     "name": "Great forge",
+     "coin": 400,
+     "supplies": 120,
+     "work": 18,
+     "gives": "Masterwork and named weapons (tiers 4 and 5)."
+    }
+   ]
+  },
+  "pens": {
+   "name": "Kith pens",
+   "note": "Hesk's wing. Kith kept here are fed, penned and worked each day, and grow the way they are raised.",
+   "jobs": [
+    "kith"
+   ],
+   "levels": [
+    {
+     "name": "Rope corral",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Two kith can stay; plain feed only."
+    },
+    {
+     "name": "Pens",
+     "coin": 70,
+     "supplies": 30,
+     "work": 6,
+     "gives": "Five kith, better feed, and breeding."
+    },
+    {
+     "name": "Breeding wing",
+     "coin": 200,
+     "supplies": 70,
+     "work": 12,
+     "gives": "Ten kith, every feed and pen, and the training ring."
+    }
+   ]
+  },
+  "workshop": {
+   "name": "Workshop",
+   "note": "Crafters make what the party throws in a fight: fire pots, numbing darts and snare charges, and bandages.",
+   "jobs": [
+    "craft"
+   ],
+   "levels": [
+    {
+     "name": "No workshop",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Nothing is made."
+    },
+    {
+     "name": "Bench",
+     "coin": 50,
+     "supplies": 20,
+     "work": 4,
+     "gives": "Bandages and fire pots."
+    },
+    {
+     "name": "Workshop",
+     "coin": 150,
+     "supplies": 50,
+     "work": 9,
+     "gives": "Numbing darts and snare charges too, and faster."
+    }
+   ]
+  },
+  "infirmary": {
+   "name": "Infirmary",
+   "note": "Healers keep the wounded. With one, resting at Thornwick also eases the raw, and mends anyone left behind.",
+   "jobs": [
+    "heal"
+   ],
+   "levels": [
+    {
+     "name": "No infirmary",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Rest heals as anywhere."
+    },
+    {
+     "name": "Sick room",
+     "coin": 60,
+     "supplies": 15,
+     "work": 4,
+     "gives": "Healers make salves and teas from what they gather."
+    },
+    {
+     "name": "Infirmary",
+     "coin": 160,
+     "supplies": 40,
+     "work": 9,
+     "gives": "Twice the salves and teas."
+    }
+   ]
+  },
+  "kitchen": {
+   "name": "Kitchen",
+   "note": "A fed post works better. Cooks raise everyone's output.",
+   "jobs": [
+    "cook"
+   ],
+   "levels": [
+    {
+     "name": "Camp fire",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Cooks add a little to all work."
+    },
+    {
+     "name": "Cookhouse",
+     "coin": 70,
+     "supplies": 25,
+     "work": 5,
+     "gives": "Cooks add more."
+    },
+    {
+     "name": "Long hall",
+     "coin": 190,
+     "supplies": 60,
+     "work": 11,
+     "gives": "Cooks add the most, and the hall is where the post gathers."
+    }
+   ]
+  },
+  "school": {
+   "name": "Schoolroom",
+   "note": "Teachers drill whoever stays at Thornwick: they gain experience each day while the party is away.",
+   "jobs": [
+    "teach",
+    "records"
+   ],
+   "levels": [
+    {
+     "name": "No schoolroom",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "No drilling."
+    },
+    {
+     "name": "Drill yard",
+     "coin": 60,
+     "supplies": 20,
+     "work": 5,
+     "gives": "Those at Thornwick gain a little experience each day."
+    },
+    {
+     "name": "Schoolroom",
+     "coin": 170,
+     "supplies": 50,
+     "work": 10,
+     "gives": "Twice as much."
+    }
+   ]
+  },
+  "watch": {
+   "name": "Watch",
+   "note": "Guards and scouts on the walls. A strong watch keeps raids off, and scouts bring back finds.",
+   "jobs": [
+    "guard",
+    "scout"
+   ],
+   "levels": [
+    {
+     "name": "Gate post",
+     "coin": 0,
+     "supplies": 0,
+     "work": 0,
+     "gives": "Scouts bring back a little."
+    },
+    {
+     "name": "Watchtower",
+     "coin": 90,
+     "supplies": 35,
+     "work": 7,
+     "gives": "Scouts range further: more finds."
+    },
+    {
+     "name": "Walls and towers",
+     "coin": 260,
+     "supplies": 90,
+     "work": 15,
+     "gives": "Thornwick can hold against a raid."
+    }
+   ]
+  }
+ },
+ "recipes": {
+  "bandage": {
+   "level": 1,
+   "work": 2,
+   "supplies": 1,
+   "in": "workshop"
+  },
+  "firepot": {
+   "level": 1,
+   "work": 4,
+   "supplies": 3,
+   "in": "workshop"
+  },
+  "dart": {
+   "level": 2,
+   "work": 4,
+   "supplies": 2,
+   "in": "workshop"
+  },
+  "snare": {
+   "level": 2,
+   "work": 5,
+   "supplies": 3,
+   "in": "workshop"
+  },
+  "salve": {
+   "level": 1,
+   "work": 3,
+   "supplies": 1,
+   "in": "infirmary"
+  },
+  "willowbark": {
+   "level": 1,
+   "work": 4,
+   "supplies": 1,
+   "in": "infirmary"
+  }
+ },
+ "pens": {
+  "slots": [
+   2,
+   5,
+   10
+  ],
+  "breedAt": 1,
+  "ringAt": 2,
+  "feeds": [
+   [
+    "feed:grain-mash",
+    "feed:lean-rations"
+   ],
+   [
+    "feed:river-fish",
+    "feed:marrow-broth",
+    "feed:bitterleaf",
+    "feed:salt-lick"
+   ],
+   [
+    "feed:cloudberries",
+    "feed:honeycake",
+    "feed:glowmoss"
+   ]
+  ],
+  "pens": [
+   [
+    "pen:quiet-field"
+   ],
+   [
+    "pen:warm-byre",
+    "pen:cold-yard",
+    "pen:high-loft"
+   ],
+   [
+    "pen:forge-yard",
+    "pen:mire-pool"
+   ]
+  ],
+  "work": [
+   [
+    "work:rest",
+    "work:haul",
+    "work:guard"
+   ],
+   [
+    "work:dig",
+    "work:scout",
+    "work:run",
+    "work:tend"
+   ],
+   [
+    "work:herd",
+    "work:show"
+   ]
+  ]
+ }
+}

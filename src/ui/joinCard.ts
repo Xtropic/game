@@ -1,6 +1,8 @@
 // Who has joined. When a character or a kith is recruited, a card drops in at the top of the screen with their
 // portrait, their name and what they'll do, with a short fanfare on the foal song. R opens the company: everyone
 // who has joined so far, people and kith, with their portraits and where they serve.
+import { keyFor } from "../core/input";
+import { device } from "../core/device";
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { drawPortrait, hasPainted } from "../art/portraits";
 import { beastSheet } from "../art/people";
@@ -61,7 +63,8 @@ export class JoinCards {
   private w = 800;
   private h = 600;
 
-  constructor() { this.view.eventMode = "none"; }
+  /** A tap on the card once it has arrived: go on (phones have no Enter key). */
+  constructor() { this.view.eventMode = "passive"; }
 
   push(j: Joiner): void { this.queue.push(j); }
   get showing(): boolean { return !!this.card || this.queue.length > 0; }
@@ -103,7 +106,8 @@ export class JoinCards {
   private open(j: Joiner): void {
     this.t = 0;
     const root = new Container(), w = this.w, h = this.h, cx = w / 2, cy = h * 0.4;
-    root.addChild(new Graphics().rect(0, 0, w, h).fill({ color: 0x080604, alpha: 0.78 }));
+    const dim = new Graphics().rect(0, 0, w, h).fill({ color: 0x080604, alpha: 0.78 }); root.addChild(dim);
+    dim.eventMode = "static"; dim.on("pointertap", () => { if (this.canClose) this.close(); });
     const rays = new Graphics(); root.addChild(rays);
     const size = Math.min(220, h * 0.36);
     const pic = new Container();
@@ -113,11 +117,11 @@ export class JoinCards {
     const sparks = new Graphics(); root.addChild(sparks);
     const tag = new Text({ text: j.kith ? "A KITH JOINS YOU" : "RECRUITED", style: { ...serif(18, "#e0c070", true), letterSpacing: 6 } });
     tag.anchor.set(0.5, 0); tag.x = cx; tag.y = cy + size / 2 + 22;
-    const name = new Text({ text: j.name, style: { ...serif(42, "#fff4dc", true), dropShadow: { color: "#000000", alpha: 0.8, blur: 6, distance: 2, angle: Math.PI / 2 } } });
+    const name = new Text({ text: j.name, style: { ...serif(w < 480 ? 34 : 42, "#fff4dc", true), dropShadow: { color: "#000000", alpha: 0.8, blur: 6, distance: 2, angle: Math.PI / 2 } } });
     name.anchor.set(0.5, 0); name.x = cx; name.y = tag.y + 26;
     const what = new Text({ text: j.what, style: { ...serif(17, "#e8dcc4"), align: "center", wordWrap: true, wordWrapWidth: Math.min(560, w - 40) } });
     what.anchor.set(0.5, 0); what.x = cx; what.y = name.y + 54;
-    const hint = new Text({ text: "Press Enter to go on   ·   R shows your company", style: serif(14, "#c8b890") });
+    const hint = new Text({ text: device.taps ? "Tap to go on" : `Press ${keyFor("confirm")} to go on   ·   ${keyFor("company")} shows your company`, style: serif(14, "#c8b890") });
     hint.label = "hint"; hint.anchor.set(0.5, 0); hint.x = cx; hint.y = Math.min(h - 30, what.y + what.height + 22); hint.alpha = 0;
     root.addChild(tag, name, what, hint);
     root.alpha = 0;
@@ -131,6 +135,8 @@ export class JoinCards {
 export class CompanyPanel {
   readonly view = new Container();
   open = false;
+  /** Called when the panel is tapped (to close it). */
+  onTap?: () => void;
   constructor() { this.view.visible = false; }
 
   toggle(members: Joiner[], w: number, h: number): void {
@@ -140,10 +146,11 @@ export class CompanyPanel {
     const W = Math.min(720, w - 32), rowH = 64, cols = W > 560 ? 2 : 1, colW = W / cols;
     const rows = Math.ceil(members.length / cols), H = Math.min(h - 40, 70 + rows * rowH + 30);
     const x0 = (w - W) / 2, y0 = Math.max(20, (h - H) / 2);
-    this.view.addChild(new Graphics().rect(0, 0, w, h).fill({ color: 0x000000, alpha: 0.55 }));
+    const dim = new Graphics().rect(0, 0, w, h).fill({ color: 0x000000, alpha: 0.55 }); dim.eventMode = "static"; dim.on("pointertap", () => this.onTap?.());
+    this.view.addChild(dim);
     this.view.addChild(new Graphics().roundRect(x0, y0, W, H, 10).fill({ color: 0x14100c, alpha: 0.96 }).roundRect(x0, y0, W, H, 10).stroke({ color: 0xe0c070, width: 2 }));
     const title = new Text({ text: "Your company", style: serif(24, "#fff4dc", true) }); title.x = x0 + 20; title.y = y0 + 14; this.view.addChild(title);
-    const hint = new Text({ text: members.length ? "R or Esc to close" : "Nobody has joined yet. R or Esc to close", style: serif(13, "#a89a80") }); hint.x = x0 + W - hint.width - 20; hint.y = y0 + 22; this.view.addChild(hint);
+    const hint = new Text({ text: device.taps ? (members.length ? "Tap to close" : "Nobody has joined yet. Tap to close") : members.length ? `${keyFor("company")} or ${keyFor("cancel")} to close` : `Nobody has joined yet. ${keyFor("company")} or ${keyFor("cancel")} to close`, style: serif(13, "#a89a80") }); hint.x = x0 + W - hint.width - 20; hint.y = y0 + 22; this.view.addChild(hint);
     members.forEach((m, i) => {
       const cx = x0 + 16 + (i % cols) * colW, cy = y0 + 60 + Math.floor(i / cols) * rowH;
       if (cy + rowH > y0 + H) return;

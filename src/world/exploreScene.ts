@@ -1,45 +1,87 @@
 // Exploring: the pixel-art world at 320 x 180 scaled by a whole number, with the dialogue box and HUD drawn in
 // HD on top. What happens here comes from the story data: who is where, what they say, what stepping on a door
 // or singing near a kith does. The scene only moves people about and shows things; StoryRunner decides.
+import { keyFor, padState } from "../core/input";
+import { device, say } from "../core/device";
 import { Container, Graphics, Sprite, Text, type Texture } from "pixi.js";
 import { sfx, trackFor } from "../audio/music";
 import { CompanyPanel, JoinCards, joinerFor } from "../ui/joinCard";
 import companions from "../../data/kith/companions.json";
-import { wildKith, type Temperament } from "../kith/kith";
+import { addKithXp, kithXpToNext, wildKith, type Temperament } from "../kith/kith";
 import { afterBattle, seeded } from "../battle/rules";
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import { TILE, WILD, WorldMap, type MapFile } from "./map";
 import { REGIONS } from "./content";
-import { encounter } from "../battle/encounters";
+import { encounter, partyUnits, type Traveller } from "../battle/encounters";
 import type { BattleDef, BattleState } from "../battle/rules";
 import { OFFERS, lingerLine, trustChance } from "../kith/befriend";
 import { bakeMap } from "../art/tiles";
 import { pixelTexture } from "../art/pixel";
 import { arrival, closedAt, findsNow, wayAt, wayBlocker, wayOpen, wayWhy } from "./gates";
 import { MAPS } from "./content";
+
+/** Where a town's map stands on the world map (its place there shares the map's id, less any "town-"), for its 3D surroundings. */
+function aroundOf(id: string): Around | undefined {
+  const pid = id.replace(/^town-/, "").split("--")[0]; // a district sits where its town does
+  for (const m of Object.values(MAPS)) { const p = m.world ? m.places?.find((q) => q.id === pid) : undefined; if (p) return { land: m, x: p.x, y: p.y }; }
+  return undefined;
+}
 import { blockerTexture } from "../art/worldTiles";
 import { FITTINGS } from "../gear/weapons";
+import { openGuide, teach, unreadCount } from "../guide/guideScene";
+import { ITEMS } from "../gear/items";
+import { atLeast } from "../command/ranks";
 import { LOOKS, beastSheet, bodyOf, isBeast, glintTexture, noteTexture, personSheet, toneOf, type Facing } from "../art/people";
-import { RECRUITS } from "../cast/recruits";
+import { RECRUITS, recruit } from "../cast/recruits";
 
 /** People who can join you: drawn bright so they stand out from the crowd. */
 const RECRUITABLE = new Set(RECRUITS.map((r) => r.id));
 import { BattleScene } from "../battle/battleScene";
 import { BATTLES, SKILLS } from "../battle/data";
-import { xpForFoe } from "../cast/attributes";
+import { PEOPLE, attrsAt, xpForFoe, xpToNext } from "../cast/attributes";
 import { DialogueBox } from "../ui/dialogueBox";
+import { Atmosphere } from "./atmosphere";
+import { World3D, type Around, type Fig } from "../three/world3d";
+import { BasePanel } from "../ui/basePanel";
+import { TrainingScene } from "../ui/trainingScene";
+import { train } from "../kith/training";
+import { ShopPanel } from "../ui/shopPanel";
+import { TourneyPanel } from "../ui/tourneyPanel";
+import { champions, roundBattle, type Tourney } from "../kith/tourney";
+import { away as awayOn, expeditionDay } from "../kith/expedition";
+import type { Kith } from "../kith/kith";
+import { DuelScene } from "../battle/duelScene";
+import { DUELS } from "../battle/duel";
+import { ArmyScene } from "../army/armyScene";
+import { ARMY_BATTLES, terrainAt, withoutAbsent, type ArmyDef } from "../army/army";
+import { rankOf, rankTick } from "../command/ranks";
+import { allies, marched, nation, tribute } from "../command/diplomacy";
+import { withWorks, worksKey } from "../base/look";
+import { baseDay, baseOpen, coinForFoe, raidCheck, raidDue, raidOver } from "../base/base";
+import { keepsake } from "../gear/weapons";
+import { settings } from "../core/settings";
+import { CutsceneScene } from "../cutscene/cutsceneScene";
+import { CUTSCENES } from "../cutscene/scenes";
 import { newTerm } from "../story/terms";
 import { NotesPanel } from "../ui/notesPanel";
 import { GameMenu } from "../ui/gameMenu";
-import { ITEMS } from "../gear/items";
 import type { Slot } from "../core/save";
-import { StoryRunner, holds, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
+import { StoryRunner, holds, partyOf, type Actor, type KithGift, type Step, type Story, type StoryHost, type Where } from "../story/story";
+
+/** Where resting is free (home, friends), what an inn charges per wounded fighter, and how far a barn night heals. */
+const FREE_REST = new Set(["camp", "umes", "thornwick"]), INN_COST = 4, BARN_REST = 0.7;
+/** Days the company may wait at Thornwick for each turn of the story. */
+const WAIT_DAYS = 3;
 
 export const VIEW_W = 320, VIEW_H = 180;
 const WALK = 60, RUN = 104; // pixels per second
 const NO_ANCHOR = { x: 0, y: 0 };
 const BOX = { w: 10, h: 6, ox: 1, oy: 11 }; // player's collision box at the feet, relative to the sprite's top-left
+/** Most travelling companions beside Rhea (Ash not counted): the battle line has six places. */
+const MAX_TRAVEL = 5;
+/** Story companions who fight with their own battle moves. */
+const FIGHTERS = new Set(["tamsin", "brannoc", "ferris", "ketti", "oakes"]);
 const FOLLOW_GAP = 16; // pixels of trail between each follower
 const WORLD_PACE = 1.6; // the world map is walked faster: one tile there is a stretch of country
 /** Tiles of wild ground walked between chance meetings on the world map: at least, plus up to. */
@@ -47,25 +89,25 @@ const ENCOUNTER_EVERY: [number, number] = [22, 26];
 
 export interface ExploreState { map: string; x: number; y: number; facing: Facing; }
 
-/** Colour laid over the world for the time of day and what has happened. Indoors keeps its own light. */
-const LIGHT: Record<string, { color: number; alpha: number }> = {
-  day: { color: 0, alpha: 0 },
-  dusk: { color: 0x6a2a3a, alpha: 0.28 },
-  night: { color: 0x0a1030, alpha: 0.5 },
-  fire: { color: 0x3a0c04, alpha: 0.42 },
-  ash: { color: 0x2a2624, alpha: 0.12 },
-  evening: { color: 0x1a1008, alpha: 0.4 },
-  steam: { color: 0x0a0806, alpha: 0.2 },
-};
-const INDOORS = new Set(["home", "caves", "surgery", "rooms", "hatchery"]);
 
 interface Shown { a: Actor; sprite: Sprite; frames: Record<Facing, Texture[]>; }
 
 /** Which script starts the act after each ending. */
 /** Where the story written so far runs out: one quiet line, then a new game. No acts, no chapter cards. */
-export function ledger(_id: string, _f: Record<string, unknown>): string[] {
-  return ["The story goes on from here.", "This is as far as it has been written.", "", "Press Enter to begin again"];
+export function ledger(id: string, _f: Record<string, unknown>): string[] {
+  const end = ENDINGS[id];
+  if (end) return [end.title, "", end.line, "", "The end.", "", say(`Press ${keyFor("confirm")} to begin again`, "Tap to begin again")];
+  return ["The story goes on from here.", "This is as far as it has been written.", "", say(`Press ${keyFor("confirm")} to begin again`, "Tap to begin again")];
 }
+
+/** The five ways the story ends (data/story/act4.json "end" steps): a title and one line for the closing card. */
+export const ENDINGS: Record<string, { title: string; line: string }> = {
+  burning: { title: "The Burning", line: "The breeding lines are gone for ever. So is everyone who was in the Broodhouse." },
+  empty: { title: "The Empty Valley", line: "Every harvest she sings on the empty terraces, and nothing comes." },
+  table: { title: "The Long Table", line: "Three chairs, and a ring on the table that nobody has picked up yet." },
+  green: { title: "The Green Year", line: "A year of weaning, and a country that comes out the other side." },
+  guild: { title: "The New Guild", line: "The same trade, under new management." },
+};
 
 export class ExploreScene implements Scene, StoryHost {
   readonly id = "explore";
@@ -75,12 +117,31 @@ export class ExploreScene implements Scene, StoryHost {
   private people = new Container();
   private overlay = new Graphics();
   private steamLayer = new Graphics();
+  /** Light and air: lamps in the dark, embers, steam, snow, the vignette. */
+  private atmos = new Atmosphere();
+  /** The world drawn in 3D under the HUD; the Pixi world layer is the fallback when 3D is off or unavailable. */
+  private w3: World3D | null = null;
+  private w3Map: WorldMap | null = null;
+  private w3Light = "";
+  private w3FogKey = "";
+  private fogCells: [number, number][] = [];
+  private airAt = 0;
   private hud = new Container();
   private wounds = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 13, fill: "#e8b8a0", lineHeight: 17, dropShadow: { color: "#000000", alpha: 0.9, blur: 3, distance: 1, angle: Math.PI / 2 } } });
   private joins = new JoinCards();
   private company = new CompanyPanel();
   private notes = new NotesPanel();
   private menu = new GameMenu();
+  private base = new BasePanel();
+  private shop = new ShopPanel();
+  private ring = new TourneyPanel();
+  private baseStage = "";
+  /** The Guide: always on screen, glowing with a count while there's a page the player hasn't read. */
+  private guideButton = new Container();
+  private guideButtonBg = new Graphics();
+  private guideButtonLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fontWeight: "bold", fill: "#2a1a08" } });
+  private guideShown = "";
+  private teachAt = 0;
   private menuButton = new Text({ text: "☰ Menu", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f2e3c4", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private map!: WorldMap;
   private game!: Game;
@@ -115,11 +176,20 @@ export class ExploreScene implements Scene, StoryHost {
   private settle = false;
   private screen = { w: 0, h: 0 };
   /** Whole-number zoom; the world map is shown one step further out, so more of the country is in view. */
-  private zoomFor(w: number, h: number): number { const z = Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H))); return this.map?.file.world ? Math.max(1, z - 1) : z; }
+  private zoomFor(w: number, h: number): number { const z = h > w ? Math.max(1, Math.round(w / 190)) : Math.max(1, Math.floor(Math.min(w / VIEW_W, h / VIEW_H))); return this.map?.file.world ? Math.max(1, z - 1) : z; }
   private regionNow: string | null = null;
   private untilEncounter = 0;
   private fog = new Graphics();
   private barriers: Sprite[] = [];
+  /** Over Dorrit's crates at Thornwick once it's theirs: where the ledger is. */
+  private ledgerSign = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 12, fontWeight: "bold", fill: "#ffe2a0", align: "center", stroke: { color: 0x2a1a08, width: 3 } } });
+  /** A gold panel behind the sign and a ring on the ground under the crates. */
+  private ledgerMark = new Graphics();
+  /** Always on screen once Thornwick is Rhea's: a big gold Ledger button (L), pulsing until she first opens it. */
+  private ledgerButton = new Container();
+  private ledgerButtonBg = new Graphics();
+  private ledgerButtonLabel = new Text({ text: "\u{1F4D6} Ledger [L]", style: { fontFamily: "Georgia, serif", fontSize: 13, fontWeight: "bold", fill: "#2a1a08" } });
+  private ledgerNew = new Text({ text: "NEW", style: { fontFamily: "Georgia, serif", fontSize: 10, fontWeight: "bold", fill: "#ffffff", stroke: { color: 0xa02010, width: 3 } } });
   private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private bannerTime = 0;
@@ -140,15 +210,29 @@ export class ExploreScene implements Scene, StoryHost {
     this.game = game;
     this.runner = new StoryRunner(this.story, this);
     if (!this.flags.stage) this.beginStory();
-    this.world.addChild(this.ground, this.steamLayer, this.people, this.fog, this.overlay);
+    this.world.addChild(this.ground, this.steamLayer, this.people, this.atmos.air, this.fog, this.atmos.dark, this.atmos.glow, this.overlay);
     this.view.addChild(this.world, this.hud);
     this.dialog = new DialogueBox(game.voices, (id) => game.buildFor(id));
-    this.hud.addChild(this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.menu.view);
+    this.hud.addChild(this.atmos.vignette, this.wounds, this.objective, this.chapter, this.meter, this.toastLabel, this.placeLabel, this.ledgerMark, this.ledgerSign, this.ledgerButton, this.banner, this.dialog.view, this.joins.view, this.cover, this.caption, this.company.view, this.notes.view, this.menuButton, this.guideButton, this.menu.view, this.base.view, this.shop.view, this.ring.view);
     this.menuButton.eventMode = "static"; this.menuButton.cursor = "pointer"; this.menuButton.alpha = 0.8;
     this.menuButton.on("pointertap", () => { if (this.free()) this.openMenu(); });
-    this.placeLabel.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
-    this.hud.eventMode = "static";
+    this.guideButton.addChild(this.guideButtonBg, this.guideButtonLabel); this.guideButtonLabel.x = 12; this.guideButtonLabel.y = 6;
+    this.guideButton.eventMode = "static"; this.guideButton.cursor = "pointer";
+    this.guideButton.on("pointertap", () => { if (this.game.scenes.top === this && !this.joins.showing) openGuide(this.game, this.base.open ? "thornwick" : undefined); });
+    this.ledgerButtonLabel.x = 9; this.ledgerButtonLabel.y = 5;
+    this.ledgerButton.addChild(this.ledgerButtonBg, this.ledgerButtonLabel, this.ledgerNew);
+    this.ledgerButtonBg.roundRect(0, 0, this.ledgerButtonLabel.width + 18, 26, 7).fill(0xf0c060).stroke({ color: 0x6a4410, width: 2 });
+    this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerNew.y = -9;
+    this.ledgerButton.eventMode = "static"; this.ledgerButton.cursor = "pointer"; this.ledgerButton.visible = false;
+    this.ledgerButton.on("pointertap", () => { if (this.free()) this.openLedger(); });
+    this.placeLabel.anchor.set(0.5, 1); this.ledgerSign.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
+    // passive, not static: a static parent makes every label inside it count as a hit, so a tap on a button's own words
+    // (a ledger row, a menu item, the Daily button) went to the HUD and did nothing; the buttons themselves are static
+    this.hud.eventMode = "passive";
+    // full-screen overlays (the fade cover, the vignette, wounds) must never swallow taps meant for the dialogue box
+    for (const o of [this.cover, this.atmos.vignette, this.wounds, this.caption, this.banner, this.ledgerMark, this.ledgerSign, this.toastLabel, this.objective, this.placeLabel]) o.eventMode = "none";
     this.dialog.view.eventMode = "static";
+    this.company.onTap = () => this.toggleCompany(); this.notes.onTap = () => this.toggleNotes();
     this.dialog.view.on("pointertap", (e) => this.tapDialog(e.global.x, e.global.y));
     const s = this.start ?? {};
     const sp = this.story.start;
@@ -157,6 +241,9 @@ export class ExploreScene implements Scene, StoryHost {
     this.checkJoins(true);
     // a save made at the old end of the prologue carries straight on into the story, as it would now
     if (this.flags.ended === true || this.flags.ended === "prologue") { this.flags.ended = false; this.runner.run([{ run: "act1Start" }]); }
+    else if (this.flags.ended === "act1") { this.flags.ended = false; this.runner.run([{ run: "act2Start" }]); } // a save made where Act I used to end
+    else if (this.flags.ended === "act2") { this.flags.ended = false; this.runner.run([{ run: "act3Start" }]); } // ...or where Act II did
+    else if (this.flags.ended === "act3") { this.flags.ended = false; this.runner.run([{ run: "act4Start" }]); } // ...or where Act III did
     else if (this.flags.ended) this.end(String(this.flags.ended)); else this.save("auto");
   }
 
@@ -174,8 +261,14 @@ export class ExploreScene implements Scene, StoryHost {
     const file = this.maps[id]; if (!file) throw new Error(`no map ${id}`);
     if (this.map && this.map.file.id !== id) sfx.door();
     if (file.rest && this.map && this.map.file.id !== id) queueMicrotask(() => this.rest(file.name));
-    this.map = new WorldMap(file);
+    this.map = new WorldMap(withWorks(file, this.flags)); this.works = worksKey(this.flags);
+    this.atmos.setMap(this.map);
+    if (id === "thornwick" && raidDue(this.flags)) setTimeout(() => this.raidNow(), 1500);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
+    else {
+      const doors = this.shutDoors();
+      if (doors.size) this.map.closed = (tx, ty) => { const t = doors.get(`${tx},${ty}`); if (!t || this.standingOn(tx, ty)) return false; return !t.some((s) => holds(s.when as never, this.where())); };
+    }
     if (this.flags.gateOpen) this.map.open.add("gate");
     const sp = this.map.spawn();
     this.player.x = x ?? sp.x * TILE + 2; this.player.y = y ?? sp.y * TILE - 2;
@@ -193,27 +286,46 @@ export class ExploreScene implements Scene, StoryHost {
     this.refresh();
   }
 
+  /** True if the player's feet box overlaps tile tx, ty (a door shut behind them must not trap them). */
+  private standingOn(tx: number, ty: number): boolean {
+    const x = this.player.x + BOX.ox, y = this.player.y + BOX.oy;
+    return tx * TILE < x + BOX.w && (tx + 1) * TILE > x && ty * TILE < y + BOX.h && (ty + 1) * TILE > y;
+  }
+
+  /** Doors that lead nowhere stay shut (Mathew 2026-11-27: a building is either a place to enter or it can't be
+   *  entered at all). A door is open only while a story step or zone on it can fire; the rest are solid. */
+  private shutDoors(): Map<string, Array<{ when?: unknown }>> {
+    const id = this.map.file.id, doors = new Map<string, Array<{ when?: unknown }>>();
+    const steps = this.story.steps.filter((s) => s.map === id), zones = this.story.zones.filter((z) => z.map === id);
+    for (let y = 0; y < this.map.height; y++) for (let x = 0; x < this.map.width; x++) {
+      if (this.map.kindAt(x, y) !== "door") continue;
+      doors.set(`${x},${y}`, [...steps.filter((s) => s.at[0] === x && s.at[1] === y),
+        ...zones.filter((z) => x >= z.area[0] && y >= z.area[1] && x <= z.area[2] && y <= z.area[3])]);
+    }
+    return doors;
+  }
+
   /** Re-reads the story: who is on this map now, the objective, the light, the HUD. */
   refresh(): void {
     for (const s of this.shown) s.sprite.destroy();
     this.shown = [];
+    const staged = new Set<string>(); // party members a scene has placed somewhere on this map (brannoc-dawn): their follower steps aside
     for (const a of [...this.story.actors, ...this.findActors()]) {
       if (a.map !== this.map.file.id || !holds(a.when, this.where())) continue;
       if (this.followers.some((f) => f.id === a.id)) continue;
+      staged.add(a.id.split("-")[0]);
       const frames = this.sheet(a.look === "glint" ? "elder" : a.look);
       const sprite = new Sprite(a.look === "note" ? this.noteTex : a.look === "glint" ? this.glintTex : frames.down[0]);
       this.placeActor(sprite, a);
       this.people.addChild(sprite); this.shown.push({ a, sprite, frames });
     }
+    for (const f of this.followers) f.sprite.visible = !staged.has(f.id);
     if (!this.player.sprite.parent) this.people.addChild(this.player.sprite);
     const stage = String(this.flags.stage ?? "");
     this.objective.text = this.story.objectives[stage] ?? "";
     this.chapter.text = this.flags.rank && this.flags.hero !== "corran" ? String(this.flags.rank) : "";
     if (this.game.width) this.chapter.x = this.game.width - this.chapter.width - 16;
-    const light = LIGHT[String(this.flags.light ?? "day")] ?? LIGHT.day;
-    const indoor = INDOORS.has(this.map.file.id) && this.flags.light !== "evening" && this.flags.light !== "steam";
-    this.overlay.clear();
-    if (!indoor && light.alpha > 0) this.overlay.rect(0, 0, this.map.width * TILE, this.map.height * TILE).fill({ color: light.color, alpha: light.alpha });
+    this.atmos.setLight(String(this.flags.light ?? "day"));
     this.drawFog();
     this.drawMeter(); this.drawWounds();
   }
@@ -240,7 +352,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Hidden lands are under mist until someone walks into them; a shut way has something standing across it. */
   private drawFog(): void {
-    this.fog.clear();
+    this.fog.clear(); this.fogCells = [];
     for (const b of this.barriers) b.destroy();
     this.barriers = [];
     if (!this.map.file.world) return;
@@ -255,6 +367,7 @@ export class ExploreScene implements Scene, StoryHost {
     for (let ty = 0; ty < this.map.height; ty++) for (let tx = 0; tx < this.map.width; tx++) {
       const r = this.map.regionAt(tx, ty);
       if (!r || REGIONS[r]?.kind !== "hidden" || this.flags[`found.${r}`]) continue;
+      this.fogCells.push([tx, ty]);
       this.fog.rect(tx * TILE, ty * TILE, TILE, TILE).fill({ color: 0xc8d0da, alpha: 0.86 + 0.06 * Math.sin(tx * 0.7 + ty * 0.5 + t) });
     }
   }
@@ -298,8 +411,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** A chance meeting: a fight drawn from the region and the ground, with whoever is travelling with the hero. */
   meet(region: string, ground: Parameters<typeof encounter>[1]): void {
-    const party = this.followers.map((f) => ({ id: f.id, name: this.story.cast[f.id] ?? f.id }));
-    const def = encounter(region, ground, this.hero(), party, this.rng);
+    const def = encounter(region, ground, this.hero(), this.travellers(), this.rng);
     if (def.units.every((u) => u.side === "foe")) return;
     this.startBattle(def);
   }
@@ -324,6 +436,8 @@ export class ExploreScene implements Scene, StoryHost {
     this.screen = { w, h };
     this.zoom = this.zoomFor(w, h);
     this.world.scale.set(this.zoom);
+    this.atmos.resize(w, h);
+    this.w3?.resize(w, h);
     this.dialog.resize(w, h); this.joins.resize(w, h);
     this.objective.x = 16; this.objective.y = 12; this.objective.style.wordWrapWidth = Math.min(420, w - 180);
     this.chapter.x = w - this.chapter.width - 16; this.chapter.y = 12;
@@ -331,7 +445,9 @@ export class ExploreScene implements Scene, StoryHost {
     this.toastLabel.x = 16; this.toastLabel.y = 56; this.toastLabel.style.wordWrapWidth = Math.min(520, w - 32);
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
-    this.menu.resize(w, h);
+    this.guideShown = ""; // re-place the Guide button
+    this.ledgerButton.x = w - this.ledgerButtonBg.width - 16; this.ledgerButton.y = h - 66;
+    this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h); this.ring.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
     this.caption.style.wordWrapWidth = Math.min(640, w - 40); this.caption.anchor.set(0.5); this.caption.x = w / 2; this.caption.y = h / 2; this.caption.alpha = 0;
@@ -358,10 +474,86 @@ export class ExploreScene implements Scene, StoryHost {
     this.dialog.show({ who, name, text });
   }
   choose(prompt: string, options: { label: string; hint?: string }[], done: (i: number) => void): void { this.choiceDone = done; this.dialog.choose({ who: "narrator", name: "", text: prompt }, options); }
+  /** Plays a cut scene over the world (unless they're switched off, or automated tests are driving without ?cut). */
+  cutscene(id: string, done: () => void): void {
+    const def = CUTSCENES[id];
+    const off = !settings.get("cutscenes") || (navigator.webdriver && !location.search.includes("cut"));
+    if (!def || off) { done(); return; }
+    this.flags[`seen.cut.${id}`] = true;
+    const sc = new CutsceneScene(def, () => { if (this.game.scenes.top === sc) this.game.scenes.pop(); setTimeout(done, 0); });
+    this.game.scenes.push(sc);
+  }
   fade(caption: string, done: () => void): void { this.fading = { t: 0, done }; this.caption.text = caption; }
   goto(map: string, x: number, y: number, facing: Facing | undefined, done: () => void): void { this.load(map, x * TILE + 2, y * TILE - 2, facing); this.save("auto"); done(); }
-  toast(t: string): void { this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
-  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.refresh(); }
+  toast(t: string): void {
+    if (this.game.touch && t.startsWith("Walk with the arrow keys")) t = "Tilt the screen to walk (or drag on the left half), lean further to run, and tap A to talk. Your goal is at the top left.";
+    else if (padState.used && t.startsWith("Walk with the arrow keys")) t = "Walk with the left stick or D-pad, hold RT to run, and press A to talk. Your goal is at the top left.";
+    this.toastLabel.text = t; this.toastTime = Math.max(2.6, t.length / 14); if (t.startsWith("Found")) sfx.pickup(); }
+  changed(): void { if (this.flags.gateOpen) this.map.open.add("gate"); this.checkJoins(); this.commandTick(); this.baseTick(); this.refresh(); }
+
+  /** Each time the story moves on: the rank's pay and what pacts and held nations send in. A promotion says what it opens. */
+  private commandTick(): void {
+    const f = this.flags, r = rankTick(f, String(f.stage ?? ""));
+    if (r.moved) {
+      const t = tribute(f);
+      this.game.coin += r.pay + t.coin;
+      if (t.supplies) f.supplies = (typeof f.supplies === "number" ? f.supplies : 0) + t.supplies;
+    }
+    if (r.promoted) this.toast(`${r.promoted.id}. ${r.promoted.opens.join(" ")}`);
+  }
+
+  /** Thornwick is held from the night the Old Mother is beaten. Each time the story moves on after that, a day of
+   *  work passes there (see base/base.ts), and a short report shows. */
+  private baseTick(): void {
+    const f = this.flags, st = String(f.stage ?? ""), m = /^ab(\d+)/.exec(st);
+    if (!f["base.open"] && ((m && Number(m[1]) >= 4) || st.startsWith("ad"))) { f["base.open"] = true; this.baseStage = st; return; }
+    if (!f["base.open"] || st === this.baseStage) return;
+    if (!this.baseStage) { this.baseStage = st; return; } // a game just loaded: no day passes
+    this.baseStage = st;
+    const lines = this.baseWork(); if (lines) this.toast(`Thornwick: ${lines}`);
+  }
+  private works = "";
+  /** Redraws Thornwick in place when a building has gone up while Rhea is standing in it. */
+  private rebuildWorks(): void {
+    if (this.map?.file.id !== "thornwick" || worksKey(this.flags) === this.works) return;
+    const p = this.player; this.load("thornwick", p.x, p.y, p.facing);
+  }
+  /** A day of work at Thornwick; returns the first lines of its report. */
+  private baseWork(): string {
+    const f = this.flags;
+    const back = expeditionDay(f, this.game.kith, this.rng);
+    const out = baseDay({ flags: f, coin: this.game.coin, workers: this.baseStaying().map((id) => ({ id, name: this.story.cast[id] ?? id, attrs: attrsAt(id, this.game.progress(id).level, this.game.modsOf(id)) })), kith: this.baseKith().map((id) => this.game.kith[id]), rng: this.rng });
+    this.game.coin = out.coin;
+    for (const [id, xp] of Object.entries(out.drill)) this.game.giveXp(id, xp, this.story.cast[id] ?? id);
+    const raid = raidCheck(f, String(f.stage ?? ""), this.rng);
+    if (raid && this.map.file.id === "thornwick") setTimeout(() => this.raidNow(), 1200);
+    this.save("auto"); setTimeout(() => this.rebuildWorks(), 0);
+    if (raid) return [...back, raid].join(" ");
+    return [...back, out.lines.length ? out.lines.slice(0, 3).join(" ") : back.length ? "" : "A quiet day: nobody is set to work."].join(" ").trim();
+  }
+  /** "Let a day pass": only at Thornwick, a few days per turn of the story, and every idle day eats the stores. */
+  private waitDay(): string {
+    const f = this.flags, here = this.map.file.id;
+    if (here !== "thornwick" && !here.startsWith("thornwick-")) return "You can only wait out a day at Thornwick. On the road, days pass as you travel.";
+    const st = String(f.stage ?? ""), [ws, wn] = String(f["base.waited"] ?? "").split(":"), waited = ws === st ? Number(wn) || 0 : 0;
+    if (waited >= WAIT_DAYS) return "The company has waited long enough. Word keeps coming up the road: the story won't wait any longer. Move on, and Thornwick will keep working while you're away.";
+    const mouths = Math.max(1, this.baseStaying().length + partyOf(f).length + 1), stores = typeof f.supplies === "number" ? f.supplies : 0;
+    if (stores < mouths) return `An idle day costs ${mouths} supplies to feed everyone, and the stores hold ${stores}. Set someone to haul, or move on.`;
+    f.supplies = stores - mouths; f["base.waited"] = `${st}:${waited + 1}`;
+    const report = this.baseWork();
+    return `A day passes (${mouths} supplies eaten; ${WAIT_DAYS - waited - 1} more before you must move on). ${report}`.trim();
+  }
+  /** People who stay at Thornwick: everyone recruited who isn't travelling. */
+  private baseStaying(): string[] { const trav = new Set([this.hero(), ...this.followers.map((f) => f.id), ...partyOf(this.flags)]); return this.joinedIds().filter((id) => !trav.has(id) && !this.game.kith[id] && PEOPLE[id]); }
+  private baseKith(): string[] { const trav = new Set([...this.followers.map((f) => f.id), ...partyOf(this.flags), "ash"]); return this.joinedIds().filter((id) => this.game.kith[id] && !trav.has(id) && !awayOn(this.flags, id)); }
+  openBase(): void {
+    this.flags.ledgerSeen = true;
+    this.base.show({ game: this.game, names: this.story.cast, staying: () => this.baseStaying(), kithHere: () => this.baseKith(),
+      armed: () => [this.hero(), ...this.joinedIds()].filter((id, i, a) => a.indexOf(id) === i && keepsake(id) && !this.game.kith[id]),
+      addFoal: (k) => { this.game.kith[k.id] = k; this.checkJoins(); }, rng: () => this.rng(), passDay: () => this.waitDay(),
+      company: () => this.joinedIds(), inParty: () => partyOf(this.flags), setTravelling: (id) => this.setTravelling(id), partyRoom: () => Math.min(MAX_TRAVEL, rankOf(this.flags).party),
+      attend: (k, d, done) => this.game.scenes.push(new TrainingScene(d, k, (score) => { const o = train(this.flags, k, d, score, true, this.rng); this.save("auto"); setTimeout(() => done(o), 0); return o; }, this.rng)) }, this.screen.w, this.screen.h);
+  }
 
   /** Everyone recruited so far, in the order they joined: people (recruited.<id> or joined by the story) and kith. */
   private joinedIds(): string[] { return String(this.flags.company ?? "").split(",").filter(Boolean); }
@@ -379,8 +571,12 @@ export class ExploreScene implements Scene, StoryHost {
       ...Object.keys(f).filter((k) => (k.startsWith("recruited.") || k.startsWith("party.")) && f[k] === true).map((k) => k.split(".")[1]),
       ...Object.keys(game.kith),
     ];
-    const have = this.joinedIds();
+    // someone who served with the Commons and has left it for good (Kane, arrested): out of the company and the party
+    const gone = (id: string): boolean => (recruit(id)?.leaves ?? []).some((k) => !!f[k]);
+    const have = this.joinedIds().filter((id) => !gone(id));
+    if (partyOf(f).some(gone)) { f.party = partyOf(f).filter((id) => !gone(id)).join(","); this.follow(partyOf(f)); }
     for (const id of now) {
+      if (gone(id)) continue;
       if (have.includes(id) || id === "rhea" || id === "corran" && f.hero === "corran") continue;
       have.push(id);
       if (!quiet && id !== "ash") this.joins.push(joinerFor(id, game.kith, this.story.cast));
@@ -389,13 +585,20 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Nothing else is on screen or running: the menu can open. */
-  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && this.game.scenes.top === this; }
+  /** The player can walk about now (for the phone's tilt and stick). */
+  canWalk(): boolean { return this.free() && !this.ended; }
+  private free(): boolean { return !this.dialog.open && !this.runner.busy && !this.fading && !this.ended && !this.joins.showing && !this.company.open && !this.notes.open && !this.menu.open && !this.base.open && !this.shop.open && !this.ring.open && this.game.scenes.top === this; }
 
   openMenu(): void {
-    const trav = [this.hero(), ...this.followers.map((f) => f.id)];
     this.menu.show({
+      hero: () => this.hero(),
+      march: (id) => this.march(id),
+      ledger: () => this.openLedger(),
+      guide: (at) => openGuide(this.game, at),
       game: this.game, names: this.story.cast,
-      travelling: () => trav,
+      travelling: () => [this.hero(), ...this.followers.map((f) => f.id)],
+      inParty: () => partyOf(this.flags),
+      setTravelling: (id) => this.setTravelling(id),
       company: () => this.joinedIds(),
       health: () => this.health(), setHealth: (h) => this.setHealth(h),
       save: (slot) => this.save(slot),
@@ -404,6 +607,36 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   private toggleNotes(): void { this.notes.toggle((id) => !!this.flags[`learned.${id}`], this.screen.w, this.screen.h); }
+
+  /** Whoever is walking with the hero now, as battle sees them: kith carry their species and level. */
+  private travellers(): Traveller[] {
+    return this.followers.filter((f) => !this.flags[`nofight.${f.id}`]).map((f) => { const k = this.game.kith[f.id]; return { id: f.id, name: k?.name ?? this.story.cast[f.id] ?? f.id, ...(k ? { kith: { species: k.species, level: k.level } } : {}) }; });
+  }
+
+  /** The party picker (menu, Party page): puts someone recruited into the travelling party, or leaves them at camp.
+   *  The story's party list is what changes, so scenes that send people away or bring them back still work. While a
+   *  scene has the hero on their own (at Thornwick, or on an errand), the choice holds until the party sets out again. */
+  setTravelling(id: string): string {
+    const f = this.flags, name = this.game.kith[id]?.name ?? this.story.cast[id] ?? recruit(id)?.name ?? id;
+    if (this.hero() !== "rhea") return "Only Rhea chooses who travels with her.";
+    if (id === "rhea") return "Rhea leads. She always goes.";
+    if (id === "ash") return "Ash goes where Rhea goes.";
+    const gone = awayOn(f, id); if (gone) return `${name} is away: ${gone.exp.name.toLowerCase()}, ${gone.left} day${gone.left === 1 ? "" : "s"} more.`;
+    if (f[`nofight.${id}`]) return id === "brannoc" ? "Brannoc can't fight any more. His back never mended from Sallow. He keeps Thornwick's works." : `${name} can't fight any more.`;
+    const r = recruit(id), fights = !!this.game.kith[id] || FIGHTERS.has(id) || r?.role === "party";
+    if (!fights) return r?.role === "base" ? `${name} keeps things running at home, not on the road.` : `${name} serves with the Commons, not on the road.`;
+    const list = partyOf(f), was = list.includes(id), walking = this.followers.map((x) => x.id);
+    const together = walking.length === list.length && list.every((x) => walking.includes(x));
+    const most = Math.min(MAX_TRAVEL, rankOf(f).party);
+    if (!was && list.filter((x) => x !== "ash").length >= most) return `${["", "One", "Two", "Three", "Four", "Five"][most]} travel with Rhea at most${most < MAX_TRAVEL ? ` while she's a ${rankOf(f).id.toLowerCase()}` : ""}. Leave someone at camp first.`;
+    const next = was ? list.filter((x) => x !== id) : [...list, id];
+    f.party = next.join(",");
+    if (together) this.follow(next);
+    this.save("auto");
+    sfx.pickup();
+    if (was) return together ? `${name} stays behind at camp.` : `${name} will stay behind next time you set out.`;
+    return together ? `${name} joins the party.` : `${name} will come with you when you next set out.`;
+  }
 
   private toggleCompany(): void {
     const members = this.joinedIds().map((id) => joinerFor(id, this.game.kith, this.story.cast));
@@ -423,12 +656,87 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   battle(id: string, done: () => void): void { this.startBattle(id, done); }
+  /** The Warden column reaches Thornwick: the alarm, then the battle. Waits for a quiet moment. */
+  private raidNow(): void {
+    if (!raidDue(this.flags) || this.map.file.id !== "thornwick") return;
+    if (!this.free()) { setTimeout(() => this.raidNow(), 1500); return; }
+    this.runner.run([
+      { say: "", text: "The bell on the gatehouse goes, and doesn't stop. Grey coats on the road below the ford: the Warden column the scouts saw." },
+      { army: "thornwick-raid" },
+    ]);
+  }
+  /** An army battle: the hero's company and everyone recruited as officers. */
+  /** Marches the Commons on a nation (from the menu's Command page): the army battle, then what it leaves. */
+  march(id: string): void {
+    const n = nation(id); if (!n?.march) return;
+    setTimeout(() => this.army(n.march!, (won) => {
+      const r = marched(this.flags, this.game.coin, n, won); if (r.coin !== undefined) this.game.coin = r.coin;
+      this.runner.run([{ say: "", text: r.text }]); this.save("auto");
+    }), 150);
+  }
+
+  /** Allied companies from pacts join beside your own company, as many as the rank allows, on open ground nearby. */
+  private withAllies(def: ArmyDef): ArmyDef {
+    def = withoutAbsent(def, this.flags);
+    if (this.hero() !== "rhea") return def;
+    const list = allies(this.flags).slice(0, rankOf(this.flags).allies); if (!list.length) return def;
+    const hq = def.ours[0], fake = { def } as Parameters<typeof terrainAt>[0], taken = def.ours.map((c) => c.at);
+    const ours = [...def.ours];
+    for (const a of list) {
+      let spot: [number, number] | undefined;
+      for (let r = 2; r < 14 && !spot; r++) for (const [dx, dy] of [[r, 0], [-r, 0], [r, 1], [-r, 1], [r, 2], [-r, 2]]) {
+        const x = hq.at[0] + dx, y = hq.at[1] + dy, t = terrainAt(fake, x, y);
+        if (x < 1 || x > def.terrain[0].length - 2 || t === "water" || t === "wall" || taken.some((p) => Math.hypot(p[0] - x, p[1] - y) < 1.6)) continue;
+        spot = [x, y]; break;
+      }
+      if (!spot) continue;
+      taken.push(spot);
+      ours.push({ id: `ally-${a.nation}`, name: a.name, kind: a.kind, at: spot, officer: "warden", level: a.level });
+    }
+    return { ...def, ours };
+  }
+
+  army(id: string, done: (won: boolean) => void): void {
+    const base = ARMY_BATTLES[id]; if (!base) throw new Error(`no army battle ${id}`);
+    const def = this.withAllies(base);
+    const off = (pid: string) => ({ id: pid, name: this.story.cast[pid] ?? pid, attrs: attrsAt(pid, this.game.progress(pid).level, this.game.modsOf(pid)) });
+    const hero = this.hero(), pool = this.joinedIds().filter((p) => p !== hero && !this.game.kith[p] && PEOPLE[p]).map(off);
+    this.game.scenes.push(new ArmyScene(def, pool, off(hero), (won, s) => {
+      const lines: string[] = [];
+      if (won) {
+        const broken = s.cos.filter((c) => c.side === "theirs" && c.state !== "ok");
+        const xp = broken.reduce((n, c) => n + xpForFoe(def.theirs.find((d) => d.id === c.id)?.level) * 3, 0) + 20;
+        const led = new Set([hero, ...s.cos.filter((c) => c.side === "ours").map((c) => c.officer).filter(Boolean) as string[]]);
+        for (const p of led) lines.push(...this.game.giveXp(p, xp, this.story.cast[p] ?? p));
+        this.game.flags[`won.army.${id}`] = true;
+      }
+      if (id === "thornwick-raid") { const r = raidOver(this.game.flags, this.game.coin, won); this.game.coin = r.coin; lines.unshift(r.line); }
+      this.refresh(); done(won);
+      if (lines.length) this.runner.run(lines.map((text) => ({ say: "", text })));
+      this.save("auto");
+    }, () => this.rng(), { stratagems: this.hero() === "rhea" ? rankOf(this.flags).stratagems : 1 }));
+  }
+  /** A one-on-one duel for the hero; a win (or a yield) gives experience and any purse. */
+  duel(id: string, done: (won: boolean) => void): void {
+    const def = DUELS[id]; if (!def) throw new Error(`no duel ${id}`);
+    const hero = this.hero(), attrs = attrsAt(hero, this.game.progress(hero).level, this.game.modsOf(hero));
+    this.game.scenes.push(new DuelScene(def, { name: this.story.cast[hero] ?? hero, look: hero, attrs }, (r) => {
+      if (r === "lost") { this.refresh(); done(false); return; }
+      const first = !this.game.flags[`won.duel.${id}`]; this.game.flags[`won.duel.${id}`] = true;
+      const ups = this.game.giveXp(hero, xpForFoe(def.foe.level) * 2, this.story.cast[hero] ?? hero);
+      if (def.prize && first) { this.game.coin += def.prize; ups.push(`The purse is yours: ${def.prize} coin.`); }
+      this.refresh(); done(true);
+      if (ups.length) this.runner.run(ups.map((text) => ({ say: "", text })));
+      this.save("auto");
+    }, () => this.rng()));
+  }
 
   /** Where the written story runs out. */
   end(id: string): void {
     const t = new Text({ text: ledger(id, this.flags).join("\n"), style: { fontFamily: "Georgia, serif", fontSize: 18, fill: "#efe6d2", align: "center", lineHeight: 28, wordWrap: true, wordWrapWidth: Math.min(700, this.game.width - 40) } });
     t.anchor.set(0.5); t.x = this.game.width / 2; t.y = this.game.height / 2;
     this.cover.alpha = 0.92; this.ended = t; this.hud.addChild(t);
+    this.cover.eventMode = "static"; this.cover.once("pointertap", () => { if (this.ended) this.carryOn(); });
     this.flags.ended = id;
     this.save("auto");
   }
@@ -438,7 +746,7 @@ export class ExploreScene implements Scene, StoryHost {
 
   /** Starts a new run of the story from the top. */
   restart(): void {
-    this.ended?.destroy(); this.ended = null; this.cover.alpha = 0;
+    this.ended?.destroy(); this.ended = null; this.cover.alpha = 0; this.cover.eventMode = "none"; this.cover.removeAllListeners("pointertap");
     for (const f of this.followers) f.sprite.destroy(); this.followers = [];
     this.beginStory();
     const s = this.start!;
@@ -447,8 +755,10 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** Puts a battle over the map; on a win, records it, shares out experience, and continues the story. */
-  startBattle(which: string | BattleDef, onWin?: () => void): void {
-    const def = typeof which === "string" ? BATTLES[which] : which; if (!def) throw new Error(`no battle ${String(which)}`);
+  startBattle(which: string | BattleDef, onWin?: () => void, onLose?: () => void): void {
+    const found = typeof which === "string" ? BATTLES[which] : which; if (!found) throw new Error(`no battle ${String(which)}`);
+    // a written fight with "party": whoever is travelling with the hero fights it, against the foes it names
+    const def: BattleDef = found.party ? { ...found, units: [...partyUnits(this.hero(), this.travellers()), ...found.units.filter((u) => u.side === "foe")] } : found;
     const id = def.id;
     this.game.scenes.push(new BattleScene(def, SKILLS, {
       levels: this.game.levels(),
@@ -456,13 +766,18 @@ export class ExploreScene implements Scene, StoryHost {
       kith: this.game.kith,
       health: this.health(),
       pack: Object.fromEntries(Object.keys(ITEMS).filter((k) => ITEMS[k].battle).map((k) => [k, Number(this.game.flags[`have.${k}`] ?? 0)])),
-      onDone: (_r, s) => {
+      escape: typeof which !== "string", // chance meetings on the road; never a fight the story needs
+      songBoost: this.flags.spireSongs ? 1.35 : 1,
+      onDone: (r, s) => {
         for (const [k, n] of Object.entries(s.used)) this.game.flags[`have.${k}`] = Math.max(0, Number(this.game.flags[`have.${k}`] ?? 0) - n);
         this.setHealth(afterBattle(s));
+        if (r !== "won") { this.refresh(); this.save("auto"); onLose?.(); return; } // ran, or let them go: nothing won, nothing learned
         if (typeof which === "string") this.game.flags[`won.${id}`] = true;
         // experience: every foe beaten, shared in full by each cast member who fought
         const xp = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + xpForFoe(u.stats ? u.level : undefined), 0);
         const ups = s.units.filter((u) => u.side === "ally" && u.cast).flatMap((u) => this.game.giveXp(u.cast!, xp, u.name));
+        const purse = s.units.filter((u) => u.side === "foe").reduce((n, u) => n + coinForFoe(u.stats ? u.level : undefined, !!u.species || !!u.kith), 0);
+        if (purse) { this.game.coin += purse; ups.push(`You take ${purse} coin from the field.`); }
         // owned kith that fought learn from what they did, and grow
         for (const u of s.units) if (u.side === "ally" && u.kith && this.game.kith[u.id]) ups.push(...this.game.kithFought(u.id, s.deeds[u.id], xp));
         // Wardens carry field dressings; now and then one is left on the road
@@ -496,6 +811,68 @@ export class ExploreScene implements Scene, StoryHost {
   }
 
   /** A kith joins the company. */
+  /** The roll-keeper's "menu" step: opens the party page once the line that led to it has closed. */
+  openPage(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void {
+    setTimeout(() => {
+      if (!this.free()) return;
+      if (page.startsWith("tourney:")) teach(this.game, "tourney");
+      else if (page.startsWith("shop:")) teach(this.game, "items");
+      if (page.startsWith("tourney:")) this.ring.show(this.game, page.slice(8), this.screen.w, this.screen.h, (id) => !!awayOn(this.flags, id), (t, team) => this.runTourney(t, team));
+      else if (page.startsWith("shop:")) this.shop.show(this.game, page.slice(5), this.screen.w, this.screen.h);
+      else if (page === "base") this.openBase(); else this.openMenu();
+    }, 150);
+  }
+
+  /** A tournament: the fee, then each round in turn; a loss or a forfeit ends it, the final makes champions. */
+  private runTourney(t: Tourney, team: Kith[]): void {
+    this.game.coin -= t.fee;
+    for (const k of team) delete this.flags[`health.${k.id}`];
+    const round = (i: number): void => {
+      if (i >= t.rounds.length) {
+        const c = champions(this.flags, t, team); this.game.coin += c.coin;
+        sfx.join(); this.save("auto");
+        this.runner.run([{ say: "", text: `${t.name}: your kith win it. The crowd is on its feet.` }, ...c.lines.map((text) => ({ say: "", text }))]);
+        return;
+      }
+      setTimeout(() => this.startBattle(roundBattle(t, i, team, () => this.rng()), () => setTimeout(() => round(i + 1), 400),
+        () => { this.runner.run([{ say: "", text: `Out in the ${t.rounds[i].name.toLowerCase()}. Your kith limp out of the ring to a little applause.` }]); }), i ? 600 : 200);
+    };
+    round(0);
+  }
+
+  /** Pays coin out of the purse for the story (a debt, a bribe, a fee); false if there isn't enough. */
+  pay(coin: number): boolean {
+    if (coin < 0) { this.game.coin -= coin; this.toast(`${-coin} coin into the purse.`); return true; }
+    if (this.game.coin < coin) { this.toast(`Not enough coin: ${coin} needed, ${this.game.coin} in the purse.`); return false; }
+    this.game.coin -= coin; this.toast(`Paid ${coin} coin.`); return true;
+  }
+  loseKith(id: string): void {
+    if (!this.game.kith[id]) return;
+    delete this.game.kith[id];
+    const f = this.flags;
+    f.party = partyOf(f).filter((x) => x !== id).join(",");
+    delete f[`pen.${id}`]; delete f[`exp.${id}`];
+    if (this.followers.some((x) => x.id === id)) this.follow(this.followers.map((x) => x.id).filter((x) => x !== id));
+  }
+
+  /** Weeks of road and drilling: whoever in the company is below this level catches up to it (never lowers anyone). */
+  drill(level: number): void {
+    let raised = 0;
+    for (const id of [this.hero(), ...this.joinedIds()].filter((x, i, a) => a.indexOf(x) === i)) {
+      const k = this.game.kith[id];
+      if (k) {
+        let need = 0; for (let l = k.level; l < level; l++) need += kithXpToNext(l);
+        if (need > k.xp) { addKithXp(k, need - k.xp); raised++; }
+        continue;
+      }
+      if (!PEOPLE[id]) continue;
+      const p = this.game.progress(id);
+      let need = 0; for (let l = p.level; l < level; l++) need += xpToNext(l);
+      if (need > p.xp) { this.game.giveXp(id, need - p.xp); raised++; }
+    }
+    if (raised) this.toast(`Weeks of road and drilling: everyone in the company is level ${level} or better.`);
+  }
+
   addKith(g: KithGift): void {
     if (this.game.kith[g.id]) return;
     const region = this.regionNow;
@@ -515,16 +892,21 @@ export class ExploreScene implements Scene, StoryHost {
     for (const [id, v] of Object.entries(h)) this.flags[`health.${id}`] = v;
     this.drawWounds();
   }
-  /** Rest in a town, inn or camp: everyone's wounds are seen to. */
+  /** Rest in a town, inn or camp: everyone's wounds are seen to. At home it's free; an inn wants paying, and
+   *  without the coin the company sleeps in a barn and is only patched up. */
   private rest(where: string): void {
-    if (!Object.keys(this.health()).length) return;
-    this.setHealth({});
-    this.toast(`The party rests in ${where}. Wounds are cleaned and bound.`);
+    const h = this.health(), hurt = Object.keys(h).length; if (!hurt) return;
+    const id = this.map?.file.id ?? "";
+    if (FREE_REST.has(id) || id.startsWith("thornwick")) { this.setHealth({}); this.toast(`The party rests in ${where}. Wounds are cleaned and bound.`); sfx.heal(); return; }
+    const cost = INN_COST * hurt;
+    if (this.game.coin >= cost) { this.game.coin -= cost; this.setHealth({}); this.toast(`Beds and a surgeon in ${where}: ${cost} coin. Wounds are cleaned and bound.`); sfx.heal(); return; }
+    this.setHealth(Object.fromEntries(Object.entries(h).filter(([, v]) => v < BARN_REST).map(([k]) => [k, BARN_REST])));
+    this.toast(`No coin for an inn in ${where} (${cost} needed). The company sleeps in a barn: wounds bound, but not healed.`);
     sfx.heal();
   }
   /** A small line in the corner while anyone is hurt, so the player knows to rest. */
   private drawWounds(): void {
-    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran" };
+    const h = this.health(), names: Record<string, string> = { rhea: "Rhea", tam: "Tamsin", ash: "Ash", brannoc: "Brannoc", ferris: "Ferris", ketti: "Ketti", corran: "Corran", oakes: "Oakes" };
     const parts = Object.entries(h).map(([id, v]) => `${names[id] ?? id} ${Math.round(v * 100)}%`);
     this.wounds.text = parts.length ? `Wounded: ${parts.join("  ·  ")}\nRest in a town or camp to heal fully.` : "";
   }
@@ -547,6 +929,34 @@ export class ExploreScene implements Scene, StoryHost {
     let best: Shown | undefined, bd = 20;
     for (const s of this.shown) { if (!s.a.talk) continue; const ax = s.a.x * TILE + 8, ay = s.a.y * TILE + 8, dist = Math.min(Math.hypot(ax - fx, ay - fy), Math.hypot(ax - cx, ay - cy) + 4); if (dist < bd) { bd = dist; best = s; } }
     return best;
+  }
+
+  /** Where the ledger lies (the crates at Thornwick), when Rhea can open it here; else undefined. */
+  /** While the player is free to walk: any system they've just come to gets its "How it works" card. */
+  private teachNow(dt: number): boolean {
+    this.teachAt -= dt; if (this.teachAt > 0) return false; this.teachAt = 0.5;
+    const f = this.flags, ids = ["basics"];
+    if (Object.keys(f).some((k) => k.startsWith("won.")) || Object.keys(this.game.party).length) ids.push("wounds", "levels");
+    if (this.joinedIds().some((id) => id !== "ash" && !this.game.kith[id])) ids.push("company");
+    if (Object.keys(ITEMS).some((id) => Number(f[`have.${id}`] ?? 0) > 0 && !ITEMS[id].battle)) ids.push("items");
+    if (baseOpen(f)) ids.push("thornwick", "gear");
+    if (f.rank) ids.push("ranks");
+    if (f.rank && atLeast(f, "Lieutenant")) ids.push("nations");
+    return teach(this.game, ...ids);
+  }
+
+  private ledgerCell(): { x: number; y: number } | undefined {
+    if (this.map.file.id !== "thornwick" || !baseOpen(this.flags) || this.hero() !== "rhea") return undefined;
+    for (let y = 0; y < this.map.height; y++) for (let x = 0; x < this.map.width; x++) if (this.map.kindAt(x, y) === "crate") return { x, y };
+    return undefined;
+  }
+
+  /** Opens Thornwick's ledger from the menu, wherever Rhea is, once Thornwick is hers. */
+  openLedger(): string | undefined {
+    if (!baseOpen(this.flags)) return "Thornwick isn't yours yet.";
+    if (this.hero() !== "rhea") return "Only Rhea keeps Thornwick's ledger.";
+    this.flags.ledgerSeen = true;
+    this.menu.close(); this.openPage("base"); return undefined;
   }
 
   private facingTile(): { kind: string | null } {
@@ -604,7 +1014,7 @@ export class ExploreScene implements Scene, StoryHost {
   private hazard(dt: number): void {
     const hz = this.story.hazards.find((h) => h.map === this.map.file.id && holds(h.when, this.where()));
     this.steamLayer.clear();
-    if (!hz) return;
+    if (!hz) { if (this.w3) this.w3.setHazard(new Set(), false); return; }
     if (!this.steam.size) for (const [x, y] of hz.sources) this.steam.add(`${x},${y}`);
     this.steamT += dt;
     if (this.steamT > hz.spreadEvery) {
@@ -618,6 +1028,7 @@ export class ExploreScene implements Scene, StoryHost {
     }
     const t = this.game.playSeconds;
     const fire = hz.kind === "fire";
+    this.w3?.setHazard(this.steam, fire);
     for (const c of this.steam) { const [x, y] = c.split(",").map(Number); const fl = Math.sin(t * (fire ? 9 : 3) + x * 1.7 + y); this.steamLayer.rect(x * TILE, y * TILE, TILE, TILE).fill(fire ? { color: fl > 0.3 ? 0xf2a040 : 0xd0501a, alpha: 0.55 + 0.2 * fl } : { color: 0xeef2f4, alpha: 0.5 + 0.15 * fl }); }
     const [tx, ty] = this.feetTile();
     if (this.steam.has(`${tx},${ty}`)) {
@@ -644,9 +1055,13 @@ export class ExploreScene implements Scene, StoryHost {
     }
     this.joins.update(dt);
     if (this.joins.showing) { if (this.joins.canClose && (inp.wasPressed("confirm") || inp.wasPressed("cancel"))) this.joins.close(); return; }
+    if (inp.wasPressed("guide")) { openGuide(this.game, this.base.open ? "thornwick" : this.shop.open ? "items" : this.ring.open ? "tourney" : undefined); return; }
     if (this.company.open) { if (inp.wasPressed("cancel") || inp.wasPressed("company")) this.toggleCompany(); return; }
     if (this.notes.open) { if (inp.wasPressed("cancel") || inp.wasPressed("notes")) this.toggleNotes(); return; }
     if (this.menu.open) { if (!this.menu.update(inp)) this.settle = true; return; }
+    if (this.base.open) { if (!this.base.update(inp)) this.settle = true; return; }
+    if (this.shop.open) { if (!this.shop.update(inp)) this.settle = true; return; }
+    if (this.ring.open) { if (!this.ring.update(inp)) this.settle = true; return; }
     if (this.ended) { if (inp.wasPressed("confirm")) this.carryOn(); return; }
     if (this.dialog.open) {
       this.dialog.update(dt);
@@ -662,11 +1077,13 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.runner.busy) return;
     this.hazard(dt);
     if (this.runner.busy) return;
+    if (this.teachNow(dt)) return;
     if (inp.wasPressed("confirm")) { this.interact(); return; }
     if (inp.wasPressed("sing")) { this.sing(); return; }
     if (inp.wasPressed("company")) { this.toggleCompany(); return; }
     if (inp.wasPressed("notes")) { this.toggleNotes(); return; }
     if (inp.wasPressed("menu")) { this.openMenu(); return; }
+    if (inp.wasPressed("ledger")) { const why = this.openLedger(); if (why) this.toast(why); return; }
     const a = inp.axis();
     if (this.settle) { if (a.x || a.y) return; this.settle = false; }
     this.player.moving = a.x !== 0 || a.y !== 0;
@@ -722,18 +1139,100 @@ export class ExploreScene implements Scene, StoryHost {
     const cx = mw <= vw ? (mw - vw) / 2 : Math.max(0, Math.min(mw - vw, p.x + 6 - vw / 2));
     const cy = mh <= vh ? (mh - vh) / 2 : Math.max(0, Math.min(mh - vh, p.y + 9 - vh / 2));
     this.world.x = -Math.round(cx) * this.zoom; this.world.y = -Math.round(cy) * this.zoom;
+    const airDt = Math.max(0, Math.min(0.1, t - this.airAt)); this.airAt = t;
+    const in3d = this.render3d(airDt, t);
+    if (!in3d) this.atmos.update(airDt, t, this.game.app.renderer, p, { x: cx, y: cy, w: vw, h: vh });
+    // Thornwick's ledger: a sign over Dorrit's crates, bobbing, so nobody has to hunt for it
+    this.ledgerSign.text = ""; this.ledgerMark.clear();
+    const owns = baseOpen(this.flags) && this.hero() === "rhea";
+    this.ledgerButton.visible = owns && this.game.scenes.top === this && !this.menu.open && !this.base.open && !this.dialog.open;
+    if (this.ledgerButton.visible) {
+      const fresh = !this.flags.ledgerSeen, pulse = fresh ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 5) : 0;
+      this.ledgerNew.visible = fresh;
+      const lbl = device.taps ? "\u{1F4D6} Ledger" : `\u{1F4D6} Ledger [${keyFor("ledger")}]`;
+      if (this.ledgerButtonLabel.text !== lbl) { this.ledgerButtonLabel.text = lbl; this.ledgerButtonBg.clear().roundRect(0, 0, this.ledgerButtonLabel.width + 18, 26, 7).fill(0xf0c060).stroke({ color: 0x6a4410, width: 2 }); this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerButton.x = this.screen.w - this.ledgerButtonBg.width - 16; }
+      this.ledgerButton.scale.set(1 + pulse * 0.06);
+      this.ledgerButtonBg.tint = fresh ? (pulse > 0.5 ? 0xffffff : 0xffe8b0) : 0xffffff;
+    }
+    // the Guide button, by the menu: a gold badge with the count of pages not read yet
+    const unread = unreadCount(this.flags), gk = device.taps ? "" : ` [${keyFor("guide")}]`, gl = unread ? `\u{1F4DC} Guide${gk}  ${unread} new` : `\u{1F4DC} Guide${gk}`;
+    if (gl !== this.guideShown) {
+      this.guideShown = gl; this.guideButtonLabel.text = gl;
+      this.guideButtonLabel.style.fill = unread ? "#2a1a08" : "#f2e3c4";
+      this.guideButtonBg.clear().roundRect(0, 0, this.guideButtonLabel.width + 24, this.guideButtonLabel.height + 12, 8).fill(unread ? 0xf0c060 : 0x1a140e).stroke({ color: unread ? 0x6a4410 : 0xe0c070, width: 2 });
+      this.guideButton.x = this.menuButton.x - this.guideButtonBg.width - 14; this.guideButton.y = this.screen.h - this.guideButtonBg.height - 10;
+    }
+    this.guideButton.visible = this.game.scenes.top === this && !this.menu.open && !this.ended && !this.dialog.open;
+    this.menuButton.visible = !this.dialog.open;
+    const gp = unread ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 4) : 0;
+    this.guideButtonBg.tint = unread ? (gp > 0.5 ? 0xffffff : 0xffe0a0) : 0xffffff; this.guideButton.alpha = unread ? 1 : 0.85;
+    const lc = this.ledgerCell();
+    if (lc) {
+      const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;
+      this.ledgerSign.text = near ? `\u{1F4D6} Ledger [${keyFor("confirm")}]` : "\u{1F4D6}";
+      const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 2;
+      let gx: number, gy: number;
+      if (in3d && this.w3) {
+        const at = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 1.1); this.ledgerSign.x = at.x; this.ledgerSign.y = at.y + bob - 10;
+        const g = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 0); gx = g.x; gy = g.y;
+      } else {
+        this.ledgerSign.x = (lc.x * TILE + 8 - Math.round(cx)) * this.zoom; this.ledgerSign.y = (lc.y * TILE - 8 - Math.round(cy)) * this.zoom + bob;
+        gx = this.ledgerSign.x; gy = (lc.y * TILE + 12 - Math.round(cy)) * this.zoom;
+      }
+      const sw = this.ledgerSign.width + 12, sh = this.ledgerSign.height + 6;
+      this.ledgerMark.roundRect(this.ledgerSign.x - sw / 2, this.ledgerSign.y - sh + 4, sw, sh, 6).fill({ color: 0x1a1208, alpha: 0.72 }).stroke({ color: 0xf0c060, width: 1 });
+      const r = 10 + Math.sin(this.game.playSeconds * 4) * 2;
+      this.ledgerMark.ellipse(gx, gy, r * 1.6, r * 0.7).stroke({ color: 0xffd070, width: 2, alpha: 0.8 });
+    }
     // on the world map, name the nearest place within two tiles
     this.placeLabel.text = "";
     if (this.map.file.world) {
       const fx = p.x + 6, fy = p.y + 12;
       const near = (this.map.file.places ?? []).map((pl) => ({ pl, d: Math.hypot(pl.x * TILE + 8 - fx, pl.y * TILE + 8 - fy) })).filter((x) => x.d < TILE * 2.2).sort((a, b) => a.d - b.d)[0];
-      if (near) { this.placeLabel.text = near.pl.name; this.placeLabel.x = (near.pl.x * TILE + 8 - Math.round(cx)) * this.zoom; this.placeLabel.y = (near.pl.y * TILE - 2 - Math.round(cy)) * this.zoom; }
+      if (near) {
+        this.placeLabel.text = near.pl.name;
+        if (in3d && this.w3) { const at = this.w3.project(near.pl.x * TILE + 8, near.pl.y * TILE + 8, 0.9); this.placeLabel.x = at.x; this.placeLabel.y = at.y; }
+        else { this.placeLabel.x = (near.pl.x * TILE + 8 - Math.round(cx)) * this.zoom; this.placeLabel.y = (near.pl.y * TILE - 2 - Math.round(cy)) * this.zoom; }
+      }
     }
+  }
+
+  /** Draws the world in 3D when it is switched on (the default) and the browser can. Returns false to fall back to 2D. */
+  private render3d(dt: number, t: number): boolean {
+    const want = settings.get("world3d") && this.game.scenes.top === this;
+    if (!want || (!this.w3 && !World3D.available())) { this.world.visible = true; this.atmos.vignette.visible = !navigator.webdriver; return false; }
+    if (!this.w3) {
+      const host = this.game.app.canvas.parentElement; if (!host) { this.world.visible = true; return false; }
+      try { this.w3 = new World3D(host); } catch { this.world.visible = true; return false; }
+      this.w3.buildFor = (id) => this.game.buildFor(id);
+      this.w3.resize(this.game.width, this.game.height);
+    }
+    const w3 = this.w3;
+    if (this.w3Map !== this.map) { w3.setMap(this.map, { burnt: this.map.file.id === "larkfold" && !!this.flags.ash, around: aroundOf(this.map.file.id) }); this.w3Map = this.map; this.w3Light = ""; this.w3FogKey = ""; }
+    const light = String(this.flags.light ?? "day"); if (light !== this.w3Light) { w3.setLight(light); this.w3Light = light; }
+    const fk = this.fogCells.map((c) => c.join(",")).join(";"); if (fk !== this.w3FogKey) { w3.setFog(this.fogCells); this.w3FogKey = fk; }
+    this.world.visible = false;
+    this.atmos.vignette.visible = false; // the flat view's round vignette reads as a ring on top of the 3D scene
+    const p = this.player, figs: Fig[] = [];
+    const add = (key: string, sprite: Sprite, look?: string, facing?: Facing) => {
+      const tex = sprite.texture, src = tex?.source?.resource as (CanvasImageSource & { width: number; height: number }) | undefined;
+      if (!tex || !src) return;
+      const fw = tex.frame.width, fh = tex.frame.height, ax = sprite.anchor.x, ay = sprite.anchor.y;
+      const left = sprite.x - ax * fw, top = sprite.y - ay * fh;
+      figs.push({ key, look, facing, canvas: src, frame: { x: tex.frame.x, y: tex.frame.y, w: fw, h: fh }, x: left + fw / 2, y: top + fh, visible: sprite.visible });
+    };
+    add("hero", p.sprite, this.hero(), p.facing);
+    this.followers.forEach((f) => add(`f:${f.id}`, f.sprite, f.look, f.facing));
+    this.shown.forEach((n, i) => add(`a:${n.a.id}:${i}`, n.sprite, n.a.look, n.a.x * TILE < p.x ? "left" : "right"));
+    this.barriers.forEach((b, i) => add(`b:${i}`, b));
+    w3.figures(figs, "hero");
+    w3.frame(t, dt, { x: p.x + 6, y: p.y + 17 });
+    return true;
   }
 
   /** Read-only view for tests and debugging. */
   debug() {
-    return { map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
-      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
+    return { three: this.w3 && !this.world.visible ? this.w3.moodNow : null, map: this.map.file.id, x: this.player.x, y: this.player.y, facing: this.player.facing, dialog: this.dialog.text, note: this.dialog.noteShown, choosing: this.dialog.choosing, speaking: this.dialog.speaking, zoom: this.zoom,
+      region: this.map.regionAt(...this.feetTile()), stage: String(this.flags.stage ?? ""), objective: this.objective.text, followers: this.followers.map((f) => f.id), seen: this.followers.filter((f) => f.sprite.visible).map((f) => f.id), busy: this.runner.busy, fading: !!this.fading, ended: !!this.ended, hp: this.hp, joining: this.joins.showing };
   }
 }

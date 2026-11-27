@@ -1,0 +1,52 @@
+{
+ "id": "thornwick-kits",
+ "name": "The kits in the passage",
+ "backdrop": "cistern",
+ "party": true,
+ "intro": [
+  "Two half-grown reedcats, big as hounds, guarding the gap in the rubble. Something bigger taught them to.",
+  "They're young. The foal song can still reach them."
+ ],
+ "won": "The passage is open",
+ "lost": "Driven back up the stair",
+ "units": [
+  {
+   "id": "k1",
+   "name": "Grey kit",
+   "look": "reedcat:#6a6a72",
+   "side": "foe",
+   "row": "front",
+   "hp": 22,
+   "level": 4,
+   "kith": true,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    168,
+    92
+   ],
+   "temperament": "bold",
+   "species": "reedcat"
+  },
+  {
+   "id": "k2",
+   "name": "Grey kit",
+   "look": "reedcat:#7a7a80",
+   "side": "foe",
+   "row": "front",
+   "hp": 20,
+   "level": 4,
+   "kith": true,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "temperament": "curious",
+   "species": "reedcat"
+  }
+ ]
+}

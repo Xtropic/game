@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Larkfold in 3D</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0c0f12; overflow: hidden; font-family: Georgia, "Times New Roman", serif; }
+    #view { position: fixed; inset: 0; }
+    canvas { display: block; touch-action: none; }
+    #hud { position: fixed; left: 16px; bottom: 16px; color: #f4ead8; font-size: 14px; line-height: 1.5; text-shadow: 0 1px 3px #000c; pointer-events: none; max-width: 360px; }
+    #hud b { color: #ffd98e; }
+    #btns { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 8px; }
+    #btns button { font: inherit; font-size: 14px; color: #f4ead8; background: #1c1712cc; border: 1px solid #8a7356; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+    #place { position: fixed; top: 22%; left: 0; right: 0; text-align: center; color: #fff4dc; font-size: 34px; letter-spacing: 6px; text-shadow: 0 2px 8px #000a; opacity: 0; transition: opacity 1.2s; pointer-events: none; }
+    #label { position: fixed; color: #fff4dc; font-size: 15px; text-shadow: 0 1px 3px #000; pointer-events: none; transform: translate(-50%, -100%); white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div id="view"></div>
+  <div id="place">LARKFOLD</div>
+  <div id="label"></div>
+  <div id="hud"><b>3D test: Larkfold.</b> Arrow keys or WASD to walk, Shift to run, Q and E turn the camera, mouse wheel zooms, T changes the time of day. On a phone, drag to walk.</div>
+  <div id="btns"><button id="turnL">⟲</button><button id="turnR">⟳</button><button id="time">Time of day</button></div>
+  <script type="module" src="/src/three/larkfold3d.ts"></script>
+</body>
+</html>

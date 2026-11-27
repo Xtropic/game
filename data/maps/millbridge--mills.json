@@ -1,0 +1,60 @@
+{
+ "id": "millbridge--mills",
+ "name": "Millbridge, the Mill Quarter",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ".": "cobble",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "H": "hay",
+  "x": "crate",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "T~~~~~~=~~~~~~~~=~~~~~~T",
+  "T,rrrrr,:,rrrrrr:,rrrr,T",
+  "T,hhdhh,:,hhdhhh:,hdhh,T",
+  "T,......:.......:......T",
+  "e......................T",
+  "T..SS......w.......xx..T",
+  "T.....................HT",
+  "TTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 6
+  },
+  {
+   "id": "millbridge--mills-sign0",
+   "kind": "sign",
+   "x": 7,
+   "y": 2,
+   "props": {
+    "text": "A mill wheel, dark with water, turning slow and heavy. The whole quarter thumps with it."
+   }
+  },
+  {
+   "id": "millbridge--mills-sign1",
+   "kind": "sign",
+   "x": 11,
+   "y": 7,
+   "props": {
+    "text": "A pump with a flour-white handle."
+   }
+  }
+ ]
+}

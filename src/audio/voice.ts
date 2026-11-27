@@ -19,9 +19,22 @@ export class Voices {
 
   async load(base = "vo/"): Promise<void> {
     try { const r = await fetch(base + "index.json"); if (r.ok) this.index = await r.json(); } catch { /* voices are optional */ }
+    try { const r = await fetch(base + "packs.json"); if (r.ok) this.packs = await r.json(); } catch { /* a dev build: one file per line */ }
     this.base = base;
   }
   private base = "vo/";
+  /** In a published build the lines are packed into a few big files: hash -> [pack, offset, length]. */
+  private packs: Record<string, [number, number, number]> | null = null;
+  private packData = new Map<number, Promise<ArrayBuffer>>();
+  private packed(h: string, audio: HTMLAudioElement): void {
+    const [p, at, len] = this.packs![h];
+    if (!this.packData.has(p)) this.packData.set(p, fetch(`${this.base}pack-${p}.mp3`).then((r) => r.arrayBuffer()));
+    void this.packData.get(p)!.then((buf) => {
+      if (this.current?.audio !== audio) return; // a newer line has started
+      audio.src = URL.createObjectURL(new Blob([buf.slice(at, at + len)], { type: "audio/mpeg" }));
+      audio.play().catch(() => { /* blocked until the player interacts */ });
+    }).catch(() => this.packData.delete(p));
+  }
 
   has(who: string, text: string): boolean { return lineHash(who, text) in this.index; }
 
@@ -30,6 +43,11 @@ export class Voices {
     this.stop();
     const h = lineHash(who, text), env = this.index[h];
     if (env === undefined || this.muted || this.volume <= 0) return false;
+    if (this.packs?.[h]) {
+      const audio = new Audio(); audio.volume = this.volume;
+      this.current = { audio, env }; this.packed(h, audio);
+      return true;
+    }
     const audio = new Audio(this.base + h + ".mp3"); audio.volume = this.volume;
     audio.play().catch(() => { /* blocked until the player interacts; the line still shows */ });
     this.current = { audio, env };

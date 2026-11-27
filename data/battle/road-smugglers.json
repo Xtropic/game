@@ -1,0 +1,78 @@
+{
+ "id": "road-smugglers",
+ "name": "Mother Saul's nephews",
+ "backdrop": "meadow",
+ "party": true,
+ "intro": [
+  "Four of Mother Saul's nephews, with boathooks and a fowling bow.",
+  "Saul watches from her porch, smoking."
+ ],
+ "won": "The nephews sit down again",
+ "lost": "Pushed into the reeds",
+ "units": [
+  {
+   "id": "sm1",
+   "name": "Saul's nephew",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 17,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "sm2",
+   "name": "Saul's nephew",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 17,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "sm3",
+   "name": "Saul's nephew",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 16,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    162,
+    132
+   ]
+  },
+  {
+   "id": "sm4",
+   "name": "Fowler",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 17,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "id": "kellsbridge",
+ "name": "Kell's Bridge",
+ "music": "town",
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  "~": "water",
+  "=": "bridge",
+  ".": "path",
+  "A": "tent",
+  "F": "campfire",
+  "R": "flowers",
+  "e": "exit"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,..,,,,,,,,,,,T",
+  "T,,AAA,,,,,,..,,,,,,AAA,,T",
+  "T,,AAA,,,,,,..,,,,,,AAA,,T",
+  "TRRR,,,,,,,,..,,,,,,,,,,,T",
+  "T~~~~~~~~~~~==~~~~~~~~~~~T",
+  "T~~~~~~~~~~~==~~~~~~~~~~~T",
+  "T~~~~~~~~~~~==~~~~~~~~~~~T",
+  "T~~~~~~~~~~~==~~~~~~~~~~~T",
+  "T,,,,,,,,,,,..,,,,,,,,RRRT",
+  "T,,,AA,,,,,,..,,,,,AA,,,,T",
+  "T,,,AA,,F,,,..,,,,,AA,,,,T",
+  "T,,,,,,,,,,,..,,,,,,,,,,,T",
+  "TTTTTTTTTTTTeeTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  }
+ ]
+}

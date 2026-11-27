@@ -24,5 +24,7 @@ export const BODIES: Record<string, BodyKind> = {
   elder: "short", elder2: "slim", folk: "average", folk2: "heavy",
   vil1: "heavy", vil2: "average", vil3: "tall", vil4: "broad", vil5: "slim", vil6: "short", vil7: "average",
   kid: "small", kid2: "small", kid3: "small",
+  "nurse": "short", "child": "small", "rider": "slim", "carter": "heavy", "innkeeper": "average", "factor": "slim", "smuggler": "average", "davin": "short", "warden2": "broad", "runner": "small", "camprunner": "slim", "hm-gatherer": "average", "hm-widow": "short", "hm-boy": "small", "ds-keeper": "average", "ds-seller": "slim", "ds-girl": "small", "mf-herder": "average", "mf-old": "short", "kr-smith": "huge", "kr-mother": "average", "kr-ferry": "average", "rb-ropemaker": "tall", "rb-girl": "small", "rb-lookout": "tall", "wb-miller": "heavy", "wb-fisher": "slim", "wb-child": "small", "dh-host": "huge", "dh-drover": "average", "lb-keeper": "tall", "lb-farmer": "broad", "lb-boy": "small", "woman": "slim",
+  oakes: "broad", lyle: "slim", dorrit: "average", hesk: "average", ume: "small", posy: "small", tobin: "tall",
 };
 export const bodyOf = (id: string): BodyKind => BODIES[id] ?? "average";

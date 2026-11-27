@@ -1,0 +1,40 @@
+{
+ "id": "hollin-tannery",
+ "name": "Hollin, the tanners' yard",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "d": "door",
+  "x": "crate",
+  "e": "exit",
+  "I": "iwall",
+  "k": "shelf",
+  "B": "bed",
+  "_": "wetfloor",
+  "v": "tray"
+ },
+ "rows": [
+  "########################",
+  "#......................#",
+  "#..vvvv..vvvv..kkkkkkk.#",
+  "#......................#",
+  "#..............kkkkkkk.#",
+  "e..vvvv..vvvv..........#",
+  "e......................#",
+  "#............IIIdIIIII.#",
+  "#.xx.........I____BB_I.#",
+  "#.xx.........I_______I.#",
+  "#............IIIIIIIII.#",
+  "########################"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 5
+  }
+ ]
+}

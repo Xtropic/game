@@ -55,6 +55,10 @@ export interface Kith {
   sired?: boolean;
   /** The legend whose blood it carries: a legend's heir, or a foal of an heir. */
   blood?: string;
+  /** 0..100: drills and hard work tire it, rest brings it back (training.ts). Missing: fresh. */
+  energy?: number;
+  /** 0..100: how it feels in itself; low spirits shrink what drills teach (training.ts). Missing: content. */
+  spirits?: number;
 }
 
 // ---- Coats: colour and pattern genes ---------------------------------------------------------------------
@@ -195,10 +199,18 @@ export function canBreed(a: Kith, b: Kith): { ok: boolean; why?: string } {
   if (a.id === b.id) return { ok: false, why: "A kith can't breed with itself." };
   if (stageOf(a.level) === "foal" || stageOf(a.level) === "yearling" || stageOf(b.level) === "foal" || stageOf(b.level) === "yearling") return { ok: false, why: "Both need to be grown." };
   if (SPECIES[a.species].kind === "legend" || SPECIES[b.species].kind === "legend") return { ok: false, why: "A legend only ever sires one heir, and only after its quest." };
-  const fa = familiesOf(a.species), fb = familiesOf(b.species);
-  if (fa.some((f) => fb.includes(f))) return { ok: true };
-  if (fa.length === 1 && fb.length === 1 && hybridFor(fa[0], fb[0])) return { ok: true };
-  return { ok: false, why: "These two won't take to each other." };
+  // any two families will cross: every pair of families has its hybrid, and a hybrid crossed with a third family
+  // gives a hybrid of that family and one of its own
+  return { ok: true };
+}
+
+/** The new kind a cross between families gives, when the two share no family: a hybrid of one family from each
+ *  side (a hybrid parent passes on one of its two). Undefined when they share a family. */
+export function crossFor(a: string, b: string, rng: () => number = Math.random): string | undefined {
+  const fa = familiesOf(a), fb = familiesOf(b);
+  if (fa.some((f) => fb.includes(f))) return undefined;
+  const opts = fa.flatMap((x) => fb.map((y) => hybridFor(x, y))).filter((x): x is string => !!x);
+  return opts.length ? opts[Math.floor(rng() * opts.length)] : undefined;
 }
 
 function meetsNeed(need: string, a: Kith, b: Kith, ctx: BreedContext): boolean {
@@ -239,7 +251,10 @@ export function breed(a: Kith, b: Kith, ctx: BreedContext): Foal | null {
   if (unseen.length) species = pick(rng, unseen).id;
   else {
     const fa = familiesOf(a.species), fb = familiesOf(b.species);
-    const cross = fa.length === 1 && fb.length === 1 && fa[0] !== fb[0] ? hybridFor(fa[0], fb[0]) : undefined;
+    // two single families: their hybrid. A hybrid crossed with a new family: now and then the hybrid breeds true,
+    // otherwise a hybrid of the new family and one of its own
+    const hybridParent = fa.length > 1 || fb.length > 1;
+    const cross = hybridParent && rng() < 0.3 ? undefined : crossFor(a.species, b.species, rng);
     if (cross) species = cross;
     else {
       const sa = a.potential.reduce((n, x) => n + x, 0), sb = b.potential.reduce((n, x) => n + x, 0);

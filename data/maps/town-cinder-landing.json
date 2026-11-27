@@ -1,0 +1,61 @@
+{
+ "id": "town-cinder-landing",
+ "name": "Cinder Landing",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "~": "water",
+  "e": "exit",
+  "F": "campfire",
+  "R": "rock",
+  "c": "cliff",
+  "p": "plank"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRR",
+  "RRRRRRRRRccccccRRRRRRRRR",
+  "RR,,,,,,ccFFFFcc,,,,,,RR",
+  "RR,rrrr,,cccccc,,rrrr,RR",
+  "RR,hhdh,,,,,,,,,,hdhh,RR",
+  "RR,,,:,,,,,,,,,,,,:,,,RR",
+  "RR,,,::::::::::::::,,,RR",
+  "RR,rrrr,,,,,:,,,,,rrrrRR",
+  "RR,hdhh,,,,,:,,,,,hhdhRR",
+  "RR,,:,,,,,,,:,,,,,,:,,RR",
+  "RR,,::::::::::::::::,,RR",
+  "~~~~~~~~~~ppp~~~~~~~~~~~",
+  "~~~~~~~~~~ppp~~~~~~~~~~~",
+  "~~~~~~~~~~eee~~~~~~~~~~~"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "cinder-landing-sign0",
+   "kind": "sign",
+   "x": 11,
+   "y": 2,
+   "props": {
+    "text": "The mountain's mouth, high above the town. It glows at the lip, even in daylight."
+   }
+  },
+  {
+   "id": "cinder-landing-sign1",
+   "kind": "sign",
+   "x": 3,
+   "y": 5,
+   "props": {
+    "text": "Ash on every step, swept into neat grey heaps at the doors. Somebody sweeps it every morning."
+   }
+  }
+ ]
+}

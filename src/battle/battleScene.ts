@@ -1,8 +1,11 @@
 // The battle scene: a stage where every move is animated, timed presses (hits, braces, song notes) are graded,
 // and the rules engine (rules.ts) decides the outcome. Flow is written as generator coroutines driven by the
 // fixed-step update, so animations, waits and timing windows read top to bottom.
+import { keyFor, padState } from "../core/input";
+import { device } from "../core/device";
 import type { Loadout } from "../gear/weapons";
 import { sfx } from "../audio/music";
+import { openGuide, teach } from "../guide/guideScene";
 import { settings } from "../core/settings";
 import { buildOf, type Build } from "../art/build";
 import { kithBaseline, type Kith } from "../kith/kith";
@@ -11,14 +14,22 @@ import { Container, Graphics, Sprite, Text, Texture, type FederatedPointerEvent 
 import type { Game } from "../core/game";
 import type { Scene } from "../core/scene";
 import {
-  FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
+  ART_COST, FOCUS_FULL, act, acting, alive, createBattle, endRound, foeAct, foeMove, foeQueue, gradePress, intentRead, kithOf, pressesFor, skillsFor, targetsFor, timingOf, unit,
   type BattleDef, type BattleEvent, type BattleState, type Grade, type Rng, type SkillBook, type Unit,
-} from "./rules";
+  autoChoice, canRelease, fleeChance, release, tryFlee } from "./rules";
 import { paintedHeight, paintedLook } from "./painted";
+import { IMPACT_LENGTH, cutInColour, cutInLength, drawCutIn, drawImpact, type CutIn } from "../cutscene/cutin";
+import { portraitCut } from "../cutscene/kit";
 import {
   CH, CW, HUD_FONT, LOOK_TOP, lookKind, backdrop, barFX, drawLook, dustFX, healFX, intentFX, markerFX, noteFX, projFX, ringFX, setScale, shieldFX,
   slashFX, smokeFX, sparkFX, textFX, withFlash,
 } from "./art";
+
+/** The story's hardest fights: the Old Mother, the Broodhouse yard, the palace guards, the gallery. */
+const BOSS_FIGHTS = new Set(["thornwick-cistern", "broodhouse-yard", "road-palace", "road-gallery", "mire-guards", "lockside-guards-back", "road-vault"]);
+
+/** After a loss and a retry, each ally starts no lower than this share of their health. */
+const RETRY_FLOOR = 0.5;
 
 type PoseName = "idle" | "run" | "lunge" | "brace" | "aim" | "cast" | "guard" | "down" | "cheer";
 interface Vis { ox: number; oy: number; kx: number; hop: number; fall: number; flash: number; pose: PoseName; run: number; flee: boolean; out: boolean; fade: number; }
@@ -26,13 +37,15 @@ interface Fx { kind: string; x: number; y: number; x2?: number; y2?: number; t: 
 interface Qte { target: string; lead: number; t: number; mode: "hit" | "brace" | "note"; grade: Grade | null; }
 type Co = Generator<number | Qte, void, unknown>;
 
-export type BattleResult = "won" | "lost";
-export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; }
+export type BattleResult = "won" | "lost" | "fled" | "released";
+export interface BattleOptions { rng?: Rng; autoTiming?: boolean; levels?: Record<string, number>; gear?: Record<string, Loadout>; /** Owned kith by unit id: their raised attributes, level and build. */ kith?: Record<string, Kith>; /** What is left of each ally's health from earlier fights (0..1, by unit id). */ health?: Record<string, number>; /** Crafted arts carried (item id -> count); what was thrown comes back in the state's `used`. */ pack?: Record<string, number>; onDone?: (result: BattleResult, s: BattleState) => void; /** A fight the story doesn't need: the party may run, or let much weaker foes go. */ escape?: boolean; /** The Spire verses: the foal song reaches further. */ songBoost?: number; }
 
 const readAuto = (): boolean => settings.get("autoTiming");
 
 export class BattleScene implements Scene {
   readonly id = "battle";
+  /** The fight's music: chance meetings on the road are lighter, the story's hardest fights get their own. */
+  get music(): string { return BOSS_FIGHTS.has(this.def.id) ? "boss" : this.opts.escape ? "skirmish" : "battle"; }
   readonly view = new Container();
   private builds: Record<string, Build> = {};
   private game!: Game;
@@ -64,6 +77,8 @@ export class BattleScene implements Scene {
   cursor = 0;
   tcursor = 0;
   private choice: { skill: string; target: string } | null = null;
+  /** Auto battle: each ally's move is chosen for them (and timing is automatic). */
+  private autoBattle = settings.get("autoBattle");
 
   // HUD
   private hud = new Container();
@@ -79,11 +94,17 @@ export class BattleScene implements Scene {
   private hudRect = { x: 0, y: 0, w: 0, h: 0 };
   private narrow = false;
   private barW = 110;
+  /** Touch screens: commands are framed buttons big enough for a thumb, and there are buttons for what keys do. */
+  private touchHud = false;
+  private cmdBgs: Graphics[] = [];
+  private touchBar = new Container();
+  /** Where the party's health goes on a touch screen: beside the stage when there's room, else in the panel. */
+  private partyAt: { x: number; y: number; w: number } | null = null;
 
   constructor(private def: BattleDef, private book: SkillBook, private opts: BattleOptions = {}) {
     this.rng = opts.rng ?? Math.random;
     this.autoTiming = opts.autoTiming ?? readAuto();
-    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health, opts.pack);
+    this.s = createBattle(def, book, this.rng, opts.levels, opts.gear, opts.kith, opts.health, opts.pack); this.s.songBoost = opts.songBoost;
     // each fighter's look follows their attributes (cast and owned kith); the rest are drawn as designed
     for (const u of this.s.units) {
       const k = u.kith ? opts.kith?.[u.id] : undefined, start = u.cast ? person(u.cast)?.level : undefined;
@@ -96,8 +117,8 @@ export class BattleScene implements Scene {
     this.game = game;
     this.backFill.eventMode = "static"; // also stops taps reaching the map underneath
     this.view.addChild(this.backFill, this.stageSprite, this.hud);
-    this.hud.addChild(this.panel, this.cmdTitle, this.cmdNote, this.logText, this.party, this.hint);
-    this.hint.eventMode = "static"; this.hint.cursor = "pointer"; this.hint.on("pointertap", () => this.toggleAuto());
+    this.hud.addChild(this.panel, this.cmdTitle, this.cmdNote, this.logText, this.party, this.hint, this.touchBar);
+    this.hint.eventMode = "static"; this.hint.cursor = "pointer"; this.hint.on("pointertap", (e: FederatedPointerEvent) => { const lx = e.global.x - this.hint.x; if (lx > this.hint.width / 2) this.toggleAutoBattle(); else this.toggleAuto(); });
     this.stageSprite.eventMode = "static";
     this.stageSprite.on("pointerdown", (e: FederatedPointerEvent) => this.tapStage(e.global.x, e.global.y));
     this.reset();
@@ -105,7 +126,9 @@ export class BattleScene implements Scene {
   exit(): void { this.tex?.destroy(true); }
 
   private reset(): void {
-    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, {}, this.opts.pack); // after a loss the party falls back and binds its wounds: the retry starts whole
+    // after a loss the party falls back and binds its wounds: the retry starts as hurt as they came in, but never below half
+    const back = Object.fromEntries(Object.entries(this.opts.health ?? {}).map(([k, v]) => [k, Math.max(RETRY_FLOOR, v)]));
+    this.s = createBattle(this.def, this.book, this.rng, this.opts.levels, this.opts.gear, this.opts.kith, back, this.opts.pack); this.s.songBoost = this.opts.songBoost;
     this.vis.clear(); this.fx = [];
     for (const u of this.s.units) this.vis.set(u.id, { ox: u.side === "ally" ? -70 : 80, oy: 0, kx: 0, hop: 0, fall: 0, flash: 0, pose: "run", run: 0, flee: false, out: false, fade: 1 });
     this.mode = "busy"; this.choice = null; this.qte = null;
@@ -114,12 +137,13 @@ export class BattleScene implements Scene {
 
   // ---------------- layout ----------------
   resize(w: number, h: number): void {
-    let hudH = Math.round(Math.max(150, Math.min(210, h * 0.27)));
+    this.touchHud = device.touch;
+    let hudH = this.touchHud && w > h ? Math.round(Math.max(124, Math.min(170, h * 0.3))) : Math.round(Math.max(150, Math.min(210, h * 0.27)));
     const ah = h - hudH;
     this.sw = Math.min(w, (ah * 16) / 9); this.sh = (this.sw * 9) / 16;
     this.sx = Math.round((w - this.sw) / 2); this.sy = Math.round(Math.max(0, (ah - this.sh) / 2));
     if (h > w * 1.2) { // tall phone: stage near the top, the HUD takes the rest of the screen
-      this.sy = Math.round(Math.min(h * 0.12, 90)); hudH = Math.max(hudH, Math.round(h - this.sy - this.sh - 8));
+      this.sy = Math.round(Math.min(h * (this.touchHud ? 0.06 : 0.12), this.touchHud ? 50 : 90)); hudH = Math.max(hudH, Math.round(h - this.sy - this.sh - 8));
     }
     const res = Math.min(2, window.devicePixelRatio || 1);
     const pw = Math.min(1800, Math.round(this.sw * res)), ph = Math.round((pw * 9) / 16);
@@ -147,6 +171,13 @@ export class BattleScene implements Scene {
     this.party.x = narrow ? x + Math.round(w * 0.5) : x + w - col3 - 20; this.party.y = y + (narrow ? 44 : 14);
     this.barW = narrow ? Math.max(50, Math.min(110, w * 0.5 - 100)) : 110;
     this.hint.x = x + w - 20; this.hint.y = y + h - 24; this.hint.anchor.set(1, 0);
+    this.partyAt = null;
+    if (this.touchHud) {
+      this.logText.visible = false;
+      const gutter = this.sx - 8, tall = this.game.height > this.game.width * 1.2;
+      if (!tall && gutter >= 150) this.partyAt = { x: this.sx + this.sw + 10, y: 12, w: Math.min(220, gutter - 4) }; // beside the stage, right
+      this.cmdNote.style.wordWrapWidth = w - 40;
+    }
   }
 
   // ---------------- positions ----------------
@@ -186,10 +217,12 @@ export class BattleScene implements Scene {
       if (this.s.phase === "ally") {
         const u = acting(this.s)!;
         this.say(`${u.name}'s turn`, true);
-        this.mode = "menu"; this.cursor = Math.min(this.cursor, skillsFor(this.s, u, this.book).length - 1); this.choice = null;
-        while (!this.choice) yield 0;
+        this.mode = "menu"; this.cursor = Math.min(this.cursor, this.cmds(u).length - 1); this.choice = null;
+        let waited = 0;
+        while (!this.choice) { if (this.autoBattle && (waited += this.dt) > 0.35) this.choice = autoChoice(this.s, this.book, u); yield 0; }
         this.mode = "busy";
         const c = this.choice as { skill: string; target: string };
+        if (c.skill === "run" || c.skill === "release") { if (yield* this.leave(c.skill)) return; continue; }
         yield* this.allyMove(u, c.skill, c.target);
       } else if (this.s.phase === "foe") {
         this.say(this.s.firstStrike ? "They move first" : "Their move", false);
@@ -212,6 +245,33 @@ export class BattleScene implements Scene {
       }
     }
   }
+  /** Running, or letting the foes go. True when the fight is over. */
+  private *leave(how: "run" | "release"): Generator<number | Qte, boolean, unknown> {
+    if (how === "release") {
+      for (const id of release(this.s)) { const u = unit(this.s, id); this.vis.get(id)!.flee = true; this.co2.push(this.moveTo(id, u.at[0] + 160, u.at[1], 1.1)); }
+      this.say("You let them go", true); yield 1.2;
+    } else {
+      if (!tryFlee(this.s, this.rng)) { this.say("No way out!", false); yield 0.6; return false; }
+      for (const u of this.s.units) if (u.side === "ally" && alive(u)) { this.vis.get(u.id)!.pose = "run"; this.co2.push(this.moveTo(u.id, u.at[0] - 150, u.at[1], 0.8)); }
+      this.say("You get away", false); yield 1;
+    }
+    this.mode = "over";
+    return true;
+  }
+
+  /** What the acting ally can choose: their skills, then Run and Let them go in fights the story doesn't need. */
+  private cmds(u: Unit): string[] {
+    const ks = skillsFor(this.s, u, this.book);
+    if (!this.opts.escape) return ks;
+    return [...ks, "run", ...(canRelease(this.s) ? ["release"] : [])];
+  }
+  private entry(k: string): { name: string; note: string; kind?: string } {
+    if (k === "run") return { name: "Run", note: `Try to get away (about ${Math.round(fleeChance(this.s) * 100)}% chance). If it fails, they get a free turn.` };
+    if (k === "release") return { name: "Let them go", note: "They're no match for you. Stand aside and let them leave. No fight, and nothing learned from it." };
+    return this.book[k];
+  }
+  private isCmd(k: string): boolean { return k === "run" || k === "release"; }
+
   /** Side coroutines that run alongside the main flow (e.g. everyone walking home at once). */
   private co2: Co[] = [];
 
@@ -259,6 +319,7 @@ export class BattleScene implements Scene {
       yield* run(grades); yield 0.5;
     } else if (sk.kind === "finisher" || sk.kind === "craft") {
       // a moment of stillness, a flash of the move's name, then the blow or the throw
+      if (sk.kind === "finisher") { const [tx0, ty0] = this.pos(t), [ux0] = this.pos(u); this.look((ux0 + tx0) / 2, ty0 - 18, 1.3); yield* this.cutIn(u, k); }
       const [ux, uy] = this.pos(u);
       v.pose = sk.kind === "craft" || sk.proj ? "aim" : "cast";
       this.addFx({ kind: "ring", x: ux, y: uy, dur: 0.5 });
@@ -269,41 +330,77 @@ export class BattleScene implements Scene {
         this.addFx({ kind: "proj", proj: sk.proj ?? "pot", x: ux + dir * 6, y: uy - 30, x2: tx, y2: ty - 18, dur: 0.5 });
         const g = yield* this.timed(tid, 0.5, "hit");
         if (sk.kind === "craft" && sk.proj === "pot") this.addFx({ kind: sk.stun ? "smoke" : "spark", x: tx, y: ty - 10, dur: 0.8, big: true });
-        yield* run([g]); v.pose = "idle"; yield 0.4;
+        if (sk.kind === "finisher") yield* this.punch(tx, ty - 18, cutInColour(k));
+        yield* run([g]); v.pose = "idle"; yield 0.4; this.look(CW / 2, CH / 2, 1);
       } else {
         const [tx, ty] = this.pos(t);
         yield* this.moveTo(u.id, tx - dir * 17, ty + 1, 0.28);
         v.pose = "lunge";
         const g = yield* this.timed(tid, 0.42, "hit");
         const [hx, hy] = this.pos(t); this.addFx({ kind: "slash", x: hx, y: hy, dir, dur: 0.32, big: true });
+        yield* this.punch(hx, hy - 18, cutInColour(k));
         if (g === "perfect") yield 0.12;
-        yield* run([g]); yield 0.3; yield* this.goHome(u.id);
+        yield* run([g]); yield 0.3; this.look(CW / 2, CH / 2, 1); yield* this.goHome(u.id);
       }
     } else if (sk.kind === "art") {
       const kin = kithOf(this.s, u)!;
+      { const [tx0, ty0] = this.pos(t); this.look(tx0 - 14, ty0 - 16, 1.3); yield* this.cutIn(u, k); }
       v.pose = "cast"; const [ux, uy] = this.pos(u); this.addFx({ kind: "note", x: ux + 5, y: uy - 46, x2: this.pos(kin)[0], y2: this.pos(kin)[1] - 24, dur: 0.7 });
       this.addFx({ kind: "grade", x: ux, y: this.top(u) - 6, text: sk.name, col: "#ffd890", dur: 1, size: 7.5 });
       yield 0.38; v.pose = "idle";
       const [fx0, fy0] = this.pos(t); yield* this.moveTo(kin.id, fx0 - 30, fy0 + 4, 0.34);
       const g = yield* this.timed(tid, 0.42, "hit");
+      { const [hx, hy] = this.pos(t); yield* this.punch(hx, hy - 14, cutInColour(k)); }
       this.charging = kin.id;
       yield* run([g]);
       this.charging = null;
-      yield 0.3; yield* this.goHome(kin.id);
+      yield 0.3; this.look(CW / 2, CH / 2, 1); yield* this.goHome(kin.id);
     } else if (sk.kind === "call") {
       const kin = kithOf(this.s, u)!, first = targetsFor(this.s, this.book, u, "call")[0];
+      { const [tx0, ty0] = this.pos(first); this.look(tx0 - 14, ty0 - 16, 1.25); yield* this.cutIn(u, k); }
       v.pose = "cast"; const [ux, uy] = this.pos(u); this.addFx({ kind: "note", x: ux + 5, y: uy - 46, x2: this.pos(kin)[0], y2: this.pos(kin)[1] - 24, dur: 0.7 });
       this.addFx({ kind: "grade", x: ux, y: this.top(u) - 6, text: "Ash!", col: "#ffd890", dur: 0.9, size: 8 });
       yield 0.38; v.pose = "idle";
       const [fx0, fy0] = this.pos(first); yield* this.moveTo(kin.id, fx0 - 30, fy0 + 4, 0.36);
       const g = yield* this.timed(first.id, 0.42, "hit");
+      { const [hx, hy] = this.pos(first); yield* this.punch(hx, hy - 14, cutInColour("call")); }
       this.charging = kin.id;
       yield* run([g]);
       this.charging = null;
-      yield 0.3; yield* this.goHome(kin.id);
+      yield 0.3; this.look(CW / 2, CH / 2, 1); yield* this.goHome(kin.id);
     }
   }
   private charging: string | null = null;
+
+  // ---------------- cut-ins, impact frames and the camera ----------------
+  private cut: { c: CutIn; t: number } | null = null;
+  private impact: { x: number; y: number; t: number; col: string } | null = null;
+  private cutsUsed = new Set<string>();
+  private cam = { x: CW / 2, y: CH / 2, z: 1 };
+  private camGoal = { x: CW / 2, y: CH / 2, z: 1 };
+  private static cutInsOn(): boolean { return settings.get("moveCutIns") && !(navigator.webdriver && !location.search.includes("cut")); }
+  /** The fight holds its breath: the fighter's face (or their kith) and the move's name tear across the stage. */
+  private *cutIn(u: Unit, k: string): Co {
+    if (!BattleScene.cutInsOn()) return;
+    const sk = this.book[k], key = `${u.id}|${k}`, full = !this.cutsUsed.has(key) && !this.autoBattle;
+    this.cutsUsed.add(key);
+    const kin = sk.kind === "art" || sk.kind === "call" ? kithOf(this.s, u) : undefined;
+    const face = !kin && u.cast && portraitCut(u.cast) ? u.cast : undefined;
+    const fig = kin ? paintedLook(kin.look, kin.species) ?? kin.look : face ? undefined : paintedLook(u.look, u.species) ?? u.look;
+    const c: CutIn = { face, fig, name: k === "call" ? `${kin?.name ?? "Ash"}!` : sk.name, by: kin ? `${u.name} and ${kin.name}` : u.name, col: cutInColour(k), dir: u.side === "ally" ? 1 : -1, full };
+    this.cut = { c, t: 0 };
+    sfx.swing(); if (full) setTimeout(() => sfx.door(), 90);
+    while (this.cut && this.cut.t < cutInLength(c)) yield 0;
+    this.cut = null;
+  }
+  /** Leans the camera in on a point (stage units); z 1 is the whole stage. */
+  private look(x: number, y: number, z: number): void { this.camGoal = { x, y, z: BattleScene.cutInsOn() ? z : 1 }; }
+  /** The blow lands: a beat of ink, the burst, the stage shaking, and a hair of stillness. */
+  private *punch(x: number, y: number, col: string): Co {
+    if (!BattleScene.cutInsOn()) return;
+    this.impact = { x, y, t: 0, col }; this.shake = 5; sfx.hit();
+    yield 0.09;
+  }
 
   private *foeMove(f: Unit): Co {
     const mv = foeMove(this.s, this.book, f.id, this.rng), v = this.vis.get(f.id)!, dir = this.dirOf(f);
@@ -403,10 +500,35 @@ export class BattleScene implements Scene {
     q.grade = gradePress(q.t - q.lead, presser ? timingOf(presser) : 1); this.pressesSeen++;
   }
 
+  /** "How it works" cards: the basics before the first blow, the rest the first time each one is there to use,
+   *  always between moves (never while a ring is closing). */
+  private taughtStart = false;
+  private teachNow(): boolean {
+    const s = this.s, ids: string[] = [];
+    if (!this.taughtStart) {
+      this.taughtStart = true; ids.push("battles");
+      if (this.opts.escape) ids.push("leaving");
+      const sings = s.units.some((u) => u.side === "ally" && u.skills.some((k) => this.book[k]?.kind === "song"));
+      if (sings && s.units.some((u) => u.side === "foe" && u.species)) ids.push("wild");
+      if (Object.values(s.pack).some((n) => n > 0)) ids.push("thrown");
+    } else if (this.mode === "menu") {
+      const u = acting(s);
+      if (u && (s.focus[u.id] ?? 0) >= FOCUS_FULL) ids.push("focus");
+      if (u && kithOf(s, u) && s.bond >= ART_COST) ids.push("kithcall");
+    }
+    return ids.length > 0 && teach(this.game, ...ids);
+  }
+
   private toggleAuto(): void {
     this.autoTiming = !this.autoTiming;
     settings.set("autoTiming", this.autoTiming);
     this.say(this.autoTiming ? "Auto timing on" : "Auto timing off", true);
+  }
+
+  private toggleAutoBattle(): void {
+    this.autoBattle = !this.autoBattle;
+    settings.set("autoBattle", this.autoBattle);
+    this.say(this.autoBattle ? "Auto battle on" : "Auto battle off", true);
   }
 
   private tapStage(gx: number, gy: number): void {
@@ -414,7 +536,8 @@ export class BattleScene implements Scene {
     if (this.mode === "over") { this.done(); return; }
     if (this.mode !== "target" && this.mode !== "menu") return;
     const u = acting(this.s); if (!u) return;
-    const k = skillsFor(this.s, u, this.book)[this.cursor], ts = targetsFor(this.s, this.book, u, k);
+    const k = this.cmds(u)[this.cursor]; if (this.isCmd(k)) return;
+    const ts = targetsFor(this.s, this.book, u, k);
     const sx = ((gx - this.sx) / this.sw) * CW, sy = ((gy - this.sy) / this.sh) * CH;
     let best: Unit | null = null, bd = 30;
     for (const t of ts) { const [x, y] = this.pos(t), d = Math.hypot(x - sx, y - 18 - sy); if (d < bd) { bd = d; best = t; } }
@@ -422,28 +545,36 @@ export class BattleScene implements Scene {
   }
 
   private done(): void {
-    if (this.s.phase === "lost") { this.reset(); return; }
+    if (this.s.phase === "lost" && !this.s.escaped) { this.reset(); return; }
     const s = this.s, cb = this.opts.onDone;
     this.game.scenes.pop();
-    cb?.("won", s);
+    cb?.(s.escaped ?? "won", s);
   }
 
   update(dt: number): void {
     const inp = this.game.input;
+    if (!this.qte && this.teachNow()) return;
+    if (inp.wasPressed("guide") && !this.qte) { openGuide(this.game, "battles"); return; }
     this.dt = dt; this.time += dt;
     if (inp.wasPressed("timing")) this.toggleAuto();
+    if (inp.wasPressed("auto")) this.toggleAutoBattle();
+    // a cut-in runs on real time; a press cuts it short
+    if (this.cut) { this.cut.t += dt; if (inp.wasPressed("confirm")) this.cut.t = 99; }
+    if (this.impact) { this.impact.t += dt; if (this.impact.t > IMPACT_LENGTH) this.impact = null; }
+    { const c = this.cam, gl = this.camGoal, a = Math.min(1, dt * 7); c.x += (gl.x - c.x) * a; c.y += (gl.y - c.y) * a; c.z += (gl.z - c.z) * a; }
     // timing window
     if (this.qte) {
       const q = this.qte; q.t += dt;
       if (inp.wasPressed("confirm")) this.press();
-      if (!q.grade && this.autoTiming && q.t >= q.lead) q.grade = "good";
+      if (!q.grade && (this.autoTiming || this.autoBattle) && q.t >= q.lead) q.grade = "good";
       if (!q.grade && q.t >= q.lead + 0.17) q.grade = "none";
     } else if (this.mode === "menu" || this.mode === "target") {
-      const u = acting(this.s)!, ks = skillsFor(this.s, u, this.book);
+      const u = acting(this.s)!, ks = this.cmds(u);
       if (this.mode === "menu") {
         if (inp.wasPressed("up")) this.cursor = (this.cursor + ks.length - 1) % ks.length;
         if (inp.wasPressed("down")) this.cursor = (this.cursor + 1) % ks.length;
-        if (inp.wasPressed("confirm")) { this.mode = "target"; const ts = targetsFor(this.s, this.book, u, ks[this.cursor]); this.tcursor = Math.max(0, ts.findIndex((t) => t.side !== u.side)); }
+        if (inp.wasPressed("confirm") && this.isCmd(ks[this.cursor])) this.choice = { skill: ks[this.cursor], target: "" };
+        else if (inp.wasPressed("confirm")) { this.mode = "target"; const ts = targetsFor(this.s, this.book, u, ks[this.cursor]); this.tcursor = Math.max(0, ts.findIndex((t) => t.side !== u.side)); }
       } else {
         const ts = targetsFor(this.s, this.book, u, ks[this.cursor]);
         if (inp.wasPressed("left") || inp.wasPressed("up")) this.tcursor = (this.tcursor + ts.length - 1) % ts.length;
@@ -485,6 +616,7 @@ export class BattleScene implements Scene {
     if (!this.tex) return;
     const g = this.g, k = this.k; setScale(k);
     g.setTransform(1, 0, 0, 1, 0, 0);
+    if (this.cam.z > 1.002) { const c = this.cam, z = c.z, cx = Math.max(CW / 2 / z, Math.min(CW - CW / 2 / z, c.x)), cy = Math.max(CH / 2 / z, Math.min(CH - CH / 2 / z, c.y)); g.setTransform(z, 0, 0, z, (CW / 2 - cx * z) * k, (CH / 2 - cy * z) * k); }
     g.drawImage(this.bg, 0, 0);
     if (this.shake > 0.05) g.translate((Math.random() - 0.5) * this.shake * k, (Math.random() - 0.5) * this.shake * k * 0.6);
     const s = this.s, T = this.time;
@@ -544,13 +676,16 @@ export class BattleScene implements Scene {
       const col = q.mode === "brace" ? "#9ad0ff" : q.mode === "note" ? "#ffe6a8" : "#ffe39a";
       ringFX(g, x, cy, 6, col, true);
       ringFX(g, x, cy, 6 + (rem / q.lead) * 22, col);
-      if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? "Brace! Press Space or tap as the ring closes" : "Press Space or tap as the ring closes", CW / 2, CH - 8, "#f2e3c4", 5.5);
+      if (this.pressesSeen < 3 && !this.autoTiming) textFX(g, q.mode === "brace" ? (device.taps ? "Brace! Tap as the ring closes" : `Brace! Press ${keyFor("space")} or tap as the ring closes`) : device.taps ? "Tap as the ring closes" : `Press ${keyFor("space")} or tap as the ring closes`, CW / 2, CH - 8, "#f2e3c4", 5.5);
     }
-    // meters along the top
+    // meters along the top (and everything after) sit still while the camera leans in
+    g.setTransform(1, 0, 0, 1, 0, 0);
     textFX(g, "CALL", 14, 7, s.bond >= 100 ? "#ffd890" : "#d8c8a0", 5); barFX(g, 24, 6, 44, s.bond / 100, s.bond >= 100 && ((T * 4) | 0) % 2 ? "#ffe0a0" : "#e0905a", 2);
     if (s.phase !== "won") { textFX(g, "NERVE", 198, 7, "#d8c8a0", 5); barFX(g, 210, 6, 40, s.resolve / 100, "#d06a5a", 2); }
     if (this.banner) { const b = this.banner, a = this.mode === "over" ? Math.min(1, b.t * 3) : b.t < 0.2 ? b.t * 5 : b.t > 1.8 ? Math.max(0, (2.2 - b.t) * 2.5) : 1; textFX(g, b.text, CW / 2, this.mode === "over" ? CH / 2 - 10 : 22, b.good ? "#ffe39a" : "#f2e3c4", this.mode === "over" ? 12 : 8, a); }
     g.setTransform(1, 0, 0, 1, 0, 0);
+    if (this.impact) { const c = this.cam, z = c.z, cx = Math.max(CW / 2 / z, Math.min(CW - CW / 2 / z, c.x)), cy = Math.max(CH / 2 / z, Math.min(CH - CH / 2 / z, c.y)); drawImpact(g, this.cv.width, this.cv.height, ((this.impact.x - cx) * z + CW / 2) * k, ((this.impact.y - cy) * z + CH / 2) * k, this.impact.t, this.impact.col); }
+    if (this.cut) drawCutIn(g, this.cv.width, this.cv.height, this.cut.c, this.cut.t);
     this.tex.source.update();
     this.drawHud();
   }
@@ -558,40 +693,103 @@ export class BattleScene implements Scene {
   private drawHud(): void {
     const s = this.s, u = acting(s), { x, y } = this.hudRect;
     // commands
-    const ks = u && (this.mode === "menu" || this.mode === "target") ? skillsFor(s, u, this.book) : [];
-    this.cmdTitle.text = this.mode === "over" ? (s.phase === "won" ? "Victory" : "Defeat") : u && ks.length ? `${this.mode === "target" ? (this.narrow ? "Choose a target" : `${u.name}: choose a target`) : u.name}` : this.qte ? (this.qte.mode === "brace" ? "Brace!" : "Time it!") : s.phase === "foe" ? "Their move" : "";
+    const ks = u && (this.mode === "menu" || this.mode === "target") ? this.cmds(u) : [];
+    this.cmdTitle.text = this.mode === "over" ? (s.escaped === "fled" ? "Got away" : s.escaped === "released" ? "Let go" : s.phase === "won" ? "Victory" : "Defeat") : u && ks.length ? `${this.mode === "target" ? (this.narrow ? "Choose a target" : `${u.name}: choose a target`) : u.name}` : this.qte ? (this.qte.mode === "brace" ? "Brace!" : "Time it!") : s.phase === "foe" ? "Their move" : "";
     while (this.cmdItems.length < ks.length) {
       const i = this.cmdItems.length, t = new Text({ text: "", style: { fontFamily: HUD_FONT, fontSize: 17, fill: "#e8dcc2" } });
       t.eventMode = "static"; t.cursor = "pointer";
-      t.on("pointertap", () => { if (this.mode !== "menu" && this.mode !== "target") return; if (this.cursor === i && this.mode === "target") return; this.cursor = i; const uu = acting(this.s); if (!uu) return; this.mode = "target"; const ts = targetsFor(this.s, this.book, uu, skillsFor(this.s, uu, this.book)[i]); this.tcursor = Math.max(0, ts.findIndex((tt) => tt.side !== uu.side)); });
+      t.on("pointertap", () => { if (this.mode !== "menu" && this.mode !== "target") return; if (this.cursor === i && this.mode === "target") return; this.cursor = i; const uu = acting(this.s); if (!uu) return; const kk = this.cmds(uu)[i]; if (this.isCmd(kk)) { this.choice = { skill: kk, target: "" }; return; } this.mode = "target"; const ts = targetsFor(this.s, this.book, uu, kk); this.tcursor = Math.max(0, ts.findIndex((tt) => tt.side !== uu.side)); });
       this.hud.addChild(t); this.cmdItems.push(t);
     }
     this.cmdItems.forEach((t, i) => {
       t.visible = i < ks.length; if (!t.visible) return;
-      const sk = this.book[ks[i]], on = i === this.cursor;
+      const sk = this.entry(ks[i]), on = i === this.cursor;
       const big = ks[i] === "call" || sk.kind === "finisher" || sk.kind === "art";
-      t.text = `${on ? "▸ " : "   "}${sk.name}${sk.kind === "craft" ? ` ×${s.pack[ks[i]] ?? 0}` : ""}`; t.style.fill = big ? "#ffd890" : on ? "#ffe39a" : "#cfc3aa";
+      t.text = `${on ? "▸ " : "   "}${sk.name}${sk.kind === "craft" ? ` ×${s.pack[ks[i]] ?? 0}` : ""}`; t.style.fill = big ? "#ffd890" : this.isCmd(ks[i]) ? (on ? "#bfe0ff" : "#9ab8d0") : on ? "#ffe39a" : "#cfc3aa";
       const per = Math.max(3, Math.floor((this.hudRect.h - 76) / 24)), col = Math.floor(i / per);
       t.x = x + 20 + col * (this.narrow ? 150 : 180); t.y = y + 42 + (i % per) * 24;
     });
-    this.cmdNote.text = this.mode === "over" ? (s.phase === "won" ? "Press Enter or tap to go on" : "Press Enter or tap to try again") : ks.length ? this.book[ks[this.cursor]].note + (this.mode === "target" ? "   ·   Esc to go back" : "") : "";
+    if (this.touchHud) this.touchCommands();
+    this.cmdNote.text = this.mode === "over" ? (device.taps ? (s.phase === "won" || s.escaped ? "Tap to go on" : "Tap to try again") : s.phase === "won" || s.escaped ? `Press ${keyFor("confirm")} or tap to go on` : `Press ${keyFor("confirm")} or tap to try again`) : ks.length ? this.entry(ks[this.cursor]).note + (this.mode === "target" && !this.touchHud ? "   ·   Esc to go back" : "") : "";
     // log
     this.logText.text = s.log.slice(-4).join("\n");
     // party
     const p = this.party; p.clear();
     const rows = s.units.filter((a) => a.side === "ally");
     while (this.partyText.length < rows.length + 1) { const t = new Text({ text: "", style: { fontFamily: HUD_FONT, fontSize: 15, fill: "#e8dcc2" } }); this.hud.addChild(t); this.partyText.push(t); }
-    const bw = this.barW, bx = this.narrow ? 80 : 96;
+    let bw = this.barW, bx = this.narrow ? 80 : 96;
+    if (this.touchHud) { const pa = this.partyAt ?? this.touchParty; p.x = pa.x; p.y = pa.y; this.party.x = pa.x; this.party.y = pa.y; bx = 84; bw = Math.max(50, Math.min(140, pa.w - bx - 4)); }
+    // a big party squeezes its rows so the list (and the Call row) stays clear of the hint line
+    const room = this.touchHud ? 26 * 7 : this.hint.y - this.party.y - 2, step = Math.max(17, Math.min(26, Math.floor(room / (rows.length + 1))));
+    for (const t of this.partyText) t.style.fontSize = step < 22 ? 13 : 15;
     rows.forEach((a, i) => {
-      const t = this.partyText[i], yy = i * 26, on = a === u;
+      const t = this.partyText[i], yy = i * step, on = a === u;
       t.text = `${a.name}${a.gone ? " (away)" : ""}`; t.style.fill = on ? "#ffe39a" : alive(a) ? "#e8dcc2" : "#7a7060"; t.x = this.party.x; t.y = this.party.y + yy;
       p.roundRect(bx, yy + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (a.hp > 0) p.roundRect(bx, yy + 5, (bw * a.hp) / a.maxHp, 9, 4).fill({ color: a.hp / a.maxHp < 0.3 ? 0xd06a5a : 0x7fb069 });
       // focus: a thin bar under the health; gold when the finisher is ready
       if (!a.bonded) { const f = (s.focus[a.id] ?? 0) / FOCUS_FULL; p.roundRect(bx, yy + 16, bw, 3, 1.5).fill({ color: 0x2a201a }); if (f > 0) p.roundRect(bx, yy + 16, bw * f, 3, 1.5).fill({ color: f >= 1 ? 0xffd060 : 0x8ab0d0 }); }
     });
-    const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * 26;
-    p.roundRect(bx, rows.length * 26 + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * 26 + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
-    this.hint.text = `${this.narrow ? "Tap" : "T"}: auto timing ${this.autoTiming ? "on" : "off"}`;
+    const ct = this.partyText[rows.length]; ct.text = s.bond >= 100 ? "Call ready" : "Call"; ct.style.fill = s.bond >= 100 ? "#ffd890" : "#bfae8e"; ct.x = this.party.x; ct.y = this.party.y + rows.length * step;
+    p.roundRect(bx, rows.length * step + 5, bw, 9, 4).fill({ color: 0x2a201a }); if (s.bond > 0) p.roundRect(bx, rows.length * step + 5, (bw * s.bond) / 100, 9, 4).fill({ color: 0xe0905a });
+    this.hint.visible = !this.touchHud;
+    this.hint.text = `${this.narrow && !padState.used ? "Tap" : keyFor("timing")}: auto timing ${this.autoTiming ? "on" : "off"}   ·   ${this.narrow && !padState.used ? "" : `${keyFor("auto")}: `}auto battle ${this.autoBattle ? "on" : "off"}${this.narrow && !padState.used ? "" : `   ·   ${keyFor("guide")}: guide`}`;
+  }
+
+  /** Where the party list goes in the panel on a touch screen (set by touchCommands). */
+  private touchParty = { x: 0, y: 0, w: 200 };
+
+  /** Touch screens: each command is a framed button (two columns upright, a row across on its side), with buttons
+   *  for Back, auto timing and auto battle, which a keyboard does with keys. */
+  private touchCommands(): void {
+    const { x, y, w, h } = this.hudRect, tall = this.game.height > this.game.width * 1.2;
+    while (this.cmdBgs.length < this.cmdItems.length) {
+      const i = this.cmdBgs.length, g = new Graphics();
+      g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", () => this.cmdItems[i].emit("pointertap", undefined as never));
+      this.hud.addChildAt(g, this.hud.getChildIndex(this.cmdItems[i])); this.cmdBgs.push(g);
+    }
+    const bh = 42, gap = 8, fs = 17;
+    let cx = x + 14, cy = y + (tall ? 40 : 46);
+    const right = this.partyAt ? x + w - 14 : tall ? x + w - 14 : x + w - 224;
+    const colW = tall ? Math.floor((w - 28 - gap) / 2) : 0;
+    this.cmdItems.forEach((t, i) => {
+      const g = this.cmdBgs[i]; g.clear();
+      if (!t.visible) { g.visible = false; return; }
+      g.visible = true; t.style.fontSize = fs; t.eventMode = "none";
+      t.text = t.text.replace(/^(▸ | {3})/, "");
+      const on = i === this.cursor, bw = tall ? colW : Math.max(104, Math.ceil(t.width) + 30);
+      if (tall) { cx = x + 14 + (i % 2) * (colW + gap); cy = y + 40 + Math.floor(i / 2) * (bh + gap); }
+      else if (cx + bw > right && cx > x + 14) { cx = x + 14; cy += bh + gap; }
+      g.roundRect(cx, cy, bw, bh, 8).fill({ color: on ? 0x4a3418 : 0x1c1610, alpha: 0.96 }).roundRect(cx, cy, bw, bh, 8).stroke({ color: on ? 0xffd890 : 0x8a6a40, width: on ? 2 : 1 });
+      t.x = cx + (bw - t.width) / 2; t.y = cy + (bh - t.height) / 2;
+      if (!tall) cx += bw + gap;
+    });
+    const shown = this.cmdItems.filter((t) => t.visible).length;
+    const lastY = shown ? (tall ? y + 40 + Math.ceil(shown / 2) * (bh + gap) : cy + bh + 4) : y + 46;
+    // the note under the buttons (upright) or after the title (on its side)
+    this.cmdNote.style.fontSize = 14; this.cmdNote.style.wordWrapWidth = w - 28;
+    // touch buttons: Back while choosing a target, and the two auto switches
+    this.touchBar.removeChildren().forEach((c) => c.destroy({ children: true }));
+    const pill = (label: string, px: number, py: number, lit: boolean, on: () => void): number => {
+      const t = new Text({ text: label, style: { fontFamily: HUD_FONT, fontSize: 14, fill: lit ? "#2a1a08" : "#e8dcc2", fontWeight: "700" } });
+      const pw = t.width + 24, ph = 34, g = new Graphics().roundRect(px - pw, py, pw, ph, 17).fill({ color: lit ? 0xf0c060 : 0x2a2016, alpha: 0.95 }).roundRect(px - pw, py, pw, ph, 17).stroke({ color: 0xe0c070, width: 1 });
+      g.eventMode = "static"; g.cursor = "pointer"; g.on("pointertap", on); t.x = px - pw + 12; t.y = py + (ph - t.height) / 2; t.eventMode = "none";
+      this.touchBar.addChild(g, t); return pw;
+    };
+    let px = x + w - 12;
+    const py = tall ? y + h - 46 : y + 6;
+    px -= pill(`Auto battle ${this.autoBattle ? "on" : "off"}`, px, py, this.autoBattle, () => this.toggleAutoBattle()) + 8;
+    px -= pill(`Auto timing ${this.autoTiming ? "on" : "off"}`, px, py, this.autoTiming, () => this.toggleAuto()) + 8;
+    if (this.mode === "target") pill("◀ Back", px, py, false, () => { if (this.mode === "target") this.mode = "menu"; });
+    if (tall) {
+      this.cmdNote.x = x + 16; this.cmdNote.y = lastY + 2;
+      this.touchParty = { x: x + 16, y: lastY + 10 + (this.cmdNote.text ? this.cmdNote.height + 6 : 0), w: Math.min(360, w - 32) };
+      // an upright phone has room under the party for what just happened
+      const rows = this.s.units.filter((a) => a.side === "ally").length + 1, logY = this.touchParty.y + rows * 26 + 14;
+      this.logText.visible = logY + 60 < py; this.logText.x = x + 16; this.logText.y = logY; this.logText.style.wordWrapWidth = w - 32;
+    } else {
+      this.cmdNote.x = x + 16; this.cmdNote.y = Math.min(y + h - 22, lastY);
+      this.touchParty = { x: x + w - 214, y: y + 46, w: 200 };
+    }
   }
 
   /** Read-only view for tests and debugging. */
@@ -599,7 +797,7 @@ export class BattleScene implements Scene {
     const u = acting(this.s);
     return {
       phase: this.s.phase, mode: this.mode, round: this.s.round, bond: this.s.bond, resolve: this.s.resolve, routed: this.s.routed,
-      acting: u?.id ?? null, skills: u ? skillsFor(this.s, u, this.book) : [], cursor: this.cursor, qte: this.qte ? { target: this.qte.target, mode: this.qte.mode } : null,
+      acting: u?.id ?? null, skills: u ? this.cmds(u) : [], auto: this.autoBattle, escaped: this.s.escaped ?? null, cursor: this.cursor, qte: this.qte ? { target: this.qte.target, mode: this.qte.mode } : null,
       units: this.s.units.map((x) => ({ id: x.id, hp: x.hp, gone: x.gone })), log: this.s.log.slice(-3), presses: pressesFor(this.book, u ? skillsFor(this.s, u, this.book)[this.cursor] ?? "strike" : "strike"),
     };
   }

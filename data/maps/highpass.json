@@ -1,0 +1,36 @@
+{
+ "id": "highpass",
+ "name": "The high pass",
+ "music": "dusk",
+ "legend": {
+  "K": "cloud",
+  "c": "cliff",
+  ",": "grass",
+  "R": "rock",
+  ":": "path",
+  "m": "flowers",
+  "e": "exit"
+ },
+ "rows": [
+  "cKKKKKKKKKKKKKKKKKKKKKKc",
+  "cccccccccccccccccccccccc",
+  "c,RRRRR,,,,,,,,,,RRRRR,c",
+  "c,RRRRR,,,,::,,,,,,,,,,c",
+  "c,,,,,,,,,,::::::::::,,c",
+  "c,,,,,,,,,,::,,,,,,,,,,c",
+  "c,,mmmm,,,,::,,,,,,,,,,c",
+  "c,,mmmm,,,,::,,mmmmm,,,c",
+  "c,,,,,,,,,,::,,mmmmm,,,c",
+  "c,,,,,,,RRR::,,,,,,,,,,c",
+  "c,,,,,,,RRR::,,,,,,,,,,c",
+  "ccccccccccceeccccccccccc"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 10
+  }
+ ]
+}

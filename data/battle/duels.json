@@ -1,0 +1,672 @@
+{
+ "note": "One-on-one duels (src/battle/duel.ts). moves are weights; feint is the chance he shows one stance and comes another; words are said in the pauses (attr against the foe's vs).",
+ "duels": {
+  "lockside-rider": {
+   "name": "The rider at the gate",
+   "backdrop": "fire",
+   "mustWin": true,
+   "intro": [
+    "The grey loftbuck stamps across the gate. The rider's spear comes down level. He hasn't said a word.",
+    "Watch how he sits. High, he means the spear at your head. Low, the grey's forefeet. Leaning in, a straight thrust."
+   ],
+   "foe": {
+    "name": "The rider",
+    "look": "warden",
+    "cast": "warden",
+    "level": 8,
+    "mount": "loftbuck:#b4b8bc",
+    "moves": {
+     "high": 3,
+     "low": 3,
+     "thrust": 2
+    },
+    "feint": 0.15,
+    "lines": {
+     "hit": [
+      "The spear-butt cracks across your shoulder.",
+      "The grey's hooves come down where you were nearly standing."
+     ],
+     "hurt": [
+      "He sways in the saddle.",
+      "The grey shies; he hauls it round."
+     ],
+     "yield": "The spear-point drops, and stays down.",
+     "down": "Your blow takes him across the helm. He sways, and the grey feels it."
+    }
+   },
+   "words": [
+    {
+     "id": "sing",
+     "label": "Sing the foal song to the grey",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "calm",
+     "line": "You sing, low, the song Larkfold sang to its foals.",
+     "land": "The grey's ears come round. It stops dead, and won't go forward again. He has to fight you on foot now.",
+     "miss": "The grey tosses its head and won't hear it."
+    },
+    {
+     "id": "plea",
+     "label": "\"They're children. Let them through.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 35,
+     "line": "\"They're children. Ninety of them. Let them through.\"",
+     "land": "The spear-point dips. Just for a breath, it dips.",
+     "miss": "Nothing. The visor doesn't move."
+    }
+   ],
+   "won": "The gate is open",
+   "lost": "Knocked down in the yard"
+  },
+  "ring-tam": {
+   "name": "Slag Tam",
+   "backdrop": "fire",
+   "prize": 20,
+   "intro": [
+    "The Foundry ring is a square of slag-sand under the furnace hatch. Slag Tam rolls his shoulders. Half the night shift is watching.",
+    "Tam is strong and he isn't subtle. Watch his shoulders."
+   ],
+   "foe": {
+    "name": "Slag Tam",
+    "look": "rafe",
+    "cast": "slagtam",
+    "level": 5,
+    "moves": {
+     "high": 4,
+     "low": 2,
+     "thrust": 2
+    },
+    "feint": 0,
+    "lines": {
+     "hit": [
+      "Tam's fist lands like a dropped ingot.",
+      "He catches you on the ribs."
+     ],
+     "hurt": [
+      "Tam grunts.",
+      "The crowd jeers him."
+     ],
+     "yield": "Tam spits sand, laughs, and holds up a hand. \"Enough. Somebody give her my purse.\"",
+     "down": "Tam sits down hard in the slag-sand and stays there."
+    }
+   },
+   "words": [
+    {
+     "id": "jeer",
+     "label": "\"Is that what they pay you for?\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"Is that what they pay you for, Tam?\"",
+     "land": "The crowd laughs. Tam goes red and wild.",
+     "miss": "Tam grins. \"They pay me to hit people like you.\""
+    }
+   ],
+   "won": "Tam is beaten",
+   "lost": "Down in the slag-sand"
+  },
+  "ring-hesketh": {
+   "name": "Hesketh",
+   "backdrop": "fire",
+   "prize": 40,
+   "intro": [
+    "Hesketh was a puddler until the heat took one eye. Now he fights in the ring for coin, and he's quick, and he lies with his whole body.",
+    "He feints. If his weight looks wrong, it is."
+   ],
+   "foe": {
+    "name": "Hesketh",
+    "look": "vil6",
+    "cast": "hesketh",
+    "level": 9,
+    "moves": {
+     "high": 3,
+     "low": 3,
+     "thrust": 3
+    },
+    "feint": 0.45,
+    "lines": {
+     "hit": [
+      "Hesketh's bar raps your knuckles.",
+      "He's past you and back before you see him go."
+     ],
+     "hurt": [
+      "Hesketh's one eye narrows.",
+      "He steps back, breathing."
+     ],
+     "yield": "Hesketh lowers the bar. \"You read me. Nobody reads me.\" He sounds pleased.",
+     "down": "Hesketh goes down on one knee and stays there, laughing at himself."
+    }
+   },
+   "words": [
+    {
+     "id": "eye",
+     "label": "\"You favour the blind side.\"",
+     "attr": "wits",
+     "vs": "wits",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You favour your blind side. You're afraid of it.\"",
+     "land": "That lands. He hesitates every time now.",
+     "miss": "\"Everybody says that,\" he says, and comes at you from it."
+    }
+   ],
+   "won": "Hesketh is beaten",
+   "lost": "Down in the slag-sand"
+  },
+  "ring-moll": {
+   "name": "Iron Moll",
+   "backdrop": "fire",
+   "prize": 80,
+   "intro": [
+    "Iron Moll has held the Foundry ring for six winters. She was a hammer-woman at the Warden forge, and she's built like the hammer.",
+    "She doesn't feint. She doesn't need to. Don't trade blows with her."
+   ],
+   "foe": {
+    "name": "Iron Moll",
+    "look": "edda",
+    "cast": "ironmoll",
+    "level": 14,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "Moll hits you and the world goes white.",
+      "Her forearm takes you across the chest."
+     ],
+     "hurt": [
+      "Moll blinks.",
+      "For the first time, Moll steps back."
+     ],
+     "yield": "Moll looks at you for a long time. Then she steps out of the ring. \"Yours. Look after it.\"",
+     "down": "Moll goes down. The whole Foundry Ward goes silent, then roars."
+    }
+   },
+   "words": [
+    {
+     "id": "forge",
+     "label": "\"You made Warden steel once.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You made their steel once. Now you make them money in a ring.\"",
+     "land": "Something goes out of her shoulders.",
+     "miss": "\"And now I make my own,\" she says."
+    }
+   ],
+   "won": "Champion of the Foundry ring",
+   "lost": "Down in the slag-sand"
+  },
+  "kane-tent": {
+   "name": "Kane",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Kane, in his own tent, with his sword out. He has drilled half the Commons Army himself. He fights the way he plans: patiently."
+   ],
+   "foe": {
+    "name": "Marshal Kane",
+    "look": "kane",
+    "cast": "kane",
+    "level": 24,
+    "moves": {
+     "high": 2,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.25,
+    "lines": {
+     "hit": [
+      "His point opens your sleeve.",
+      "The flat of his blade cracks across your wrist."
+     ],
+     "hurt": [
+      "He steps back, measuring.",
+      "He breathes out hard through his nose."
+     ],
+     "yield": "He lowers the point, and looks at it as if it belongs to someone else.",
+     "down": "Your blow drives him back into the map table."
+    }
+   },
+   "words": [
+    {
+     "id": "sum",
+     "label": "\"You did the sum. Do it again.\"",
+     "attr": "wits",
+     "vs": "wits",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You did the sum. Four hundred against the rest. Do it again, with my brother in it.\"",
+     "land": "His guard falters. He's doing it.",
+     "miss": "\"I have,\" he says. \"It comes out the same.\""
+    },
+    {
+     "id": "kept",
+     "label": "\"You kept me in the war. Here I am.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 35,
+     "line": "\"You kept me in the war, Kane. Here I am. This is what you kept.\"",
+     "land": "He hears it. The point wavers.",
+     "miss": "He doesn't hear it. He doesn't let himself."
+    }
+   ],
+   "won": "Kane is down",
+   "lost": "Kane holds his tent"
+  },
+  "halloran": {
+   "name": "Halloran",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Halloran, in his shirt sleeves, by the fire in the inner yard. Thirty years a Warden. He doesn't waste a step."
+   ],
+   "foe": {
+    "name": "Captain Halloran",
+    "look": "halloran",
+    "cast": "halloran",
+    "level": 30,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.3,
+    "lines": {
+     "hit": [
+      "His blade comes round faster than it should.",
+      "He steps inside your guard and hits you with the hilt."
+     ],
+     "hurt": [
+      "He gives ground, a step.",
+      "Blood on his sleeve. He looks at it, interested."
+     ],
+     "yield": "He sets his sword down on the stones, and sits beside it.",
+     "down": "Your blow takes him across the ribs."
+    }
+   },
+   "words": [
+    {
+     "id": "larkfold",
+     "label": "\"You drew a question mark.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You drew a question mark where Larkfold was, and you let a man burn his home to answer it.\"",
+     "land": "Something closes in his face. His next step is short.",
+     "miss": "\"That's war, Caddow. Everyone draws question marks.\""
+    },
+    {
+     "id": "children",
+     "label": "\"Four hundred children.\"",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"There are four hundred children in those halls. Yours. You put them there.\"",
+     "land": "He glances at the halls. Just once.",
+     "miss": "He doesn't look. He's made a point of never looking."
+    }
+   ],
+   "won": "Halloran is down",
+   "lost": "Thrown down by the fire"
+  },
+  "halloran-two": {
+   "name": "Halloran",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Halloran, by the fire in the inner yard. Corran is beside you. Every time Halloran turns to one, the other is there."
+   ],
+   "foe": {
+    "name": "Captain Halloran",
+    "look": "halloran",
+    "cast": "halloran",
+    "level": 27,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 3
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "His blade comes round faster than it should.",
+      "He gets past you, and Corran is there, and only just."
+     ],
+     "hurt": [
+      "He gives ground.",
+      "He has to turn to watch Corran, and you're there."
+     ],
+     "yield": "He sets his sword down on the stones, and sits beside it.",
+     "down": "Your blow and Corran's land together."
+    }
+   },
+   "words": [
+    {
+     "id": "dace",
+     "label": "\"Look at him, Halloran.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 35,
+     "line": "\"Look at him. Look at what you made of him, with one story.\"",
+     "land": "He looks at Corran. It's a mistake, and he knows it as he makes it.",
+     "miss": "\"I made a Warden of him once. He unmade himself.\""
+    },
+    {
+     "id": "larkfold",
+     "label": "\"You drew a question mark.\"",
+     "attr": "wits",
+     "vs": "wits",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You drew a question mark where Larkfold was. We found the map.\"",
+     "land": "That reaches him. He didn't know it had been found.",
+     "miss": "He shrugs. \"Then you know what I am. Good.\""
+    }
+   ],
+   "won": "Halloran is down",
+   "lost": "Thrown down by the fire"
+  },
+  "corran-gate": {
+   "name": "Corran",
+   "backdrop": "fire",
+   "mustWin": true,
+   "intro": [
+    "Corran, in the inner gate with the fire behind him and a fresh lull on his neck. He can't feel the heat. He can't feel anything."
+   ],
+   "foe": {
+    "name": "Corran",
+    "look": "corran",
+    "cast": "corran",
+    "level": 22,
+    "moves": {
+     "high": 2,
+     "low": 3,
+     "thrust": 2
+    },
+    "feint": 0.1,
+    "lines": {
+     "hit": [
+      "He hits you, and doesn't seem to notice he's done it.",
+      "He shoves you back from the gate."
+     ],
+     "hurt": [
+      "Your blow lands. He doesn't flinch. He doesn't feel it.",
+      "He staggers, and smiles."
+     ],
+     "yield": "He sits down in the gate, very suddenly, and looks at his hands.",
+     "down": "He goes down on the stones."
+    }
+   },
+   "words": [
+    {
+     "id": "song",
+     "label": "Sing the third line",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 40,
+     "line": "You sing the third line of the foal song, the one he always got wrong.",
+     "land": "He stops. Under the lull, something in him stops.",
+     "miss": "He doesn't hear it. The lull hears everything for him."
+    },
+    {
+     "id": "finch",
+     "label": "\"Finch is in there.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"Finch is in there, Corran. Get out of my way.\"",
+     "land": "His face changes. The lull can't quite hold it.",
+     "miss": "\"I know,\" he says, calmly. \"That's why it has to be me.\""
+    }
+   ],
+   "won": "Corran is down",
+   "lost": "Knocked back from the gate"
+  },
+  "hallet-gate": {
+   "name": "Hallet",
+   "backdrop": "fire",
+   "mustWin": true,
+   "intro": [
+    "Hallet, in the inner gate, in a Commons coat, with the fire behind him."
+   ],
+   "foe": {
+    "name": "Captain Hallet",
+    "look": "hallet",
+    "cast": "hallet",
+    "level": 26,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 2
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "He's strong. Your arm goes numb to the shoulder.",
+      "He drives you back a step toward the yard."
+     ],
+     "hurt": [
+      "He grunts, and gives no ground.",
+      "He wipes his eyes. The smoke's in them."
+     ],
+     "yield": "He throws his sword down. \"Go on, then. Go and burn with them.\"",
+     "down": "You get under his guard."
+    }
+   },
+   "words": [
+    {
+     "id": "coat",
+     "label": "\"You're wearing a Commons coat.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "\"You're wearing a Commons coat, Hallet. There are children behind you.\"",
+     "land": "He looks down at the coat. His sword drops an inch.",
+     "miss": "\"So are you. Look where it's got us.\""
+    },
+    {
+     "id": "song",
+     "label": "Listen",
+     "attr": "heart",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "You stop, in the smoke, and make him listen to what's coming out of the halls.",
+     "land": "He listens. Nobody could not.",
+     "miss": "He won't listen. He's made himself deaf to it on purpose."
+    }
+   ],
+   "won": "Hallet is down",
+   "lost": "Thrown back from the gate"
+  },
+  "road-kit": {
+   "name": "Kit",
+   "backdrop": "meadow",
+   "mustWin": false,
+   "intro": [
+    "The target range at Hollin's fair, roped off, with half the fair leaning on the rope. Kit, with a bandolier of knives and a grin. Blunted blades, first to yield."
+   ],
+   "foe": {
+    "name": "Kit",
+    "look": "kit",
+    "cast": "kit",
+    "level": 16,
+    "moves": {
+     "high": 2,
+     "low": 2,
+     "thrust": 4
+    },
+    "feint": 0.35,
+    "lines": {
+     "hit": [
+      "A blunted knife takes you on the shoulder. The crowd cheers.",
+      "She's behind you before you've turned."
+     ],
+     "hurt": [
+      "She skips back, laughing.",
+      "\"Ow. Fair.\""
+     ],
+     "yield": "Kit tosses her last knife into the straw, point first, and bows to you.",
+     "down": "You catch her wrist and she sits down in the grass."
+    }
+   },
+   "words": [
+    {
+     "id": "crowd",
+     "label": "\"They're watching you lose.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"Listen to them. They came to watch you win.\"",
+     "land": "Her grin slips. Just for a throw.",
+     "miss": "\"They came to watch me. Win or lose. That's the trick.\""
+    },
+    {
+     "id": "tell",
+     "label": "Watch her feet",
+     "attr": "wits",
+     "vs": "finesse",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "You stop watching the knives and watch her feet.",
+     "land": "Her next throw comes exactly where her feet said it would.",
+     "miss": "She has no tell. Or she has a dozen."
+    }
+   ],
+   "won": "Kit yields",
+   "lost": "Kit wins the round"
+  },
+  "road-gerd": {
+   "name": "Gerd",
+   "backdrop": "snow",
+   "mustWin": true,
+   "intro": [
+    "The ring at Kestrel Fort, trampled snow inside a fence of lances, with the whole clan on the other side of it. Gerd, with a cracked rib and a war axe, and a bandage bleeding through."
+   ],
+   "foe": {
+    "name": "Gerd",
+    "look": "gerd",
+    "cast": "gerd",
+    "level": 20,
+    "moves": {
+     "high": 4,
+     "low": 2,
+     "thrust": 2
+    },
+    "feint": 0.2,
+    "lines": {
+     "hit": [
+      "The axe haft takes you across the ribs. The clan roars.",
+      "He's slow. He's still faster than you'd like."
+     ],
+     "hurt": [
+      "He grunts and holds his side.",
+      "\"Again.\""
+     ],
+     "yield": "Gerd lowers his axe and goes down on one knee.",
+     "down": "Gerd falls in the snow and doesn't get up."
+    }
+   },
+   "words": [
+    {
+     "id": "rib",
+     "label": "Work his left side",
+     "attr": "wits",
+     "vs": "grit",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "You stop going for his head and go for the side he's guarding.",
+     "land": "He bends round the rib, and his guard drops.",
+     "miss": "He knows his own weakness better than you do."
+    },
+    {
+     "id": "son",
+     "label": "\"You don't have to do this for him.\"",
+     "attr": "heart",
+     "vs": "presence",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"You don't have to bleed for him. Not like this.\"",
+     "land": "For a breath his axe hangs. He looks at the stable door.",
+     "miss": "\"I'm his father. That's what fathers do.\""
+    }
+   ],
+   "won": "Gerd yields",
+   "lost": "Gerd wins the ring"
+  },
+  "road-ottilie": {
+   "name": "Ottilie",
+   "backdrop": "yard",
+   "mustWin": true,
+   "intro": [
+    "Corvane's square, by the scales fountain. The clerks have come to the counting house windows. Ottilie, sword and buckler, perfectly still. To the first yield."
+   ],
+   "foe": {
+    "name": "Ottilie",
+    "look": "ottilie",
+    "cast": "ottilie",
+    "level": 22,
+    "moves": {
+     "high": 3,
+     "low": 2,
+     "thrust": 4
+    },
+    "feint": 0.3,
+    "lines": {
+     "hit": [
+      "Her buckler takes you in the face. Neat. Correct. Painful.",
+      "Her point stops a finger from your throat, and withdraws, politely."
+     ],
+     "hurt": [
+      "She steps back, and nods: a fair touch.",
+      "\"Good.\""
+     ],
+     "yield": "Ottilie lowers her sword and steps back. \"Yielded.\"",
+     "down": "Ottilie's sword rings on the cobbles."
+    }
+   },
+   "words": [
+    {
+     "id": "oath",
+     "label": "\"You said the council's lying.\"",
+     "attr": "presence",
+     "vs": "nerve",
+     "effect": "resolve",
+     "amount": 25,
+     "line": "\"You said it yourself. The council's lying, and you're fighting for it anyway.\"",
+     "land": "Her guard hangs for a heartbeat.",
+     "miss": "\"I said I'd obey. I didn't say I'd like it.\""
+    },
+    {
+     "id": "form",
+     "label": "Break her rhythm",
+     "attr": "wits",
+     "vs": "finesse",
+     "effect": "resolve",
+     "amount": 30,
+     "line": "She fights by the book. You stop fighting by any book at all.",
+     "land": "She waits for a stroke that never comes, and you're inside her guard.",
+     "miss": "She's read that book too."
+    }
+   ],
+   "won": "Ottilie yields",
+   "lost": "Ottilie wins the yield"
+  }
+ }
+}

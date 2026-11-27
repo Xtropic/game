@@ -13,6 +13,8 @@ export interface Cond {
   flag?: string | string[];
   not?: string | string[];
   eq?: Record<string, Value>;
+  /** Numbers that must be at least this much (an unset number counts as 0). */
+  atLeast?: Record<string, number>;
   hero?: string;
   map?: string | string[];
 }
@@ -31,6 +33,8 @@ export type Step =
   /** Changes the music's mood partway through a scene ("" goes back to the stage's mood). */
   | { mood: string }
   | { toast: string }
+  /** Weeks of road and drilling: everyone in the company (people and kith) below this level is brought up to it. */
+  | { drill: number }
   | { fade: string }
   | { goto: { map: string; x: number; y: number; facing?: "up" | "down" | "left" | "right" } }
   | { battle: string; win?: Step[] }
@@ -39,7 +43,23 @@ export type Step =
   | { chapter: string }
   | { end: string }
   /** A kith joins: a wild one won over (by the song and food, or bait). The game makes it from its kind and level. */
-  | { kith: KithGift };
+  | { kith: KithGift }
+  /** A kith is gone for good (taken, run off, dead): out of the company, the pens and the party. */
+  | { loseKith: string }
+  /** Opens the party picker (the roll-keeper at camp and at Thornwick). */
+  | { menu: "party" | "base" }
+  /** Opens a town stall (data/towns/shops.json). */
+  | { shop: string }
+  /** Opens the entry table of a kith tournament (data/kith/tournaments.json). */
+  | { tourney: string }
+  /** A one-on-one duel (data/battle/duels.json); win runs on a win or a yield, lose on a loss the story allows. */
+  | { duel: string; win?: Step[]; lose?: Step[] }
+  /** An army battle (data/army/battles.json): the war council, then the field. */
+  | { army: string; win?: Step[]; lose?: Step[] }
+  /** Spends coin from the purse: then runs if there was enough (and it's spent), else runs if there wasn't. A negative amount is coin paid to the company. */
+  | { pay: number; then: Step[]; else?: Step[] }
+  /** A short cinematic scene (src/cutscene/scenes.ts). Usually woven in at load from src/cutscene/hooks.ts. */
+  | { cut: string };
 
 export interface KithGift { species: string; level: number; id: string; name?: string; temperament?: string; }
 
@@ -86,6 +106,7 @@ export function holds(c: Cond | undefined, w: Where): boolean {
   if (list(c.flag).some((f) => !w.flags[f])) return false;
   if (list(c.not).some((f) => !!w.flags[f])) return false;
   if (c.eq && Object.entries(c.eq).some(([k, v]) => w.flags[k] !== v)) return false;
+  if (c.atLeast && Object.entries(c.atLeast).some(([k, v]) => Number(w.flags[k] ?? 0) < v)) return false;
   if (c.hero !== undefined && (w.flags.hero ?? "rhea") !== c.hero) return false;
   if (c.map !== undefined && !list(c.map).includes(w.map)) return false;
   return true;
@@ -105,6 +126,17 @@ export interface StoryHost {
   end(id: string): void;
   /** Adds a kith to the company. */
   addKith?(k: KithGift): void;
+  loseKith?(id: string): void;
+  /** Brings everyone in the company up to at least this level. */
+  drill?(level: number): void;
+  /** Opens the in-game menu on its party page. */
+  openPage?(page: "party" | "base" | `shop:${string}` | `tourney:${string}`): void;
+  duel?(id: string, done: (won: boolean) => void): void;
+  army?(id: string, done: (won: boolean) => void): void;
+  /** Takes coin from the purse if there's enough; true if it was paid. */
+  pay?(coin: number): boolean;
+  /** Plays a cut scene over the world; done when it ends or is skipped. */
+  cutscene?(id: string, done: () => void): void;
 }
 
 export class StoryRunner {
@@ -147,6 +179,7 @@ export class StoryRunner {
       return;
     }
     if ("if" in st) { this.front(holds(st.if, this.host.where()) ? st.then : st.else ?? []); return; }
+    if ("pay" in st) { this.front((this.host.pay ? this.host.pay(st.pay) : true) ? st.then : st.else ?? []); return; }
     if ("stage" in st) { f.stage = st.stage; this.host.changed(); return; }
     if ("follow" in st) { this.host.follow(st.follow); return; }
     if ("join" in st || "leave" in st) {
@@ -157,15 +190,23 @@ export class StoryRunner {
     if ("alone" in st) { this.host.follow([]); return; }
     if ("regroup" in st) { this.host.follow(partyOf(f)); return; }
     if ("toast" in st) { this.host.toast(st.toast); return; }
+    if ("drill" in st) { this.host.drill?.(st.drill); return; }
     if ("fade" in st) { this.block(); this.host.fade(st.fade, this.resume); return; }
     if ("goto" in st) { this.block(); const g = st.goto; this.host.goto(g.map, g.x, g.y, g.facing, this.resume); return; }
     if ("battle" in st) { const win = st.win ?? []; this.block(); this.host.battle(st.battle, () => { this.front(win); this.resume(); }); return; }
+    if ("army" in st) { this.block(); this.host.army?.(st.army, (won) => { this.front((won ? st.win : st.lose) ?? []); this.resume(); }); return; }
+    if ("duel" in st) { this.block(); this.host.duel?.(st.duel, (won) => { this.front((won ? st.win : st.lose) ?? []); this.resume(); }); return; }
     if ("run" in st) { const s = this.story.scripts[st.run]; if (!s) throw new Error(`no script ${st.run}`); const m = this.story.moods?.scenes[st.run]; if (m) f.scene = m; this.front(s); return; }
     if ("mood" in st) { f.scene = st.mood; return; }
     if ("hero" in st) { f.hero = st.hero; this.host.changed(); return; }
     if ("chapter" in st) { f.chapter = st.chapter; this.host.changed(); return; }
     if ("end" in st) { this.queue = []; this.host.end(st.end); return; }
+    if ("menu" in st) { this.host.openPage?.(st.menu); return; }
+    if ("shop" in st) { this.host.openPage?.(`shop:${st.shop}`); return; }
+    if ("tourney" in st) { this.host.openPage?.(`tourney:${st.tourney}`); return; }
+    if ("loseKith" in st) { this.host.loseKith?.(st.loseKith); f[`lost.${st.loseKith}`] = true; this.host.changed(); return; }
     if ("kith" in st) { this.host.addKith?.(st.kith); f[`kith.${st.kith.id}`] = true; this.host.changed(); return; }
+    if ("cut" in st) { if (!this.host.cutscene) return; this.block(); this.host.cutscene(st.cut, this.resume); return; }
     if ("set" in st || "add" in st) {
       for (const [k, v] of Object.entries(st.set ?? {})) f[k] = v;
       for (const [k, v] of Object.entries(st.add ?? {})) { const n = (typeof f[k] === "number" ? (f[k] as number) : 0) + v; f[k] = BOUNDED.has(k) ? Math.max(0, Math.min(100, n)) : n; }
@@ -199,8 +240,9 @@ export function storyLines(s: Story): { who: string; text: string }[] {
     for (const st of steps ?? []) {
       if ("say" in st) out.push({ who: st.say || "narrator", text: st.text });
       if ("choose" in st) { out.push({ who: "narrator", text: st.choose }); for (const o of st.options) { if (o.by) out.push({ who: o.by, text: o.label }); walk(o.do); } }
-      if ("if" in st) { walk(st.then); walk(st.else); }
+      if ("if" in st || "pay" in st) { walk(st.then); walk(st.else); }
       if ("battle" in st) walk(st.win);
+      if ("duel" in st || "army" in st) { walk(st.win); walk(st.lose); }
     }
   };
   for (const a of s.actors) { walk(a.talk); walk(a.touch); }
@@ -219,8 +261,9 @@ export function voicedLines(s: Story): { who: string; text: string }[] {
     for (const st of steps ?? []) {
       if ("say" in st && st.say && st.say !== "narrator") out.push({ who: st.say, text: st.text });
       if ("choose" in st) for (const o of st.options) walk(o.do);
-      if ("if" in st) { walk(st.then); walk(st.else); }
+      if ("if" in st || "pay" in st) { walk(st.then); walk(st.else); }
       if ("battle" in st) walk(st.win);
+      if ("duel" in st || "army" in st) { walk(st.win); walk(st.lose); }
     }
   };
   for (const id of s.voiced ?? []) walk(s.scripts[id]);
@@ -239,8 +282,9 @@ export function checkStory(s: Story, maps: Set<string>, battles: Set<string>): s
       if ("say" in st && st.say && !s.cast[st.say]) errs.push(`${where}: ${st.say} is not in the cast`);
       if ("stage" in st && !s.objectives[st.stage]) errs.push(`${where}: stage ${st.stage} has no objective`);
       if ("choose" in st) for (const o of st.options) walk(o.do, where);
-      if ("if" in st) { walk(st.then, where); walk(st.else, where); }
+      if ("if" in st || "pay" in st) { walk(st.then, where); walk(st.else, where); }
       if ("battle" in st) walk(st.win, where);
+      if ("duel" in st || "army" in st) { walk(st.win, where); walk(st.lose, where); }
     }
   };
   for (const a of s.actors) { if (!maps.has(a.map)) errs.push(`actor ${a.id}: no map ${a.map}`); walk(a.talk, `actor ${a.id}`); walk(a.touch, `actor ${a.id}`); }

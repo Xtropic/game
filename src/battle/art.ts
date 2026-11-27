@@ -4,13 +4,15 @@
 import { BAYER4, dither, hash2, makeCanvas, px } from "../art/pixel";
 import { EVEN, type Build } from "../art/build";
 import { BODY_SHAPE, bodyOf } from "../art/bodies";
-import { saturate } from "../art/people";
+import { LOOKS, saturate } from "../art/people";
+import { keepsake } from "../gear/weapons";
 import { RECRUITS } from "../cast/recruits";
-import { drawPainted, hasPaintedFig } from "./painted";
+import { drawPainted, hasPaintedFig, paintedRig } from "./painted";
 
 export const CW = 256, CH = 144;
 let K = 4;
 export const setScale = (k: number): void => { K = k; };
+export const getScale = (): number => K;
 const U = (v: number) => v * K;
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 export const INK = "#1a1420";
@@ -36,6 +38,10 @@ const SCENERY: Record<string, Scenery> = {
   marsh: { sky: ["#7a8a8a", "#8e9c9a", "#a4b0aa", "#bac4bc", "#ccd4cc"], stars: false, orb: null, far: ["#6a7a70", "#5a6a62"], near: ["#4c5a3a", "#404e32"], ground: ["#4c5a3a", "#5a6a44", "#6a7a50", "#768656"], track: ["#3f6a7a", "#4a7686"], rock: ["#5a5a4a", "#2a2a22", "#7a7a68"], tuft: ["#a69a5a", "#c2b46e"], trees: "reeds", tree: "#6a5a3a", haze: "rgba(220,228,220,.18)" },
   road: { sky: ["#c86a4a", "#d8845a", "#e2a070", "#eab88a", "#f0cca2"], stars: false, orb: [64, 40, "#ffe0a0", "#f2b070"], far: ["#7a5a6a", "#6a4a5a"], near: ["#5a4a3a", "#4a3c30"], ground: ["#6a7a46", "#768652", "#82925c", "#8c9c66"], track: ["#a8906a", "#b8a07a"], rock: ["#8a7a6a", "#3a3028", "#a89888"], tuft: ["#5a6a3a", "#76864c"], trees: "leafy", tree: "#2a2a22" },
   yard: { sky: ["#3a3a42", "#4a4a52", "#5a5a62", "#6a6a70", "#7a7a80"], stars: false, orb: null, far: ["#4a3a36", "#3a2c28"], near: ["#5a2a22", "#4a221c"], ground: ["#5f5d58", "#6f6d68", "#7f7d78", "#878580"], track: ["#545250", "#5e5c5a"], rock: ["#6e342a", "#2a1712", "#82402f"], tuft: ["#4a4a44", "#5a5a54"], trees: "none", tree: "#222", haze: "rgba(200,200,205,.16)" },
+  // the slide on the Thornwick road: grey scree and split boulders under a cold autumn sky
+  scree: { sky: ["#7f98b0", "#98aec2", "#b2c2d0", "#ccd6de", "#e2e8ec"], stars: false, orb: [196, 20, "#fffaf0", "#e6ecf0"], far: ["#8e98a6", "#7c8694"], near: ["#6a6e70", "#5a5e60"], ground: ["#7a7a76", "#888884", "#96968f", "#a4a49c"], track: ["#6e6a62", "#7a766e"], rock: ["#8a8a86", "#3a3a38", "#acaca6"], tuft: ["#6a7a4a", "#8a9a5a"], trees: "pines", tree: "#2a4032" },
+  // under Thornwick: wet stone, lamplight and steam off the running channel
+  cistern: { sky: ["#0c0d10", "#14161a", "#1c1f24", "#262a30", "#30353c"], stars: false, orb: null, far: ["#2a2e34", "#22262c"], near: ["#3a3e44", "#2e3238"], ground: ["#3a3c3e", "#44474a", "#4e5256", "#585c60"], track: ["#2e4a56", "#3a5a68"], rock: ["#5a5e62", "#1a1c1e", "#767a7e"], tuft: ["#3e5a4a", "#4e6a58"], trees: "none", tree: "#111", haze: "rgba(230,236,240,.16)" },
   fire: { sky: ["#2a0c06", "#4a160a", "#6a2210", "#8a3a18", "#b05a22"], stars: false, orb: null, far: ["#3a1a12", "#2a120c"], near: ["#4a221c", "#3a1a14"], ground: ["#3a2a24", "#4a3830", "#5a463c", "#6a5448"], track: ["#5a4a40", "#6a5a50"], rock: ["#6e342a", "#1a0c08", "#a85a2a"], tuft: ["#e8823a", "#f2c45a"], trees: "none", tree: "#120806", haze: "rgba(255,140,60,.14)" },
 };
 /** The pixel-art stage behind a fight. The id names the scenery; the trail fight keeps its night. */
@@ -69,7 +75,7 @@ export function backdrop(id: string): HTMLCanvasElement {
 }
 
 // ---------------- HD figures ----------------
-interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
+interface CastLook { skin: string; skinS: string; hair: string; hairL: string; coat: string; coatS: string; pants: string; boot: string; eye: string; style: "braid" | "bun" | "helm" | "bald" | "cap" | "short"; scarf?: string; beard?: string; cap?: string; weapon: "staff" | "dart" | "spear" | "bow" | "none"; lash?: boolean; rope?: boolean; lantern?: boolean; long?: boolean; }
 export const CAST: Record<string, CastLook> = {
   rhea: { skin: "#f2d2b6", skinS: "#d6a98c", hair: "#3a2418", hairL: "#7a4c32", coat: "#8e7a5c", coatS: "#6e5c44", pants: "#3b2e26", boot: "#2a1d16", eye: "#5f8a3a", style: "braid", scarf: "#c8262a", weapon: "staff", lash: true },
   tamsin: { skin: "#d4a888", skinS: "#b08460", hair: "#1a1512", hairL: "#4e463e", coat: "#5a6a2e", coatS: "#444f22", pants: "#2e3a33", boot: "#1e2420", eye: "#8a5a32", style: "bun", rope: true, weapon: "dart", lash: true },
@@ -91,15 +97,22 @@ const COLOURS: (keyof CastLook)[] = ["hair", "hairL", "coat", "coatS", "pants", 
 const toned: Record<string, CastLook> = {};
 function lookFor(id: string): CastLook {
   if (toned[id]) return toned[id];
-  const c = { ...CAST[id] } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
+  const c = { ...(CAST[id] ?? fromMapLook(id)) } as Record<string, unknown>, amt = VIVID.has(id) ? 0.7 : -0.3;
   for (const k of COLOURS) if (typeof c[k] === "string") c[k] = saturate(c[k] as string, amt);
   return (toned[id] = c as unknown as CastLook);
+}
+const WEAPON_DRAWN: Record<string, CastLook["weapon"]> = { spear: "spear", lance: "spear", staff: "staff", cane: "staff", bow: "bow", sling: "dart", knife: "dart", twin: "dart", hook: "dart", rope: "dart" };
+/** Anyone without a battle look of their own is dressed from their map sprite, which matches their portrait. */
+function fromMapLook(id: string): CastLook {
+  const m = LOOKS[id] ?? LOOKS.vil1 ?? Object.values(LOOKS)[0];
+  const style = (m.style === "short" || !m.style ? "short" : m.style) as CastLook["style"];
+  return { skin: m.skin, skinS: m.skinShade, hair: m.hair, hairL: m.hairLight, coat: m.coat, coatS: m.coatShade, pants: m.legs, boot: m.boots, eye: "#5a4a3a", style, scarf: m.accent, beard: m.beardStyle === "full" ? m.beard : undefined, cap: m.cap, weapon: WEAPON_DRAWN[keepsake(id)?.type ?? ""] ?? "none" };
 }
 /** A look can carry a coat colour after a colon ("reedcat:#8a8a80"): the kind, and the coat. */
 export const lookKind = (look: string): string => look.split(":")[0];
 const lookCoat = (look: string): string | undefined => look.split(":")[1];
 
-export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; /** 0..1 mouth opening while speaking */ talk?: number; }
+export interface Pose { t: number; run?: number; lunge?: boolean; brace?: boolean; bow?: number; shout?: boolean; cast?: boolean; flash?: number; flip?: boolean; fall?: number; /** 0..1 how long the stride is when `run` is set: 1 is a battle charge, ~0.5 an easy walk */ stride?: number; /** 0..1 mouth opening while speaking */ talk?: number; }
 
 function inkPath(g: CanvasRenderingContext2D, fill: string, lw = 0.28) { g.fillStyle = fill; g.fill(); g.lineWidth = lw; g.strokeStyle = INK; g.stroke(); }
 function limb(g: CanvasRenderingContext2D, pts: number[], w: number, col: string) {
@@ -114,11 +127,11 @@ const grey = (hex: string, amt: number): string => { const n = parseInt(hex.slic
 export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
   const base = lookFor(id), t = o.t, body = BODY_SHAPE[bodyOf(id)];
   const P0 = b.raw ? { ...base, skin: shadeHex(grey(base.skin, 0.45), 0.04), skinS: grey(base.skinS, 0.45) } : base;
-  const run = o.run ? Math.sin(o.run) : 0, lean = (o.run ? 0.14 : o.lunge ? 0.22 : o.brace ? -0.08 : 0) - 0.05 * b.bearing + (b.raw ? 0.09 : 0);
-  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
+  const st = o.stride ?? 1, run = o.run ? Math.sin(o.run) * st : 0, lean = (o.run ? 0.03 + 0.11 * st * st : o.lunge ? 0.22 : o.brace ? -0.08 : 0) - 0.05 * b.bearing + (b.raw ? 0.09 : 0);
+  const bob = o.run ? -Math.abs(Math.cos(o.run)) * 1.2 * st : Math.sin(t * 2.2) * 0.25 * (1 - 0.6 * Math.max(0, b.poise)) + (b.raw ? Math.sin(t * 13) * 0.06 : 0);
   const wx = body.w * (1 + 0.11 * b.bulk), tallY = body.h * (1 + 0.035 * b.bearing - (b.raw ? 0.025 : 0)), thick = body.limb * (1 + 0.22 * b.brawn - 0.1 * b.reach);
   g.save(); g.translate(U(x), U(y)); g.scale(K * (o.flip ? -1 : 1) * 1.22, K * 1.22);
-  ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)");
+  if (o.stride == null) ell(g, 0, 0, 6, 1.4, "rgba(5,5,15,.45)"); // in the 3D world the sun casts the shadow
   if (o.fall) { g.rotate(-o.fall * 1.45); g.globalAlpha *= 1 - o.fall * 0.25; }
   g.translate(0, bob); g.rotate(lean);
   const hipY = -13, sh = -21.5;
@@ -136,7 +149,7 @@ export function drawFig(g: CanvasRenderingContext2D, id: string, x: number, y: n
     else if (o.brace) { el = near ? [4.5, -21] : [3.4, -19]; hd = near ? [4.2, -25.5] : [5.6, -23.5]; }
     else if (o.cast) { el = near ? [4, -20.5] : [-1.6, -18]; hd = near ? [6.5, -23.5] : [0.4, -15.8]; }
     else if (o.bow != null) { el = near ? [5.5, -20] : [-0.8, -19.6]; hd = near ? [9, -20.5] : [2.2 - o.bow * 2, -20.4]; }
-    else if (o.run) { const a = (near ? 1 : -1) * Math.sin(o.run) * 3; el = [a * 0.6 + (near ? 1 : -1), -17.5]; hd = [a + 1.2, -14.5]; }
+    else if (o.run) { const a = (near ? 1 : -1) * Math.sin(o.run) * 3 * st; el = [a * 0.6 + (near ? 1 : -1), -17.5]; hd = [a + 1.2, -14.5]; }
     else { el = near ? [2.6, -16.8] : [-2, -16.8]; hd = near ? [3.6, -13.3] : [-1.6, -13.2]; }
     const shx = near ? 1.8 : -1.4, col = near ? P0.coat : P0.coatS;
     limb(g, [shx, sh + 0.8, el[0], el[1], hd[0], hd[1]], 2.1 * thick, col);
@@ -284,9 +297,11 @@ export function drawCat(g: CanvasRenderingContext2D, x: number, y: number, o: Po
   g.restore();
 }
 
-export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN): void {
+const DRAWN_BEASTS = new Set(["ash", "loftbuck", "reedcat"]);
+export function drawLook(g: CanvasRenderingContext2D, look: string, x: number, y: number, o: Pose, b: Build = EVEN, painted = true): void {
   const kind = lookKind(look), coat = lookCoat(look);
-  if (hasPaintedFig(kind)) drawPainted(g, kind, x, y, o, K, coat);
+  // painted = false asks for the drawn rig (the world uses it so everyone walks alike); kith with no drawn rig keep their painting
+  if (hasPaintedFig(kind) && (painted || (paintedRig(kind) === "beast" && !DRAWN_BEASTS.has(kind)))) drawPainted(g, kind, x, y, o, K, coat);
   else if (kind === "ash") drawAsh(g, x, y, o, b);
   else if (kind === "loftbuck") drawAsh(g, x, y, o, b, coat ?? "#9a8a70", false);
   else if (kind === "reedcat") drawCat(g, x, y, o, b, coat);

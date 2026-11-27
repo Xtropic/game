@@ -1,0 +1,45 @@
+{
+ "id": "town-corvane",
+ "name": "Corvane",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "x": "crate",
+  "e": "exit"
+ },
+ "rows": [
+  "##############################",
+  "#........rrrrrrrrrrrr........#",
+  "#........rrrrrrrrrrrr........#",
+  "#........rrrrrrrrrrrr........#",
+  "#........rrrrrrrrrrrr........#",
+  "#........hhhhhddhhhhh........#",
+  "#............................#",
+  "#rrrrrrr..............rrrrrrr#",
+  "#rrrrrrr..............rrrrrrr#",
+  "#rrrrrrr......ww......rrrrrrr#",
+  "#hhhdhhh......ww......hhhdhhh#",
+  "#............................#",
+  "#rrrrrr......................#",
+  "#rrrrrr...SS......SS.........#",
+  "#hhdhhh................xx....#",
+  "#............................#",
+  "#............................#",
+  "##############ee##############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 16
+  }
+ ]
+}

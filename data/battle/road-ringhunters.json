@@ -1,0 +1,99 @@
+{
+ "id": "road-ringhunters",
+ "name": "The King's ring-hunters",
+ "backdrop": "snow",
+ "party": true,
+ "intro": [
+  "Four ring-hunters in Lorne blue, and their hounds, coming over the ice in a line.",
+  "The old man is on his step behind you, with his collar open."
+ ],
+ "won": "The ring-hunters ride back to Holm",
+ "lost": "Driven back across the ice",
+ "units": [
+  {
+   "id": "rh1",
+   "name": "Ring-hunter",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 19,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "rh2",
+   "name": "Ring-hunter",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 19,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "rk1",
+   "name": "Ring hound",
+   "look": "strider:#d8dde2",
+   "side": "foe",
+   "row": "front",
+   "hp": 56,
+   "kith": true,
+   "level": 19,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "species": "snow-strider",
+   "at": [
+    160,
+    132
+   ]
+  },
+  {
+   "id": "rk2",
+   "name": "Ring hound",
+   "look": "strider:#c8ced4",
+   "side": "foe",
+   "row": "back",
+   "hp": 56,
+   "kith": true,
+   "level": 19,
+   "skills": [
+    "pounce"
+   ],
+   "species": "snow-strider",
+   "at": [
+    222,
+    128
+   ]
+  },
+  {
+   "id": "rh3",
+   "name": "Hunt captain",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 20,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

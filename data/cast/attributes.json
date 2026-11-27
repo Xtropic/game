@@ -75,6 +75,9 @@
     "maren":       { "arch": "healer",     "up": ["presence"], "down": ["finesse"], "level": 10 },
     "rook":        { "arch": "talker",     "up": ["nerve"], "down": ["heart"], "level": 10 },
     "warden":      { "arch": "vanguard",   "up": [], "down": ["heart"], "level": 3, "note": "Generic Warden foot soldier." },
+    "slagtam":    { "arch": "vanguard",   "up": ["might", "grit"], "down": ["wits"], "level": 5, "note": "Foundry ring, first rung." },
+    "hesketh":    { "arch": "skirmisher", "up": ["finesse", "wits"], "down": ["grit"], "level": 9, "note": "Foundry ring, second rung: a feinter." },
+    "ironmoll":   { "arch": "guardian",   "up": ["might", "nerve"], "down": ["heart"], "level": 14, "note": "Foundry ring champion." },
     "archer":      { "arch": "archer",     "up": [], "down": ["heart"], "level": 3, "note": "Generic Warden archer." },
     "wick":       { "arch": "vanguard"  , "up": ["might", "grit"], "down": ["wits"], "level": 5 },
     "lanto":      { "arch": "archer"    , "up": ["finesse"], "down": ["presence"], "level": 4 },
@@ -108,6 +111,7 @@
     "lull":       { "nerve": 3, "heart": -3, "wits": -2, "note": "Wearing a fresh Guild lull: steadier and duller. Corran's interludes." },
     "raw":        { "nerve": -4, "grit": -3, "finesse": -2, "note": "In the raw: every nerve burns." },
     "weaning":    { "nerve": -1, "grit": -1, "note": "On greenlings, weaning down." },
+    "burned":     { "finesse": -2, "note": "Burned hands from the Sallow fire. The scars never quite let go." },
     "steadied":   { "nerve": 2, "note": "Steadied by Rhea's song, for one battle." }
   }
 }

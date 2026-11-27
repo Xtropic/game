@@ -1,0 +1,80 @@
+{
+ "id": "lockside-guards",
+ "name": "Corvel's house guards",
+ "backdrop": "fire",
+ "party": true,
+ "intro": [
+  "House Corvel's guards, woken by the noise, with cudgels and a hatchery reedcat.",
+  "Keep them off the children."
+ ],
+ "won": "The brood house is open",
+ "lost": "Driven out of the brood house",
+ "units": [
+  {
+   "id": "lg1",
+   "name": "House guard",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 6,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    94
+   ]
+  },
+  {
+   "id": "lg2",
+   "name": "House guard",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 6,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    116
+   ]
+  },
+  {
+   "id": "lrc",
+   "name": "Hatchery reedcat",
+   "look": "reedcat:#8a7a6a",
+   "side": "foe",
+   "row": "front",
+   "hp": 24,
+   "kith": true,
+   "level": 6,
+   "skills": [
+    "pounce"
+   ],
+   "species": "market-reedcat",
+   "at": [
+    162,
+    130
+   ]
+  },
+  {
+   "id": "lab",
+   "name": "Guard archer",
+   "look": "archer",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 6,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

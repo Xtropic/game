@@ -1,0 +1,52 @@
+{
+ "id": "town-lockside--towpath",
+ "name": "Lockside, the Towpath",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "f": "fence",
+  "~": "water",
+  "e": "exit"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "T::::::::::::::::::::::T",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,TT,,,,,,TT,,,,ffffffT",
+  "T,,,,,,,,,,,,,,,,f,,,,,T",
+  "e,,,,,,,,,,,,,,,,f,,,,,T",
+  "T,,TT,,,,,,TT,,,,f,,,,,T",
+  "TTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 7
+  },
+  {
+   "id": "town-lockside--towpath-sign0",
+   "kind": "sign",
+   "x": 17,
+   "y": 6,
+   "props": {
+    "text": "A Guild fence, new timber, tarred. A painted board: 'Corvel Hatchery. No visitors. No questions.'"
+   }
+  },
+  {
+   "id": "town-lockside--towpath-sign1",
+   "kind": "sign",
+   "x": 12,
+   "y": 3,
+   "props": {
+    "text": "The towpath, worn into two grooves by hooves."
+   }
+  }
+ ]
+}

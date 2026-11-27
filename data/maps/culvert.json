@@ -1,0 +1,30 @@
+{
+ "id": "culvert",
+ "name": "The drain under the wall",
+ "music": "caves",
+ "legend": {
+  "R": "rock",
+  "_": "cavefloor",
+  "~": "water",
+  "e": "exit",
+  "o": "cave"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRRRR",
+  "RRRRRRRRRRRRRRRRRRRRRRRRRR",
+  "RRRRRRRR___RRRR___RRRRRRRR",
+  "e________________________o",
+  "e________________________R",
+  "R~~~~~~~~~~~~~~___~~~~~~~R",
+  "RRRRRRRRRRRRRRR___RRRRRRRR",
+  "RRRRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 1,
+   "y": 3
+  }
+ ]
+}

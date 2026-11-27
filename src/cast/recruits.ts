@@ -18,6 +18,8 @@ export interface Recruit {
   age?: number;
   /** Background colour words for the portrait prompt. */
   bg?: string;
+  /** Story flags that take them out of the company for good once any is set (Kane: arrested). */
+  leaves?: string[];
 }
 
 export const RECRUITS: readonly Recruit[] = data as Recruit[];

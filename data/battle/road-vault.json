@@ -1,0 +1,81 @@
+{
+ "id": "road-vault",
+ "name": "The counting house at night",
+ "backdrop": "cistern",
+ "party": true,
+ "intro": [
+  "Two League porters with brass-shod staves, the Guild factor's bodyguard, and a vault ironback straining at its chain.",
+  "Behind them, the strongroom."
+ ],
+ "won": "The long hall is clear",
+ "lost": "Driven back to the side door",
+ "units": [
+  {
+   "id": "cv1",
+   "name": "League porter",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    170,
+    96
+   ]
+  },
+  {
+   "id": "cv2",
+   "name": "League porter",
+   "look": "warden2",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 21,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    196,
+    118
+   ]
+  },
+  {
+   "id": "cvk",
+   "name": "Vault ironback",
+   "look": "ironback:#5a5a62",
+   "side": "foe",
+   "row": "front",
+   "hp": 110,
+   "kith": true,
+   "level": 22,
+   "skills": [
+    "maul",
+    "horns"
+   ],
+   "species": "vault-ironback",
+   "at": [
+    158,
+    132
+   ]
+  },
+  {
+   "id": "cv3",
+   "name": "Factor's bodyguard",
+   "look": "smuggler",
+   "side": "foe",
+   "row": "back",
+   "cast": "archer",
+   "level": 22,
+   "skills": [
+    "bow"
+   ],
+   "at": [
+    230,
+    100
+   ]
+  }
+ ]
+}

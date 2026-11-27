@@ -1,0 +1,80 @@
+{
+ "id": "lockside-rider",
+ "name": "The rider at the gate",
+ "backdrop": "fire",
+ "intro": [
+  "A rider on a huge grey loftbuck, across the gate. Warden's helm, visor down. He hasn't said a word.",
+  "Put the rider down, or calm the grey with the foal song (Q) and he'll have to fight on foot."
+ ],
+ "won": "The gate is open",
+ "lost": "Knocked down in the yard",
+ "units": [
+  {
+   "id": "rhea",
+   "name": "Rhea",
+   "look": "rhea",
+   "side": "ally",
+   "row": "front",
+   "cast": "rhea",
+   "skills": [
+    "strike",
+    "sing",
+    "rally"
+   ],
+   "at": [
+    86,
+    94
+   ]
+  },
+  {
+   "id": "ash",
+   "name": "Ash",
+   "look": "ash",
+   "side": "ally",
+   "row": "front",
+   "hp": 30,
+   "skills": [],
+   "kith": true,
+   "bonded": "rhea",
+   "at": [
+    62,
+    124
+   ]
+  },
+  {
+   "id": "ninety",
+   "name": "Ninety",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "cast": "warden",
+   "level": 7,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ]
+  },
+  {
+   "id": "grey",
+   "name": "The grey loftbuck",
+   "look": "loftbuck:#b4b8bc",
+   "side": "foe",
+   "row": "front",
+   "hp": 44,
+   "kith": true,
+   "level": 7,
+   "skills": [
+    "horns"
+   ],
+   "species": "loftbuck",
+   "temperament": "gentle",
+   "at": [
+    206,
+    120
+   ]
+  }
+ ]
+}

@@ -1,0 +1,81 @@
+{
+ "id": "side-vael-trappers",
+ "name": "The ropes on the lowest spire",
+ "backdrop": "scree",
+ "party": true,
+ "intro": [
+  "Guild trappers coming up the spire ropes with nets and hooks, and a hooded reedcat for finding nests.",
+  "The women on the bridges are holding their fire for you."
+ ],
+ "won": "The trappers go back down their ropes",
+ "lost": "The trappers reach the nests",
+ "units": [
+  {
+   "id": "vt1",
+   "name": "Guild trapper",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 14,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    176,
+    96
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "vt2",
+   "name": "Guild trapper",
+   "look": "cartwarden",
+   "side": "foe",
+   "row": "front",
+   "level": 14,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    198,
+    118
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "vt3",
+   "name": "Trap master",
+   "look": "warden",
+   "side": "foe",
+   "row": "front",
+   "level": 15,
+   "skills": [
+    "wstrike"
+   ],
+   "at": [
+    222,
+    104
+   ],
+   "cast": "warden"
+  },
+  {
+   "id": "vt4",
+   "name": "Nest-sniffer",
+   "look": "reedcat:#6a6a72",
+   "side": "foe",
+   "row": "front",
+   "level": 13,
+   "skills": [
+    "pounce",
+    "maul"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "kith": true,
+   "hp": 48,
+   "species": "reedcat"
+  }
+ ]
+}

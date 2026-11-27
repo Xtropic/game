@@ -27,7 +27,16 @@ export const TERMS: Term[] = [
   { id: "ostrel", name: "Ostrel", match: /\bOstrel\b/, note: "The country this story takes place in." },
   { id: "sorting", name: "Sorting house", match: /\bsorting house\b/i, note: "Where the Guild decides which work each indentured child is sent to." },
   { id: "reeve", name: "Reeve", match: /\breeve\b/i, note: "The elected head of a town." },
+  { id: "thornwick", name: "Thornwick", match: /\bThornwick\b/, note: "A ruined monastery on a terrace of the Cloudline, built over a hot spring. Nobody had lived there for a hundred years." },
+  { id: "duskwort", name: "Duskwort", match: /\bduskwort\b/i, note: "A pale moss that only grows high in the mountains, above the mist. Lull larvae eat nothing else." },
+  { id: "factor", name: "Factor", match: /\bfactor\b/i, note: "The Guild's agent in a village. He weighs what the village grows and writes it against what the village owes." },
+  { id: "clans", name: "The Cloudline clans", match: /\bclans?\b/i, note: "The families who grow duskwort on the high terraces of the Cloudline. They still set wild lulls the old way." },
   { id: "drying", name: "Drying house", match: /\bdrying house\b/i, note: "Where Larkfold dries the moss its greenlings are raised on." },
+  // the Long Road
+  { id: "tarsis", name: "Tarsis", match: /\bTarsis\b/, note: "A fortress of sellswords on the eastern steppe. They fight for whoever pays." },
+  { id: "freetowns", name: "The Free Towns", match: /\bFree Towns\b/, note: "Towns of the western fens, Hollin the largest. They decide things by a public vote on the town square, and keep to what they vote." },
+  { id: "college", name: "The College of Physicians", match: /\bCollege\b/, note: "Ostrel's doctors, at Hollin. They license who may treat the sick, and advise the Crown on medicine." },
+  { id: "pennylull", name: "Penny lull", match: /\bpenny lulls?\b/i, note: "A small, cheap lull the Guild sells to workers in yards and mills, so they don't feel what the work does to them." },
 ];
 
 /** The first term in `text` the player hasn't been told about yet. */

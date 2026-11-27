@@ -1,0 +1,48 @@
+{
+ "id": "town-tarsis",
+ "name": "Tarsis",
+ "music": "camp",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "f": "fence",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire"
+ },
+ "rows": [
+  ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+  ",############################,",
+  ",#:::::::rrrrrrrrrrrr:::::::#,",
+  ",#:::::::rrrrrrrrrrrr:::::::#,",
+  ",#:::::::rrrrrrrrrrrr:::::::#,",
+  ",#:::::::rrrrrrrrrrrr:::::::#,",
+  ",#:::::::hhhhhddhhhhh:::::::#,",
+  ",#::::::::::::::::::::::::::#,",
+  ",#rrrrrrr:::::::::::::rrrrrr#,",
+  ",#rrrrrrr::ffffffff:::rrrrrr#,",
+  ",#rrrrrrr::f......f:::rrrrrr#,",
+  ",#hhhdhhh::f......f:::hhdhhh#,",
+  ",#:::::::::f......f:::::::::#,",
+  ",#:::::::::fff..fff::::::CC:#,",
+  ",#::F:::::::::::::::::xx::::#,",
+  ",#::::::::::::::::::::::::::#,",
+  ",#############::#############,",
+  ",,,,,,,,,,,,,,ee,,,,,,,,,,,,,,"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 15
+  }
+ ]
+}

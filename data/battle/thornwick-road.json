@@ -1,0 +1,71 @@
+{
+ "id": "thornwick-road",
+ "name": "Reedcats in the slide",
+ "backdrop": "scree",
+ "party": true,
+ "intro": [
+  "A den of fog reedcats in the scree, and the section is walking over their roof.",
+  "They're wild and frightened, not wicked. The foal song can calm them."
+ ],
+ "won": "The slide is crossed",
+ "lost": "Driven back off the slide",
+ "units": [
+  {
+   "id": "c1",
+   "name": "Fog reedcat",
+   "look": "reedcat:#8a9a94",
+   "side": "foe",
+   "row": "front",
+   "hp": 18,
+   "level": 3,
+   "kith": true,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    168,
+    92
+   ],
+   "temperament": "bold",
+   "species": "fog-reedcat"
+  },
+  {
+   "id": "c2",
+   "name": "Fog reedcat",
+   "look": "reedcat:#8a9a94",
+   "side": "foe",
+   "row": "front",
+   "hp": 16,
+   "level": 3,
+   "kith": true,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    160,
+    126
+   ],
+   "temperament": "skittish",
+   "species": "fog-reedcat"
+  },
+  {
+   "id": "c3",
+   "name": "Fog reedcat",
+   "look": "reedcat:#9aa8a2",
+   "side": "foe",
+   "row": "front",
+   "hp": 20,
+   "level": 4,
+   "kith": true,
+   "skills": [
+    "pounce"
+   ],
+   "at": [
+    194,
+    110
+   ],
+   "temperament": "curious",
+   "species": "fog-reedcat"
+  }
+ ]
+}

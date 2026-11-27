@@ -1,0 +1,48 @@
+{
+ "id": "town-ashby",
+ "name": "Port Ashby",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "#": "stonewall",
+  ".": "cobble",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "S": "stall",
+  "H": "hay",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "p": "plank"
+ },
+ "rows": [
+  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~~~~~~ee~~~~~~~xxxxxx~~",
+  "~~~~~~~~~~~~~~~pp~~~~~~~xxxxxx~~",
+  "~~~~~~~~~~~~~~~pp~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~~~~~~pp~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~~~~~~pp~~~~~~~~~~~~~~~",
+  "pppppppppppppppppppppppppppppppp",
+  "................................",
+  ".rrrrrrrrr.............rrrrrrrr.",
+  ".rrrrrrrrr.............rrrrrrrr.",
+  ".rrrrrrrrr..SS...SS....rrrrrrrr.",
+  ".hhdhhhdhh.............hhhdhhhh.",
+  "...............w................",
+  ".rrrrrr.....SS..................",
+  ".rrrrrr.............xx......HH..",
+  ".rrrrrr.....................HH..",
+  ".hhhdhh.........................",
+  "###############ee###############"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 15,
+   "y": 16
+  }
+ ]
+}

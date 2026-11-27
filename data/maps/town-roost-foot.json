@@ -1,0 +1,60 @@
+{
+ "id": "town-roost-foot",
+ "name": "Roost Foot",
+ "music": "caves",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "e": "exit",
+  "R": "rock",
+  "c": "cliff",
+  "s": "steps"
+ },
+ "rows": [
+  "cccccccccccccccccccccccc",
+  "cRRRRRRRRRRssRRRRRRRRRRc",
+  "cR,,,,,,,,,ss,,,,,,,,,Rc",
+  "cR,,RR,,,,,ss,,,,,RR,,Rc",
+  "cR,,,,,,,,,::,,,,,,,,,Rc",
+  "cR,rrrr,,,,:,,,,,,,,,,Rc",
+  "cR,hhdh,,,,:,,,,,xx,,,Rc",
+  "cR,,,:,,,,,:,,,,,,,,,,Rc",
+  "cR,,,::::::::,,,,,,,,,Rc",
+  "cR,,,,,,,,,:,,,,,RR,,,Rc",
+  "cRR,,,,,,,,:,,,,,,,,,RRc",
+  "ccRR,,,,,,,:,,,,,,,,RRcc",
+  "cccRRRRRRRR:RRRRRRRRRccc",
+  "ccccccccccceeccccccccccc"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 11,
+   "y": 12
+  },
+  {
+   "id": "roost-foot-sign0",
+   "kind": "sign",
+   "x": 12,
+   "y": 1,
+   "props": {
+    "text": "Steps cut into the rock, going up into the cloud. The wind comes down them like water down a gutter."
+   }
+  },
+  {
+   "id": "roost-foot-sign1",
+   "kind": "sign",
+   "x": 18,
+   "y": 6,
+   "props": {
+    "text": "Wire, coiled in a crate. Copper, bright where it's been cut."
+   }
+  }
+ ]
+}

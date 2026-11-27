@@ -1,0 +1,50 @@
+{
+ "id": "town-lockside--quay",
+ "name": "Lockside, the Quay",
+ "music": "town",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "S": "stall",
+  "H": "hay",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire",
+  "p": "plank"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "T~~~~~~~~~~~~~~~~~~~~~~T",
+  "TppppppppppppppppppppppT",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,,SS,,,,CC,,,,xx,,HH,,T",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T,rrrr,,,,,,,,,,,,,,,,,e",
+  "T,hhdh,,,,F,,,,,,,,,,,,T",
+  "TTTTTTTTTTTTTTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 22,
+   "y": 7
+  },
+  {
+   "id": "town-lockside--quay-sign0",
+   "kind": "sign",
+   "x": 10,
+   "y": 8,
+   "props": {
+    "text": "A brazier for the night lock-crews. Kettles hang over it."
+   }
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "town-reedhythe",
+ "name": "Reedhythe",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "x": "crate",
+  "~": "water",
+  "e": "exit",
+  "C": "cart",
+  "F": "campfire",
+  "p": "plank",
+  "q": "reeds"
+ },
+ "rows": [
+  "~~~~~~~~~~p~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~p~~~~~~~~~~~~~~~",
+  "~~~~~~~~~~p~~~~~~~~~~~~~~~",
+  "~~~~~~~~~ppp~~~~~~~~~~~~~~",
+  "qqq,,,,,,,,,,,,,,,,,,,qqqq",
+  "qqq,rrrrr,,,,,rrrrrr,,qqqq",
+  "qqq,rrrrr,,,,,rrrrrr,,qqqq",
+  "qqq,hhdhh,,,,,hhdhhh,,qqqq",
+  "qqq,,,,,,,,F,,,,,,,,,,qqqq",
+  "qqq,xx,,,,,,,,,,,,CC,,qqqq",
+  "qqq,,,,,,,,,::,,,,,,,,qqqq",
+  "qqqqqqqqqqqq::qqqqqqqqqqqq",
+  "qqqqqqqqqqqq::qqqqqqqqqqqq",
+  "qqqqqqqqqqqqeeqqqqqqqqqqqq"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 12,
+   "y": 12
+  }
+ ]
+}

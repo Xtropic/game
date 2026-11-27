@@ -1,0 +1,55 @@
+{
+ "note": "Kith tournaments (src/kith/tourney.ts). A kith's rank (Yearling, Terrace, Valley, Cloudline, Crown) is earned only by winning an event; each event takes kith of the rank below its own. 'land' must be reachable to enter. Foes are other handlers' kith: species, level, a name.",
+ "ranks": ["Unranked", "Yearling", "Terrace", "Valley", "Cloudline", "Crown"],
+ "events": [
+  {
+   "id": "drove-fair", "name": "The Drove Fair", "where": "Drovers' Halt", "land": "vale", "needs": 0, "gives": 1, "fee": 5, "size": 2,
+   "blurb": "Drovers bring their best young kith down off the road once a season. Three rounds in a roped ring on the grass; win them all and your kith is a Yearling.",
+   "prize": { "coin": 40, "fitting": "charm-ribbon" },
+   "rounds": [
+    { "name": "First round", "foes": [{ "species": "reedcat", "level": 4, "name": "Burr" }] },
+    { "name": "Second round", "foes": [{ "species": "loftbuck", "level": 5, "name": "Hob" }, { "species": "market-reedcat", "level": 4, "name": "Pip" }] },
+    { "name": "The final", "foes": [{ "species": "drove-loftbuck", "level": 7, "name": "Old Tansy" }, { "species": "drove-cat", "level": 6, "name": "Smudge" }] }
+   ]
+  },
+  {
+   "id": "terrace-show", "name": "The Terrace Show", "where": "Highmoss", "land": "cloudline", "needs": 1, "gives": 2, "fee": 15, "size": 2,
+   "blurb": "The cloudline villages pit their Yearlings against each other on the flat above the moss beds. The ground is steep and the crowd is loud.",
+   "prize": { "coin": 90, "fitting": "charm-bell" },
+   "rounds": [
+    { "name": "First round", "foes": [{ "species": "terrace-doe", "level": 9, "name": "Heather" }, { "species": "fog-reedcat", "level": 8, "name": "Wisp" }] },
+    { "name": "Second round", "foes": [{ "species": "kerrow-leaper", "level": 11, "name": "Flint" }, { "species": "reedcat", "level": 10, "name": "Moth" }] },
+    { "name": "The final", "foes": [{ "species": "loftbuck", "level": 13, "name": "Greyfell" }, { "species": "fog-reedcat", "level": 12, "name": "Haze" }] }
+   ]
+  },
+  {
+   "id": "canal-cup", "name": "The Canal Cup", "where": "Cinderwick", "land": "millcities", "needs": 2, "gives": 3, "fee": 40, "size": 3,
+   "blurb": "The mill towns' cup, fought on a barge deck moored in the canal market. Money changes hands on every round.",
+   "prize": { "coin": 200, "fitting": "cord-gut" },
+   "rounds": [
+    { "name": "First round", "foes": [{ "species": "market-reedcat", "level": 15, "name": "Tally" }, { "species": "drove-loftbuck", "level": 16, "name": "Bargeman" }] },
+    { "name": "Second round", "foes": [{ "species": "drove-cat", "level": 17, "name": "Cinder" }, { "species": "kerrow-leaper", "level": 17, "name": "Lockjaw" }, { "species": "reedcat", "level": 16, "name": "Soot" }] },
+    { "name": "The final", "foes": [{ "species": "drove-loftbuck", "level": 20, "name": "The Owner's Pride" }, { "species": "fog-reedcat", "level": 19, "name": "Gauze" }, { "species": "market-reedcat", "level": 19, "name": "Shuttle" }] }
+   ]
+  },
+  {
+   "id": "cloud-fair", "name": "The Cloud Fair", "where": "Frostmere", "land": "north", "needs": 3, "gives": 4, "fee": 80, "size": 3,
+   "blurb": "The northern fair, where kith from every land meet in the snow. Only Valley-ranked kith are let in.",
+   "prize": { "coin": 350, "fitting": "charm-feather" },
+   "rounds": [
+    { "name": "First round", "foes": [{ "species": "drove-loftbuck", "level": 24, "name": "Rime" }, { "species": "fog-reedcat", "level": 23, "name": "Sleet" }] },
+    { "name": "The final", "foes": [{ "species": "loftbuck", "level": 27, "name": "Stormhorn" }, { "species": "drove-cat", "level": 26, "name": "Frostpaw" }, { "species": "kerrow-leaper", "level": 26, "name": "Crag" }] }
+   ]
+  },
+  {
+   "id": "great-drove", "name": "The Great Drove", "where": "Vantry", "land": "heartland", "needs": 4, "gives": 5, "fee": 150, "size": 3,
+   "blurb": "The oldest event in Ostrel, held in the capital before the Crown itself. Winning makes a kith Crown-ranked, which is to say famous.",
+   "prize": { "coin": 600, "fitting": "charm-tooth" },
+   "rounds": [
+    { "name": "First round", "foes": [{ "species": "drove-loftbuck", "level": 30, "name": "Banner" }, { "species": "market-reedcat", "level": 30, "name": "Gilt" }] },
+    { "name": "Second round", "foes": [{ "species": "kerrow-leaper", "level": 33, "name": "Summit" }, { "species": "fog-reedcat", "level": 32, "name": "Veil" }, { "species": "drove-cat", "level": 32, "name": "Jackdaw" }] },
+    { "name": "The final", "foes": [{ "species": "loftbuck", "level": 36, "name": "Crownhorn's get" }, { "species": "reedcat", "level": 35, "name": "Queen's cat" }, { "species": "drove-loftbuck", "level": 35, "name": "Old Drove" }] }
+   ]
+  }
+ ]
+}

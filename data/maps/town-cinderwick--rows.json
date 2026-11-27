@@ -1,0 +1,56 @@
+{
+ "id": "town-cinderwick--rows",
+ "name": "Cinderwick, the Spinning Rows",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  ".": "cobble",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "w": "well",
+  "H": "hay",
+  "x": "crate",
+  "e": "exit",
+  "b": "table"
+ },
+ "rows": [
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "hrrrrrrrrrrr..rrrrrrrrrrrh",
+  "hhhhhdhhhhhh..hhhhhhdhhhhh",
+  "h........................h",
+  "h.bb.bb.bb..........bb.bbh",
+  "h........................e",
+  "h.bb.bb.bb...w......bb.bbh",
+  "h........................h",
+  "h..xx.......:.......HH...h",
+  "hhhhhhhhhhhhhhhhhhhhhhhhhh"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 24,
+   "y": 5
+  },
+  {
+   "id": "town-cinderwick--rows-sign0",
+   "kind": "sign",
+   "x": 13,
+   "y": 6,
+   "props": {
+    "text": "The row's pump. A sign: 'Water at the half-bell only.'"
+   }
+  },
+  {
+   "id": "town-cinderwick--rows-sign1",
+   "kind": "sign",
+   "x": 2,
+   "y": 4,
+   "props": {
+    "text": "Spinning frames, hundreds of spindles each, running even with nobody at them."
+   }
+  }
+ ]
+}

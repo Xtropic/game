@@ -1,0 +1,41 @@
+{
+ "id": "college-archive",
+ "name": "The College archive",
+ "music": "caves",
+ "legend": {
+  "d": "door",
+  "e": "exit",
+  "F": "campfire",
+  "p": "plank",
+  "b": "table",
+  "R": "rock",
+  "I": "iwall",
+  "k": "shelf"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRReRRRRRRRRRRRRRRR",
+  "RppppppppppppppppppppppppIIIIR",
+  "RppkpppkpppkpppkpppkpppkpIpkIR",
+  "RppkpppkpppkpppkpppkpppkpdppIR",
+  "RppkpppkpppkpppkpppkpppkpIbpIR",
+  "RppkpppkpppkpppkpppkpppkpIIIIR",
+  "RppkpppkpppkpppkpppkpppkpppppR",
+  "RppppppppppppppppppppppppppppR",
+  "RppppppppppppppppppppppppppppR",
+  "RppkpppkpppkpppkpppkpppkpppppR",
+  "RIIIIIpkpppkpppkpppkpppkpppppR",
+  "RIFppIpkpppkpppkpppkpppkpppppR",
+  "RIpppdpkpppkpppkpppkpppkpppppR",
+  "RIpppIpkpppkpppkpppkpppkpppppR",
+  "RIIIIIpppppppppppppppppppppppR",
+  "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 14,
+   "y": 1
+  }
+ ]
+}

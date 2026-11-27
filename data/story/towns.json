@@ -29,6 +29,25 @@
  "objectives": {},
  "actors": [
   {
+   "id": "hm-steward",
+   "map": "town-highmoss",
+   "x": 20,
+   "y": 9,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old woman on a stool by a ring of moss-stones. \"The Terrace Show. Yearlings only. Up here the ground slopes and the kith that keep their feet win.\""
+    },
+    {
+     "tourney": "terrace-show"
+    }
+   ]
+  },
+  {
    "id": "hm-gatherer",
    "map": "town-highmoss",
    "x": 9,
@@ -203,7 +222,8 @@
    "y": 7,
    "look": "vil1",
    "when": {
-    "stagePrefix": "a"
+    "stagePrefix": "a",
+    "not": "roadKnown"
    },
    "talk": [
     {
@@ -243,6 +263,17 @@
    },
    "talk": [
     {
+     "if": {
+      "flag": "roadKnown"
+     },
+     "then": [
+      {
+       "say": "kr-mother",
+       "text": "\"They hanged the bridge warden off his own bridge, for letting your children cross. Twenty years he kept that toll. Get away from my door, Commons.\""
+      }
+     ]
+    },
+    {
      "say": "kr-mother",
      "text": "\"The indenture carts take the gorge road because it's quiet. My eldest went on one, two winters back.\""
     },
@@ -253,12 +284,84 @@
        "a3b",
        "a3c",
        "a4",
+       "a4b",
        "a5",
+       "a5b",
        "a6",
        "a6b",
+       "a6c",
+       "a6d",
+       "a6e",
        "a7",
        "a7b",
-       "a7c"
+       "a7c",
+       "ab1",
+       "ab2",
+       "ab3",
+       "ab3c",
+       "ab3e",
+       "ab4",
+       "ab5",
+       "ab6",
+       "ab7",
+       "ab8",
+       "ab9",
+       "ab10",
+       "ab11",
+       "ab12",
+       "ab13",
+       "ab14",
+       "ab15",
+       "ab16",
+       "ab17",
+       "ab18",
+       "ab19",
+       "ab20",
+       "ab21",
+       "ab22",
+       "ab23",
+       "ab24",
+       "ab25",
+       "ab26",
+       "ac1",
+       "ac2",
+       "ac3",
+       "ac5",
+       "ac6",
+       "ac7",
+       "ac8",
+       "ac9",
+       "ac10",
+       "ac11",
+       "ac12",
+       "ac13",
+       "ad1",
+       "ad2",
+       "ad3",
+       "ad4",
+       "ad5",
+       "ad6",
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad19b",
+       "ad20"
       ]
      },
      "then": [
@@ -383,6 +486,25 @@
    ]
   },
   {
+   "id": "dh-steward",
+   "map": "town-drovers-halt",
+   "x": 14,
+   "y": 9,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A steward with a slate, chalking names by a roped ring on the grass. \"Drove Fair. Young kith only, the ones with no rank yet. Win three rounds and they're Yearlings. Five coin to enter.\""
+    },
+    {
+     "tourney": "drove-fair"
+    }
+   ]
+  },
+  {
    "id": "dh-host",
    "map": "town-drovers-halt",
    "x": 6,
@@ -492,12 +614,84 @@
      "if": {
       "stage": [
        "a4",
+       "a4b",
        "a5",
+       "a5b",
        "a6",
        "a6b",
+       "a6c",
+       "a6d",
+       "a6e",
        "a7",
        "a7b",
-       "a7c"
+       "a7c",
+       "ab1",
+       "ab2",
+       "ab3",
+       "ab3c",
+       "ab3e",
+       "ab4",
+       "ab5",
+       "ab6",
+       "ab7",
+       "ab8",
+       "ab9",
+       "ab10",
+       "ab11",
+       "ab12",
+       "ab13",
+       "ab14",
+       "ab15",
+       "ab16",
+       "ab17",
+       "ab18",
+       "ab19",
+       "ab20",
+       "ab21",
+       "ab22",
+       "ab23",
+       "ab24",
+       "ab25",
+       "ab26",
+       "ac1",
+       "ac2",
+       "ac3",
+       "ac5",
+       "ac6",
+       "ac7",
+       "ac8",
+       "ac9",
+       "ac10",
+       "ac11",
+       "ac12",
+       "ac13",
+       "ad1",
+       "ad2",
+       "ad3",
+       "ad4",
+       "ad5",
+       "ad6",
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad19b",
+       "ad20"
       ]
      },
      "then": [
@@ -522,6 +716,857 @@
     {
      "say": "lb-boy",
      "text": "\"If you lie on the barrow at night you can hear it breathing. Ansel's brother says so. I'm Ansel.\""
+    }
+   ]
+  },
+  {
+   "id": "cw-spinner",
+   "map": "town-cinderwick",
+   "x": 6,
+   "y": 4,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A spinner on her break, sitting on the edge of a stall. \"Fourteen hours on the frames. Fifteen, if the foreman's wearing. You get so you can't feel your fingers, then you get so you can't feel anything. That's what the tins are for.\""
+    }
+   ]
+  },
+  {
+   "id": "cw-boy",
+   "map": "town-cinderwick",
+   "x": 15,
+   "y": 5,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy with a sack of bobbins. \"The drain under the wall? Everybody knows about the drain. Nobody goes down it. It comes out at the Houses.\""
+    }
+   ]
+  },
+  {
+   "id": "cw-lock",
+   "map": "town-cinderwick",
+   "x": 8,
+   "y": 8,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A lock-keeper leaning on his pole. \"Smoke and canals, that's Cinderwick. The mills drink the river and the Guild drinks the mills.\""
+    }
+   ]
+  },
+  {
+   "id": "ls-bargee",
+   "map": "town-lockside",
+   "x": 5,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A bargee mending a rope. \"Corvel's hatchery is up the cut. You can hear the boilers knocking at night if the wind's right. Nobody round here goes near it.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad19b",
+       "ad20"
+      ]
+     },
+     "then": [
+      {
+       "say": "",
+       "text": "A bargee mending a rope. \"Ninety-one of them, walking up the towpath in the dark, holding hands. My wife cried. I didn't see anything, mind. I was asleep.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ls-woman",
+   "map": "town-lockside",
+   "x": 14,
+   "y": 6,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman hanging washing between two boats. \"My sister's girl went into Corvel's at seven. She'll come out at twenty, if she comes out. That's the indenture.\""
+    }
+   ]
+  },
+  {
+   "id": "ls-dog",
+   "map": "town-lockside",
+   "x": 19,
+   "y": 9,
+   "look": "reedcat",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A barge reedcat, asleep on a coil of rope in the sun. It doesn't care who you are."
+    }
+   ]
+  },
+  {
+   "id": "cg-chandler",
+   "map": "town-candle-galleries",
+   "x": 5,
+   "y": 6,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old chandler dipping wicks. \"The galleries were cut for tallow, back when the mills ran on candles. Now the Sisters keep them lit, and nobody asks what for.\""
+    }
+   ]
+  },
+  {
+   "id": "cg-novice",
+   "map": "town-candle-galleries",
+   "x": 12,
+   "y": 2,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A young woman in a grey hood, trimming a lamp in a niche. She smiles at you, and doesn't say anything, and goes on to the next lamp."
+    }
+   ]
+  },
+  {
+   "id": "cg-girl",
+   "map": "town-candle-galleries",
+   "x": 15,
+   "y": 6,
+   "look": "kid2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A girl counting candles into a basket. \"Forty-one, forty-two. If I lose count I have to start again. I never lose count.\""
+    }
+   ]
+  },
+  {
+   "id": "ld-keeper",
+   "map": "town-lockkeepers-deep",
+   "x": 6,
+   "y": 7,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The keeper of the deep lock, a big slow man. \"Deepest lock in Ostrel. Thirty feet of water. Takes an hour to fill. I've had a lot of hours to think.\""
+    }
+   ]
+  },
+  {
+   "id": "ld-wife",
+   "map": "town-lockkeepers-deep",
+   "x": 15,
+   "y": 4,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "His wife, gutting fish. \"He thinks too much. Here. Take a fish. You look like you've walked a long way.\""
+    }
+   ]
+  },
+  {
+   "id": "ld-boy",
+   "map": "town-lockkeepers-deep",
+   "x": 12,
+   "y": 8,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy fishing off the lock gate with a bent nail. He hasn't caught anything. He doesn't mind."
+    }
+   ]
+  },
+  {
+   "id": "cf-puddler",
+   "map": "town-cinderwick--foundry",
+   "x": 14,
+   "y": 4,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A puddler with a long iron bar, stirring something white-hot through a hatch. He doesn't look up. \"Warden steel. They take every bar we make and pay for half. The other half's what they call protection.\""
+    }
+   ]
+  },
+  {
+   "id": "cf-foreman",
+   "map": "town-cinderwick--foundry",
+   "x": 6,
+   "y": 6,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A foreman with a slate and a cough. \"Sixty hands on the day shift, forty at night. Forty-one, if you count the boy who sweeps the slag. I don't. He's not on the books.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "ad1",
+       "ad2",
+       "ad3",
+       "ad4",
+       "ad5",
+       "ad6",
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad19b",
+       "ad20"
+      ]
+     },
+     "then": [
+      {
+       "say": "",
+       "text": "The foreman again, quieter. \"Is it true about the cart? The children? ... Don't tell me. If I know, I'd have to say.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cf-ringkeeper",
+   "map": "town-cinderwick--foundry",
+   "x": 10,
+   "y": 9,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman with a slate and a bag of coin sits on an upturned crucible by a square of raked slag-sand. \"The Foundry ring. One on one, no blades, first to yield or fall. Beat my fighter and the purse is yours.\""
+    },
+    {
+     "choose": "The ring-keeper waits, chalk in hand.",
+     "options": [
+      {
+       "label": "Fight Slag Tam (purse 20)",
+       "hint": "Strong, and not subtle.",
+       "when": {
+        "not": "won.duel.ring-tam"
+       },
+       "do": [
+        {
+         "duel": "ring-tam",
+         "win": [
+          {
+           "say": "",
+           "text": "The ring-keeper chalks your name on the slate, under Tam's, and crosses his out. \"Hesketh next, if you want him.\""
+          }
+         ],
+         "lose": [
+          {
+           "say": "",
+           "text": "\"Come back when you can stand,\" the ring-keeper says, not unkindly."
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Fight Hesketh (purse 40)",
+       "hint": "Quick, and he feints.",
+       "when": {
+        "flag": "won.duel.ring-tam",
+        "not": "won.duel.ring-hesketh"
+       },
+       "do": [
+        {
+         "duel": "ring-hesketh",
+         "win": [
+          {
+           "say": "",
+           "text": "\"Nobody reads Hesketh,\" the ring-keeper says. \"Moll will want to meet you.\""
+          }
+         ],
+         "lose": [
+          {
+           "say": "",
+           "text": "\"He does that to everyone,\" the ring-keeper says."
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Fight Iron Moll (purse 80)",
+       "hint": "Champion six winters. Don't trade blows.",
+       "when": {
+        "flag": "won.duel.ring-hesketh",
+        "not": "won.duel.ring-moll"
+       },
+       "do": [
+        {
+         "duel": "ring-moll",
+         "win": [
+          {
+           "say": "",
+           "text": "The ring-keeper wipes the slate clean and writes one name at the top. Yours."
+          }
+         ],
+         "lose": [
+          {
+           "say": "",
+           "text": "\"Six winters,\" the ring-keeper says. \"You won't be the last to try.\""
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Fight Moll again, for the crowd",
+       "hint": "No purse. Just the noise.",
+       "when": {
+        "flag": "won.duel.ring-moll"
+       },
+       "do": [
+        {
+         "duel": "ring-moll"
+        }
+       ]
+      },
+      {
+       "label": "Not now",
+       "do": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cf-sweeper",
+   "map": "town-cinderwick--foundry",
+   "x": 19,
+   "y": 10,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "The slag boy, black to the eyes. \"I'm saving for boots. Forty coin. I've got six. The rest of my wage is my mum's tins.\""
+    }
+   ]
+  },
+  {
+   "id": "cr-girl",
+   "map": "town-cinderwick--rows",
+   "x": 4,
+   "y": 5,
+   "look": "kid2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A girl of nine or ten, walking the length of the frames, tying broken threads without looking. \"Don't stand there, they'll see I've stopped.\" She hasn't stopped."
+    },
+    {
+     "say": "",
+     "text": "Her wrist has a number inked on it. Not a ring scar. An indenture number."
+    }
+   ]
+  },
+  {
+   "id": "cr-overseer",
+   "map": "town-cinderwick--rows",
+   "x": 16,
+   "y": 3,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An overseer with a watch on a chain. \"Visitors are not permitted on the rows. ... Very well. Five minutes. Don't speak to them, it slows them down.\""
+    }
+   ]
+  },
+  {
+   "id": "cr-old",
+   "map": "town-cinderwick--rows",
+   "x": 12,
+   "y": 7,
+   "look": "vil7",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "An old spinner on a stool by the pump, too slow for the frames now, sorting bobbins. \"I came in at eight. They said, ten years and your indenture's paid. That was fifty-one years ago. The sums changed.\""
+    }
+   ]
+  },
+  {
+   "id": "cm-cupman",
+   "map": "town-cinderwick--market",
+   "x": 16,
+   "y": 8,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A man in a good coat at a table by the moored barge, taking coin. \"The Canal Cup. Terrace-ranked kith, three to a side, on the barge deck. The owners bet heavy. Try not to fall in.\""
+    },
+    {
+     "tourney": "canal-cup"
+    }
+   ]
+  },
+  {
+   "id": "cm-trader",
+   "map": "town-cinderwick--market",
+   "x": 8,
+   "y": 6,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A trader behind a stall of bandages, glass jars and iron fittings. \"Coin first, questions never. What are you after?\""
+    },
+    {
+     "shop": "cinderwick"
+    }
+   ]
+  },
+  {
+   "id": "cm-bargewife",
+   "map": "town-cinderwick--market",
+   "x": 20,
+   "y": 4,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A bargewife unloading sacks onto the quay. \"Everything in Ostrel comes through this market once. Grain in, cloth out, children in, tins out.\""
+    }
+   ]
+  },
+  {
+   "id": "cm-tinman",
+   "map": "town-cinderwick--market",
+   "x": 13,
+   "y": 6,
+   "look": "vil3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A stall with nothing on it but a locked box. The man behind it smiles. \"Tins are sold at the Guild counter, friend. I only hold places in the queue.\""
+    }
+   ]
+  },
+  {
+   "id": "cm-boy",
+   "map": "town-cinderwick--market",
+   "x": 5,
+   "y": 8,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy holding out a cap. \"A coin for the Houses, miss? My sister's in there. They let you buy them a candle.\""
+    }
+   ]
+  },
+  {
+   "id": "lq-chandler",
+   "map": "town-lockside--quay",
+   "x": 3,
+   "y": 6,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A ship's chandler sitting on an upturned barrel. \"Rope, gut, bandage, and anything the bargees leave behind. Buying?\""
+    },
+    {
+     "shop": "lockside"
+    }
+   ]
+  },
+  {
+   "id": "lq-girl",
+   "map": "town-lockside--quay",
+   "x": 14,
+   "y": 4,
+   "look": "kid2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A girl dangling her feet over the quay. \"Boats go up full of grain and come down full of nothing. That's how you know they're from Corvel's.\""
+    }
+   ]
+  },
+  {
+   "id": "lq-bargee",
+   "map": "town-lockside--quay",
+   "x": 9,
+   "y": 7,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A bargee eating soup by the brazier. \"The lock gates here are older than the Guild. Older than the Crown. They'll be here when both are gone, and still leaking.\""
+    }
+   ]
+  },
+  {
+   "id": "lt-walker",
+   "map": "town-lockside--towpath",
+   "x": 8,
+   "y": 4,
+   "look": "vil1",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A man leading a towing loftbuck along the path. \"Up to Corvel's and back, three times a day. The buck knows the way. I stopped looking at the fence a long time ago.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad19b",
+       "ad20"
+      ]
+     },
+     "then": [
+      {
+       "say": "",
+       "text": "The towing man stops. \"Ninety-one of them, coming down this path in the dark. Holding hands. The buck didn't even shy. Like it knew they were all right.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lt-kid",
+   "map": "town-lockside--towpath",
+   "x": 14,
+   "y": 7,
+   "look": "kid3",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A boy throwing stones at the canal. \"There's a hatchery up there. You can't see it from here. You can smell it though.\""
+    }
+   ]
+  },
+  {
+   "id": "mm-miller",
+   "map": "millbridge--mills",
+   "x": 12,
+   "y": 6,
+   "look": "vil6",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A miller white to the elbows with flour. \"Three wheels on this race, and every one of them older than my grandmother. Millbridge grinds for the whole vale.\""
+    },
+    {
+     "if": {
+      "stage": [
+       "a4",
+       "a4b",
+       "a5",
+       "a5b",
+       "a6",
+       "a6b",
+       "a6c",
+       "a6d",
+       "a6e",
+       "a7",
+       "a7b",
+       "a7c",
+       "ab1",
+       "ab2",
+       "ab3",
+       "ab3c",
+       "ab3e",
+       "ab4",
+       "ab5",
+       "ab6",
+       "ab7",
+       "ab8",
+       "ab9",
+       "ab10",
+       "ab11",
+       "ab12",
+       "ab13",
+       "ab14",
+       "ab15",
+       "ab16",
+       "ab17",
+       "ab18",
+       "ab19",
+       "ab20",
+       "ab21",
+       "ab22",
+       "ab23",
+       "ab24",
+       "ab25",
+       "ab26",
+       "ac1",
+       "ac2",
+       "ac3",
+       "ac5",
+       "ac6",
+       "ac7",
+       "ac8",
+       "ac9",
+       "ac10",
+       "ac11",
+       "ac12",
+       "ac13",
+       "ad1",
+       "ad2",
+       "ad3",
+       "ad4",
+       "ad5",
+       "ad6",
+       "ad6b",
+       "ad7",
+       "ad8",
+       "ad9",
+       "ad10",
+       "ae1",
+       "ae2",
+       "ae3",
+       "ae4",
+       "ad11",
+       "ad12",
+       "ad13",
+       "ad14",
+       "ad15",
+       "ad16",
+       "ad16l",
+       "ad17",
+       "ad18",
+       "ad19",
+       "ad19b",
+       "ad20"
+      ]
+     },
+     "then": [
+      {
+       "say": "",
+       "text": "The miller nods at you. \"You're the ones who stopped the cart at Hob's Bend. My cousin's girl was in it. Whatever you need ground, it's ground.\""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mm-stall",
+   "map": "millbridge--mills",
+   "x": 4,
+   "y": 8,
+   "look": "vil5",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman at a stall of mill silk, bandages and bits of harness. \"Mill silk cord, best on the river. And the willowbark's fresh. What'll it be?\""
+    },
+    {
+     "shop": "millbridge"
+    }
+   ]
+  },
+  {
+   "id": "mm-kid",
+   "map": "millbridge--mills",
+   "x": 18,
+   "y": 5,
+   "look": "kid",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A girl sitting on a sack, watching the wheel go round. \"If you count to a hundred the big wheel goes round nine times. I've checked.\""
+    }
+   ]
+  },
+  {
+   "id": "mw-ferryman",
+   "map": "millbridge--wharf",
+   "x": 8,
+   "y": 5,
+   "look": "vil4",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A ferryman sitting in the stern of his flat boat. \"Down to Weirbank and back, a copper a head. Kith ride free if they don't stand up.\""
+    }
+   ]
+  },
+  {
+   "id": "mw-wife",
+   "map": "millbridge--wharf",
+   "x": 15,
+   "y": 4,
+   "look": "vil2",
+   "when": {
+    "stagePrefix": "a"
+   },
+   "talk": [
+    {
+     "say": "",
+     "text": "A woman counting sacks onto a cart. \"Flour out, salt in. Guild tolls on both. They say the Guild's a trade house. It's a toll gate with a hatchery attached.\""
     }
    ]
   }
@@ -955,6 +2000,392 @@
       "x": 66,
       "y": 29,
       "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    20,
+    12
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick",
+      "x": 12,
+      "y": 10,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-cinderwick",
+   "at": [
+    12,
+    12
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 20,
+      "y": 13,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    38,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockside",
+      "x": 11,
+      "y": 8,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-lockside",
+   "at": [
+    11,
+    10
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 38,
+      "y": 10,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    37,
+    30
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-candle-galleries",
+      "x": 10,
+      "y": 6,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-candle-galleries",
+   "at": [
+    10,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 37,
+      "y": 31,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "land-millcities",
+   "at": [
+    47,
+    33
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockkeepers-deep",
+      "x": 10,
+      "y": 7,
+      "facing": "up"
+     }
+    }
+   ],
+   "when": {
+    "stagePrefix": "a"
+   }
+  },
+  {
+   "map": "town-lockkeepers-deep",
+   "at": [
+    10,
+    9
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "land-millcities",
+      "x": 47,
+      "y": 34,
+      "facing": "down"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinderwick",
+   "at": [
+    25,
+    4
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick--foundry",
+      "x": 1,
+      "y": 5,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinderwick--foundry",
+   "at": [
+    0,
+    5
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick",
+      "x": 24,
+      "y": 4,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinderwick",
+   "at": [
+    0,
+    4
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick--rows",
+      "x": 24,
+      "y": 5,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinderwick--rows",
+   "at": [
+    25,
+    5
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick",
+      "x": 1,
+      "y": 4,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinderwick",
+   "at": [
+    0,
+    11
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick--market",
+      "x": 24,
+      "y": 8,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-cinderwick--market",
+   "at": [
+    25,
+    8
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-cinderwick",
+      "x": 1,
+      "y": 11,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-lockside",
+   "at": [
+    0,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockside--quay",
+      "x": 22,
+      "y": 7,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-lockside--quay",
+   "at": [
+    23,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockside",
+      "x": 1,
+      "y": 7,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-lockside",
+   "at": [
+    23,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockside--towpath",
+      "x": 1,
+      "y": 7,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "town-lockside--towpath",
+   "at": [
+    0,
+    7
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "town-lockside",
+      "x": 22,
+      "y": 7,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "millbridge",
+   "at": [
+    29,
+    6
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "millbridge--mills",
+      "x": 1,
+      "y": 6,
+      "facing": "right"
+     }
+    }
+   ]
+  },
+  {
+   "map": "millbridge--mills",
+   "at": [
+    0,
+    6
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "millbridge",
+      "x": 28,
+      "y": 6,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "millbridge",
+   "at": [
+    0,
+    14
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "millbridge--wharf",
+      "x": 22,
+      "y": 5,
+      "facing": "left"
+     }
+    }
+   ]
+  },
+  {
+   "map": "millbridge--wharf",
+   "at": [
+    23,
+    5
+   ],
+   "do": [
+    {
+     "goto": {
+      "map": "millbridge",
+      "x": 1,
+      "y": 14,
+      "facing": "right"
      }
     }
    ]

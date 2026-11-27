@@ -1,0 +1,38 @@
+{
+ "id": "holm-gaol",
+ "name": "Holm gaol",
+ "music": "caves",
+ "legend": {
+  "d": "door",
+  "e": "exit",
+  "F": "campfire",
+  "p": "plank",
+  "b": "table",
+  "R": "rock",
+  "I": "iwall",
+  "B": "bed",
+  "_": "wetfloor"
+ },
+ "rows": [
+  "RRRRRRRRRRRRRRRRRRRRRRRR",
+  "R_IIIIIIIIIIIIIIIIIIII_R",
+  "R_IB__IIB__IIB__IIB__I_R",
+  "R_I___II___II___II___I_R",
+  "R_IIdIIIIdIIIIdIIIIdII_R",
+  "R______________________R",
+  "R________________IIIIIIR",
+  "R________________IppbpIR",
+  "R________________dppppIR",
+  "R________________IpppFIR",
+  "Re_______________IIIIIIR",
+  "RRRRRRRRRRRRRRRRRRRRRRRR"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 2,
+   "y": 10
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "id": "town-lockkeepers-deep",
+ "name": "Lockkeeper's Deep",
+ "music": "dusk",
+ "rest": true,
+ "legend": {
+  "T": "tree",
+  ",": "grass",
+  ":": "path",
+  "h": "wall",
+  "r": "roof",
+  "d": "door",
+  "H": "hay",
+  "~": "water",
+  "=": "bridge",
+  "e": "exit"
+ },
+ "rows": [
+  "TTTTTTTTTTTTTTTTTTTTTT",
+  "T,,,,,,,,,,,,,,,,,,,,T",
+  "T,~~~~~~~~~~~~~~~~~~,T",
+  "T,~~~~~~~~==~~~~~~~~,T",
+  "T,,,,,,,,,:,,,,,,,,,,T",
+  "T,rrrr,,,,:,,,,rrrr,,T",
+  "T,hdhh,,,,:,,,,hhdh,,T",
+  "T,,:::::::::::::::,,,T",
+  "T,,,,,,,,,:,,,HH,,,,,T",
+  "TTTTTTTTTTeTTTTTTTTTTT"
+ ],
+ "entities": [
+  {
+   "id": "start",
+   "kind": "spawn",
+   "x": 10,
+   "y": 8
+  },
+  {
+   "id": "lockkeepers-deep-sign0",
+   "kind": "sign",
+   "x": 10,
+   "y": 3,
+   "props": {
+    "text": "The deep lock's gate, green with weed, taller than a house."
+   }
+  }
+ ]
+}
