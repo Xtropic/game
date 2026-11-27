@@ -182,14 +182,14 @@ export class ExploreScene implements Scene, StoryHost {
   private fog = new Graphics();
   private barriers: Sprite[] = [];
   /** Over Dorrit's crates at Thornwick once it's theirs: where the ledger is. */
-  private ledgerSign = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 22, fontWeight: "bold", fill: "#ffe2a0", align: "center", stroke: { color: 0x2a1a08, width: 4 }, dropShadow: { color: 0, distance: 2, blur: 4, alpha: 1 } } });
+  private ledgerSign = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 12, fontWeight: "bold", fill: "#ffe2a0", align: "center", stroke: { color: 0x2a1a08, width: 3 } } });
   /** A gold panel behind the sign and a ring on the ground under the crates. */
   private ledgerMark = new Graphics();
   /** Always on screen once Thornwick is Rhea's: a big gold Ledger button (L), pulsing until she first opens it. */
   private ledgerButton = new Container();
   private ledgerButtonBg = new Graphics();
-  private ledgerButtonLabel = new Text({ text: "\u{1F4D6}  Ledger: party & base  [L]", style: { fontFamily: "Georgia, serif", fontSize: 18, fontWeight: "bold", fill: "#2a1a08" } });
-  private ledgerNew = new Text({ text: "NEW", style: { fontFamily: "Georgia, serif", fontSize: 13, fontWeight: "bold", fill: "#ffffff", stroke: { color: 0xa02010, width: 4 } } });
+  private ledgerButtonLabel = new Text({ text: "\u{1F4D6} Ledger [L]", style: { fontFamily: "Georgia, serif", fontSize: 13, fontWeight: "bold", fill: "#2a1a08" } });
+  private ledgerNew = new Text({ text: "NEW", style: { fontFamily: "Georgia, serif", fontSize: 10, fontWeight: "bold", fill: "#ffffff", stroke: { color: 0xa02010, width: 3 } } });
   private placeLabel = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 15, fill: "#f6ecd4", fontStyle: "italic", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 1 } } });
   private banner = new Text({ text: "", style: { fontFamily: "Georgia, serif", fontSize: 20, fill: "#f2e3c4", align: "center", dropShadow: { color: 0, distance: 1, blur: 3, alpha: 0.9 } } });
   private bannerTime = 0;
@@ -219,10 +219,10 @@ export class ExploreScene implements Scene, StoryHost {
     this.guideButton.addChild(this.guideButtonBg, this.guideButtonLabel); this.guideButtonLabel.x = 12; this.guideButtonLabel.y = 6;
     this.guideButton.eventMode = "static"; this.guideButton.cursor = "pointer";
     this.guideButton.on("pointertap", () => { if (this.game.scenes.top === this && !this.joins.showing) openGuide(this.game, this.base.open ? "thornwick" : undefined); });
-    this.ledgerButtonLabel.x = 14; this.ledgerButtonLabel.y = 9;
+    this.ledgerButtonLabel.x = 9; this.ledgerButtonLabel.y = 5;
     this.ledgerButton.addChild(this.ledgerButtonBg, this.ledgerButtonLabel, this.ledgerNew);
-    this.ledgerButtonBg.roundRect(0, 0, this.ledgerButtonLabel.width + 28, 40, 10).fill(0xf0c060).stroke({ color: 0x6a4410, width: 3 });
-    this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerNew.y = -12;
+    this.ledgerButtonBg.roundRect(0, 0, this.ledgerButtonLabel.width + 18, 26, 7).fill(0xf0c060).stroke({ color: 0x6a4410, width: 2 });
+    this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerNew.y = -9;
     this.ledgerButton.eventMode = "static"; this.ledgerButton.cursor = "pointer"; this.ledgerButton.visible = false;
     this.ledgerButton.on("pointertap", () => { if (this.free()) this.openLedger(); });
     this.placeLabel.anchor.set(0.5, 1); this.ledgerSign.anchor.set(0.5, 1); this.banner.anchor.set(0.5, 0);
@@ -265,6 +265,10 @@ export class ExploreScene implements Scene, StoryHost {
     this.atmos.setMap(this.map);
     if (id === "thornwick" && raidDue(this.flags)) setTimeout(() => this.raidNow(), 1500);
     if (file.world) { const m = this.map; m.closed = (tx, ty) => closedAt(m, tx, ty, this.flags); }
+    else {
+      const doors = this.shutDoors();
+      if (doors.size) this.map.closed = (tx, ty) => { const t = doors.get(`${tx},${ty}`); if (!t || this.standingOn(tx, ty)) return false; return !t.some((s) => holds(s.when as never, this.where())); };
+    }
     if (this.flags.gateOpen) this.map.open.add("gate");
     const sp = this.map.spawn();
     this.player.x = x ?? sp.x * TILE + 2; this.player.y = y ?? sp.y * TILE - 2;
@@ -280,6 +284,25 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.screen.w) { this.zoom = this.zoomFor(this.screen.w, this.screen.h); this.world.scale.set(this.zoom); }
     for (const f of this.followers) { f.sprite.x = this.player.x; f.sprite.y = this.player.y; }
     this.refresh();
+  }
+
+  /** True if the player's feet box overlaps tile tx, ty (a door shut behind them must not trap them). */
+  private standingOn(tx: number, ty: number): boolean {
+    const x = this.player.x + BOX.ox, y = this.player.y + BOX.oy;
+    return tx * TILE < x + BOX.w && (tx + 1) * TILE > x && ty * TILE < y + BOX.h && (ty + 1) * TILE > y;
+  }
+
+  /** Doors that lead nowhere stay shut (Mathew 2026-11-27: a building is either a place to enter or it can't be
+   *  entered at all). A door is open only while a story step or zone on it can fire; the rest are solid. */
+  private shutDoors(): Map<string, Array<{ when?: unknown }>> {
+    const id = this.map.file.id, doors = new Map<string, Array<{ when?: unknown }>>();
+    const steps = this.story.steps.filter((s) => s.map === id), zones = this.story.zones.filter((z) => z.map === id);
+    for (let y = 0; y < this.map.height; y++) for (let x = 0; x < this.map.width; x++) {
+      if (this.map.kindAt(x, y) !== "door") continue;
+      doors.set(`${x},${y}`, [...steps.filter((s) => s.at[0] === x && s.at[1] === y),
+        ...zones.filter((z) => x >= z.area[0] && y >= z.area[1] && x <= z.area[2] && y <= z.area[3])]);
+    }
+    return doors;
   }
 
   /** Re-reads the story: who is on this map now, the objective, the light, the HUD. */
@@ -423,7 +446,7 @@ export class ExploreScene implements Scene, StoryHost {
     this.wounds.x = 16; this.wounds.y = h - 44;
     this.menuButton.x = w - this.menuButton.width - 16; this.menuButton.y = h - 32;
     this.guideShown = ""; // re-place the Guide button
-    this.ledgerButton.x = w - this.ledgerButtonBg.width - 16; this.ledgerButton.y = h - 84;
+    this.ledgerButton.x = w - this.ledgerButtonBg.width - 16; this.ledgerButton.y = h - 66;
     this.menu.resize(w, h); this.base.resize(w, h); this.shop.resize(w, h); this.ring.resize(w, h);
     this.banner.x = w / 2; this.banner.y = 64;
     this.cover.clear().rect(0, 0, w, h).fill(0x000000); this.cover.alpha = 0;
@@ -1126,8 +1149,8 @@ export class ExploreScene implements Scene, StoryHost {
     if (this.ledgerButton.visible) {
       const fresh = !this.flags.ledgerSeen, pulse = fresh ? 0.5 + 0.5 * Math.sin(this.game.playSeconds * 5) : 0;
       this.ledgerNew.visible = fresh;
-      const lbl = device.taps ? "\u{1F4D6}  Ledger: party & base" : `\u{1F4D6}  Ledger: party & base  [${keyFor("ledger")}]`;
-      if (this.ledgerButtonLabel.text !== lbl) { this.ledgerButtonLabel.text = lbl; this.ledgerButtonBg.clear().roundRect(0, 0, this.ledgerButtonLabel.width + 28, 40, 10).fill(0xf0c060).stroke({ color: 0x6a4410, width: 3 }); this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerButton.x = this.screen.w - this.ledgerButtonBg.width - 16; }
+      const lbl = device.taps ? "\u{1F4D6} Ledger" : `\u{1F4D6} Ledger [${keyFor("ledger")}]`;
+      if (this.ledgerButtonLabel.text !== lbl) { this.ledgerButtonLabel.text = lbl; this.ledgerButtonBg.clear().roundRect(0, 0, this.ledgerButtonLabel.width + 18, 26, 7).fill(0xf0c060).stroke({ color: 0x6a4410, width: 2 }); this.ledgerNew.x = this.ledgerButtonLabel.width - 22; this.ledgerButton.x = this.screen.w - this.ledgerButtonBg.width - 16; }
       this.ledgerButton.scale.set(1 + pulse * 0.06);
       this.ledgerButtonBg.tint = fresh ? (pulse > 0.5 ? 0xffffff : 0xffe8b0) : 0xffffff;
     }
@@ -1146,8 +1169,8 @@ export class ExploreScene implements Scene, StoryHost {
     const lc = this.ledgerCell();
     if (lc) {
       const near = Math.hypot(lc.x * TILE + 8 - (p.x + 6), lc.y * TILE + 8 - (p.y + 12)) < TILE * 1.8;
-      this.ledgerSign.text = near ? `\u{1F4D6} Thornwick ledger\nparty, buildings, forge\nPress ${keyFor("confirm")} to open` : "\u{1F4D6} Thornwick ledger\n\u25BC";
-      const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 5;
+      this.ledgerSign.text = near ? `\u{1F4D6} Ledger [${keyFor("confirm")}]` : "\u{1F4D6}";
+      const bob = near ? 0 : Math.sin(this.game.playSeconds * 3) * 2;
       let gx: number, gy: number;
       if (in3d && this.w3) {
         const at = this.w3.project(lc.x * TILE + 8, lc.y * TILE + 8, 1.1); this.ledgerSign.x = at.x; this.ledgerSign.y = at.y + bob - 10;
@@ -1156,10 +1179,10 @@ export class ExploreScene implements Scene, StoryHost {
         this.ledgerSign.x = (lc.x * TILE + 8 - Math.round(cx)) * this.zoom; this.ledgerSign.y = (lc.y * TILE - 8 - Math.round(cy)) * this.zoom + bob;
         gx = this.ledgerSign.x; gy = (lc.y * TILE + 12 - Math.round(cy)) * this.zoom;
       }
-      const sw = this.ledgerSign.width + 24, sh = this.ledgerSign.height + 12;
-      this.ledgerMark.roundRect(this.ledgerSign.x - sw / 2, this.ledgerSign.y - sh + 4, sw, sh, 10).fill({ color: 0x1a1208, alpha: 0.72 }).stroke({ color: 0xf0c060, width: 2 });
-      const r = 22 + Math.sin(this.game.playSeconds * 4) * 4;
-      this.ledgerMark.ellipse(gx, gy, r * 1.6, r * 0.7).stroke({ color: 0xffd070, width: 3, alpha: 0.9 });
+      const sw = this.ledgerSign.width + 12, sh = this.ledgerSign.height + 6;
+      this.ledgerMark.roundRect(this.ledgerSign.x - sw / 2, this.ledgerSign.y - sh + 4, sw, sh, 6).fill({ color: 0x1a1208, alpha: 0.72 }).stroke({ color: 0xf0c060, width: 1 });
+      const r = 10 + Math.sin(this.game.playSeconds * 4) * 2;
+      this.ledgerMark.ellipse(gx, gy, r * 1.6, r * 0.7).stroke({ color: 0xffd070, width: 2, alpha: 0.8 });
     }
     // on the world map, name the nearest place within two tiles
     this.placeLabel.text = "";

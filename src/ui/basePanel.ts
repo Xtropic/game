@@ -340,7 +340,7 @@ export class BasePanel {
     const teachTab: Partial<Record<(typeof TABS)[number], string>> = { Forge: "gear", Pens: "pens", Train: "training", Roads: "roads" };
     const lesson = teachTab[TABS[this.tab]]; if (lesson) teach(this.host.game, lesson);
     this.view.removeChildren().forEach((c) => c.destroy({ children: true }));
-    const w = this.w, h = this.h, tall = h > w, W = Math.min(940, w - 16), H = Math.min(tall ? 1100 : 620, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
+    const w = this.w, h = this.h, tall = h > w, W = Math.min(780, w - 16), H = Math.min(tall ? 1100 : 480, h - 16), x0 = Math.round((w - W) / 2), y0 = Math.round((h - H) / 2);
     const small = W < 620, touch = device.touch, fs = small ? (touch ? 14 : 13) : 15, g = this.host.game;
     const dim = new Graphics().rect(0, 0, w, h).fill({ color: 0, alpha: 0.6 }); dim.eventMode = "static"; this.view.addChild(dim);
     this.view.addChild(new Graphics().roundRect(x0, y0, W, H, 10).fill({ color: INK, alpha: 0.97 }).roundRect(x0, y0, W, H, 10).stroke({ color: GOLD, width: 2 }));
@@ -352,7 +352,7 @@ export class BasePanel {
       const tx = x0 + 12 + (i % perRow) * tw, ty = y0 + 44 + Math.floor(i / perRow) * 40, on = i === this.tab;
       this.view.addChild(new Graphics().roundRect(tx, ty, tw - 6, 34, 5).fill({ color: on ? 0x5a4018 : 0x221a12, alpha: 0.95 }).roundRect(tx, ty, tw - 6, 34, 5).stroke({ color: on ? GOLD : 0x4a3c28, width: on ? 2 : 1 }));
       this.hit(tx, ty, tw - 6, 34, () => { this.tab = i; this.i = 0; this.sub = "list"; });
-      const label = new Text({ text: TAB_NAMES[t], style: serif(small ? 13 : 16, on ? "#fff4dc" : "#c8b898", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = ty + 17; this.view.addChild(label);
+      const label = new Text({ text: TAB_NAMES[t], style: serif(small ? 13 : 14, on ? "#fff4dc" : "#c8b898", on) }); label.anchor.set(0.5, 0.5); label.x = tx + (tw - 6) / 2; label.y = ty + 17; this.view.addChild(label);
     });
     const short = h < 520;
     const help = this.text(`${TAB_HELP[TABS[this.tab]]}  (${device.taps ? "The Guide explains" : `${keyFor("guide")}:`} how it all works)`, x0 + 16, y0 + 44 + rowsH + 8, fs, "#fff4dc", false, W - 32);
